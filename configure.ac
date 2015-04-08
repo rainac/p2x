@@ -100,10 +100,11 @@ echo "$SVN_REVISION" > svn-version.txt
 av_LONG_VERSION="$VERSION-`cat svn-version.txt | tr ':' '_'`"
 AC_MSG_CHECKING([value for LONG_VERSION])
 AC_MSG_RESULT([$av_LONG_VERSION])
+AC_DEFINE_UNQUOTED(LONG_VERSION, "$av_LONG_VERSION", [Long version string])
 
 echo "creating VERSION_NUMBER"
 VERSION_NUMBER=`echo "$VERSION" | sed -e 's/\.//2'`
-AC_DEFINE_UNQUOTED(P2X_VERSION_NUMBER, $VERSION_NUMBER, [A string describing the current ADiMat version as a floating point number.])
+AC_DEFINE_UNQUOTED(P2X_VERSION_NUMBER, $VERSION_NUMBER, [A string describing the current version as a floating point number.])
 AC_SUBST(VERSION_NUMBER)
 AC_MSG_CHECKING([value for VERSION_NUMBER])
 AC_MSG_RESULT([$VERSION_NUMBER])
