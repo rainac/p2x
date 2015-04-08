@@ -17,14 +17,10 @@ inst_DATA= $(project_files)
 
 install-recursive all-recursive: svn-version.txt
 
-svn-version.txt: . 
-	if test `svnversion . | $(GHEAD) -c 4` = "expo"; then \
-	   echo "files are exported"; \
-	else \
-	   svnversion . > $@.tmp; \
-	   if ! diff $@.tmp $@ > /dev/null; then cp $@.tmp $@; else echo "$@ is unchanged"; fi; \
-	   $(RM) $@.tmp; \
-	fi
+svn-version.txt: .
+	git log -n 1 | head -1 | awk '{print $$2}' > $@.tmp; \
+	if ! diff $@.tmp $@ > /dev/null; then cp $@.tmp $@; else echo "$@ is unchanged"; fi; \
+	$(RM) $@.tmp
 
 version.txt:
 	echo "$(VERSION)" > $@
