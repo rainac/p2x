@@ -1543,6 +1543,8 @@ void printBugreportInfo() {
   printf("Report bugs to %s\n", PACKAGE_BUGREPORT);
 }
 
+char const *vcs_version = LONG_VERSION;
+
 void printVersion() {
   cmdline_parser_print_version();
   printCopyright();
