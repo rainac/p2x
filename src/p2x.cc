@@ -165,13 +165,13 @@ struct TokenProto : public Token {
   TokenProto() :
     precedence(),
     unaryPrecedence(),
-    mode(),
+    mode(MODE_ITEM),
     isParen(),
     associativity(),
     outputMode()
   {}
   TokenProto(Token const &t, int precedence = 0,
-             ParserMode mode = MODE_BINARY, ParserAssoc associativity = ASSOC_NONE,
+             ParserMode mode = ParserMode(), ParserAssoc associativity = ASSOC_NONE,
              EndList const &endList = EndList(), int unaryPrecedence = 0) :
     Token(t),
     precedence(precedence),
@@ -1831,7 +1831,7 @@ int main(int argc, char *argv[]) {
         parseConfig(lexer, precPath, croot, tokenInfo);
         // LS::mask &= ~LS::DEBUG;
       } else {
-        ls(LS::ERROR)  << "Failed to read config file " << precPath << ": " << strerror(errno) << "\n";
+        ls(LS::ERROR)  << "Failed to read precedence config file " << precPath << ": " << strerror(errno) << "\n";
         exit(3);
       }
     }
@@ -1986,7 +1986,7 @@ int main(int argc, char *argv[]) {
       std::string astr = args.brace_arg[i];
       size_t pc = astr.find_first_of(",;:");
       if (pc == std::string::npos) {
-        ls(LS::ERROR|LS::PARSE) << "Parser: error: command line brace definition must be of the form start,end\n";
+        ls(LS::ERROR|LS::PARSE) << "Parser: error: command line brace definition must be of the form start:end\n";
         exit(4);
       }
       std::string name1 = astr.substr(0, pc);

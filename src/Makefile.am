@@ -9,7 +9,7 @@ if acond_BUILD_TESTS
 bin_PROGRAMS += p2xtests
 endif
 
-p2x_SOURCES = p2x.cc scanner.ll scanner-no-strings.ll scanner-r.ll scanner-c.ll p2x-opts.cc token.cc logger.cc
+p2x_SOURCES = p2x.cc scanner.xml scanner.ll scanner-no-strings.ll scanner-r.ll scanner-c.ll p2x-opts.cc token.cc logger.cc
 p2xtests_SOURCES = p2xtests.cc scanner.ll scanner-no-strings.ll p2x-opts.cc token.cc logger.cc
 
 p2x_CXXFLAGS =
@@ -19,7 +19,7 @@ p2x_DEPENDENCIES =
 
 p2xtests_LDADD = -lcppunit
 
-generated_files = p2x-opts.hh p2x-opts.cc namespaces.hh code-xml.rnc
+generated_files = p2x-opts.hh p2x-opts.cc namespaces.hh code-xml.rnc scanner2.ll
 if acond_TRANG_AVAIL
 generated_files += code-xml.rng
 endif
@@ -41,6 +41,12 @@ flexPrefix = scan
 scanner-no-strings.cc: flexPrefix = scanNS
 scanner-r.cc: flexPrefix = scanR
 scanner-c.cc: flexPrefix = scanC
+
+scanner2.ll: $(top_srcdir)/src/xsl/gen-flex-scanner.xsl scanner.xml $(top_srcdir)/src/xsl/patch-flex-scanner.xsl
+	xsltproc -o $@.tmp $(top_srcdir)/src/xsl/patch-flex-scanner.xsl scanner.xml
+	xsltproc -o $@ $(top_srcdir)/src/xsl/gen-flex-scanner.xsl $@.tmp
+	diff -wB scanner.ll scanner2.ll
+	rm $@.tmp
 
 # scanner-no-strings.ll is produced by deleting the line which matches strings
 scanner-no-strings.ll: scanner.ll

@@ -127,6 +127,7 @@ AC_CHECK_HEADERS([sys/stat.h])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
+                 src-js/Makefile
                  examples/Makefile
                  tests/Makefile
                  tests/sh/Makefile

@@ -6233,7 +6233,7 @@ fi
 done
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile examples/Makefile tests/Makefile tests/sh/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src-js/Makefile examples/Makefile tests/Makefile tests/sh/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -6981,6 +6981,7 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "src-js/Makefile") CONFIG_FILES="$CONFIG_FILES src-js/Makefile" ;;
     "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
     "tests/sh/Makefile") CONFIG_FILES="$CONFIG_FILES tests/sh/Makefile" ;;
