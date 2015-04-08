@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="9" code="47" type="PLUS">
+   <op line="1" col="3" code="47" type="PLUS">
+    <op line="1" col="1" code="49" type="MULT">
+     <op line="1" col="0" code="202" repr="a" type="IDENTIFIER">
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
+     </op>
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
+     <op line="1" col="2" code="203" repr="b" type="IDENTIFIER">
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">b</ca:text>
+     </op>
+    </op>
+    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
+    <op line="1" col="5" code="49" type="MULT">
+     <op line="1" col="4" code="204" repr="c" type="IDENTIFIER">
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">c</ca:text>
+     </op>
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
+     <op line="1" col="6" code="205" repr="d" type="IDENTIFIER">
+      <null/>
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">d</ca:text>
+      <string line="1" col="7" code="30" type="STRING">
+       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">''</ca:text>
+      </string>
+     </op>
+    </op>
+   </op>
+   <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
+   <op line="1" col="10" code="206" repr="e" type="IDENTIFIER">
+    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">e</ca:text>
+   </op>
+  </op>

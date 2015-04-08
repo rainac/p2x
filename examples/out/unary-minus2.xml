@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="0" code="48" type="MINUS">
+   <null/>
+   <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">-</ca:text>
+   <op line="1" col="3" code="233" repr="H" type="IDENTIFIER">
+    <integer line="1" col="1" code="28" type="INTEGER">
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text>
+     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="2" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    </integer>
+    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">H</ca:text>
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="4" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    <integer line="1" col="5" code="28" type="INTEGER">
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text>
+    </integer>
+   </op>
+  </op>

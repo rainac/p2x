@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+  <uri resource="res.xml" uri="../../src/code-xml.rnc"/>
+  <namespace 
+      ns="http://johannes-willkomm.de/xml/code-xml/" 
+      uri="../../src/code-xml.rnc"/>
+</locatingRules>

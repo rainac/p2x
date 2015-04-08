@@ -1,0 +1,22 @@
+struct GetEnvString {
+  std::string value;
+  bool present;
+  GetEnvString(std::string const &vname, std::string const &def = "") : 
+    value(def),
+    present()
+  {
+    char const *envString = ::getenv(vname.c_str());
+    if (envString) {
+      present = 1;
+      value = envString;
+    }
+  }
+
+  operator std::string const &() const { return this->value; }
+  std::string const &operator()() const { return this->value; }
+
+  operator bool() const { return this->good(); }
+  bool good() const { return this->present; }
+  bool fail() const { return !this->good(); }
+};
+

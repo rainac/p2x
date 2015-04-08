@@ -1,0 +1,12 @@
+
+"=" binary 5
+
+"+" unary_binary 10 110
+"-" unary_binary 10 110
+
+"*" binary 20
+
+"/" binary 30
+"%" binary 30
+
+"(" paren ")" postfix 101

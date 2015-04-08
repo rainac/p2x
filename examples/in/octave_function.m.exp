@@ -1,0 +1,9 @@
+function z = f(a)
+  for i=1:length(a)
+    if i == 1
+      z = a(i);
+    else
+      z = [z a(i)];
+    endif
+  endfor
+endfunction

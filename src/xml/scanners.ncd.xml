@@ -1,0 +1,12 @@
+<!--
+ This file is part of P2X.
+ Copyright © 2013 Johannes Willkomm 
+ See the file p2x.cc for copying conditions.  
+-->
+<ncdef name="ScannerType" c-prefix="SCANNER_">
+  <c name="NONE" val="0"/>
+  <c name="STRINGS"/>
+  <c name="NO_STRINGS"/>
+  <c name="R"/>
+  <c name="C"/>
+</ncdef>

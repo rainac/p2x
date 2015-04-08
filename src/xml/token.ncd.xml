@@ -1,0 +1,140 @@
+<!--
+ This file is part of P2X.
+ Copyright © 2013 Johannes Willkomm 
+ See the file p2x.cc for copying conditions.  
+-->
+<ncdef name="ParserToken" c-prefix="TOKEN_">
+  <c name="EOF" val="0"/>
+
+  <c name="KEYW_FOR"/>
+  <c name="KEYW_IF"/>
+  <c name="KEYW_WHILE"/>
+  <c name="KEYW_ELSE"/>
+  <c name="KEYW_ELSEIF"/>
+  <c name="KEYW_SWITCH"/>
+  <c name="KEYW_CASE"/>
+  <c name="KEYW_OTHERWISE"/>
+  <c name="KEYW_DEFAULT"/>
+  <c name="KEYW_RETURN"/>
+  <c name="KEYW_FUNCTION"/>
+  <c name="KEYW_BREAK"/>
+  <c name="KEYW_CONTINUE"/>
+  <c name="KEYW_GOTO"/>
+  <c name="KEYW_STATIC"/>
+  <c name="KEYW_PUBLIC"/>
+  <c name="KEYW_PRIVATE"/>
+  <c name="KEYW_REGISTER"/>
+  <c name="KEYW_AUTO"/>
+  <c name="KEYW_VAR"/>
+  <c name="KEYW_CONST"/>
+  <c name="KEYW_GLOBAL"/>
+  <c name="KEYW_PERSISTENT"/>
+  <c name="KEYW_TRY"/>
+  <c name="KEYW_CATCH"/>
+  <c name="KEYW_END"/>
+
+  <c name="ROOT"/>
+
+  <c name="INTEGER"/>
+  <c name="FLOAT"/>
+  <c name="STRING"/>
+  <c name="IDENTIFIER"/>
+
+  <c name="HASH_COMMENT"/>
+  <c name="CLINE_COMMENT"/>
+  <c name="C_COMMENT"/>
+
+  <c name="L_PAREN"/>
+  <c name="R_PAREN"/>
+  <c name="L_BRACE"/>
+  <c name="R_BRACE"/>
+  <c name="L_BRACKET"/>
+  <c name="R_BRACKET"/>
+
+  <c name="EQUAL"/>
+  <c name="LESS"/>
+  <c name="GREATER"/>
+
+  <c name="EXCLAM"/>
+  <c name="QUESTION"/>
+  <c name="TILDE"/>
+
+  <c name="PLUS"/>
+  <c name="MINUS"/>
+  <c name="MULT"/>
+  <c name="DIV"/>
+  <c name="BACKSLASH"/>
+  <c name="MOD"/>
+  <c name="POW"/>
+
+  <c name="COLON"/>
+  <c name="COMMA"/>
+  <c name="SEMICOLON"/>
+  <c name="FULL_STOP"/>
+  <c name="UNDERSCORE"/>
+  <c name="DOLLAR"/>
+  <c name="AT"/>
+  <c name="AND"/>
+  <c name="OR"/>
+  <c name="CIRC"/>
+  <c name="HASH"/>
+  <c name="QUOTE"/>
+  <c name="APOS"/>
+
+  <c name="CRETURN"/>
+  <c name="NEWLINE"/>
+  <c name="TAB"/>
+  <c name="SPACE"/>
+
+  <c name="JUXTA"/>
+  <c name="JUXTA_POST"/>
+
+  <c name="ILLEGAL_CHAR"/>
+
+  <c name="LEFT_ARROW"/>
+  <c name="RIGHT_ARROW"/>
+
+  <c name="DOUBLE_LEFT_ARROW"/>
+  <c name="DOUBLE_RIGHT_ARROW"/>
+
+  <c name="DOUBLE_AND"/>
+  <c name="DOUBLE_OR"/>
+
+  <c name="DOUBLE_COLON"/>
+  <c name="TRIPLE_COLON"/>
+
+  <c name="LE"/>
+  <c name="GE"/>
+
+  <c name="DOUBLE_L_BRACKET"/>
+  <c name="DOUBLE_R_BRACKET"/>
+  
+  <c name="DOUBLE_EQUAL"/>
+  <c name="NOT_EQUAL"/>
+
+  <c name="OPERATOR"/>
+
+  <c name="MINUS_GREATER"/>
+
+  <c name="DOUBLE_PLUS"/>
+  <c name="DOUBLE_MINUS"/>
+
+  <c name="DOUBLE_LESS"/>
+  <c name="DOUBLE_GREATER"/>
+
+  <c name="AND_EQUAL"/>
+  <c name="OR_EQUAL"/>
+  <c name="POW_EQUAL"/>
+
+  <c name="PLUS_EQUAL"/>
+  <c name="MINUS_EQUAL"/>
+  <c name="MULT_EQUAL"/>
+  <c name="DIV_EQUAL"/>
+  <c name="MOD_EQUAL"/>
+
+  <c name="DOUBLE_LESS_EQUAL"/>
+  <c name="DOUBLE_GREATER_EQUAL"/>
+
+  <c name="LAST"/>
+
+</ncdef>

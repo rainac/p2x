@@ -1,0 +1,9 @@
+#include <iostream>
+
+int main() {
+  double dt = 1e-3;
+  for (int i = 0; i < 10; ++i) {
+    double r = atan(2 i dt);
+    cout << sin 2 i dt << " " << cos (2 i +1) dt << " " << 2 i dt atan2 1 << "\n";
+  }
+}

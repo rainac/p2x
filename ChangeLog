@@ -1,0 +1,9 @@
+2014-02-06  Johannes Willkomm  <johannes.willkomm@googlecode.com>
+
+	* src/scanner.ll: The default scanner now also recognizes float
+	   literals with a "d" or "D" exponent, as in Fortran, e.g. 1.23D6
+
+2013-11-20  Johannes Willkomm  <johannes.willkomm@googlecode.com>
+
+	* README.org: Initial release of the project
+

@@ -1,0 +1,15 @@
+<!--
+ This file is part of P2X.
+ Copyright © 2013 Johannes Willkomm 
+ See the file p2x.cc for copying conditions.  
+-->
+<ncdef name="LogLevel">
+  <c name="IGNORE" val="0"/>
+  <c name="ERROR" val="1"/>
+  <c name="WARNING" val="2"/>
+  <c name="INFO" val="4"/>
+  <c name="DEBUG" val="8"/>
+  <c name="CONFIG" val="0x10"/>
+  <c name="PARSE" val="0x20"/>
+  <c name="SCAN" val="0x40"/>
+</ncdef>

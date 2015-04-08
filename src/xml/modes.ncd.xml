@@ -1,0 +1,14 @@
+<!--
+ This file is part of P2X.
+ Copyright © 2013 Johannes Willkomm 
+ See the file p2x.cc for copying conditions.  
+-->
+<ncdef name="ParserMode" c-prefix="MODE_">
+  <c name="IGNORE" val="1"/>
+  <c name="ITEM"/>
+  <c name="UNARY"/>
+  <c name="POSTFIX"/>
+  <c name="BINARY"/>
+  <c name="UNARY_BINARY"/>
+  <c name="PAREN" val="32"/>
+</ncdef>

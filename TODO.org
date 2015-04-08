@@ -1,0 +1,61 @@
+
+* TODO Enhancements
+
+** TODO Features
+
+*** TODO Option --namespaces
+
+possibly:
+
+--namespace-root
+--namespace-ca
+--namespace-cx
+
+*** DONE Option -- merged
+    CLOSED: [2014-10-25 Sa 17:09]
+
+Write consecutive chains of operators as fat nodes with possibly more
+than 2 children.
+
+**** DONE Global option merged
+     CLOSED: [2014-10-25 Sa 17:10]
+
+TreeWriterXML has option collect, controlled by GGO flag collect:
+-c, --collect
+
+**** DONE Per Token class option MERGED
+     CLOSED: [2014-10-25 Sa 17:10]
+
+#+BEGIN_SRC c
+enum OutputMode {
+  OUTPUT_MODE_NONE = 0,
+  OUTPUT_MODE_NESTED,
+  OUTPUT_MODE_MERGED
+};
+#+END_SRC
+
+TokenProto has field outputMode
+
+TokenInfo has function outputMode
+
+*** DONE Write tree writer options to XML as well
+    CLOSED: [2014-10-25 Sa 11:52]
+
+*** TODO Read scan XML as well
+
+  - scan and parse mode:
+    : p2x -S scanner input.file > parsed.xml
+  - scan only mode:
+    : p2x -s -S scanner input.file > scanned.xml
+  - parse only mode:
+    : p2x -x scanner scanned.xml > parsed.xml
+
+Reading XML: should be doable with expat parser
+
+*** TODO Option --output, -o
+
+Write output to file instead of stdout
+
+** TODO Source code cleanup
+
+*** TODO Remove method TreeXMLWriter::writeXMLTypeElem

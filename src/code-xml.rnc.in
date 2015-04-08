@@ -1,0 +1,117 @@
+# This file is part of P2X.
+# Copyright © 2013 Johannes Willkomm 
+# See the file p2x.cc for copying conditions.  
+
+default namespace = "NAMESPACE_CX"
+namespace ca = "NAMESPACE_CA"
+
+start = code-xml
+
+code-xml = element code-xml {
+       element ca:steps { ca-step* },
+       element ca:scanner { attribute type { text } },
+       element ca:tree-writer { 
+             attribute col { text },
+             attribute merged { text },
+             attribute encoding { text },
+             attribute id { text },
+             attribute indent { text },
+             attribute line { text },
+             attribute mode { text },
+             attribute newlineAsBr { text },
+             attribute prec { text },
+             attribute strict{ text },
+             attribute type { text }
+       },
+       element ca:token-types { ca-op* },
+       root
+}
+
+root = element root {
+        node-content
+}
+
+node = null | op | paren | id | integer | float | string-lit
+
+null = element null { empty }
+
+node-content = attr-node, annot?, node?, annot*, ca-itr?, annot*, node?, annot?
+
+op = element op {
+     node-content
+}
+
+paren = element paren {
+     node-content, node?, annot?
+}
+
+id = element id {
+     node-content
+}
+
+string-lit = element string {
+     attr-node, ca-itr, annot*
+}
+
+integer = element integer {
+     attr-node, ca-itr, annot*
+}
+
+float = element float {
+     attr-node, ca-itr, annot*
+}
+
+ca-itr = ca-text | ca-br
+
+annot = ca-ignore
+
+ca-step = element ca:step {
+      attr-id,
+      text
+}
+
+ca-op = element ca:op {
+      attr-code,
+      attr-type,
+      attr-repr?,
+      attr-mode,
+      attr-is-paren?,
+      attr-prec?,
+      attr-unary-prec?,
+      attr-assoc?,
+      attr-output-mode?,
+      closing-list?
+}
+
+closing-list = element ca:closing-list {
+      ca-op+
+}
+
+ca-ignore = element ca:ignore {
+      attr-node,
+      ca-text
+}
+
+ca-text = element ca:text {
+        text
+}
+
+ca-br = element ca:br {
+        empty
+}
+
+attr-node = attr-id?, attr-repr?, attr-code, attr-type, attr-location?, attr-file?
+attr-id = attribute id { xsd:int }
+attr-code = attribute code { xsd:int }
+attr-prec = attribute precedence { xsd:int }
+attr-unary-prec = attribute unary-precedence { xsd:int }
+attr-assoc = attribute associativity { "LEFT" | "RIGHT" | "NONE" }
+attr-output-mode = attribute output-mode { "NONE" | "NESTED" | "MERGED" }
+attr-repr = attribute repr { text }
+attr-type = attribute type { text }
+attr-mode = attribute mode { text }
+attr-is-paren = attribute is-paren { text }
+attr-location = attribute line { xsd:int }, attribute col { xsd:int }
+attr-file = attribute file { text }, attribute path { text }
+
+# $Id: code-xml.rnc.in 95 2014-10-27 08:21:37Z johannes.willkomm@googlemail.com $

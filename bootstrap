@@ -1,0 +1,7 @@
+#! /bin/bash
+
+autoreconf -i -W no-portability
+#aclocal
+#autoconf
+#autoheader
+#automake -ac -W no-portability

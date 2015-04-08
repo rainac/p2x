@@ -1,0 +1,10 @@
+<!--
+ This file is part of P2X.
+ Copyright © 2014 Johannes Willkomm 
+ See the file p2x.cc for copying conditions.  
+-->
+<ncdef name="OutputMode" c-prefix="OUTPUT_MODE_">
+  <c name="NONE" val="0"/>
+  <c name="NESTED"/>
+  <c name="MERGED"/>
+</ncdef>

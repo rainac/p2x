@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="2" code="71" type="JUXTA">
+   <integer line="1" col="0" code="28" type="INTEGER">
+    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text>
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="1" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+   </integer>
+   <integer line="1" col="2" code="28" type="INTEGER">
+    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text>
+   </integer>
+  </op>

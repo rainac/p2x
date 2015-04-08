@@ -1,0 +1,11 @@
+From: Susy <susy@domain.org>
+To: Peter <peter@domain.org>
+Subject: Question
+Received: from bar.domain.com
+ at 15:00:27
+ by SMPTD 1.0
+Received: from foo.domain.com
+ at 15:00:24
+ by Mailproc 0.9
+
+How are you?

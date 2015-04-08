@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="30" col="7" code="68" type="NEWLINE">
+   <op line="29" col="8" code="68" type="NEWLINE">
+    <op line="28" col="7" code="68" type="NEWLINE">
+     <op line="27" col="7" code="68" type="NEWLINE">
+      <op line="26" col="7" code="68" type="NEWLINE">
+       <op line="25" col="8" code="68" type="NEWLINE">
+        <op line="24" col="7" code="68" type="NEWLINE">
+         <op line="23" col="7" code="68" type="NEWLINE">
+          <op line="22" col="6" code="68" type="NEWLINE">
+           <op line="21" col="7" code="68" type="NEWLINE">
+            <op line="20" col="6" code="68" type="NEWLINE">
+             <op line="19" col="6" code="68" type="NEWLINE">
+              <op line="18" col="4" code="68" type="NEWLINE">
+               <op line="17" col="5" code="68" type="NEWLINE">
+                <op line="16" col="4" code="68" type="NEWLINE">
+                 <op line="15" col="5" code="68" type="NEWLINE">
+                  <op line="14" col="6" code="68" type="NEWLINE">
+                   <op line="13" col="5" code="68" type="NEWLINE">
+                    <op line="12" col="4" code="68" type="NEWLINE">
+                     <op line="11" col="5" code="68" type="NEWLINE">
+                      <op line="10" col="6" code="68" type="NEWLINE">
+                       <op line="9" col="5" code="68" type="NEWLINE">
+                        <op line="8" col="4" code="68" type="NEWLINE">
+                         <op line="7" col="4" code="68" type="NEWLINE">
+                          <op line="6" col="5" code="68" type="NEWLINE">
+                           <op line="5" col="4" code="68" type="NEWLINE">
+                            <op line="4" col="3" code="68" type="NEWLINE">
+                             <op line="3" col="2" code="68" type="NEWLINE">
+                              <op line="2" col="3" code="68" type="NEWLINE">
+                               <op line="1" col="2" code="68" type="NEWLINE">
+                                <float line="1" col="0" code="29" type="FLOAT">
+                                 <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">.1</ca:text>
+                                </float>
+                                <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                                <float line="2" col="0" code="29" type="FLOAT">
+                                 <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">0.1</ca:text>
+                                </float>
+                               </op>
+                               <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                               <float line="3" col="0" code="29" type="FLOAT">
+                                <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1.</ca:text>
+                               </float>
+                              </op>
+                              <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                              <float line="4" col="0" code="29" type="FLOAT">
+                               <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1e4</ca:text>
+                              </float>
+                             </op>
+                             <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                             <float line="5" col="0" code="29" type="FLOAT">
+                              <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">.1e4</ca:text>
+                             </float>
+                            </op>
+                            <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                            <float line="6" col="0" code="29" type="FLOAT">
+                             <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">0.1e4</ca:text>
+                            </float>
+                           </op>
+                           <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                           <float line="7" col="0" code="29" type="FLOAT">
+                            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1.e4</ca:text>
+                           </float>
+                          </op>
+                          <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                          <float line="8" col="0" code="29" type="FLOAT">
+                           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1e+4</ca:text>
+                          </float>
+                         </op>
+                         <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                         <float line="9" col="0" code="29" type="FLOAT">
+                          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">.1e+4</ca:text>
+                         </float>
+                        </op>
+                        <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                        <float line="10" col="0" code="29" type="FLOAT">
+                         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">0.1e+4</ca:text>
+                        </float>
+                       </op>
+                       <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                       <float line="11" col="0" code="29" type="FLOAT">
+                        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1.e+4</ca:text>
+                       </float>
+                      </op>
+                      <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                      <float line="12" col="0" code="29" type="FLOAT">
+                       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1e-4</ca:text>
+                      </float>
+                     </op>
+                     <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                     <float line="13" col="0" code="29" type="FLOAT">
+                      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">.1e-4</ca:text>
+                     </float>
+                    </op>
+                    <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                    <float line="14" col="0" code="29" type="FLOAT">
+                     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">0.1e-4</ca:text>
+                    </float>
+                   </op>
+                   <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                   <float line="15" col="0" code="29" type="FLOAT">
+                    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1.e-4</ca:text>
+                   </float>
+                  </op>
+                  <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                  <float line="16" col="0" code="29" type="FLOAT">
+                   <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">.123</ca:text>
+                  </float>
+                 </op>
+                 <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                 <float line="17" col="0" code="29" type="FLOAT">
+                  <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">7.123</ca:text>
+                 </float>
+                </op>
+                <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+                <float line="18" col="0" code="29" type="FLOAT">
+                 <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">123.</ca:text>
+                </float>
+               </op>
+               <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+               <float line="19" col="0" code="29" type="FLOAT">
+                <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">7123e4</ca:text>
+               </float>
+              </op>
+              <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+              <float line="20" col="0" code="29" type="FLOAT">
+               <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">.123e4</ca:text>
+              </float>
+             </op>
+             <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+             <float line="21" col="0" code="29" type="FLOAT">
+              <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">7.123e4</ca:text>
+             </float>
+            </op>
+            <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+            <float line="22" col="0" code="29" type="FLOAT">
+             <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">123.e4</ca:text>
+            </float>
+           </op>
+           <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+           <float line="23" col="0" code="29" type="FLOAT">
+            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">7123e+4</ca:text>
+           </float>
+          </op>
+          <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+          <float line="24" col="0" code="29" type="FLOAT">
+           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">.123e+4</ca:text>
+          </float>
+         </op>
+         <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+         <float line="25" col="0" code="29" type="FLOAT">
+          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">7.123e+4</ca:text>
+         </float>
+        </op>
+        <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+        <float line="26" col="0" code="29" type="FLOAT">
+         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">123.e+4</ca:text>
+        </float>
+       </op>
+       <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+       <float line="27" col="0" code="29" type="FLOAT">
+        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">7123e-4</ca:text>
+       </float>
+      </op>
+      <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+      <float line="28" col="0" code="29" type="FLOAT">
+       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">.123e-4</ca:text>
+      </float>
+     </op>
+     <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+     <float line="29" col="0" code="29" type="FLOAT">
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">7.123e-4</ca:text>
+     </float>
+    </op>
+    <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+    <float line="30" col="0" code="29" type="FLOAT">
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">123.e-4</ca:text>
+    </float>
+   </op>
+   <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+  </op>

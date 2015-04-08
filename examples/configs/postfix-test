@@ -1,0 +1,5 @@
+"b" binary        1000
+"P" postfix       10000
+"B" unary_binary  4000 4000
+SPACE ignore 1
+NEWLINE ignore 1

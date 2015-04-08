@@ -1,0 +1,6 @@
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+  char const *name = "World";
+  printf "Hello %s", name, 1e12;
+}

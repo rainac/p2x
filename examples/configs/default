@@ -1,0 +1,98 @@
+# this is a comment
+
+JUXTA_POST binary 2
+
+";" binary 101
+
+"'" postfix 10001
+
+"," binary  400 right
+
+"?" binary  500 right
+"!" binary  500 right
+
+"=" binary  500 right
+
+">" binary 600
+"<" binary 600
+
+":" binary 900
+
+"+" binary 1000
+#"-" binary 1000
+"*" binary 1100
+"/" binary 1200
+"%" binary 1300
+
+"R" binary 2100 right
+"L" binary 2200
+
+"a" binary 2021
+"b" binary 2022
+"c" binary 2023
+"d" binary 2024
+"e" binary 2025
+"f" binary 2026
+"l" binary 2027
+
+"r" binary 2051 right
+"s" binary 2052 right
+"t" binary 2053 right
+
+"p" postfix 2011
+"P" postfix 2301
+
+"ueqc" unary 2023
+
+"q" unary 2041
+"sin" unary 2041
+
+"print" unary 700
+
+"." binary 1099
+
+"^" binary 1200
+
+"@" binary 1300
+
+# either these two (either order) ...
+# !!! not !!! supported any more !!! use unary_binary !!!
+#"-" unary 2200
+#"-" binary 1000
+
+# ... or this one
+"-"  unary_binary 1000 left 2200
+"ub" unary_binary 1000 left 2023
+"ubr" unary_binary 1000 right 2200
+
+"Ub" unary_binary 100 left 3000
+"uB" unary_binary 3000 left 100
+
+
+NEWLINE binary 10
+
+"(" paren ")"
+"[" paren "]"
+"{" paren "}"
+
+"open" paren "close"
+
+"begin" paren "finish"
+"begin" paren "endblock"
+
+"bopen" paren "bclose" binary 2023
+"uopen" paren "uclose" unary 2023
+"popen" paren "pclose" postfix 2023
+
+# "(" paren ")"
+# "[" paren "]"
+# "{" paren "}"
+
+space ignore 1
+
+# a very high priority binary operator
+"H" binary 4000
+
+"plus" binary 1000
+"minus" binary 1000
+"times" binary 1100
