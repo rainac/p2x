@@ -5926,8 +5926,7 @@ _ACEOF
 
 
 if test -z "$SVN_REVISION"; then
-   echo "obtaining svnversion"
-   SVN_REVISION=`svnversion .`
+   SVN_REVISION=`./vcs-version.sh`
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking value for SVN_REVISION" >&5
 $as_echo_n "checking value for SVN_REVISION... " >&6; }
@@ -5945,6 +5944,11 @@ av_LONG_VERSION="$VERSION-`cat svn-version.txt | tr ':' '_'`"
 $as_echo_n "checking value for LONG_VERSION... " >&6; }
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $av_LONG_VERSION" >&5
 $as_echo "$av_LONG_VERSION" >&6; }
+
+cat >>confdefs.h <<_ACEOF
+#define LONG_VERSION "$av_LONG_VERSION"
+_ACEOF
+
 
 echo "creating VERSION_NUMBER"
 VERSION_NUMBER=`echo "$VERSION" | sed -e 's/\.//2'`

@@ -123,8 +123,10 @@
 /* Host vendor type */
 #undef HOST_VENDOR
 
-/* A string describing the current ADiMat version as a floating point number.
-   */
+/* Long version string */
+#undef LONG_VERSION
+
+/* A string describing the current version as a floating point number. */
 #undef P2X_VERSION_NUMBER
 
 /* Name of package */
