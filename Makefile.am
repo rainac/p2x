@@ -18,7 +18,7 @@ inst_DATA= $(project_files)
 install-recursive all-recursive: svn-version.txt
 
 svn-version.txt: .
-	git log -n 1 | head -1 | awk '{print $$2}' > $@.tmp; \
+	./vcs-version.sh > $@.tmp; \
 	if ! diff $@.tmp $@ > /dev/null; then cp $@.tmp $@; else echo "$@ is unchanged"; fi; \
 	$(RM) $@.tmp
 
