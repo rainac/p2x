@@ -86,8 +86,7 @@ AC_DEFINE_UNQUOTED(HOST_OS_SHORT, "$target_os_short", [Short host os type])
 AC_DEFINE_UNQUOTED(install_prefix, "$prefix", [The prefix where P2X is installed.])
 
 if test -z "$SVN_REVISION"; then
-   echo "obtaining svnversion"
-   SVN_REVISION=`svnversion .`
+   SVN_REVISION=`./vcs-version.sh`
 fi                         
 AC_MSG_CHECKING([value for SVN_REVISION])
 AC_MSG_RESULT([$SVN_REVISION])
