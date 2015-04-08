@@ -1766,32 +1766,6 @@ int main(int argc, char *argv[]) {
     fileList.push_back(args.inputs[i]);
   }
 
-  std::istream *inStream = &std::cin;
-  if (not fileList.empty()) {
-    std::ifstream *infile = new std::ifstream(fileList[0].c_str());
-    if (infile and *infile) {
-      inStream = infile;
-    } else {
-      ls(LS::ERROR) << "Failed to open input file: " << fileList[0] << ": " << strerror(errno) << std::endl;
-      return EXIT_FAILURE;
-    }
-  } else {
-    if (isatty(0) and not args.stdin_tty_given) {
-      ls(LS::ERROR) << "Refusing to read from the keyboard, use --stdin-tty to overrule" << std::endl;
-      return EXIT_FAILURE;
-    }
-  }
-
-  if (args.scan_only_given) {
-    Scanner scanner(scannerType);
-    scanner.readTokenList(*inStream);
-    TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
-    out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-    out << "<scan-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
-    treeXMLWriter.writeXML(scanner.tokenList, out, indentUnit);
-    out << "</scan-xml>\n";
-    return 0;
-  }
 
 
   {
@@ -2034,6 +2008,36 @@ int main(int argc, char *argv[]) {
     out << "</token-types>\n";
     return 0;
   }
+
+
+  // Start processing input
+  std::istream *inStream = &std::cin;
+  if (not fileList.empty()) {
+    std::ifstream *infile = new std::ifstream(fileList[0].c_str());
+    if (infile and *infile) {
+      inStream = infile;
+    } else {
+      ls(LS::ERROR) << "Failed to open input file: " << fileList[0] << ": " << strerror(errno) << std::endl;
+      return EXIT_FAILURE;
+    }
+  } else {
+    if (isatty(0) and not args.stdin_tty_given) {
+      ls(LS::ERROR) << "Refusing to read from the keyboard, use --stdin-tty to overrule" << std::endl;
+      return EXIT_FAILURE;
+    }
+  }
+
+  if (args.scan_only_given) {
+    Scanner scanner(scannerType);
+    scanner.readTokenList(*inStream);
+    TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
+    out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+    out << "<scan-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
+    treeXMLWriter.writeXML(scanner.tokenList, out, indentUnit);
+    out << "</scan-xml>\n";
+    return 0;
+  }
+
 
   FPParser fpParser(scannerType);
   fpParser.tokenInfo = tokenInfo;
