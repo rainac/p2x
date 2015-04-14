@@ -171,7 +171,7 @@ struct TokenProto : public Token {
     outputMode()
   {}
   TokenProto(Token const &t, int precedence = 0,
-             ParserMode mode = ParserMode(), ParserAssoc associativity = ASSOC_NONE,
+             ParserMode mode = MODE_ITEM, ParserAssoc associativity = ASSOC_NONE,
              EndList const &endList = EndList(), int unaryPrecedence = 0) :
     Token(t),
     precedence(precedence),
@@ -1450,7 +1450,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
           cnfls(LS::DEBUG|LS::CONFIG) << "config: token:  " << token << "\n";
 
           // parse precedence field
-          ParserAssoc assoc = mode == MODE_BINARY ? ASSOC_LEFT : ASSOC_NONE;
+          ParserAssoc assoc = mode == MODE_BINARY or mode == MODE_UNARY_BINARY ? ASSOC_LEFT : ASSOC_NONE;
           OutputMode outputMode = OUTPUT_MODE_NESTED;
           int precedence = 100;
           int unary_precedence = 100;
