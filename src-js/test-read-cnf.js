@@ -42,48 +42,28 @@ if ('prec-list' in options) {
 
     var cmd = 'p2x -T -p ' + configFile
     console.log('run ' + cmd)
-    console.dir(child_process)
     var cnfXML
-    var child = child_process.exec(cmd, { stdio: 'inherit' }, function(errc, stdout, stderr) { cnfXML = stdout } )
-    child.exited = false
-    child.on('exit', function() {
-        this.exited = true
-        console.log('P2X exited')
-        this.callback()
+    // system(cmd)
+    var child = child_process.exec(cmd, { stdio: 'inherit' },
+                                   function(errc, stdout, stderr)
+    {
+        if (errc) {
+            console.error('P2X exited with error:\n' + errc + stderr)
+        } else {
+            cnfXML = stdout;
+            console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
+            parseConfig(cnfXML)
+        }
     })
-    child.callback = function() {
-        console.log(cnfXML)
-    }
-    console.dir(child)
-    
-//    system(cmd)
 }
 
+console.log('in script')
+
+var parseConfig = function(cnfXML) {
+    console.log('parseConfig : ' + cnfXML)
+}
+
+console.log('in script2')
+
 console.dir(options)
-
-assert(false)
-
-var scanner = P2X.scanner
-
-P2X.importObject(ENUM.ParserMode, this)
-P2X.importObject(ENUM.ParserToken, this)
-P2X.importObject(ENUM.ParserAssoc, this)
-
-// console.dir(P2X)
-//console.dir(MostXML)
-
-console.log('load scanner setup script')
-var r2 = require('./scanner-setup.js');
-
-scanner.str('a + b *\n\r 1.2e-122')
-
-// console.log(scanner.lex())
-// console.log(scanner.lex())
-// console.log(scanner.lex())
-// console.log(scanner.lex())
-var tl = scanner.lexall()
-// console.log(tl)
-
-var scanListXML = tl.asxml()
-console.log(scanListXML)
 
