@@ -101,6 +101,7 @@ av_LONG_VERSION="$VERSION-`cat svn-version.txt | tr ':' '_'`"
 AC_MSG_CHECKING([value for LONG_VERSION])
 AC_MSG_RESULT([$av_LONG_VERSION])
 AC_DEFINE_UNQUOTED(LONG_VERSION, "$av_LONG_VERSION", [Long version string])
+AC_DEFINE_UNQUOTED(VERSION, "$av_LONG_VERSION", [Long version string])
 
 echo "creating VERSION_NUMBER"
 VERSION_NUMBER=`echo "$VERSION" | sed -e 's/\.//2'`

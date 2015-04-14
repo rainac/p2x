@@ -5950,6 +5950,11 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+cat >>confdefs.h <<_ACEOF
+#define VERSION "$av_LONG_VERSION"
+_ACEOF
+
+
 echo "creating VERSION_NUMBER"
 VERSION_NUMBER=`echo "$VERSION" | sed -e 's/\.//2'`
 

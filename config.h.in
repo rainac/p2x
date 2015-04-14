@@ -159,7 +159,7 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
-/* Version number of package */
+/* Long version string */
 #undef VERSION
 
 /* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
