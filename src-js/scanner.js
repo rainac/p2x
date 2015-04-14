@@ -32,15 +32,15 @@ P2X.evalOrValue = function(val, def) {
     return res
 }
 
-var escapeRegExp = function(string){
-    return string
+var escapeRegExp = function(str){
+    return str
         .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
         .replace(/\n/g, "\\n").replace(/\r/g, "\\r")
         .replace(/\t/g, "\\t").replace(/\v/g, "\\v")
 }
 
-var escapeXML = function(string){
-  return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+var escapeXML = function(str){
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 }
 
 if (typeof window == 'undefined') {
@@ -115,11 +115,13 @@ function arrayMax(arr) {
 };
 
 P2X.Token = function(tk, text, index, line, col, rule) {
+    if (typeof tk != 'number')
+        tk = ENUM.getParserTokenValue(String(tk))
     return { token: tk, tokenName: ENUM.ParserToken.names_index[tk], text: text, index: index, line: line, col: col }
 }
 
 P2X.TokenList = function(list, producer) {
-    console.log('TokenList created')
+    // console.log('TokenList created')
     this.name = 'test'
     this.list = list
     this.index = 0
@@ -148,27 +150,34 @@ P2X.TokenList.prototype.charasxml = function(s) {
     } else if (s == "\r") {
         return "<ca:cr/>"
     } else {
-        return '<ca:text>' + s + '</ca:text>'
+        return '<ca:text>' + escapeXML(s) + '</ca:text>'
     }
 }
-P2X.TokenList.prototype.asxml = function() {
-    var r = this.list
-    var s = "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
+P2X.TokenList.prototype.asxml = function(indent) {
+    var r = this.list, bindent
+    if (typeof indent != 'string') {
+        indent = ''
+        bindent = ''
+    } else {
+        bindent = indent
+        indent += ' '
+    }
+    var s = bindent + "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
     if (this.scanner) {
-        s += ' <input>' + escapeXML(this.scanner.input) + '</input>\n'
-        s += this.scanner.get().asxml(' ')
+        s += indent + '<input>' + escapeXML(this.scanner.input) + '</input>\n'
+        s += this.scanner.get().asxml(indent)
     }
     for (var k in r) {
         var t = r[k]
         if (t.token) {
-            s += ' <token'
+            s += indent + '<token'
                 + ' line="' + t.line + '"'
                 + ' col="' + t.col + '"'
                 + ' index="' + t.index + '"'
-                + ' token="' + ENUM.ParserToken.names_index[t.token] + '">' + this.charasxml(t.text) + '</token>\n';
+                + ' type="' + ENUM.ParserToken.names_index[t.token] + '">' + this.charasxml(t.text) + '</token>\n';
         } else {
             if (false) {
-                s += '  <ca:ignored'
+                s += indent + '<ca:ignored'
                     + ' line="' + t.line + '"'
                     + ' col="' + t.col + '"'
                     + ' index="' + t.index + '"'
@@ -176,7 +185,7 @@ P2X.TokenList.prototype.asxml = function() {
             }
         }
     }
-    s += '</scan-xml>'
+    s += bindent + '</scan-xml>\n'
     return s
 }
 P2X.TokenList.prototype.loadXML = function(scanListXML) {
@@ -193,7 +202,7 @@ P2X.TokenList.prototype.loadXML = function(scanListXML) {
     }
 }
 P2X.TokenList.prototype.loadXMLNode = function(scanList) {
-    rlist = []
+    var rlist = [], ctoken
     for (var k in scanList.childNodes) {
         ctoken = scanList.childNodes[k]
         if (ctoken.nodeType == 1 && ctoken.nodeName == "token") {
@@ -218,7 +227,7 @@ P2X.TokenList.prototype.loadXMLNode = function(scanList) {
                     break
                 }
             }
-            rlist.push(P2X.Token(ctoken.getAttribute('token'),
+            rlist.push(P2X.Token(ctoken.getAttribute('type'),
                                  text,
                                  ctoken.getAttribute('index'),
                                  ctoken.getAttribute('line'),
@@ -231,13 +240,22 @@ P2X.TokenList.prototype.loadXMLNode = function(scanList) {
 P2X.ScannerConfig = function(x) {
     var res = Array.apply({}, x);
     res.asxml = function(indent) {
+
+        function getREString(re) {
+            if (typeof re == 'object') {
+                return re.source
+            } else {
+                return re
+            }
+        }
+        
         if (typeof indent == 'undefined') indent = ' '
         var res = indent + '<ca:scanner-config>\n'
         obj = {}
         for (var k = 0; k < this.length; ++k) {
             var rule = this[k]
             res += indent + indent + '<ca:lexem'
-            res += ' re="' + rule.re + '"'
+            res += ' re="' + escapeXML(getREString(rule.re)) + '"'
             obj.act = rule.action
             // console.dir(typeof rule.action)
             // console.dir(obj.act.toString())
@@ -248,18 +266,18 @@ P2X.ScannerConfig = function(x) {
                     if (val in ENUM.ParserToken.names_index) {
                         res += ' action="' + ENUM.ParserToken.prefix + ENUM.getParserTokenName(val) + '"'
                     } else {
-                        res += ' action="' + val + '"'
+                        res += ' action="' + escapeXML(val) + '"'
                     }
                 } else {
                     rule.action.toString()
-                    res += ' action="' + rule.action.toString() + '"'
+                    res += ' action="' + escapeXML(rule.action.toString()) + '"'
                 }
             } else {
                 var val = rule.action
                 if (val in ENUM.ParserToken.names_index) {
                     res += ' action="' + ENUM.ParserToken.prefix + ENUM.getParserTokenName(val) + '"'
                 } else {
-                    res += ' action="' + val + '"'
+                    res += ' action="' + escapeXML(val) + '"'
                 }
             }
             // res += ' name="' + ENUM.getParserTokenName(rule[1].apply(ENUM.ParserToken, [])) + '"'
@@ -292,7 +310,7 @@ P2X.ScannerConfig = function(x) {
         for (var k in scanList.childNodes) {
             ctoken = scanList.childNodes[k], eres_re, eres_action
             if (ctoken.nodeType == 1 && ctoken.nodeName == "ca:lexem") {
-                eres_re = P2X.evalOrValue(ctoken.getAttribute('re'), ctoken.getAttribute('re'))
+                eres_re = ctoken.getAttribute('re')
                 eres_action = P2X.evalOrValue(ctoken.getAttribute('action'), ctoken.getAttribute('action'))
                 rlist.push({ re: eres_re, action: eres_action })
             }
@@ -541,9 +559,11 @@ P2X.TokenProtoRW = function() {
             res += ' is-paren="1"'
         if (obj.closingList && obj.closingList.length > 0) {
             res += '>\n'
+            res += indent + ' <ca:closing-list>\n'
             for (var k = 0; k < obj.closingList.length; ++k) {
-                res += this.asxml(obj.closingList[k], indent + ' ')
+                res += this.asxml(obj.closingList[k], indent + '  ')
             }
+            res += indent + ' </ca:closing-list>\n'
             res += indent + '</ca:op>\n'
         } else {
             res += '/>\n'
@@ -721,8 +741,8 @@ P2X.TokenInfo = function() {
         insert: function (tokenProto) {
             if (tokenProto.token == TOKEN_IDENTIFIER && tokenProto.repr) {
                 // this creates the new op code
-                console.log('inserting token proto for named ID ' + tokenProto.repr + ': ' + this.getOpCode(tokenProto.repr))
-                console.log(' prec ' + tokenProto.prec)
+                // console.log('inserting token proto for named ID ' + tokenProto.repr + ': ' + this.getOpCode(tokenProto.repr))
+                // console.log(' prec ' + tokenProto.prec)
                 this.tokenClasses[this.getOpCode(tokenProto.repr)] = tokenProto
             } else {
                 this.tokenClasses[this.getOpCode(tokenProto.token)] = tokenProto
@@ -732,12 +752,19 @@ P2X.TokenInfo = function() {
     }
 }
 
-P2X.Parser = function(tokenInfo) {
+P2X.Parser = function() {
     return {
         root: null,
         input: [],
-        endList: [tokenInfo.getOpCode(TOKEN_EOF)],
-        tokenInfo: tokenInfo,
+        tokenInfo: P2X.TokenInfo(),
+        endList: [],
+        getconfig: function () {
+            return this.tokenInfo.getconfig()
+        },
+        setconfig: function (pc) {
+            this.tokenInfo.setconfig(pc)
+            return this
+        },
         mkroot: function() {
             return P2X.Token(TOKEN_ROOT, '', 0, 0, 0);
         },
@@ -836,6 +863,7 @@ P2X.Parser = function(tokenInfo) {
             return this
         },
         parse: function(tlist) {
+            this.endList = [tokenInfo.getOpCode(TOKEN_EOF)]
             this.root = this.mkroot()
             this.input = tlist;
 

@@ -42,22 +42,24 @@ describe('P2X.ScannerConfig', function(){
           scConf = P2X.ScannerConfig().loadXML(xmlRes)
           assert.equal(xmlRes, scConf.asxml(''));
       })
+      function setAndGetFromScanner(inXML) {
+          scConf = P2X.ScannerConfig().loadXML(inXml)
+          myScanner = P2X.JScanner();
+          myScanner.set(scConf)
+          return myScanner.get()
+      }
       it('should return XML rule list', function(){
           inXml = '<ca:scanner-config>\n'
-              + '<ca:lexem re="RegExp(\'abc\')" action="1023"/>\n'
-              + '<ca:lexem re="\'abc\'" action="11"/>\n'
+              + '<ca:lexem re="abc" action="1023"/>\n'
+              + '<ca:lexem re="abc" action="11"/>\n'
               + '<ca:lexem re="abc" action="TOKEN_PLUS"/>\n'
               + '</ca:scanner-config>\n'
           xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem re="/abc/" action="1023"/>\n'
-              + '<ca:lexem re="/abc/" action="TOKEN_KEYW_FUNCTION"/>\n'
-              + '<ca:lexem re="/abc/" action="TOKEN_PLUS"/>\n'
+              + '<ca:lexem re="abc" action="1023"/>\n'
+              + '<ca:lexem re="abc" action="TOKEN_KEYW_FUNCTION"/>\n'
+              + '<ca:lexem re="abc" action="TOKEN_PLUS"/>\n'
               + '</ca:scanner-config>\n'
-          scConf = P2X.ScannerConfig().loadXML(inXml)
-          myScanner = P2X.JScanner();
-          // console.dir(scConf)
-          myScanner.set(scConf)
-          assert.equal(xmlRes, myScanner.get().asxml(''));
+          assert.equal(xmlRes, setAndGetFromScanner(inXml).asxml(''));
       })
   })
   describe('#asxml()', function(){
@@ -67,7 +69,7 @@ describe('P2X.ScannerConfig', function(){
     })
       it('should return XML rule list', function(){
           xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem re="/abc/" action="1023"/>\n'
+              + '<ca:lexem re="abc" action="1023"/>\n'
               + '</ca:scanner-config>\n'
           scConf = [
               {re: /abc/, action: 1023},
@@ -77,7 +79,7 @@ describe('P2X.ScannerConfig', function(){
       })
       it('should return XML rule list', function(){
           xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem re="/abc/" action="TOKEN_DIV_EQUAL"/>\n'
+              + '<ca:lexem re="abc" action="TOKEN_DIV_EQUAL"/>\n'
               + '</ca:scanner-config>\n'
           scConf = [
               {re: /abc/, action: 100},
@@ -87,22 +89,35 @@ describe('P2X.ScannerConfig', function(){
       })
       it('should return XML rule list', function(){
           xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem re="/abc/" action="TOKEN_DOUBLE_LESS_EQUAL"/>\n'
+              + '<ca:lexem re="a+b*c?" action="TOKEN_DOUBLE_LESS_EQUAL"/>\n'
               + '</ca:scanner-config>\n'
           action = 102
           scConf = [
-              {re: /abc/, action: function() { return action }},
+              {re: /a+b*c?/, action: function() { return action }},
           ]
           assert.equal(xmlRes,
                        P2X.ScannerConfig(scConf).asxml(''));
       })
       it('should return XML rule list', function(){
           xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem re="/abc/" action="function () { return action*2 }"/>\n'
+              + '<ca:lexem re="ab\\\\c\\b" action="function () { return action*2 }"/>\n'
               + '</ca:scanner-config>\n'
           action = 102
           scConf = [
-              {re: /abc/, action: function() { return action*2 }},
+              {re: /ab\\c\b/, action: function() { return action*2 }},
+          ]
+          // console.log(xmlRes)
+          // console.log(P2X.ScannerConfig(scConf).asxml(''))
+          assert.equal(xmlRes,
+                       P2X.ScannerConfig(scConf).asxml(''));
+      })
+      it('should return XML rule list', function(){
+          xmlRes = '<ca:scanner-config>\n'
+              + '<ca:lexem re="a&lt;&gt;+b&lt;&amp;*c?" action="TOKEN_DOUBLE_LESS_EQUAL"/>\n'
+              + '</ca:scanner-config>\n'
+          action = 102
+          scConf = [
+              {re: /a<>+b<&*c?/, action: function() { return action }},
           ]
           assert.equal(xmlRes,
                        P2X.ScannerConfig(scConf).asxml(''));
@@ -177,3 +192,34 @@ describe('P2X.ParserConfig', function(){
         })
     })
 })
+
+
+describe('P2X.TokenList', function(){
+  describe('#construct()', function(){
+    // it('should contain values in list given to it', function(){
+    //     assert.equal([1, 2, 3], Array.apply({},P2X.ScannerConfig([1,2,3])));
+    // })
+  })
+  describe('#loadXML()', function(){
+      it('should return XML rule list', function(){
+          xmlRes = "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
+              + '<token line="1" col="0" index="0" type="IDENTIFIER"><ca:text>a</ca:text></token>\n'
+              + '<token line="1" col="1" index="1" type="SPACE"><ca:text> </ca:text></token>\n'
+              + '<token line="1" col="2" index="2" type="PLUS"><ca:text>+</ca:text></token>\n'
+              + '</scan-xml>\n'
+          tl = P2X.TokenList.prototype.loadXML(xmlRes)
+          assert.equal(xmlRes, tl.asxml());
+      })
+      it('should return XML rule list', function(){
+          xmlRes = "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
+              + '<token line="1" col="0" index="0" type="IDENTIFIER"><ca:text>&lt;&gt;&amp;</ca:text></token>\n'
+              + '<token line="1" col="1" index="1" type="NEWLINE"><ca:br/></token>\n'
+              + '<token line="1" col="2" index="2" type="CRETURN"><ca:cr/></token>\n'
+              + '</scan-xml>\n'
+          tl = P2X.TokenList.prototype.loadXML(xmlRes)
+          assert.equal(xmlRes, tl.asxml());
+      })
+  })
+})
+
+

@@ -9,6 +9,7 @@ if (typeof window == 'undefined') {
     var P2X = require('./scanner.js')
     //var O3XML = require('o3-xml-fork')
     var MostXML = require('most-xml')
+    var assert = require("assert")
 
     var ENUM = {}
     ENUM.ParserMode = require('./modes.ncd.js')
@@ -43,12 +44,6 @@ console.log('Lexall XML: ')
 var scanListXML = tl.asxml()
 console.log(scanListXML)
 
-
-var scanDoc = pXML.parseXml(scanListXML)
-//console.dir(scanDoc.documentElement);
-//console.log(scanDoc.documentElement.nodeName);
-//console.log(scanner.lex())
-
 var scanDoc = pXML.parseXml(scanListXML)
 console.log('Original token list: ')
 console.log(tl)
@@ -57,6 +52,8 @@ tl = new P2X.TokenList()
 var tokenFromXML = tl.loadXML(scanListXML)
 console.log('Token list reloaded from XML: ')
 console.log(tokenFromXML)
+console.log(tl.asxml())
+console.log(tokenFromXML.asxml())
 assert(tokenFromXML.asxml() == scanListXML)
 
 var tt = P2X.TokenInfo()

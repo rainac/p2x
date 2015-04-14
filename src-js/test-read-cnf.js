@@ -60,7 +60,15 @@ if ('prec-list' in options) {
 console.log('in script')
 
 var parseConfig = function(cnfXML) {
-    console.log('parseConfig : ' + cnfXML)
+    // console.log('parseConfig : ' + cnfXML)
+    var pcrw = P2X.ParserConfigRW()
+    pc = pcrw.loadXML(cnfXML)
+    // console.dir(pc)
+    // console.log(pcrw.asxml(pc))
+    
+    var parser = P2X.Parser()
+    parser.setconfig(pc)
+    console.log(pcrw.asxml(parser.getconfig()))
 }
 
 console.log('in script2')
