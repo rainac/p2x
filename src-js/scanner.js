@@ -405,6 +405,7 @@ P2X.JScanner = function(name) {
             })
             var max = -Infinity, maxk = -1;
 
+            console.log('results:')
             console.log(results)
 
             var min = arrayMin(starts);
@@ -832,7 +833,7 @@ P2X.Parser = function() {
         insertToken: function(first) {
             console.log('insertToken: t: ')
             console.dir(first)
-            var firstMode = tokenInfo.mode(first)
+            var firstMode = this.tokenInfo.mode(first)
             assert(not(firstMode & MODE_PAREN)); // MODE_PAREN bit is cleared
             assert(firstMode != 0); // mode is not 0
             assert(firstMode != MODE_PAREN); // mode is not MODE_PAREN
@@ -863,7 +864,7 @@ P2X.Parser = function() {
             return this
         },
         parse: function(tlist) {
-            this.endList = [tokenInfo.getOpCode(TOKEN_EOF)]
+            this.endList = [this.tokenInfo.getOpCode(TOKEN_EOF)]
             this.root = this.mkroot()
             this.input = tlist;
 
@@ -872,8 +873,8 @@ P2X.Parser = function() {
             var endFound = false;
             do {
                 first = this.input.next()
-                console.log("Parser: next, code: " + tokenInfo.getOpCode(first)
-                            + ', mode: ' + ENUM.getParserModeName(tokenInfo.mode(first)) + ', prec: ' + tokenInfo.prec(first))
+                console.log("Parser: next, code: " + this.tokenInfo.getOpCode(first)
+                            + ', mode: ' + ENUM.getParserModeName(this.tokenInfo.mode(first)) + ', prec: ' + this.tokenInfo.prec(first))
                 console.dir(first)
                 if (this.endList.indexOf(this.tokenInfo.getOpCode(first)) > -1) {
                     console.log("Parser: end found: "+ this.endList + ' ' + this.tokenInfo.getOpCode(first.token))
@@ -924,7 +925,8 @@ P2X.TreePrinter = function(tokenInfo) {
                 if (t.token == TOKEN_ROOT) {
                     res += '<code-xml>\n'
                     res += P2X.scanner.get().asxml(indent)
-                    res += this.tokenInfo.getconfig().asxml(indent)
+                    var pcwr = P2X.ParserConfigRW();
+                    res += pcwr.asxml(this.tokenInfo.getconfig(), indent)
                 }
                 res += indent + '<' + tagname
                 res += ' line="' + t.line + '"'

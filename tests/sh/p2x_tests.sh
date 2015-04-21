@@ -57,4 +57,12 @@ testP2X6() {
     assertNotEquals "P2X should fail in this case" $? 0
 }
 
+testP2X7() {
+    p2x --stdin-tty -T -p ../../examples/configs/cfuncs > tmp.out
+    assertEquals "P2X should not fail in this case" $? 0
+    diff tmp.out ../../examples/out/token-types.xml
+    assertEquals "$?" 0
+    rm tmp.out
+}
+
 . shunit2

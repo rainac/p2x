@@ -11,6 +11,7 @@ if (typeof window == 'undefined') {
     var MostXML = require('most-xml')
     var child_process = require('child_process')
     var POpts = require('./parse-opts.js')
+    var events = require('events')
 
     var ENUM = {}
     ENUM.ParserMode = require('./modes.ncd.js')
@@ -22,56 +23,125 @@ if (typeof window == 'undefined') {
     var configFile = ''
     var options
     var optDefs = [
-        { short: 'p', long: 'prec-list' }
+        { short: 'p', long: 'prec-list' },
+        { short: 's', long: 'scan-only' },
+        { short: 'S', long: 'scanner-config' },
+        { short: 'i', long: 'arguments' },
     ]
     
     console.dir(argv)
     options = POpts.parseOptions(argv, optDefs)
-}
+    console.dir(options)
 
-function waitforexit(child, callback) {
-    if (child.exited) {
-        return child
-    } else {
-        setTimeout(waitforexit, 100, child, callback)
-    }
-}
-
-if ('prec-list' in options) {
-    configFile = options['prec-list'][0]
-
-    var cmd = 'p2x -T -p ' + configFile
-    console.log('run ' + cmd)
-    var cnfXML
-    // system(cmd)
-    var child = child_process.exec(cmd, { stdio: 'inherit' },
-                                   function(errc, stdout, stderr)
-    {
-        if (errc) {
-            console.error('P2X exited with error:\n' + errc + stderr)
-        } else {
-            cnfXML = stdout;
-            console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
-            parseConfig(cnfXML)
-        }
+    var emitter = new events.EventEmitter()
+    
+    emitter.on('parserConfigOK', function(next) {
+        console.log('event parserConfigOK was triggered:')
+        next()
     })
+    
+    emitter.on('scannerConfigOK', function(next) {
+        console.log('event scannerConfigOK was triggered:')
+        next()
+    })
+
+    emitter.on('next', function(next, ev) {
+        console.log('event "next" was triggered by:')
+        console.dir(ev)
+        next()
+    })
+    
+}
+
+readParserConfigFile()
+
+function readParserConfigFile() {
+    if ('prec-list' in options) {
+        configFile = options['prec-list'][0]
+        
+        var cmd = 'p2x -T -p ' + configFile
+        console.log('run ' + cmd)
+        var cnfXML
+        // system(cmd)
+        var child = child_process.exec(cmd, { stdio: 'inherit' },
+                                       function(errc, stdout, stderr)
+                                       {
+                                           if (errc) {
+                                               console.error('P2X exited with error:\n' + errc + stderr)
+                                           } else {
+                                               cnfXML = stdout;
+                                               console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
+                                               parseConfig(cnfXML)
+                                           }
+                                       })
+    } else {
+        emitter.emit('noParserConfig', function(){});
+        readScannerConfig();
+    }
 }
 
 console.log('in script')
 
-var parseConfig = function(cnfXML) {
-    // console.log('parseConfig : ' + cnfXML)
+var scanner = P2X.JScanner()
+var parser = P2X.Parser()
+
+function parseConfig(cnfXML) {
     var pcrw = P2X.ParserConfigRW()
-    pc = pcrw.loadXML(cnfXML)
+    var pc = pcrw.loadXML(cnfXML)
     // console.dir(pc)
     // console.log(pcrw.asxml(pc))
     
-    var parser = P2X.Parser()
     parser.setconfig(pc)
+    console.log('Parser config loaded:')
     console.log(pcrw.asxml(parser.getconfig()))
+    emitter.emit('next', readScannerConfig);
+}
+
+function readScannerConfig() {
+    if ('scanner-config' in options) {
+        var configFile = options['scanner-config'][0]
+        fs.readFile(configFile, function(err, data) {
+            if (err) throw(err)
+            loadScannerConfig(data)
+        })
+    } else {
+        emitter.emit('noScannerConfig', readScannerConfig);
+    }
+}
+
+function loadScannerConfig(cnfScanXML) {
+    var sconf = P2X.ScannerConfig().loadXML(cnfScanXML)
+    scanner.set(sconf)
+    console.log('Scanner config loaded:')
+    console.log(scanner.get().asxml())
+    console.log(scanner.actions)
+    emitter.emit('next', readInput);
+}
+
+function readInput() {
+    if ('arguments' in options) {
+        var inFile = options['arguments'][0]
+        fs.readFile(inFile, function(err, data) {
+            if (err) throw(err)
+            parseInput(data + '')
+        })
+    } else {
+        emitter.emit('fail', function() {
+            console.log('no Input file')
+        });
+    }
+}
+
+function parseInput(data) {
+    scanner.str(data)
+    var tl = scanner.lexall()
+    console.log('scanned token list:')
+    console.log(tl.asxml())
+    var res = parser.parse(tl)
+    var tp = P2X.TreePrinter(parser.tokenInfo)
+    console.log('result XML:')
+    console.log(tp.asxml(parser.root))
 }
 
 console.log('in script2')
-
-console.dir(options)
 

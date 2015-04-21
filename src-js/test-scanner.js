@@ -61,8 +61,6 @@ if ('prec-list' in options) {
 
 console.dir(options)
 
-assert(false)
-
 var scanner = P2X.scanner
 
 P2X.importObject(ENUM.ParserMode, this)
@@ -74,6 +72,8 @@ P2X.importObject(ENUM.ParserAssoc, this)
 
 console.log('load scanner setup script')
 var r2 = require('./scanner-setup.js');
+
+console.log(scanner.get().asxml(' '))
 
 scanner.str('a + b *\n\r 1.2e-122')
 

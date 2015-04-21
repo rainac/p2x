@@ -45,7 +45,7 @@ scanner-c.cc: flexPrefix = scanC
 scanner2.ll: $(top_srcdir)/src/xsl/gen-flex-scanner.xsl scanner.xml $(top_srcdir)/src/xsl/patch-flex-scanner.xsl
 	xsltproc -o $@.tmp $(top_srcdir)/src/xsl/patch-flex-scanner.xsl scanner.xml
 	xsltproc -o $@ $(top_srcdir)/src/xsl/gen-flex-scanner.xsl $@.tmp
-	diff -wB scanner.ll scanner2.ll
+	-diff -wB scanner.ll scanner2.ll
 	rm $@.tmp
 
 # scanner-no-strings.ll is produced by deleting the line which matches strings
