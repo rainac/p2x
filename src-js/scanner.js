@@ -34,9 +34,16 @@ P2X.evalOrValue = function(val, def) {
 
 var escapeRegExp = function(str){
     return str
-        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+        .replace(/[.*+\?^${}()|[\]\\]/g, "\\$&")
         .replace(/\n/g, "\\n").replace(/\r/g, "\\r")
         .replace(/\t/g, "\\t").replace(/\v/g, "\\v")
+}
+
+var unescapeRegExp = function(str){
+    return str
+        .replace(/\\n/g, "\n").replace(/\\r/g, "\r")
+        .replace(/\\t/g, "\t").replace(/\\v/g, "\v")
+        .replace(/\\([.*+?^${}()|[\]\\])/g, "$1")
 }
 
 var escapeXML = function(str){
@@ -343,16 +350,16 @@ P2X.JScanner = function(name) {
         yyignored: {},
         add: function(re, action) {
             var fst_val, snd_val
+            if (re == '') {
+                console.error('Error: Scanner: add: The RE must not be empty')
+                return this
+            }
             if (typeof re != 'object') {
                 fst_val = RegExp(escapeRegExp(re))
             } else {
                 fst_val = re
             }
-            if (typeof action != 'function') {
-                snd_val = function() { return action }
-            } else {
-                snd_val = action
-            }
+            snd_val = action
             this.action_dir[re.source] = [fst_val, snd_val]
             entry = [fst_val, snd_val]
             entry.count = 0
@@ -370,7 +377,7 @@ P2X.JScanner = function(name) {
         get: function() {
             scconf = Array(this.actions.length)
             for (var k in this.actions) {
-                scconf[k] = {re: this.actions[k][0], action: this.actions[k][1]}
+                scconf[k] = {re: unescapeRegExp(this.actions[k][0].source), action: this.actions[k][1]}
             }
             return P2X.ScannerConfig(scconf)
         },
