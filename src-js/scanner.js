@@ -258,37 +258,19 @@ P2X.ScannerConfig = function(x) {
         
         if (typeof indent == 'undefined') indent = ' '
         var res = indent + '<ca:scanner-config>\n'
-        obj = {}
         for (var k = 0; k < this.length; ++k) {
             var rule = this[k]
-            res += indent + indent + '<ca:lexem'
-            res += ' re="' + escapeXML(getREString(rule.re)) + '"'
-            obj.act = rule.action
-            // console.dir(typeof rule.action)
-            // console.dir(obj.act.toString())
-            // console.dir(obj.act())
-            if (typeof rule.action == 'function') {
-                if (rule.action.toString() == 'function () { return action }') {
-                    var val = rule.action()
-                    if (val in ENUM.ParserToken.names_index) {
-                        res += ' action="' + ENUM.ParserToken.prefix + ENUM.getParserTokenName(val) + '"'
-                    } else {
-                        res += ' action="' + escapeXML(val) + '"'
-                    }
-                } else {
-                    rule.action.toString()
-                    res += ' action="' + escapeXML(rule.action.toString()) + '"'
-                }
+            var val = rule.action, actstr = ''
+            if (val in ENUM.ParserToken.names_index) {
+                actstr = ENUM.ParserToken.prefix + ENUM.getParserTokenName(val)
             } else {
-                var val = rule.action
-                if (val in ENUM.ParserToken.names_index) {
-                    res += ' action="' + ENUM.ParserToken.prefix + ENUM.getParserTokenName(val) + '"'
-                } else {
-                    res += ' action="' + escapeXML(val) + '"'
-                }
+                actstr = escapeXML(val)
             }
-            // res += ' name="' + ENUM.getParserTokenName(rule[1].apply(ENUM.ParserToken, [])) + '"'
-            res += '/>\n'
+            res += indent + indent + '<ca:lexem'
+            res += '>'
+            res += '<ca:re>' + escapeXML(getREString(rule.re)) + '</ca:re>'
+            res += '<ca:action>' + actstr + '</ca:action>'
+            res += '</ca:lexem>\n'
         }
         res += indent + '</ca:scanner-config>\n'
         return res
@@ -314,12 +296,31 @@ P2X.ScannerConfig = function(x) {
     }
     res.loadXMLNode = function(scanList) {
         var rlist = [], ctoken, eres_re, eres_action
+        function getChildText(node, childName) {
+            var res
+            for (var k in node.childNodes) {
+                var childN = node.childNodes[k]
+                if (childN.nodeType == 1 && childN.nodeName == childName) {
+                    for (var j in childN.childNodes) {
+                        var childT = childN.childNodes[j]
+                        if (childT.nodeType == 3) {
+                            res = childT.nodeValue
+                            break
+                        }
+                    }
+                    break
+                }
+            }
+            return res
+        }
         for (var k in scanList.childNodes) {
             ctoken = scanList.childNodes[k], eres_re, eres_action
             if (ctoken.nodeType == 1 && ctoken.nodeName == "ca:lexem") {
-                eres_re = ctoken.getAttribute('re')
-                eres_action = P2X.evalOrValue(ctoken.getAttribute('action'), ctoken.getAttribute('action'))
-                rlist.push({ re: eres_re, action: eres_action })
+                eres_re = ctoken.getAttribute('re') || getChildText(ctoken, 'ca:re')
+                eres_action = ctoken.getAttribute('action') || getChildText(ctoken, 'ca:action')
+                if (eres_re != 'undefined' && eres_re != '' && typeof eres_action != 'undefined') {
+                    rlist.push({ re: eres_re, action: eres_action })
+                }
             }
         }
         return new P2X.ScannerConfig(rlist)
@@ -355,7 +356,7 @@ P2X.JScanner = function(name) {
                 return this
             }
             if (typeof re != 'object') {
-                fst_val = RegExp(escapeRegExp(re))
+                fst_val = RegExp(re)
             } else {
                 fst_val = re
             }
@@ -377,7 +378,7 @@ P2X.JScanner = function(name) {
         get: function() {
             scconf = Array(this.actions.length)
             for (var k in this.actions) {
-                scconf[k] = {re: unescapeRegExp(this.actions[k][0].source), action: this.actions[k][1]}
+                scconf[k] = {re: this.actions[k][0].source, action: this.actions[k][1]}
             }
             return P2X.ScannerConfig(scconf)
         },

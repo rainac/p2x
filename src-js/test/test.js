@@ -27,53 +27,67 @@ describe('P2X.ScannerConfig', function(){
   })
   describe('#loadXML()', function(){
       it('should return XML rule list', function(){
-          xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>/abc/</re><action>1023</action></ca:lexem>\n'
+          var xmlRes = '<ca:scanner-config>\n'
+              + '<ca:lexem><ca:re>abc</ca:re><ca:action>1023</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
-          scConf = P2X.ScannerConfig().loadXML(xmlRes)
+          var scConf = P2X.ScannerConfig().loadXML(xmlRes)
+          console.dir(scConf)
           assert.equal(xmlRes, scConf.asxml(''));
       })
+      it('on invalid input, no rule entry should be created', function(){
+          var xmlRes = '<ca:scanner-config>\n'
+              + '<ca:lexem><rea>abc</rea><actions>1023</actions></ca:lexem>\n'
+              + '</ca:scanner-config>\n'
+          var xmlResEmpty = '<ca:scanner-config>\n'
+              + '</ca:scanner-config>\n'
+          var scConf = P2X.ScannerConfig().loadXML(xmlRes)
+          assert.equal(scConf.length, 0);
+          assert.equal(xmlResEmpty, scConf.asxml(''));
+      })
       it('should return XML rule list', function(){
-          xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>/abc/</re><action>1023</action></ca:lexem>\n'
-              + '<ca:lexem><re>/abc/</re><action>TOKEN_IDENTIFIER</action></ca:lexem>\n'
-              + '<ca:lexem><re>/abc/</re><action>TOKEN_PLUS</action></ca:lexem>\n'
+          var xmlRes = '<ca:scanner-config>\n'
+              + '<ca:lexem><ca:re>abc/</ca:re><ca:action>1023</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>abc/</ca:re><ca:action>TOKEN_IDENTIFIER</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>abc/</ca:re><ca:action>TOKEN_PLUS</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
           scConf = P2X.ScannerConfig().loadXML(xmlRes)
+          console.log(xmlRes)
+          console.dir(scConf)
+          console.log(scConf.asxml(''))
           assert.equal(xmlRes, scConf.asxml(''));
       })
       function setAndGetFromScanner(scConf) {
           console.dir(scConf)
-          myScanner = P2X.JScanner();
+          var myScanner = P2X.JScanner();
           myScanner.set(scConf)
           console.dir(myScanner.actions)
           console.dir(myScanner.get())
           return myScanner.get()
       }
-      function setAndGetFromScannerXML(inXML) {
-          scConf = P2X.ScannerConfig().loadXML(inXml)
+      function setAndGetFromScannerXML(inXml) {
+          var scConf = P2X.ScannerConfig().loadXML(inXml)
           return setAndGetFromScanner(scConf).asxml('')
       }
       it('should return XML rule list', function(){
-          inXml = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>abc</re><action>1023</action></ca:lexem>\n'
-              + '<ca:lexem><re>abc</re><action>11</action></ca:lexem>\n'
-              + '<ca:lexem><re>abc</re><action>TOKEN_PLUS</action></ca:lexem>\n'
+          var inXml = '<ca:scanner-config>\n'
+              + '<ca:lexem><ca:re>abc</ca:re><ca:action>1023</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>abc</ca:re><ca:action>11</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>abc</ca:re><ca:action>TOKEN_PLUS</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
-          xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>abc</re><action>1023</action></ca:lexem>\n'
-              + '<ca:lexem><re>abc</re><action>TOKEN_KEYW_FUNCTION</action></ca:lexem>\n'
-              + '<ca:lexem><re>abc</re><action>TOKEN_PLUS</action></ca:lexem>\n'
+          var xmlRes = '<ca:scanner-config>\n'
+              + '<ca:lexem><ca:re>abc</ca:re><ca:action>1023</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>abc</ca:re><ca:action>TOKEN_KEYW_FUNCTION</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>abc</ca:re><ca:action>TOKEN_PLUS</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
           assert.equal(xmlRes, setAndGetFromScannerXML(inXml));
       })
       it('should return XML rule list', function(){
-          inXml = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>(</re><action>TOKEN_MULT</action></ca:lexem>\n'
-              + '<ca:lexem><re>\'</re><action>TOKEN_MINUS</action></ca:lexem>\n'
-              + '<ca:lexem><re>\</re><action>TOKEN_MINUS</action></ca:lexem>\n'
-              + '<ca:lexem><re>)</re><action>TOKEN_MINUS</action></ca:lexem>\n'
-              + '<ca:lexem><re>&amp;</re><action>TOKEN_PLUS</action></ca:lexem>\n'
+          var inXml = '<ca:scanner-config>\n'
+              + '<ca:lexem><ca:re>\\(</ca:re><ca:action>TOKEN_MULT</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>\'</ca:re><ca:action>TOKEN_MINUS</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>\\\\</ca:re><ca:action>TOKEN_MINUS</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>\\)</ca:re><ca:action>TOKEN_MINUS</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>&amp;</ca:re><ca:action>TOKEN_PLUS</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
           assert.equal(inXml, setAndGetFromScannerXML(inXml));
       })
@@ -81,30 +95,43 @@ describe('P2X.ScannerConfig', function(){
           return JSON.stringify(obj);
       }
       it('set_get should return the same config', function(){
-          scConf = [
+          var scConf = [
               { re: 'abc', action: 49 },
               { re: '1+2*3?', action: 49 },
               ]
           assert.equal(otstr(scConf), otstr(setAndGetFromScanner(scConf)));
       })
       it('set_get should return the same config', function(){
-          scConf = [
-              { re: '(', action: 49 },
+          var scConf = [
+              { re: '\\(', action: 49 },
               { re: '\'', action: 48 },
-              { re: '?', action: 48 },
-              { re: ')', action: 48 },
+              { re: '\\?', action: 48 },
+              { re: '\\**', action: 48 },
+              { re: '\\)', action: 48 },
               { re: '&', action: 47 }
               ]
           assert.equal(otstr(scConf), otstr(setAndGetFromScanner(scConf)));
       })
+      it('set RE, get should return the RE source strings in config', function(){
+          var scConf = [
+              { re: /\(/, action: 149 },
+              { re: /'/, action: 48 },
+              { re: /\?/, action: 48 },
+              { re: /\**/, action: 48 },
+              { re: /\)/, action: 48 },
+              { re: /&/, action: 47 }
+          ]
+          var patched = scConf.map(function(x) { return {re: x.re.source, action: x.action}})
+          assert.equal(otstr(patched), otstr(setAndGetFromScanner(scConf)));
+      })
       it('empty RE should be rejected', function(){
-          scConf = [
+          var scConf = [
               { re: '', action: 48 },
               ]
           assert.equal('[]', otstr(setAndGetFromScanner(scConf)));
       })
       it('empty RE should be rejected', function(){
-          scConf = [
+          var scConf = [
               { re: '', action: 48 },
               { re: 'abc', action: 120 },
               ]
@@ -117,10 +144,10 @@ describe('P2X.ScannerConfig', function(){
                      P2X.ScannerConfig([]).asxml(''));
     })
       it('should return XML rule list', function(){
-          xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>abc</re><action>1023</action></ca:lexem>\n'
+          var xmlRes = '<ca:scanner-config>\n'
+              + '<ca:lexem><ca:re>abc</ca:re><ca:action>1023</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
-          scConf = [
+          var scConf = [
               {re: /abc/, action: 1023},
           ]
           assert.equal(xmlRes,
@@ -128,7 +155,7 @@ describe('P2X.ScannerConfig', function(){
       })
       it('should return XML rule list', function(){
           xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>abc</re><action>TOKEN_DIV_EQUAL</action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>abc</ca:re><ca:action>TOKEN_DIV_EQUAL</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
           scConf = [
               {re: /abc/, action: 100},
@@ -138,18 +165,18 @@ describe('P2X.ScannerConfig', function(){
       })
       it('should return XML rule list', function(){
           xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>a+b*c?</re><action>TOKEN_DOUBLE_LESS_EQUAL</action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>a+b*c?</ca:re><ca:action>TOKEN_DOUBLE_LESS_EQUAL</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
-          action = 102
+          action = 112
           scConf = [
-              {re: /a+b*c?/, action: function() { return action }},
+              {re: /a+b*c?/, action: TOKEN_DOUBLE_LESS_EQUAL},
           ]
           assert.equal(xmlRes,
                        P2X.ScannerConfig(scConf).asxml(''));
       })
       it('should return XML rule list', function(){
           xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>ab\\\\c\\b</re><action>function () { return action*2 }</action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>ab\\\\c\\b</ca:re><ca:action>function () { return action*2 }</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
           action = 102
           scConf = [
@@ -162,11 +189,11 @@ describe('P2X.ScannerConfig', function(){
       })
       it('should return XML rule list', function(){
           xmlRes = '<ca:scanner-config>\n'
-              + '<ca:lexem><re>a&lt;&gt;+b&lt;&amp;*c?</re><action>TOKEN_DOUBLE_LESS_EQUAL</action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>a&lt;&gt;+b&lt;&amp;*c?</ca:re><ca:action>TOKEN_DOUBLE_LESS_EQUAL</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
           action = 102
           scConf = [
-              {re: /a<>+b<&*c?/, action: function() { return action }},
+              {re: /a<>+b<&*c?/, action: TOKEN_DOUBLE_LESS_EQUAL},
           ]
           assert.equal(xmlRes,
                        P2X.ScannerConfig(scConf).asxml(''));
@@ -181,7 +208,7 @@ describe('P2X.ParserConfig', function(){
     describe('#asxml()', function(){
         it('should return XML rule list', function(){
             xmlRes = '<ca:scanner-config>\n'
-                + '<ca:lexem><re>/abc/</re><action>function () { return action*2 }</action></ca:lexem>\n'
+                + '<ca:lexem><ca:re>/abc/</ca:re><ca:action>function () { return action*2 }</ca:action></ca:lexem>\n'
                 + '</ca:scanner-config>\n'
             var tt = P2X.TokenInfo()
             var p1 = P2X.TokenProto(TOKEN_DIV, '/', MODE_BINARY, ASSOC_LEFT, 100, 0, false)
