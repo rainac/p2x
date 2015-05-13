@@ -51,6 +51,12 @@ if (typeof window == 'undefined') {
         next()
     })
     
+    emitter.on('p2xerror', function(next, ev) {
+        console.log('event "p2xerror" was triggered by:')
+        console.dir(ev)
+        next()
+    })
+    
 }
 
 readParserConfigFile()
@@ -94,7 +100,7 @@ function parseConfig(cnfXML) {
     parser.setconfig(pc)
     console.log('Parser config loaded:')
     console.log(pcrw.asxml(parser.getconfig()))
-    emitter.emit('next', readScannerConfig);
+    emitter.emit('next', readScannerConfig, 'readScannerConfig');
 }
 
 function readScannerConfig() {
@@ -105,7 +111,7 @@ function readScannerConfig() {
             loadScannerConfig(data)
         })
     } else {
-        emitter.emit('noScannerConfig', readScannerConfig);
+        emitter.emit('next', readInput, 'readInput');
     }
 }
 

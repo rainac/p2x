@@ -6,5 +6,5 @@ if ! [[ -x $(which $NODE) ]]; then
    NODE=node
 fi
 
-$NODE test-scanner.js $*
+$NODE test-read-cnf.js $*
 
