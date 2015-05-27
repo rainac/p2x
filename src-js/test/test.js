@@ -489,7 +489,7 @@ describe('P2X.JScanner', function(){
         var input = 'abc 12 \n ddds 3 dsa'
         scanner.str(input)
         var tl = scanner.lexall()
-        assert.equal(tl.list.length, 17);
+        assert.equal(tl.list.length, 4);
     })
 
     it('no infinite loop because of zero length matches', function() {
@@ -497,13 +497,19 @@ describe('P2X.JScanner', function(){
         scConf = [
             { re: '1', action: 111},
             { re: '\\b', action: 0xb0},
+            { re: '[XYZ]*', action: 0xdef},
+            { re: '\\B', action: 0xb1},
             { re: 'abc', action: 0x11a}
         ]
         scanner.set(scConf)
-        var input = 'abc 12 \n ddds 3 dsa'
+        var input = 'abc 12 ddds 1 dsa dd'
         scanner.str(input)
         var tl = scanner.lexall()
         assert.equal(tl.list.length, 11);
+        assert.deepEqual(tl.list.map(function(x) { return x.token }),
+                         [0x11a, 0xdef, 0xb1, 111, 0xb0, 0xdef, 0xb1, 111, 0xdef, 0xb1, 0xb0 ])
+        assert.deepEqual(tl.list.map(function(x) { return x.index }),
+                         [0, 3, 3, 4, 5, 5, 8, 12, 13, 13, 14 ])
     })
 
     it('in case of length ties, the first rule wins', function() {

@@ -349,6 +349,7 @@ P2X.JScanner = function(name) {
         yycol: 0,
         yytext: '',
         yyignored: {},
+        yyblocked: null,
         add: function(re, action) {
             var fst_val, snd_val
             if (re == '') {
@@ -392,6 +393,7 @@ P2X.JScanner = function(name) {
             this.yyline = 1
             this.yycol = 0
             this.yytext = ''
+            this.actions.map(function (x) { x.blocked = false })
             return this
         },
         lex: function() {
@@ -401,7 +403,10 @@ P2X.JScanner = function(name) {
             var sinp = scanner.input.substr(this.yyindex)
             if (!sinp) return null
             var starts = []
+
             var results = this.actions.map(function (x) {
+                if (x.blocked)
+                    return null
                 var sr = x[0].exec(sinp)
                 if (sr) {
                     starts.push(sr.index)
@@ -466,12 +471,10 @@ P2X.JScanner = function(name) {
             // this.yyindex = atStart[first].index + atStart[first][0].length
             this.yyindex += this.yytext.length
 
-            var skipLength
             if (this.yytext.length == 0) {
-                skipLength = this.actions[first].minLength
-                if (typeof skipLength == "undefined")
-                    skipLength = 1;
-                this.yyindex += skipLength
+                this.actions[first].blocked = true
+            } else {
+                this.actions.map(function(x){x.blocked = false})
             }
 
             var lnlind = this.yytext.lastIndexOf('\n')
