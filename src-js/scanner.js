@@ -419,10 +419,10 @@ P2X.JScanner = function(name) {
             var lengths = []
             var atStart = results.map(function (x) {
                 if (x && x.index == min[0]) {
-                    lengths.push(x.length)
+                    lengths.push(x[0].length)
                     return x
                 } else {
-                    lengths.push(0)
+                    lengths.push(-1)
                     return null
                 }
             })
@@ -465,6 +465,14 @@ P2X.JScanner = function(name) {
             this.yytext = atStart[first][0]
             // this.yyindex = atStart[first].index + atStart[first][0].length
             this.yyindex += this.yytext.length
+
+            var skipLength
+            if (this.yytext.length == 0) {
+                skipLength = this.actions[first].minLength
+                if (typeof skipLength == "undefined")
+                    skipLength = 1;
+                this.yyindex += skipLength
+            }
 
             var lnlind = this.yytext.lastIndexOf('\n')
             var lcrind = this.yytext.lastIndexOf('\r')
@@ -892,6 +900,17 @@ P2X.Parser = function() {
         pushUnary: function(t) {
             return this.pushItem(t)
         },
+        pushUnaryBinary: function(t) {
+            if (this.rightEdgeOpen()) {
+                this.pushUnary(t);
+            } else {
+                this.pushBinary(t);
+            }
+        },
+        rightEdgeOpen: function() {
+            var rm = this.getRMOp();
+            return rm.right == undefined && this.tokenInfo.mode(rm) != MODE_POSTFIX;
+        },
         insertToken: function(first) {
             console.log('insertToken: t: ')
             console.dir(first)
@@ -978,6 +997,7 @@ P2X.TreePrinterOptions = function() {
         id: false,
         line: true,
         col: true, 
+        code: false,
         prec: true,
         mode: true,
         type: true,
@@ -1024,7 +1044,9 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 if (this.options.col) {
                     res += ' col="' + t.col + '"'
                 }
-                res += ' code="' + this.tokenInfo.getOpCode(t) + '"'
+                if (this.options.code) {
+                    res += ' code="' + this.tokenInfo.getOpCode(t) + '"'
+                }
                 if (t.text && t.token != TOKEN_NEWLINE && t.token != TOKEN_CRETURN)
                     res += ' repr="' + t.text + '"'
                 if (this.options.type) {
