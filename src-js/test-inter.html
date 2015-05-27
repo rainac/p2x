@@ -19,6 +19,7 @@
         
         var parseConf_JSON = document.forms.p2x.parseconf.value
         var parseConf = parseJSON(parseConf_JSON)
+        parseConf.rules.map(function(x){ x.token = x.type })
         var parser = P2X.Parser()
         parser.setconfig(parseConf)
 
@@ -106,18 +107,18 @@ rules: [
               <textarea name="parseconf" cols="50" rows="10">
 {
  rules: [                
-  { token: TOKEN_L_PAREN, mode: MODE_POSTFIX, isParen: 1,
+  { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, isParen: 1,
     closingList: [
-     { token: TOKEN_R_PAREN }
+     { type: TOKEN_R_PAREN }
     ]
   },
-  { token: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
-  { token: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
-  { token: TOKEN_MINUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
-  { token: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
-  { token: TOKEN_DIV, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1200 },
-  { token: TOKEN_MOD, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1300 },
-  { token: TOKEN_POW, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1400 },
+  { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+  { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+  { type: TOKEN_MINUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+  { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+  { type: TOKEN_DIV, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1200 },
+  { type: TOKEN_MOD, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1300 },
+  { type: TOKEN_POW, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1400 },
  ]
 }
               </textarea>

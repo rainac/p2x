@@ -583,7 +583,7 @@ P2X.TokenProtoRW = function() {
         if (!indent) indent = ' '
         var res = ''
         res += '{'
-        res += ' token: TOKEN_' + ENUM.getParserTokenName(obj.token) + ''
+        res += ' type: TOKEN_' + ENUM.getParserTokenName(obj.token) + ''
         if (obj.repr)
             res += ', repr: "' + obj.repr + '"'
         if (typeof obj.mode != 'undefined')
