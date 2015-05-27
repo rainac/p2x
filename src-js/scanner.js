@@ -771,9 +771,6 @@ P2X.TokenInfo = function() {
         get: function (tl) {
             var opc = this.getOpCode(tl)
             if (opc in this.tokenClasses) {
-                console.log('get: ')
-                console.dir(tl)
-                console.dir(this.tokenClasses[opc])
                 return this.tokenClasses[opc]
             } else {
                 var res = this.defaultInfo
