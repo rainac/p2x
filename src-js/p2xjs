@@ -2,7 +2,7 @@
 
 NODE=nodejs
 
-if ! [[ -x $(which $NODE) ]]; then 
+if ! test -x $(which $NODE); then 
    NODE=node
 fi
 
