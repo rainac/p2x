@@ -1,43 +1,43 @@
 <ca:scanner-config xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">
-  <ca:lexem re="((0x)?([0-9])+[uUlL]*)" action="TOKEN_INTEGER"/>
-  <ca:lexem re="((\""\[\^\"\n\]\*"\")|('"\[\^\'\n\]\*"'))" action="TOKEN_STRING"/>
-  <ca:lexem re="(((([0-9])+\.([0-9])+)|(([0-9])+(\.([0-9])*)?)|(([0-9])*\.([0-9])+))(([eEdD][+-]?([0-9])+)?[lLfF]?))" action="TOKEN_FLOAT"/>
-  <ca:lexem re="\(" action="TOKEN_L_PAREN"/>
-  <ca:lexem re="\)" action="TOKEN_R_PAREN"/>
-  <ca:lexem re="{" action="TOKEN_L_BRACE"/>
-  <ca:lexem re="}" action="TOKEN_R_BRACE"/>
-  <ca:lexem re="\[" action="TOKEN_L_BRACKET"/>
-  <ca:lexem re="\]" action="TOKEN_R_BRACKET"/>
-  <ca:lexem re="=" action="TOKEN_EQUAL"/>
-  <ca:lexem re="&lt;" action="TOKEN_LESS"/>
-  <ca:lexem re="&gt;" action="TOKEN_GREATER"/>
-  <ca:lexem re="~" action="TOKEN_TILDE"/>
-  <ca:lexem re="!" action="TOKEN_EXCLAM"/>
-  <ca:lexem re="\?" action="TOKEN_QUESTION"/>
-  <ca:lexem re=":" action="TOKEN_COLON"/>
-  <ca:lexem re="," action="TOKEN_COMMA"/>
-  <ca:lexem re=";" action="TOKEN_SEMICOLON"/>
-  <ca:lexem re="\." action="TOKEN_FULL_STOP"/>
-  <ca:lexem re="@" action="TOKEN_AT"/>
-  <ca:lexem re="&amp;" action="TOKEN_AND"/>
-  <ca:lexem re="\|" action="TOKEN_OR"/>
-  <ca:lexem re="\+" action="TOKEN_PLUS"/>
-  <ca:lexem re="-" action="TOKEN_MINUS"/>
-  <ca:lexem re="\/" action="TOKEN_DIV"/>
-  <ca:lexem re="\\" action="TOKEN_BACKSLASH"/>
-  <ca:lexem re="\*" action="TOKEN_MULT"/>
-  <ca:lexem re="%" action="TOKEN_MOD"/>
-  <ca:lexem re="\^" action="TOKEN_POW"/>
-  <ca:lexem re="_" action="TOKEN_UNDERSCORE"/>
-  <ca:lexem re="$" action="TOKEN_DOLLAR"/>
-  <ca:lexem re="°" action="TOKEN_CIRC"/>
-  <ca:lexem re="#" action="TOKEN_HASH"/>
-  <ca:lexem re="\"" action="TOKEN_QUOTE"/>
-  <ca:lexem re="'" action="TOKEN_APOS"/>
-  <ca:lexem re="(\r)" action="TOKEN_CRETURN"/>
-  <ca:lexem re="(\n)" action="TOKEN_NEWLINE"/>
-  <ca:lexem re="(\t)" action="TOKEN_TAB"/>
-  <ca:lexem re="( )+" action="TOKEN_SPACE"/>
-  <ca:lexem re="(((([a-z])|([A-Z])|([\u0100-\uffff])))((([a-z])|([A-Z])|([\u0100-\uffff]))|([0-9])|(_))*)" action="TOKEN_IDENTIFIER"/>
-  <ca:lexem re="." action="TOKEN_ILLEGAL_CHAR"/>
+  <ca:lexem><ca:re>((0x)?([0-9])+[uUlL]*)</ca:re><ca:action>TOKEN_INTEGER</ca:action></ca:lexem>
+  <ca:lexem><ca:re>((\""\[\^\"\n\]\*"\")|('"\[\^\'\n\]\*"'))</ca:re><ca:action>TOKEN_STRING</ca:action></ca:lexem>
+  <ca:lexem><ca:re>(((([0-9])+\.([0-9])+)|(([0-9])+(\.([0-9])*)?)|(([0-9])*\.([0-9])+))(([eEdD][+-]?([0-9])+)?[lLfF]?))</ca:re><ca:action>TOKEN_FLOAT</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\(</ca:re><ca:action>TOKEN_L_PAREN</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\)</ca:re><ca:action>TOKEN_R_PAREN</ca:action></ca:lexem>
+  <ca:lexem><ca:re>{</ca:re><ca:action>TOKEN_L_BRACE</ca:action></ca:lexem>
+  <ca:lexem><ca:re>}</ca:re><ca:action>TOKEN_R_BRACE</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\[</ca:re><ca:action>TOKEN_L_BRACKET</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\]</ca:re><ca:action>TOKEN_R_BRACKET</ca:action></ca:lexem>
+  <ca:lexem><ca:re>=</ca:re><ca:action>TOKEN_EQUAL</ca:action></ca:lexem>
+  <ca:lexem><ca:re>&lt;</ca:re><ca:action>TOKEN_LESS</ca:action></ca:lexem>
+  <ca:lexem><ca:re>&gt;</ca:re><ca:action>TOKEN_GREATER</ca:action></ca:lexem>
+  <ca:lexem><ca:re>~</ca:re><ca:action>TOKEN_TILDE</ca:action></ca:lexem>
+  <ca:lexem><ca:re>!</ca:re><ca:action>TOKEN_EXCLAM</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\?</ca:re><ca:action>TOKEN_QUESTION</ca:action></ca:lexem>
+  <ca:lexem><ca:re>:</ca:re><ca:action>TOKEN_COLON</ca:action></ca:lexem>
+  <ca:lexem><ca:re>,</ca:re><ca:action>TOKEN_COMMA</ca:action></ca:lexem>
+  <ca:lexem><ca:re>;</ca:re><ca:action>TOKEN_SEMICOLON</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\.</ca:re><ca:action>TOKEN_FULL_STOP</ca:action></ca:lexem>
+  <ca:lexem><ca:re>@</ca:re><ca:action>TOKEN_AT</ca:action></ca:lexem>
+  <ca:lexem><ca:re>&amp;</ca:re><ca:action>TOKEN_AND</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\|</ca:re><ca:action>TOKEN_OR</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\+</ca:re><ca:action>TOKEN_PLUS</ca:action></ca:lexem>
+  <ca:lexem><ca:re>-</ca:re><ca:action>TOKEN_MINUS</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\/</ca:re><ca:action>TOKEN_DIV</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\\</ca:re><ca:action>TOKEN_BACKSLASH</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\*</ca:re><ca:action>TOKEN_MULT</ca:action></ca:lexem>
+  <ca:lexem><ca:re>%</ca:re><ca:action>TOKEN_MOD</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\^</ca:re><ca:action>TOKEN_POW</ca:action></ca:lexem>
+  <ca:lexem><ca:re>_</ca:re><ca:action>TOKEN_UNDERSCORE</ca:action></ca:lexem>
+  <ca:lexem><ca:re>$</ca:re><ca:action>TOKEN_DOLLAR</ca:action></ca:lexem>
+  <ca:lexem><ca:re>°</ca:re><ca:action>TOKEN_CIRC</ca:action></ca:lexem>
+  <ca:lexem><ca:re>#</ca:re><ca:action>TOKEN_HASH</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\"</ca:re><ca:action>TOKEN_QUOTE</ca:action></ca:lexem>
+  <ca:lexem><ca:re>'</ca:re><ca:action>TOKEN_APOS</ca:action></ca:lexem>
+  <ca:lexem><ca:re>(\r)</ca:re><ca:action>TOKEN_CRETURN</ca:action></ca:lexem>
+  <ca:lexem><ca:re>(\n)</ca:re><ca:action>TOKEN_NEWLINE</ca:action></ca:lexem>
+  <ca:lexem><ca:re>(\t)</ca:re><ca:action>TOKEN_TAB</ca:action></ca:lexem>
+  <ca:lexem><ca:re>( )+</ca:re><ca:action>TOKEN_SPACE</ca:action></ca:lexem>
+  <ca:lexem><ca:re>(((([a-z])|([A-Z])|([\u0100-\uffff])))((([a-z])|([A-Z])|([\u0100-\uffff]))|([0-9])|(_))*)</ca:re><ca:action>TOKEN_IDENTIFIER</ca:action></ca:lexem>
+  <ca:lexem><ca:re>.</ca:re><ca:action>TOKEN_ILLEGAL_CHAR</ca:action></ca:lexem>
 </ca:scanner-config>
