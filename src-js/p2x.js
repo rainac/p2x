@@ -82,7 +82,5 @@ require.call(dummyThis, 'token.ncd.js')
 require.call(dummyThis, 'assoc.ncd.js')
 require.call(dummyThis, 'parseXml.js')
 require.call(dummyThis, 'scanner.js')
-require.call(dummyThis, 'scanner-setup.js')
-require.call(dummyThis, 'test-scanner.js')
 
 console.dir(dummyThis)
