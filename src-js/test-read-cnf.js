@@ -99,6 +99,7 @@ function parseConfig(cnfXML) {
     
     parser.setconfig(pc)
     console.log('Parser config loaded:')
+    console.log(pcrw.asJSON(parser.getconfig()))
     console.log(pcrw.asxml(parser.getconfig()))
     emitter.emit('next', readScannerConfig, 'readScannerConfig');
 }
@@ -118,9 +119,9 @@ function readScannerConfig() {
 function loadScannerConfig(cnfScanXML) {
     var sconf = P2X.ScannerConfig().loadXML(cnfScanXML)
     scanner.set(sconf)
-    console.log('Scanner config loaded:')
-    console.log(scanner.get().asxml())
-    console.log(scanner.actions)
+    // console.log('Scanner config loaded:')
+    // console.log(scanner.get().asxml())
+    // console.log(scanner.actions)
     emitter.emit('next', readInput);
 }
 
@@ -140,11 +141,13 @@ function readInput() {
 
 function parseInput(data) {
     scanner.str(data)
-    var tl = scanner.lexall()
+    var tl = scanner.lexall().mkeof()
     console.log('scanned token list:')
+    console.dir(tl)
     console.log(tl.asxml())
     var res = parser.parse(tl)
-    var tp = P2X.TreePrinter(parser.tokenInfo)
+    tpOptions = P2X.TreePrinterOptions();
+    var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)
     console.log('result XML:')
     console.log(tp.asxml(parser.root))
 }

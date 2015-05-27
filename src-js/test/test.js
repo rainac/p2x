@@ -266,6 +266,40 @@ describe('P2X.ParserConfig', function(){
 //            console.log(pcrw.asxml(confA, ''))
             assert.equal(pcrw.asxml(confA, ''), pcrw.asxml(confB, ''));
         })
+        it('rules for ROOT and JUXTA are always present', function() {
+            var tt = P2X.TokenInfo()
+            var confSet = [
+                P2X.TokenProto(TOKEN_DIV, '/', MODE_BINARY, ASSOC_LEFT, 100, 0, false),
+                P2X.TokenProto(TOKEN_MULT, '*', MODE_BINARY, ASSOC_LEFT, 100, 0, false)
+            ]
+            var confA = tt.getconfig()
+            tt.setconfig(confSet);
+            var confB = tt.getconfig()
+            var tokenInListA = confA.map(function(x) { return x.token })
+            var tokenInListB = confB.map(function(x) { return x.token })
+            for (var k in tokenInListA) {
+                assert(tokenInListB.indexOf(tokenInListA[k]) > -1)
+            }
+        })
+        it('it should be possible to change the prec, assoc of JUXTA', function() {
+            var tt = P2X.TokenInfo()
+            var confSet = [
+                P2X.TokenProto(TOKEN_JUXTA, '__JUXTA__', MODE_BINARY, ASSOC_RIGHT, 111, 0, false),
+                P2X.TokenProto(TOKEN_DIV, '/', MODE_BINARY, ASSOC_LEFT, 100, 0, false),
+                P2X.TokenProto(TOKEN_MULT, '*', MODE_BINARY, ASSOC_LEFT, 100, 0, false)
+            ]
+            var confA = tt.getconfig()
+            tt.setconfig(confSet);
+            var confB = tt.getconfig()
+            var tokenInListA = confA.map(function(x) { return x.token })
+            var tokenInListB = confB.map(function(x) { return x.token })
+            for (var k in tokenInListA) {
+                assert(tokenInListB.indexOf(tokenInListA[k]) > -1)
+            }
+            assert.equal(tt.mode(TOKEN_JUXTA), MODE_BINARY)
+            assert.equal(tt.prec(TOKEN_JUXTA), 111)
+            assert.equal(tt.assoc(TOKEN_JUXTA), ASSOC_RIGHT)
+        })
     })
 })
 
@@ -299,3 +333,116 @@ describe('P2X.TokenList', function(){
 })
 
 
+describe('P2X.JScanner', function(){
+  describe('#lexall()', function(){
+    it('it should return a token list, XML output option', function() {
+        var scanner = P2X.JScanner();
+        var tl = scanner.lexall();
+        var xmlRes = "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' "
+            + "xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
+            + '<input></input>\n'
+            + '<ca:scanner-config>\n'
+            + '</ca:scanner-config>\n'
+            + '</scan-xml>\n'
+        assert.equal(tl.asxml(), xmlRes);
+    })
+    it('it should split a string into parts according to RE rules', function() {
+        var scanner = P2X.JScanner()
+        scConf = [
+            { re: '1', action: 1},
+            { re: '3', action: 3},
+            { re: 'abc', action: 111}
+        ]
+        scanner.set(scConf)
+        var input = 'abc1abc3'
+        scanner.str(input)
+        var tl = scanner.lexall()
+        assert.equal(tl.list.length, 4);
+
+        assert.equal(tl.list[0].token, 111)
+        assert.equal(tl.list[1].token, 1)
+        assert.equal(tl.list[2].token, 111)
+        assert.equal(tl.list[3].token, 3)
+
+        assert.equal(tl.list[0].text, 'abc')
+        assert.equal(tl.list[1].text, '1')
+        assert.equal(tl.list[2].text, 'abc')
+        assert.equal(tl.list[3].text, '3')
+    })
+    it('it should only return those token that match a rule', function() {
+        var scanner = P2X.JScanner()
+        scConf = [
+            { re: '1', action: 1},
+            { re: '3', action: 3},
+            { re: 'abc', action: 111}
+        ]
+        scanner.set(scConf)
+        var input = 'rgtf 5 67'
+        scanner.str(input)
+        var tl = scanner.lexall()
+        assert.equal(tl.list.length, 0);
+    })
+    it('it should only return those token that match a rule', function() {
+        var scanner = P2X.JScanner()
+        scConf = [
+            { re: '1', action: 1},
+            { re: '3', action: 3},
+            { re: 'abc', action: 111}
+        ]
+        scanner.set(scConf)
+        var input = 'abc 12 \n ddds 3 dsa'
+        scanner.str(input)
+        var tl = scanner.lexall()
+        assert.equal(tl.list.length, 3);
+
+        assert.deepEqual(tl.list[0], { token: 111,
+                                       tokenName: undefined,
+                                       text: 'abc',
+                                       index: 0,
+                                       line: 1,
+                                       col: 0 })
+        assert.deepEqual(tl.list[1], { token: 1,
+                                       tokenName: 'KEYW_FOR',
+                                       text: '1',
+                                       index: 4,
+                                       line: 1,
+                                       col: 4 })
+        assert.deepEqual(tl.list[2], { token: 3,
+                                       tokenName: 'KEYW_WHILE',
+                                       text: '3',
+                                       index: 14,
+                                       line: 2,
+                                       col: 6 })
+    })
+      
+    it('with no rules, it should accept any input', function() {
+        var scanner = P2X.JScanner()
+        var input = 'abc 123 \n ddds'
+        scanner.str(input)
+        var tl = scanner.lexall()
+    })
+    it('with no rules, it should accept any input', function() {
+        var scanner = P2X.JScanner()
+        scConf = []
+        scanner.set(scConf)
+        var input = 'abc 123 \n ddds'
+        scanner.str(input)
+        var tl = scanner.lexall()
+    })
+    it('it should be reusable with different input', function() {
+        var scanner = P2X.JScanner()
+        var input = 'abc 123 \n ddds'
+        scanner.str(input)
+        var tl = scanner.lexall()
+        var input = 'abc 123 \n ddds'
+        scanner.str(input)
+        var tl1 = scanner.lexall()
+    })
+    it('with no rules, it should return no token', function() {
+        var scanner = P2X.JScanner();
+        var tl = scanner.lexall();
+        assert.equal(tl.list.length, 0);
+    })
+
+  })
+})
