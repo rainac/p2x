@@ -65,7 +65,7 @@
             <fieldset>
               <legend>Transform input</legend>
               <textarea name="input" cols="50" rows="10">
--x + 456 + 123 = 233
+minus f(x, y*2) + 456 plus 123 = 233
               </textarea>
             </fieldset>
           </td>
@@ -85,15 +85,23 @@
 {
 name: 'Test',
 rules: [
-  { re: '[0-9]+', action: TOKEN_INTEGER },
-  { re: '[a-zA-Z_][a-zA-Z0-9_]*', action: TOKEN_IDENTIFIER },
+  { re: '\\(', action: TOKEN_L_PAREN },
+  { re: '\\)', action: TOKEN_R_PAREN },
   { re: '=', action: TOKEN_EQUAL },
   { re: '\\+', action: TOKEN_PLUS },
+  { re: 'plus', action: TOKEN_PLUS },
   { re: '-', action: TOKEN_MINUS },
+  { re: 'minus', action: TOKEN_MINUS },
   { re: '\\*', action: TOKEN_MULT },
+  { re: 'times', action: TOKEN_MULT },
   { re: '/', action: TOKEN_DIV },
+  { re: 'div', action: TOKEN_DIV },
   { re: '%', action: TOKEN_MOD },
+  { re: 'mod', action: TOKEN_MOD },
   { re: '\\^', action: TOKEN_POW },
+  { re: 'pow', action: TOKEN_POW },
+  { re: '[0-9]+', action: TOKEN_INTEGER },
+  { re: '[a-zA-Z_][a-zA-Z0-9_]*', action: TOKEN_IDENTIFIER },
 ]
 }
               </textarea>

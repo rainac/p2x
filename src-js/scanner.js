@@ -789,6 +789,11 @@ P2X.TokenInfo = function() {
             if (pc.rules) {
                 return this.setconfig(pc.rules)
             }
+            pc.map(function(x){
+                if (typeof x.token == "undefined" && typeof x.repr == "string" && x.length > 0) {
+                    x.token == TOKEN_IDENTIFIER
+                }
+            })
             this.tokenClasses = this.tokenClassesDefault
             for (var k in pc) {
                 this.insert(pc[k])
