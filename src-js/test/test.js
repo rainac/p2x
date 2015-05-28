@@ -603,12 +603,62 @@ describe('P2X.Parser', function(){
         ]
         var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
-
-        // console.log(res)
+        
+//        console.log(res)
         assert.equal(res, xmlres2)
     })
 
+    it('testing postfix op', function() {
+        var xmlres = fs.readFileSync('../examples/out/ftp2.xml')+''
+        var scConf = [
+            { re: '\'',     action: TOKEN_QUOTE },
+            { re: '\\+',    action: TOKEN_PLUS },
+            { re: '\\*',    action: TOKEN_MULT },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+            { re: '[a-zA-Z]+', action: TOKEN_IDENTIFIER },
+        ]
+        var input = 'f\'+2'
+        var parseConf = [
+            { type: TOKEN_QUOTE, mode: MODE_POSTFIX, prec: 3000 },
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        res = P2X.p2xj(input, p2xConfig)
+
+        // console.log(res)
+        assert.equal(res, xmlres)
+    })
+
+    it('testing binary parenthesis', function() {
+        var xmlres = fs.readFileSync('../examples/out/fl1rg.xml')+''
+        var scConf = [
+            { re: '\\(',    action: TOKEN_L_PAREN },
+            { re: '\\)',    action: TOKEN_R_PAREN },
+            { re: '=',      action: TOKEN_EQUAL },
+            { re: '\\+',    action: TOKEN_PLUS },
+            { re: '\\*',    action: TOKEN_MULT },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+            { re: '[a-zA-Z]+', action: TOKEN_IDENTIFIER },
+        ]
+        var input = 'f(1)g'
+        var parseConf = [
+            { type: TOKEN_L_PAREN, mode: MODE_BINARY, prec: 1050,
+              isParen: 1, closingList: [ TOKEN_R_PAREN ] },
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        res = P2X.p2xj(input, p2xConfig)
+
+//        console.log(res)
+        assert.equal(res, xmlres)
+    })
+
     it('testing postfix parenthesis', function() {
+        var xmlres = fs.readFileSync('../examples/out/f1.xml')+''
         var scConf = [
             { re: '\\(',    action: TOKEN_L_PAREN },
             { re: '\\)',    action: TOKEN_R_PAREN },
@@ -620,7 +670,7 @@ describe('P2X.Parser', function(){
         ]
         var input = 'f(1)'
         var parseConf = [
-            { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, isParen: 1, closingList: [ TOKEN_R_PAREN ] },
+            { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, prec: 3000, isParen: 1, closingList: [ TOKEN_R_PAREN ] },
             { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
             { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
             { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
@@ -628,8 +678,8 @@ describe('P2X.Parser', function(){
         var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
 
-        console.log(res)
-//        assert.equal(res, xmlres2)
+//        console.log(res)
+        assert.equal(res, xmlres)
     })
 
   })

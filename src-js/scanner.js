@@ -862,14 +862,14 @@ P2X.Parser = function(tokenInfo) {
             var parent = null
             var assoc = this.tokenInfo.assoc(t)
             var prec = this.tokenInfo.binary_prec(t)
-            console.log('pushBinary: enter')
-            console.dir(tmp)
-            console.log('pushBinary: mode tmp: ' + ENUM.getParserModeName(this.tokenInfo.mode(tmp)) + ' prec ' + this.tokenInfo.prec(tmp))
+            // console.log('pushBinary: enter')
+            // console.dir(tmp)
+            // console.log('pushBinary: mode tmp: ' + ENUM.getParserModeName(this.tokenInfo.mode(tmp)) + ' prec ' + this.tokenInfo.prec(tmp))
             while (tmp.right
                    && ((this.tokenInfo.prec(tmp) < prec && this.tokenInfo.mode(tmp) != MODE_POSTFIX) || 
                        (this.tokenInfo.tokenTypeEqual(tmp, t) && assoc == ASSOC_RIGHT))) {
-                console.log('pushBinary: in while: ')
-                console.dir(tmp)
+                // console.log('pushBinary: in while: ')
+                // console.dir(tmp)
                 parent = tmp;
                 tmp = tmp.right;
             }
@@ -878,9 +878,9 @@ P2X.Parser = function(tokenInfo) {
                 assert(tmp.right == undefined);
                 tmp.right = t;
             } else {
-                console.log('pushBinary: ins+rotate ')
-                console.dir(parent)
-                console.dir(tmp)
+                // console.log('pushBinary: ins+rotate ')
+                // console.dir(parent)
+                // console.dir(tmp)
                 t.left = tmp;
                 if (tmp === this.root) {
                     assert(parent == undefined);
@@ -896,8 +896,8 @@ P2X.Parser = function(tokenInfo) {
         },
         pushItem: function(t) {
             var rmop = this.getRMOp();
-            console.log('pushItem: RM op: ' + rmop)
-            console.dir(rmop)
+            // console.log('pushItem: RM op: ' + rmop)
+            // console.dir(rmop)
             if (this.tokenInfo.mode(rmop) == MODE_POSTFIX || rmop.right) {
                 op = this.mkJuxta(t);
                 this.pushBinary(op);
@@ -928,8 +928,8 @@ P2X.Parser = function(tokenInfo) {
             return rm.right == undefined && this.tokenInfo.mode(rm) != MODE_POSTFIX;
         },
         insertToken: function(first) {
-            console.log('insertToken: t: ')
-            console.dir(first)
+            // console.log('insertToken: t: ')
+            // console.dir(first)
             var firstMode = this.tokenInfo.mode(first)
             assert(not(firstMode & MODE_PAREN)); // MODE_PAREN bit is cleared
             assert(firstMode != 0); // mode is not 0
@@ -961,10 +961,10 @@ P2X.Parser = function(tokenInfo) {
             return this
         },
         parse: function(tlist) {
-            console.log('parse! parser endlist: ' + (typeof this.endList))
+            // console.log('parse! parser endlist: ' + (typeof this.endList))
             var el = this.endList
-            console.dir(typeof el)
-            console.dir(el)
+            // console.dir(typeof el)
+            // console.dir(el)
 
             if (typeof (this.endList) == "undefined") 
                 this.endList = [this.tokenInfo.getOpCode(TOKEN_EOF)]
@@ -976,22 +976,22 @@ P2X.Parser = function(tokenInfo) {
             var endFound = false;
             do {
                 first = this.input.next()
-                console.log("Parser: next, code: " + this.tokenInfo.getOpCode(first)
-                            + ', mode: ' + ENUM.getParserModeName(this.tokenInfo.mode(first)) + ', prec: ' + this.tokenInfo.prec(first))
-                console.dir(first)
+                // console.log("Parser: next, code: " + this.tokenInfo.getOpCode(first)
+                //             + ', mode: ' + ENUM.getParserModeName(this.tokenInfo.mode(first)) + ', prec: ' + this.tokenInfo.prec(first))
+                // console.dir(first)
                 if (typeof first == "undefined") {
-                    console.log("Parser: error: unexpected end found, exiting")
+                    console.error("Parser: unexpected end found, exiting")
                     console.dir(first)
                     endFound = true
                 } else if (this.endList.indexOf(this.tokenInfo.getOpCode(first)) > -1) {
-                    console.log("Parser: end found: "+ this.endList + ' ' + this.tokenInfo.getOpCode(first.token))
+                    // console.log("Parser: end found: "+ this.endList + ' ' + this.tokenInfo.getOpCode(first.token))
                     endFound = true
                 } else if (this.tokenInfo.isParen(first)) {
                     var parser = P2X.Parser(this.tokenInfo)
                     parser.endList = this.tokenInfo.endList(first)
 
-                    console.log('sub parser endlist:')
-                    console.dir(parser.endList)
+                    // console.log('sub parser endlist:')
+                    // console.dir(parser.endList)
                     
                     var subTree = parser.parse(this.input)
                     
