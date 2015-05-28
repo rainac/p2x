@@ -533,3 +533,104 @@ describe('P2X.JScanner', function(){
 
   })
 })
+
+
+describe('P2X.Parser', function(){
+  describe('#parse()', function(){
+    var xmlres = fs.readFileSync('../examples/out/1p2ep3.xml')+''
+    var xmlres2 = fs.readFileSync('../examples/out/l1p2r.xml')+''
+
+    it('it should return an expression tree', function() {
+        var scanner = P2X.JScanner()
+        var scConf = [
+            { re: '=',      action: TOKEN_EQUAL },
+            { re: '\\+',    action: TOKEN_PLUS },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+        ]
+        var input = '1+2=+3'
+        scanner.set(scConf)
+        scanner.str(input)
+        var tl = scanner.lexall().mkeof()
+        var parser = P2X.Parser()
+        var parseConf = [
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+        ]
+        parser.setconfig(parseConf)
+        var res = parser.parse(tl)
+        var tpOptions = P2X.TreePrinterOptions();
+        var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)
+
+        res = tp.asxml(parser.root)
+
+        // console.log(res)
+        assert.equal(res, xmlres);
+    })
+
+    it('the same with the easy-to-use function', function() {
+        var scConf = [
+            { re: '=',      action: TOKEN_EQUAL },
+            { re: '\\+',    action: TOKEN_PLUS },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+        ]
+        var input = '1+2=+3'
+        var parseConf = [
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+        ]
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        res = P2X.p2xj(input, p2xConfig)
+
+        // console.log(res)
+        assert.equal(res, xmlres);
+    })
+
+    it('testing parentheses', function() {
+        var scConf = [
+            { re: '\\(',    action: TOKEN_L_PAREN },
+            { re: '\\)',    action: TOKEN_R_PAREN },
+            { re: '=',      action: TOKEN_EQUAL },
+            { re: '\\+',    action: TOKEN_PLUS },
+            { re: '\\*',    action: TOKEN_MULT },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+        ]
+        var input = '(1+2)'
+        var parseConf = [
+            { type: TOKEN_L_PAREN, isParen: 1, closingList: [ TOKEN_R_PAREN ] },
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        res = P2X.p2xj(input, p2xConfig)
+
+        // console.log(res)
+        assert.equal(res, xmlres2)
+    })
+
+    it('testing postfix parenthesis', function() {
+        var scConf = [
+            { re: '\\(',    action: TOKEN_L_PAREN },
+            { re: '\\)',    action: TOKEN_R_PAREN },
+            { re: '=',      action: TOKEN_EQUAL },
+            { re: '\\+',    action: TOKEN_PLUS },
+            { re: '\\*',    action: TOKEN_MULT },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+            { re: '[a-zA-Z]+', action: TOKEN_IDENTIFIER },
+        ]
+        var input = 'f(1)'
+        var parseConf = [
+            { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, isParen: 1, closingList: [ TOKEN_R_PAREN ] },
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        res = P2X.p2xj(input, p2xConfig)
+
+        console.log(res)
+//        assert.equal(res, xmlres2)
+    })
+
+  })
+})
