@@ -2,7 +2,7 @@
 if (typeof window == 'undefined') {
     
     var fs = require('fs')
-    var pXML = require('./parseXml.js')
+    var pXML = require('./parse-xml.js')
     // console.log('pXML:')
     // console.dir(pXML)
     console.log('load scanner script')

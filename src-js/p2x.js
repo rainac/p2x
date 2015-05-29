@@ -80,7 +80,7 @@ console.log(require.call)
 require.call(dummyThis, 'modes.ncd.js')
 require.call(dummyThis, 'token.ncd.js')
 require.call(dummyThis, 'assoc.ncd.js')
-require.call(dummyThis, 'parseXml.js')
+require.call(dummyThis, 'parse-xml.js')
 require.call(dummyThis, 'scanner.js')
 
 console.dir(dummyThis)

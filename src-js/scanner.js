@@ -54,7 +54,7 @@ if (typeof window == 'undefined') {
     
     var fs = require('fs')
     var mod_assert = require('assert')
-    var pXML = require('./parseXml.js')
+    var pXML = require('./parse-xml.js')
 
     var ENUM = {}
     ENUM.ParserMode = require('./modes.ncd.js')
