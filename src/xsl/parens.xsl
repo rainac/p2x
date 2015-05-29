@@ -40,7 +40,7 @@
     <xsl:text>.</xsl:text>
   </xsl:template>
 
-  <xsl:template match="cx:id|cx:integer|cx:float|cx:string" mode="parens">
+  <xsl:template match="cx:id|cx:int|cx:float|cx:string" mode="parens">
     <xsl:value-of select="ca:text"/>
   </xsl:template>
 
