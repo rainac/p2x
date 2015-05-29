@@ -51,7 +51,7 @@
           <td width="50%" valign="top">
             <fieldset>
               <legend>Transform input</legend>
-              <textarea name="input" cols="50" rows="10">
+              <textarea name="input" cols="50" rows="10" onchange="runP2X()" onkeyup="runP2X()">
 minus f(x, y*2) + 456 plus 123 = 233
               </textarea>
             </fieldset>
@@ -75,18 +75,13 @@ rules: [
   { re: '\\(', action: TOKEN_L_PAREN },
   { re: '\\)', action: TOKEN_R_PAREN },
   { re: '=', action: TOKEN_EQUAL },
-  { re: '\\+', action: TOKEN_PLUS },
-  { re: 'plus', action: TOKEN_PLUS },
-  { re: '-', action: TOKEN_MINUS },
-  { re: 'minus', action: TOKEN_MINUS },
-  { re: '\\*', action: TOKEN_MULT },
-  { re: 'times', action: TOKEN_MULT },
-  { re: '/', action: TOKEN_DIV },
-  { re: 'div', action: TOKEN_DIV },
-  { re: '%', action: TOKEN_MOD },
-  { re: 'mod', action: TOKEN_MOD },
-  { re: '\\^', action: TOKEN_POW },
-  { re: 'pow', action: TOKEN_POW },
+  { re: '\\+|plus', action: TOKEN_PLUS },
+  { re: '-|minus', action: TOKEN_MINUS },
+  { re: '\\*|times', action: TOKEN_MULT },
+  { re: '/|div', action: TOKEN_DIV },
+  { re: '%|mod', action: TOKEN_MOD },
+  { re: '\\^|pow', action: TOKEN_POW },
+  { re: ',', action: TOKEN_COMMA },
   { re: '[0-9]+', action: TOKEN_INTEGER },
   { re: '[a-zA-Z_][a-zA-Z0-9_]*', action: TOKEN_IDENTIFIER },
 ]
@@ -102,12 +97,13 @@ rules: [
               <textarea name="parseconf" cols="50" rows="10">
 {
  rules: [                
-  { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, isParen: 1,
+  { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, prec: 2000, isParen: 1,
     closingList: [
      { type: TOKEN_R_PAREN }
     ]
   },
   { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+  { type: TOKEN_COMMA, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 800 },
   { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
   { type: TOKEN_MINUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
   { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },

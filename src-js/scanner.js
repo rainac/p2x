@@ -792,14 +792,18 @@ P2X.TokenInfo = function() {
             if (pc.rules) {
                 return this.setconfig(pc.rules)
             }
-            pc.map(function(x){
+            var patchTokenFunc = function(x){
                 if (typeof x.token == "undefined" && typeof x.repr == "string" && x.length > 0) {
                     x.token == TOKEN_IDENTIFIER
                 }
                 if (typeof x.type != "undefined") {
                     x.token = x.type
                 }
-            })
+                if (typeof x.closingList != "undefined") {
+                    x.closingList.map(patchTokenFunc)
+                }
+            }
+            pc.map(patchTokenFunc)
             this.tokenClasses = this.tokenClassesDefault
             for (var k in pc) {
                 this.insert(pc[k])
@@ -962,11 +966,6 @@ P2X.Parser = function(tokenInfo) {
             return this
         },
         parse: function(tlist) {
-            // console.log('parse! parser endlist: ' + (typeof this.endList))
-            var el = this.endList
-            // console.dir(typeof el)
-            // console.dir(el)
-
             if (typeof (this.endList) == "undefined") 
                 this.endList = [this.tokenInfo.getOpCode(TOKEN_EOF)]
             this.root = this.mkroot()
@@ -989,9 +988,12 @@ P2X.Parser = function(tokenInfo) {
                     endFound = true
                 } else if (this.tokenInfo.isParen(first)) {
                     var parser = P2X.Parser(this.tokenInfo)
-                    parser.endList = this.tokenInfo.endList(first)
 
                     // console.log('sub parser endlist:')
+                    // console.dir(this.tokenInfo.endList(first))
+                    
+                    parser.endList = this.tokenInfo.endList(first).map(function(x){return x.token})
+
                     // console.dir(parser.endList)
                     
                     var subTree = parser.parse(this.input)
