@@ -1059,7 +1059,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 else if (t.token == TOKEN_ROOT)
                     tagname = 'root'
                 if (t.token == TOKEN_ROOT) {
-                    res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
+                    res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
                     res += indent + "<ca:steps/>\n"
                     if (this.options.printScannerConfig) {
                         res += P2X.scanner.get().asxml(indent)
