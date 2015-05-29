@@ -312,6 +312,18 @@ describe('P2X.ParserConfig', function(){
             } catch (ME) {
             }
         })
+        it('ignore mode is ignore', function(){
+            var tt = P2X.TokenInfo()
+            assert.equal(tt.mode(TOKEN_IGNORE), MODE_IGNORE)
+        })
+        it('ignore mode is ignore', function(){
+            try {
+                var tt = P2X.TokenInfo()
+                tt.insert(P2X.TokenProto(TOKEN_IGNORE, '/', MODE_UNARY, ASSOC_NONE, 100, undefined, false))
+                assert.equal(0, 1)
+            } catch (ME) {
+            }
+        })
         it('it should be possible to change the prec, assoc of JUXTA', function() {
             var tt = P2X.TokenInfo()
             var confSet = [
@@ -413,6 +425,20 @@ describe('P2X.JScanner', function(){
         var tl = scanner.lexall()
         assert.equal(tl.list.length, 0);
     })
+    it('ignored token can be returned in request', function() {
+        var scanner = P2X.JScanner()
+        scanner.include_ignored = true
+        scConf = [
+            { re: '1', action: 1},
+            { re: '3', action: 3},
+            { re: 'abc', action: 111}
+        ]
+        scanner.set(scConf)
+        var input = 'rgtf 5 67'
+        scanner.str(input)
+        var tl = scanner.lexall()
+        assert.equal(tl.list.length, 0);
+    })
     it('it should only return those token that match a rule', function() {
         var scanner = P2X.JScanner()
         scConf = [
@@ -446,6 +472,43 @@ describe('P2X.JScanner', function(){
                                        col: 6 })
     })
       
+    it('ignored token can be returned in request', function() {
+        var scanner = P2X.JScanner()
+        scanner.include_ignored = true
+        scConf = [
+            { re: '1', action: 1},
+            { re: '3', action: 3},
+            { re: 'abc', action: 111}
+        ]
+        scanner.set(scConf)
+        var input = 'abc 12 \n ddds 3 dsa'
+        scanner.str(input)
+        var tl = scanner.lexall()
+        assert.equal(tl.list.length, 5);
+
+        assert.equal(tl.list[1].token, TOKEN_IGNORE)
+        assert.equal(tl.list[3].token, TOKEN_IGNORE)
+        
+        assert.deepEqual(tl.list[0], { token: 111,
+                                       tokenName: undefined,
+                                       text: 'abc',
+                                       index: 0,
+                                       line: 1,
+                                       col: 0 })
+        assert.deepEqual(tl.list[2], { token: 1,
+                                       tokenName: 'KEYW_FOR',
+                                       text: '1',
+                                       index: 4,
+                                       line: 1,
+                                       col: 4 })
+        assert.deepEqual(tl.list[4], { token: 3,
+                                       tokenName: 'KEYW_WHILE',
+                                       text: '3',
+                                       index: 14,
+                                       line: 2,
+                                       col: 6 })
+    })
+
     it('it should match longest match first', function() {
         var scanner = P2X.JScanner()
         scConf = [

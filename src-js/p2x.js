@@ -61,7 +61,7 @@ var getdata = function(url, callback) {
 
 }
 
-var require = function(url) {
+var require = function(url, callback) {
 
 
     var head = document.head;
@@ -72,17 +72,38 @@ var require = function(url) {
 
     head.appendChild(script)
 
+    if (callback) {
+        callback()
+    }
+    
 }
 
 var dummyThis = {}
 
 var p2x_baseurl = p2x_baseurl || ''
 
-//console.log(require.call)
-require.call(dummyThis, p2x_baseurl + 'modes.ncd.js')
-require.call(dummyThis, p2x_baseurl + 'token.ncd.js')
-require.call(dummyThis, p2x_baseurl + 'assoc.ncd.js')
-require.call(dummyThis, p2x_baseurl + 'parse-xml.js')
-require.call(dummyThis, p2x_baseurl + 'scanner.js')
+function map_cb(array, callback_item, callback_end, index) {
+    if (!index) index = 0
+    if (index >= array.length) {
+        callback_end(array)
+        return
+    }
+    callback_item(array[index], function(){ map_cb(array, callback_item, callback_end, index+1) })
+}
+
+function cb_require(name, callback) {
+    require.call(dummyThis, name, callback)
+}
+
+
+scripts = [
+    p2x_baseurl + 'modes.ncd.js',
+    p2x_baseurl + 'token.ncd.js',
+    p2x_baseurl + 'assoc.ncd.js',
+    p2x_baseurl + 'parse-xml.js',
+    p2x_baseurl + 'scanner.js'
+]
+
+map_cb(scripts, cb_require, function() { console.log('loaded new')})
 
 //console.dir(dummyThis)

@@ -1,4 +1,4 @@
-console.log('scanner script loading')
+// console.log('scanner script loading')
 
 var P2X = P2X || {};
 
@@ -447,11 +447,7 @@ P2X.JScanner = function(name) {
             
             if (min[0] > 0) {
                 var skipped = sinp.substring(0, min[0])
-                this.yyignored = { text: skipped,
-                           index: this.yyindex,
-                           line: this.yyline, 
-                           col: this.yycol,
-                          }
+                this.yyignored = P2X.Token(TOKEN_IGNORE, skipped, self.yyindex, self.yyline, self.yycol, first)
                 var lnlind = skipped.lastIndexOf('\n')
                 var lcrind = skipped.lastIndexOf('\r')
                 if (lnlind > -1) {
@@ -491,7 +487,6 @@ P2X.JScanner = function(name) {
             return res
         },
         lexall: function() {
-            var l = []
             var c
             this.alllist = []
             this.token = []
@@ -505,10 +500,13 @@ P2X.JScanner = function(name) {
                     }
                     this.token.push(c)
                     this.alllist.push(c)
-                    l.push(c)
                 }
             } while (c)
-            return new P2X.TokenList(l, this)
+            if (this.include_ignored) {
+                return new P2X.TokenList(this.alllist, this)
+            } else {
+                return new P2X.TokenList(this.token, this)
+            }
         },
         asxml: function() {
             var r = this.lexall()
@@ -706,6 +704,9 @@ P2X.TokenInfo = function() {
     })
     tokenClasses[TOKEN_ROOT] = P2X.TokenProto({
         token: TOKEN_ROOT, repr: '', mode: MODE_UNARY, prec: 1, isParen: false
+    })
+    tokenClasses[TOKEN_IGNORE] = P2X.TokenProto({
+        token: TOKEN_IGNORE, mode: MODE_IGNORE
     })
     return {
         tokenClasses: tokenClasses,
@@ -907,9 +908,9 @@ P2X.Parser = function(tokenInfo) {
                 op = this.mkJuxta(t);
                 this.pushBinary(op);
                 rmop2 = this.getRMOp();
-                console.log('pushItem: RM op II: ' + rmop)
-                console.dir(rmop)
-                console.dir(rmop2)
+                // console.log('pushItem: RM op II: ' + rmop)
+                // console.dir(rmop)
+                // console.dir(rmop2)
                 assert(rmop2.right == undefined);
                 assert(rmop2 === op);
                 op.right = t;
@@ -959,7 +960,7 @@ P2X.Parser = function(tokenInfo) {
                 this.pushUnaryBinary(first);
                 break;
             default:
-                console.log("error: Parser: invalid mode " + firstMode + "\n");
+                console.error("error: parser: invalid mode " + firstMode + "\n");
                 exit(1);
                 break;
             }
@@ -1112,7 +1113,6 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
 P2X.parseJSON = function(text) {
     var result, code, XXX
     code = 'var XXX = ' + text
-    console.log(code)
     eval(code)
     return XXX;
 }
