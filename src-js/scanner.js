@@ -702,10 +702,10 @@ P2X.ParserConfigRW = function(x) {
 P2X.TokenInfo = function() {
     var tokenClasses = {}
     tokenClasses[TOKEN_JUXTA] = P2X.TokenProto({
-        token: TOKEN_JUXTA, repr: '', mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1, precU: 0, isParen: false
+        token: TOKEN_JUXTA, repr: '', mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 2, isParen: false
     })
     tokenClasses[TOKEN_ROOT] = P2X.TokenProto({
-        token: TOKEN_ROOT, repr: '', mode: MODE_UNARY, assoc: ASSOC_NONE, prec: 0, precU: 0, isParen: false
+        token: TOKEN_ROOT, repr: '', mode: MODE_UNARY, prec: 1, isParen: false
     })
     return {
         tokenClasses: tokenClasses,
@@ -740,10 +740,10 @@ P2X.TokenInfo = function() {
             return this.get(tl).assoc || ASSOC_NONE
         },
         binary_prec: function (tl) {
-            return this.get(tl).prec || 1
+            return this.get(tl).prec || 2
         },
         unary_prec: function (tl) {
-            return this.get(tl).precU || 1
+            return this.get(tl).precU || 2
         },
         prec: function (tl) {
             return this.binary_prec(tl)
@@ -820,6 +820,7 @@ P2X.TokenInfo = function() {
                     assert(tokenProto.mode == MODE_BINARY)
                 } else if (tokenProto.token == TOKEN_ROOT) {
                     // it's not allowed to set a new rule for TOKEN_ROOT
+                    console.error("ParserConfig.insert: it's not allowed to set a new rule for TOKEN_ROOT")
                     assert(false)
                 }
                 this.tokenClasses[this.getOpCode(tokenProto.token)] = tokenProto
@@ -977,7 +978,7 @@ P2X.Parser = function(tokenInfo) {
             do {
                 first = this.input.next()
                 // console.log("Parser: next, code: " + this.tokenInfo.getOpCode(first)
-                //             + ', mode: ' + ENUM.getParserModeName(this.tokenInfo.mode(first)) + ', prec: ' + this.tokenInfo.prec(first))
+                //          + ', mode: ' + ENUM.getParserModeName(this.tokenInfo.mode(first)) + ', prec: ' + this.tokenInfo.prec(first))
                 // console.dir(first)
                 if (typeof first == "undefined") {
                     console.error("Parser: unexpected end found, exiting")
@@ -1114,15 +1115,16 @@ P2X.parseJSON = function(text) {
     return XXX;
 }
 
-P2X.p2xj = function(input, p2xConf) {
+P2X.p2xj = function(input, p2xConf, result) {
     var scanConf = p2xConf.scanner
+    if (typeof result == "undefined") {
+        result = {}
+    }
     if (typeof scanConf != "object") {
         scanConf = P2X.parseJSON(scanConf)
     }
     var scanner = P2X.JScanner()
     scanner.set(scanConf)
-
-    var result = { config: p2xConf, scanner: null, parser: null }
 
     if (p2xConf.debug) {
         result.scanconf = scanner.get().toSource()
@@ -1164,10 +1166,7 @@ P2X.p2xj = function(input, p2xConf) {
         result.parser = parser
     }
     
-    var rval = result.xmlres
-    rval.p2xresults = result
-    
-    return rval
+    return result.xmlres
 }
 
 P2X.scanner = P2X.JScanner('p2x1main')

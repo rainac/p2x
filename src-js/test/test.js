@@ -220,6 +220,8 @@ describe('P2X.ParserConfig', function(){
             // console.log(tprw.asxml(p1, ''))
             confA = tt.getconfig()
             confB = pcrw.loadXML(pcrw.asxml(confA, ''))
+            // console.log(TOKEN_ROOT)
+            // console.log(TOKEN_DIV)
             // console.log(pcrw.asxml(confA, ''))
             // console.log(pcrw.asxml(confA, ''))
             assert.equal(pcrw.asxml(confA, ''), pcrw.asxml(confB, ''));
@@ -279,6 +281,35 @@ describe('P2X.ParserConfig', function(){
             var tokenInListB = confB.map(function(x) { return x.token })
             for (var k in tokenInListA) {
                 assert(tokenInListB.indexOf(tokenInListA[k]) > -1)
+            }
+        })
+        it('undefined prec defaults to 1', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(TOKEN_TILDE, '~', MODE_UNARY, ASSOC_NONE, undefined, undefined, false))
+            tt.insert(P2X.TokenProto(TOKEN_PLUS, '/', MODE_UNARY_BINARY, ASSOC_LEFT, undefined, undefined, false))
+            tt.insert(P2X.TokenProto(TOKEN_MULT, '*', MODE_BINARY, ASSOC_LEFT, undefined, undefined, false))
+            assert.equal(tt.prec(TOKEN_TILDE), 2)
+        })
+        it('for plain token, opcode == type', function(){
+            var tt = P2X.TokenInfo()
+            assert.equal(tt.getOpCode(TOKEN_TILDE), TOKEN_TILDE)
+            tt.insert(P2X.TokenProto(TOKEN_TILDE, '~', MODE_UNARY, ASSOC_NONE, undefined, undefined, false))
+            assert.equal(tt.getOpCode(TOKEN_TILDE), TOKEN_TILDE)
+        })
+        it('ROOT prec is 1', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(TOKEN_TILDE, '~', MODE_UNARY, ASSOC_NONE, undefined, undefined, false))
+            // console.log(tt.tokenClasses)
+            // console.log(tt.get(TOKEN_ROOT))
+            assert.equal(tt.prec(TOKEN_ROOT), 1)
+        })
+        it('ROOT prec is 1', function(){
+            try {
+                var tt = P2X.TokenInfo()
+                tt.insert(P2X.TokenProto(TOKEN_ROOT, '/', MODE_UNARY, ASSOC_NONE, 100, undefined, false))
+                tt.insert(P2X.TokenProto(TOKEN_TILDE, '~', MODE_UNARY, ASSOC_NONE, undefined, undefined, false))
+                assert.equal(0, 1)
+            } catch (ME) {
             }
         })
         it('it should be possible to change the prec, assoc of JUXTA', function() {
@@ -620,6 +651,29 @@ describe('P2X.Parser', function(){
         var input = 'f\'+2'
         var parseConf = [
             { type: TOKEN_QUOTE, mode: MODE_POSTFIX, prec: 3000 },
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        res = P2X.p2xj(input, p2xConfig)
+
+        // console.log(res)
+        assert.equal(res, xmlres)
+    })
+
+    it('testing postfix op (missing prec)', function() {
+        var xmlres = fs.readFileSync('../examples/out/ftp2.xml')+''
+        var scConf = [
+            { re: '\'',     action: TOKEN_QUOTE },
+            { re: '\\+',    action: TOKEN_PLUS },
+            { re: '\\*',    action: TOKEN_MULT },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+            { re: '[a-zA-Z]+', action: TOKEN_IDENTIFIER },
+        ]
+        var input = 'f\'+2'
+        var parseConf = [
+            { type: TOKEN_QUOTE, mode: MODE_POSTFIX },
             { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
             { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
             { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
