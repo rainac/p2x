@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 NODE=nodejs
 
@@ -6,5 +6,12 @@ if ! test -x $(which $NODE); then
    NODE=node
 fi
 
-$NODE test-read-cnf.js $*
+srcdir=$(dirname $BASH_SOURCE)
 
+if test -r $srcdir/test-read-cnf.js; then
+    file=$srcdir/test-read-cnf.js
+elif test -r $srcdir/../share/p2x/js/test-read-cnf.js; then
+    file=$srcdir/../share/p2x/js/test-read-cnf.js
+fi
+
+$NODE $file $*
