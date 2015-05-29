@@ -76,11 +76,13 @@ var require = function(url) {
 
 var dummyThis = {}
 
-console.log(require.call)
-require.call(dummyThis, 'modes.ncd.js')
-require.call(dummyThis, 'token.ncd.js')
-require.call(dummyThis, 'assoc.ncd.js')
-require.call(dummyThis, 'parse-xml.js')
-require.call(dummyThis, 'scanner.js')
+var p2x_baseurl = p2x_baseurl || ''
 
-console.dir(dummyThis)
+//console.log(require.call)
+require.call(dummyThis, p2x_baseurl + 'modes.ncd.js')
+require.call(dummyThis, p2x_baseurl + 'token.ncd.js')
+require.call(dummyThis, p2x_baseurl + 'assoc.ncd.js')
+require.call(dummyThis, p2x_baseurl + 'parse-xml.js')
+require.call(dummyThis, p2x_baseurl + 'scanner.js')
+
+//console.dir(dummyThis)
