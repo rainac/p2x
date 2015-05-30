@@ -8,10 +8,12 @@ fi
 
 srcdir=$(dirname $BASH_SOURCE)
 
-if test -r $srcdir/test-read-cnf.js; then
-    file=$srcdir/test-read-cnf.js
-elif test -r $srcdir/../share/p2x/js/test-read-cnf.js; then
-    file=$srcdir/../share/p2x/js/test-read-cnf.js
+main_src=p2x-main.js
+
+if test -r $srcdir/$main_src; then
+    file=$srcdir/$main_src
+elif test -r $srcdir/../share/p2x/js/$main_src; then
+    file=$srcdir/../share/p2x/js/p2x-main.js
 fi
 
 $NODE $file $*

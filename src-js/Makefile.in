@@ -263,7 +263,7 @@ generated_files = token.ncd.js modes.ncd.js assoc.ncd.js
 instbasedir = $(pkgdatadir)
 instdir = $(instbasedir)/js
 dist_bin_SCRIPTS = p2xjs
-project_files = $(generated_files) scanner.js parse-xml.js parse-opts.js p2x.js test-read-cnf.js
+project_files = $(generated_files) scanner.js parse-xml.js parse-opts.js p2x.js p2x-main.js
 inst_DATA = $(project_files)
 apache_confd = $(sysconfdir)/apache2/conf.d
 all: all-am

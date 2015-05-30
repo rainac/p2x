@@ -6,7 +6,7 @@ instdir= $(instbasedir)/js
 
 dist_bin_SCRIPTS = p2xjs
 
-project_files = $(generated_files) scanner.js parse-xml.js parse-opts.js p2x.js test-read-cnf.js
+project_files = $(generated_files) scanner.js parse-xml.js parse-opts.js p2x.js p2x-main.js
 
 inst_DATA = $(project_files)
 

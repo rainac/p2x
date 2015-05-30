@@ -369,6 +369,9 @@ P2X.JScanner = function(name) {
             return this
         },
         set: function(scconf) {
+            if (scconf.ignored) {
+                this.include_ignored = true
+            }
             if (scconf.rules) {
                 return this.set(scconf.rules)
             }
@@ -419,7 +422,12 @@ P2X.JScanner = function(name) {
 
             var min = arrayMin(starts);
 
-            if (min[0] == Infinity) return null
+            var self = this;
+
+            if (min[0] == Infinity) {
+                this.yyignored = P2X.Token(TOKEN_IGNORE, sinp, self.yyindex, self.yyline, self.yycol, first)
+                return null
+            }
 
             var lengths = []
             var atStart = results.map(function (x) {
@@ -441,7 +449,6 @@ P2X.JScanner = function(name) {
             
             var tt = ENUM.ParserToken
             tt.act = this.actions[first][1];
-            var self = this;
 
             this.yyignored = {}
             
@@ -493,11 +500,11 @@ P2X.JScanner = function(name) {
             this.ignored = []
             do {
                 c = this.lex();
+                if (this.yyignored.text) {
+                    this.ignored.push(this.yyignored)
+                    this.alllist.push(this.yyignored)
+                }
                 if (c) {
-                    if (this.yyignored.text) {
-                        this.ignored.push(this.yyignored)
-                        this.alllist.push(this.yyignored)
-                    }
                     this.token.push(c)
                     this.alllist.push(c)
                 }
@@ -1113,7 +1120,12 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
 P2X.parseJSON = function(text) {
     var result, code, XXX
     code = 'var XXX = ' + text
-    eval(code)
+    try {
+        eval(code)
+    } catch (me) {
+        console.error('Failed to parse config struct: ' + me)
+        XXX = undefined
+    }
     return XXX;
 }
 
@@ -1124,6 +1136,11 @@ P2X.p2xj = function(input, p2xConf, result) {
     }
     if (typeof scanConf != "object") {
         scanConf = P2X.parseJSON(scanConf)
+        if (typeof scanConf == "undefined") {
+            console.error('Failed to parse scanner config')
+            scanConf = []
+            result.error = 'Failed to parse scanner config'
+        }
     }
     var scanner = P2X.JScanner()
     scanner.set(scanConf)
@@ -1135,6 +1152,11 @@ P2X.p2xj = function(input, p2xConf, result) {
     var parseConf = p2xConf.parser
     if (typeof parseConf != "object") {
         parseConf = P2X.parseJSON(parseConf)
+        if (typeof parseConf == "undefined") {
+            console.error('Failed to parse parser config')
+            parseConf = []
+            result.error = 'Failed to parse parser config'
+        }
     }
 
     var parser = P2X.Parser()

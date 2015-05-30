@@ -425,20 +425,6 @@ describe('P2X.JScanner', function(){
         var tl = scanner.lexall()
         assert.equal(tl.list.length, 0);
     })
-    it('ignored token can be returned in request', function() {
-        var scanner = P2X.JScanner()
-        scanner.include_ignored = true
-        scConf = [
-            { re: '1', action: 1},
-            { re: '3', action: 3},
-            { re: 'abc', action: 111}
-        ]
-        scanner.set(scConf)
-        var input = 'rgtf 5 67'
-        scanner.str(input)
-        var tl = scanner.lexall()
-        assert.equal(tl.list.length, 0);
-    })
     it('it should only return those token that match a rule', function() {
         var scanner = P2X.JScanner()
         scConf = [
@@ -474,20 +460,44 @@ describe('P2X.JScanner', function(){
       
     it('ignored token can be returned in request', function() {
         var scanner = P2X.JScanner()
-        scanner.include_ignored = true
-        scConf = [
-            { re: '1', action: 1},
-            { re: '3', action: 3},
-            { re: 'abc', action: 111}
-        ]
+        scConf = {
+            ignored: true,
+            rules: [
+                { re: '1', action: 1},
+                { re: '3', action: 3},
+                { re: 'abc', action: 111}
+            ]
+        }
+        scanner.set(scConf)
+        var input = 'rgtf 5 67'
+        scanner.str(input)
+        var tl = scanner.lexall()
+        assert.equal(tl.list.length, 1);
+        assert.equal(tl.list[0].token, TOKEN_IGNORE)
+        assert.equal(tl.list[0].text, 'rgtf 5 67')
+    })
+    it('ignored token can be returned in request', function() {
+        var scanner = P2X.JScanner()
+        scConf = {
+            ignored: true,
+            rules: [
+                { re: '1', action: 1},
+                { re: '3', action: 3},
+                { re: 'abc', action: 111}
+            ]
+        }
         scanner.set(scConf)
         var input = 'abc 12 \n ddds 3 dsa'
         scanner.str(input)
         var tl = scanner.lexall()
-        assert.equal(tl.list.length, 5);
+        assert.equal(tl.list.length, 6);
 
         assert.equal(tl.list[1].token, TOKEN_IGNORE)
+        assert.equal(tl.list[1].text, ' ')
         assert.equal(tl.list[3].token, TOKEN_IGNORE)
+        assert.equal(tl.list[3].text, '2 \n ddds ')
+        assert.equal(tl.list[5].token, TOKEN_IGNORE)
+        assert.equal(tl.list[5].text, ' dsa')
         
         assert.deepEqual(tl.list[0], { token: 111,
                                        tokenName: undefined,
