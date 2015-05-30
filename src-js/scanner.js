@@ -246,6 +246,43 @@ P2X.TokenList.prototype.loadXMLNode = function(scanList) {
 
 P2X.ScannerConfig = function(x) {
     var res = Array.apply({}, x);
+
+    function getREString(re) {
+        if (typeof re == 'object') {
+            return re.source
+        } else {
+            return re
+        }
+    }
+        
+    function getREStringQ(re) {
+        var s = getREString(re)
+        if (s.indexOf('\'') > -1) {
+            re = /'/
+            s = s.replace(re, '\\\'')
+        }
+        return '\'' + s + '\''
+    }
+        
+    res.asjson = function(indent) {
+
+        if (typeof indent == 'undefined') indent = ''
+        var res = indent + '['
+        for (var k = 0; k < this.length; ++k) {
+            var rule = this[k]
+            var val = rule.action, actstr = ''
+            if (val in ENUM.ParserToken.names_index) {
+                actstr = ENUM.ParserToken.prefix + ENUM.getParserTokenName(val)
+            } else {
+                actstr = escapeXML(val)
+            }
+            res += indent + '{re:' + getREStringQ(rule.re) + ',action:'
+                + actstr + '},\n'
+        }
+        res += indent + ']\n'
+        return res
+    }
+
     res.asxml = function(indent) {
 
         function getREString(re) {
@@ -541,11 +578,16 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
         }
         if (tk != TOKEN_IDENTIFIER)
             repr = ''
+        if (closingList) {
+            closingList = closingList.map(function(x) {
+                return P2X.TokenProto(x)
+            })
+        }
         res = {
-            token: tk, repr: repr, mode: mode, assoc: assoc,
-            prec: prec, precU: precU,
-            isParen: isParen,
-            closingList: closingList,
+            token: tk, repr: repr, mode: mode || MODE_ITEM, assoc: assoc || ASSOC_NONE,
+            prec: prec, precU: precU || 0,
+            isParen: isParen || false,
+            closingList: closingList || [],
         }
     }
     return res
@@ -602,7 +644,7 @@ P2X.TokenProtoRW = function() {
         if (obj.isParen)
             res += ', isParen: 1'
         if (obj.closingList && obj.closingList.length > 0) {
-            res += ',\n' + indent + '  closing-list: [\n'
+            res += ',\n' + indent + '  closingList: [\n'
             for (var k = 0; k < obj.closingList.length; ++k) {
                 if (k > 0)
                     res += ',\n'
@@ -664,7 +706,7 @@ P2X.ParserConfigRW = function(x) {
         return res
     }
     res.asJSON = function(obj, indent) {
-        if (!indent) indent = ' '
+        if (typeof indent == 'undefined') indent = ' '
         var res = ''
         var tprw = P2X.TokenProtoRW()
         res += indent + '[\n'
@@ -818,6 +860,12 @@ P2X.TokenInfo = function() {
             }
             return this
         },
+        normalize: function() {
+            for (var k in this.tokenClasses) {
+                this.tokenClasses[k] = P2X.TokenProto(this.tokenClasses[k])
+            }
+            return this
+        },
         insert: function (tokenProto) {
             if (tokenProto.token == TOKEN_IDENTIFIER && tokenProto.repr) {
                 // this creates the new op code
@@ -831,9 +879,9 @@ P2X.TokenInfo = function() {
                     // but it must be MODE_BINARY
                     assert(tokenProto.mode == MODE_BINARY)
                 } else if (tokenProto.token == TOKEN_ROOT) {
-                    // it's not allowed to set a new rule for TOKEN_ROOT
-                    console.error("ParserConfig.insert: it's not allowed to set a new rule for TOKEN_ROOT")
-                    assert(false)
+                    // it must be MODE_UNARY, with prec 1
+                    assert(tokenProto.mode == MODE_UNARY)
+                    assert(tokenProto.prec == 1)
                 }
                 this.tokenClasses[this.getOpCode(tokenProto.token)] = tokenProto
             }
@@ -1124,6 +1172,7 @@ P2X.parseJSON = function(text) {
         eval(code)
     } catch (me) {
         console.error('Failed to parse config struct: ' + me)
+        console.error('Bad code: ' + code)
         XXX = undefined
     }
     return XXX;

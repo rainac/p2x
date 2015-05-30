@@ -31,7 +31,7 @@ describe('P2X.ScannerConfig', function(){
               + '<ca:lexem><ca:re>abc</ca:re><ca:action>1023</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
           var scConf = P2X.ScannerConfig().loadXML(xmlRes)
-          console.dir(scConf)
+          // console.dir(scConf)
           assert.equal(xmlRes, scConf.asxml(''));
       })
       it('on invalid input, no rule entry should be created', function(){
@@ -51,17 +51,17 @@ describe('P2X.ScannerConfig', function(){
               + '<ca:lexem><ca:re>abc/</ca:re><ca:action>TOKEN_PLUS</ca:action></ca:lexem>\n'
               + '</ca:scanner-config>\n'
           scConf = P2X.ScannerConfig().loadXML(xmlRes)
-          console.log(xmlRes)
-          console.dir(scConf)
-          console.log(scConf.asxml(''))
+          // console.log(xmlRes)
+          // console.dir(scConf)
+          // console.log(scConf.asxml(''))
           assert.equal(xmlRes, scConf.asxml(''));
       })
       function setAndGetFromScanner(scConf) {
-          console.dir(scConf)
+          // console.dir(scConf)
           var myScanner = P2X.JScanner();
           myScanner.set(scConf)
-          console.dir(myScanner.actions)
-          console.dir(myScanner.get())
+          // console.dir(myScanner.actions)
+          // console.dir(myScanner.get())
           return myScanner.get()
       }
       function setAndGetFromScannerXML(inXml) {
@@ -136,6 +136,24 @@ describe('P2X.ScannerConfig', function(){
               { re: 'abc', action: 120 },
               ]
           assert.equal('['+otstr(scConf[1])+']', otstr(setAndGetFromScanner(scConf)));
+      })
+      it('ScannerConfig can be serialized to JSON', function(){
+          var scConf = [
+              { re: '123', action: 48 },
+              { re: 'abc', action: 120 },
+          ]
+          // console.dir(scConf)
+          // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
+          assert.deepEqual(scConf, P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()));
+      })
+      it('ScannerConfig can be serialized to JSON (II)', function(){
+          var scConf = [
+              { re: '\'', action: 48 },
+              { re: 'abc', action: 120 },
+          ]
+          // console.dir(scConf)
+          // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
+          assert.deepEqual(scConf, P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()));
       })
   })
   describe('#asxml()', function(){
@@ -225,19 +243,7 @@ describe('P2X.ParserConfig', function(){
             // console.log(pcrw.asxml(confA, ''))
             // console.log(pcrw.asxml(confA, ''))
             assert.equal(pcrw.asxml(confA, ''), pcrw.asxml(confB, ''));
-            assert.equal(confA.length, confB.length);
-            for (k = 0; k < confA.length; ++k) {
-                // console.log(confA[k])
-                // console.log(confB[k])
-                for (j in confA[k]) {
-                    if (confA[k][j] || confB[k][j]) {
-                        // console.log('==' + confA[k][j] + ',' + confB[k][j])
-                        // console.log('==' + (confA[k][j] == confB[k][j]))
-                        assert.equal(confA[k][j], confB[k][j]);
-                    }
-                }
-                // console.log('==' + k + ': ' + (confA[k] == confB[k]))
-            }
+            assert.deepEqual(confA, confB);
             // console.log('==: ' + (confA == confB))
         })
         it('should return XML rule list', function(){
@@ -268,6 +274,30 @@ describe('P2X.ParserConfig', function(){
 //            console.log(pcrw.asxml(confA, ''))
             assert.equal(pcrw.asxml(confA, ''), pcrw.asxml(confB, ''));
         })
+
+        it('ParserConfig can be serialized to JSON', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(TOKEN_DIV, '/', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(TOKEN_MULT, '*', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(TOKEN_PLUS, '+', MODE_BINARY, ASSOC_LEFT, 90, 0, false))
+            tt.insert(P2X.TokenProto(TOKEN_MINUS, '-', MODE_BINARY, ASSOC_LEFT, 90, 0, false))
+            tt.insert(P2X.TokenProto(TOKEN_EQUAL, '=', MODE_BINARY, ASSOC_RIGHT, 50, 0, false))
+            tt.insert(P2X.TokenProto(TOKEN_MINUS, '=', MODE_UNARY_BINARY, ASSOC_RIGHT, 50, 110, false))
+            tt.insert(P2X.TokenProto(TOKEN_L_PAREN, '=', MODE_POSTFIX, ASSOC_NONE, 50, 0, true, [P2X.TokenProto(TOKEN_R_PAREN)]))
+            tt.insert(P2X.TokenProto(TOKEN_SPACE, '=', MODE_IGNORE))
+            tt.insert(P2X.TokenProto(TOKEN_NEWLINE, '=', MODE_IGNORE))
+            tt.insert(P2X.TokenProto(TOKEN_CRETURN, '=', MODE_IGNORE))
+            tt.insert(P2X.TokenProto(TOKEN_DIV, '/', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            var pcrw = P2X.ParserConfigRW()
+            confA = tt.getconfig()
+
+            tt.setconfig(P2X.parseJSON(pcrw.asJSON(confA)))
+            tt.normalize()
+            confB = tt.getconfig()
+            
+            assert.deepEqual(confA, confB);
+      })
+
         it('rules for ROOT and JUXTA are always present', function() {
             var tt = P2X.TokenInfo()
             var confSet = [
