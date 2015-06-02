@@ -46,6 +46,13 @@ var unescapeRegExp = function(str){
         .replace(/\\([.*+?^${}()|[\]\\])/g, "$1")
 }
 
+P2X.escapeBS = function(str){
+    return str
+        .replace(/[.*+\?^${}()|[\]\\"']/g, "\\$&")
+        .replace(/\n/g, "\\n").replace(/\r/g, "\\r")
+        .replace(/\t/g, "\\t").replace(/\v/g, "\\v")
+}
+
 var escapeXML = function(str){
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 }
@@ -122,8 +129,10 @@ function arrayMax(arr) {
 };
 
 P2X.Token = function(tk, text, index, line, col, rule) {
-    if (typeof tk != 'number')
+    if (typeof tk != 'number') {
+        console.log('warning: str conversion')
         tk = ENUM.getParserTokenValue(String(tk))
+    }
     return { token: tk, tokenName: ENUM.ParserToken.names_index[tk], text: text, index: index, line: line, col: col }
 }
 
@@ -272,12 +281,13 @@ P2X.ScannerConfig = function(x) {
             var rule = this[k]
             var val = rule.action, actstr = ''
             if (val in ENUM.ParserToken.names_index) {
-                actstr = ENUM.ParserToken.prefix + ENUM.getParserTokenName(val)
+                actstr = ENUM.getParserTokenName(val)
             } else {
-                actstr = escapeXML(val)
+                actstr = val
             }
-            res += indent + '{re:' + getREStringQ(rule.re) + ',action:'
-                + actstr + '},\n'
+            // res += indent + '{re:\'' + P2X.escapeBS(getREString(rule.re)) + '\',action:'
+            //     + actstr + '},\n'
+            res += indent + JSON.stringify({re: getREString(rule.re), action: actstr}) + ',\n'
         }
         res += indent + ']\n'
         return res
@@ -310,6 +320,14 @@ P2X.ScannerConfig = function(x) {
             res += '</ca:lexem>\n'
         }
         res += indent + '</ca:scanner-config>\n'
+        return res
+    }
+
+    res.aslist = function() {
+        var res = []
+        for (var k = 0; k < this.length; ++k) {
+            res[k] = this[k]
+        }
         return res
     }
 
@@ -388,7 +406,7 @@ P2X.JScanner = function(name) {
         yyignored: {},
         yyblocked: null,
         add: function(re, action) {
-            var fst_val, snd_val
+            var fst_val, snd_val, snd_source, entry
             if (re == '') {
                 console.error('Error: Scanner: add: The RE must not be empty')
                 return this
@@ -399,9 +417,13 @@ P2X.JScanner = function(name) {
                 fst_val = re
             }
             snd_val = action
-            this.action_dir[re.source] = [fst_val, snd_val]
+            snd_source = snd_val
+            if (typeof snd_val != 'number')
+                snd_val = ENUM.getParserTokenValue(String(snd_val))
             entry = [fst_val, snd_val]
+            entry.snd_source = snd_source
             entry.count = 0
+            this.action_dir[re.source] = entry
             this.actions.push(entry)
             return this
         },
@@ -422,7 +444,7 @@ P2X.JScanner = function(name) {
         get: function() {
             scconf = Array(this.actions.length)
             for (var k in this.actions) {
-                scconf[k] = {re: this.actions[k][0].source, action: this.actions[k][1]}
+                scconf[k] = {re: this.actions[k][0].source, action: this.actions[k].snd_source}
             }
             return P2X.ScannerConfig(scconf)
         },
@@ -1165,6 +1187,19 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
     }
 }
 
+P2X.parseJSONEval = function(text) {
+    var result, code, XXX
+    code = 'var XXX = ' + text
+    try {
+        eval(code)
+    } catch (me) {
+        console.error('Failed to parse config struct: ' + me)
+        console.error('Bad code: ' + code)
+        XXX = undefined
+    }
+    return XXX;
+}
+
 P2X.parseJSON = function(text) {
     var result, code, XXX
     code = 'var XXX = ' + text
@@ -1260,5 +1295,6 @@ if (typeof window == 'undefined') {
     exports.importObject = P2X.importObject
     exports.p2xj = P2X.p2xj;
     exports.parseJSON = P2X.parseJSON;
+    exports.escapeBS = P2X.escapeBS;
     //exports.P2X = P2X
 }

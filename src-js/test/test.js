@@ -53,6 +53,9 @@ describe('P2X.ScannerConfig', function(){
           scConf = P2X.ScannerConfig().loadXML(xmlRes)
           // console.log(xmlRes)
           // console.dir(scConf)
+          var scanner = P2X.JScanner()
+          // console.dir(scanner.set(scConf).get())
+          // console.dir(scanner.actions)
           // console.log(scConf.asxml(''))
           assert.equal(xmlRes, scConf.asxml(''));
       })
@@ -103,6 +106,43 @@ describe('P2X.ScannerConfig', function(){
       })
       it('set_get should return the same config', function(){
           var scConf = [
+              { re: 'abc', action: 49 },
+              { re: '1+2*3?', action: 49 },
+          ]
+          // console.dir(scConf)
+          // console.dir(setAndGetFromScanner(scConf).aslist())
+          assert.deepEqual(scConf, setAndGetFromScanner(scConf).aslist());
+      })
+      it('set_get should return the same config', function(){
+          var scConf = [
+              { re: 'abc', action: 49 },
+              { re: '1+2*3?', action: TOKEN_INTEGER },
+          ]
+          // console.dir(scConf)
+          // console.dir(setAndGetFromScanner(scConf).aslist())
+          assert.deepEqual(scConf, setAndGetFromScanner(scConf).aslist());
+      })
+      it('set_get should leave strings as is', function(){
+          var scConf = [
+              { re: 'abc', action: 'INTEGER' },
+              { re: '1+2*3?', action: 'TOKEN_INTEGER' },
+          ]
+          // console.dir(scConf)
+          // console.dir(setAndGetFromScanner(scConf).aslist())
+          assert.deepEqual(scConf, setAndGetFromScanner(scConf).aslist());
+      })
+      it('internally, the scanner should use integers', function(){
+          var scConf = [
+              { re: 'abc', action: 'INTEGER' },
+              { re: '1+2*3?', action: 'TOKEN_INTEGER' },
+          ]
+          var scanner = P2X.JScanner()
+          scanner.set(scConf)
+          // console.dir(scanner.actions)
+          assert.equal(typeof (scanner.actions[1][1]), 'number');
+      })
+      it('set_get should return the same config', function(){
+          var scConf = [
               { re: '\\(', action: 49 },
               { re: '\'', action: 48 },
               { re: '\\?', action: 48 },
@@ -139,8 +179,8 @@ describe('P2X.ScannerConfig', function(){
       })
       it('ScannerConfig can be serialized to JSON', function(){
           var scConf = [
-              { re: '123', action: 48 },
-              { re: 'abc', action: 120 },
+              { re: '123', action: 1148 },
+              { re: 'abc', action: 11120 },
           ]
           // console.dir(scConf)
           // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
@@ -148,12 +188,84 @@ describe('P2X.ScannerConfig', function(){
       })
       it('ScannerConfig can be serialized to JSON (II)', function(){
           var scConf = [
-              { re: '\'', action: 48 },
-              { re: 'abc', action: 120 },
+              { re: '\'', action: 1148 },
+              { re: 'abc', action: 11120 },
           ]
           // console.dir(scConf)
           // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
           assert.deepEqual(scConf, P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()));
+      })
+      it('ScannerConfig can be serialized to JSON (apos,bs char)', function(){
+          var scConf = [
+              { re: '\'\\\'', action: 1148 },
+              { re: 'abc', action: 11120 },
+          ]
+          // console.dir(scConf)
+          // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
+          assert.deepEqual(scConf, P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()));
+      })
+      it('ScannerConfig can be serialized to JSON (nl, tab char)', function(){
+          var scConf = [
+              { re: '\'\n\t', action: 1148 },
+              { re: 'abc', action: 11120 },
+          ]
+          // console.dir(scConf)
+          // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
+          assert.deepEqual(scConf, P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()));
+      })
+      it('ScannerConfig can be serialized to JSON (token codes are returned as names)', function(){
+          var scConf = [
+              { re: '\'\n\t', action: 48 },
+              { re: 'abc', action: 20 },
+          ]
+          var scConfR = [
+              { re: '\'\n\t', action: 'MINUS' },
+              { re: 'abc', action: 'KEYW_VAR' },
+          ]
+          // console.dir(scConf)
+          // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
+          assert.deepEqual(scConfR, P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()));
+      })
+      it('ScannerConfig can be serialized to JSON (file input)', function(){
+          var configFile = '../examples/configs/scanner-test1.json'
+          var scanner = P2X.JScanner()
+          console.log('load file ' + configFile)
+          var data = fs.readFileSync(configFile)
+          scanner.set(P2X.parseJSON(data))
+          // console.log('Scanner config loaded:')
+          // console.log(scanner.get())
+          // console.log(scanner.get().asjson())
+          // console.log(P2X.parseJSON(scanner.get().asjson()))
+          assert.deepEqual(scanner.get().aslist(), P2X.parseJSON(scanner.get().asjson()))
+      })
+      it('ScannerConfig can be serialized to JSON (scanner-c template input)', function(){
+          var configFile = '../examples/configs/scanner-c.json'
+          var scanner = P2X.JScanner()
+          console.log('load file ' + configFile)
+          var data = fs.readFileSync(configFile)
+          scanner.set(P2X.parseJSON(data))
+          // console.log('Scanner config loaded:')
+          // console.log(scanner.get())
+          // console.log(scanner.get().asjson())
+          // console.log(P2X.parseJSON(scanner.get().asjson()))
+          assert.deepEqual(scanner.get().aslist(), P2X.parseJSON(scanner.get().asjson()))
+      })
+      it('ScannerConfig can be serialized to JSON (large case)', function(){
+          var configFile = '../examples/configs/scanner-c.xml'
+          var scanner = P2X.JScanner()
+          // console.log('load file ' + configFile)
+          var data = fs.readFileSync(configFile)
+          var sconf = P2X.ScannerConfig().loadXML(data)
+          // console.dir(sconf.aslist())
+          // console.dir(scanner.set(sconf).get().aslist())
+          assert.deepEqual(sconf.aslist(), scanner.set(sconf).get().aslist())
+          scanner.set(sconf)
+          // console.log('Scanner config loaded:')
+          // console.log(scanner.get().asxml())
+          // console.log(scanner.actions)
+          // console.log(scanner.get().asjson())
+          // console.dir(P2X.parseJSON(scanner.get().asjson()))
+          assert.deepEqual(scanner.get().aslist(), P2X.parseJSON(scanner.get().asjson()))
       })
   })
   describe('#asxml()', function(){
@@ -839,5 +951,34 @@ describe('P2X.Parser', function(){
         assert.equal(res, xmlres)
     })
 
+
   })
 })
+
+describe('P2X.TextUtils', function(){
+    describe('#escapeBS()', function(){
+        it('should be identity with eval for strings', function(){
+            var str = 'abcde'
+            assert.equal(str, eval('\'' + P2X.escapeBS(str) + '\''));
+        })
+        it('should be identity with eval for strings', function(){
+            var str = '\\abcde'
+            assert.equal(str, eval('\'' + P2X.escapeBS(str) + '\''));
+        })
+        it('should be identity with eval for strings', function(){
+            var str = '\\abcd\"e'
+            // console.log('str::>' + str + '<\n')
+            // console.log('str::>' + P2X.escapeBS(str) + '<\n')
+            assert.equal(str, eval('\'' + P2X.escapeBS(str) + '\''));
+        })
+        it('should be identity with eval for strings', function(){
+            var str = '\\abcd\"\'e'
+            assert.equal(str, eval('\'' + P2X.escapeBS(str) + '\''));
+        })
+        it('should be identity with eval for strings', function(){
+            var str = '\\a\n\r\\\tbcd\"\'e'
+            assert.equal(str, eval('\'' + P2X.escapeBS(str) + '\''));
+        })
+    })
+})
+
