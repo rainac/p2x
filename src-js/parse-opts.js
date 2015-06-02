@@ -3,10 +3,10 @@ var POpts = POpts || {}
 
 POpts.parseOptions = function(argv, optDefs) {
     
-    var opt, optarg, options = {}
+    var opt, optarg, options = { arguments: [] }, k
     
     for (k in optDefs) {
-        od = optDefs[k]
+        var od = optDefs[k]
         if (! ('action' in Object.keys(od))) {
             od.action = function(data) {
                 if (this.long in options) {
@@ -48,13 +48,21 @@ POpts.parseOptions = function(argv, optDefs) {
     }
     
     for (k = 2; k < argv.length; ++k) {
+        var procd = false
         for (l = 0; l < optDefs.length; ++l) {
             optDef = optDefs[l]
             if (matchShortOption(optDef.short)) {
                 procShortOption(optDef)
+                procd = true
+                break
             } else if (matchLongOption(optDef.long)) {
                 procLongOption(optDef)
+                procd = true
+                break
             }
+        }
+        if (!procd) {
+            options.arguments[options.arguments.length] = argv[k]
         }
     }
 

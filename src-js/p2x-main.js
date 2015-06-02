@@ -126,7 +126,7 @@ function readScannerConfig() {
         var configFile = options['scanner-config'][0]
         fs.readFile(configFile, function(err, data) {
             if (err) throw(err)
-            loadScannerConfig(data)
+            loadScannerConfig('' + data)
         })
     } else {
         emitter.emit('next', readInput, 'readInput');
@@ -134,8 +134,14 @@ function readScannerConfig() {
 }
 
 function loadScannerConfig(cnfScanXML) {
-//    var sconf = P2X.ScannerConfig().loadXML(cnfScanXML)
-    var sconf = P2X.parseJSON(cnfScanXML)
+    //    var sconf = P2X.ScannerConfig().loadXML(cnfScanXML)
+    var sconf
+    if (cnfScanXML[0] == '<') {
+        sconf = P2X.ScannerConfig().loadXML(cnfScanXML)
+    } else {
+        sconf = P2X.parseJSON(cnfScanXML)
+    }
+    console.log('Scanner config parsed:' + sconf)
     scanner.set(sconf)
     // console.log('Scanner config loaded:')
     // console.log(scanner.get().asxml())

@@ -1,6 +1,7 @@
 
 var assert = require("assert")
 var fs = require("fs")
+var child_process = require('child_process')
 
 describe('Array', function(){
   describe('#indexOf()', function(){
@@ -982,3 +983,48 @@ describe('P2X.TextUtils', function(){
     })
 })
 
+
+describe('P2X.CLI', function(){
+  describe('#p2xjs()', function(){
+    var xmlres = fs.readFileSync('../examples/out/1p2ep3.xml')+''
+    var xmlres2 = fs.readFileSync('../examples/out/l1p2r.xml')+''
+
+    var pres1, pres2
+      
+    function runP2XJS(scanConfigFile, configFile, inputFile, done) {
+        var cmd = 'p2xjs -S ' + scanConfigFile + ' -p ' + configFile + ' ' + inputFile
+        console.log('run ' + cmd)
+        // system(cmd)
+        var child = child_process.exec(cmd, { stdio: 'inherit' },
+                                       function(errc, stdout, stderr)
+                                       {
+                                           if (errc) {
+                                               console.error('P2X exited with error:\n' + errc + stderr)
+                                               assert(false);
+                                           } else {
+                                               cnfXML = stdout;
+                                               // console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
+                                           }
+                                           done()
+                                       })
+    }
+      
+    it('p2xjs client command', function(done) {
+        var scanConfigFile = '../examples/configs/scanner-c.xml'
+        var configFile = '../examples/configs/default'
+        var inputFile = '../examples/in/postfix1.exp'
+        runP2XJS(scanConfigFile, configFile, inputFile, function(res) { pres1 = res; done() })
+    })
+
+    it('p2xjs client command, with JSON config files', function(done) {
+        var scanConfigFile = '../examples/configs/scanner-c.json'
+        var configFile = '../examples/configs/default'
+        var inputFile = '../examples/in/postfix1.exp'
+        runP2XJS(scanConfigFile, configFile, inputFile, function(res) {
+            pres2 = res;
+            assert.equal(pres1, pres2)
+            done()
+        })
+    })
+  })
+})
