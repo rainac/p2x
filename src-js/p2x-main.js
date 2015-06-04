@@ -22,8 +22,8 @@ if (typeof window == 'undefined') {
         { short: 'p', long: 'prec-list' },
         { short: 's', long: 'scan-only' },
         { short: 'S', long: 'scanner-config' },
-        { short: 'i', long: 'arguments' },
         { short: 'o', long: 'outfile' },
+        { short: 'c', long: 'include-config', flag: 1 },
     ]
     
     // console.dir(argv)
@@ -48,9 +48,8 @@ if (typeof window == 'undefined') {
         next()
     })
     
-    emitter.on('p2xerror', function(next, ev) {
-        // console.log('event "p2xerror" was triggered by:')
-        // console.dir(ev)
+    emitter.on('fail', function(next, ev) {
+        console.error('error: p2xjs: ')
         next()
     })
     
@@ -151,7 +150,7 @@ function loadScannerConfig(cnfScanXML) {
 }
 
 function readInput() {
-    if ('arguments' in options) {
+    if (options.arguments.length > 0) {
         var inFile = options['arguments'][0]
         fs.readFile(inFile, function(err, data) {
             if (err) throw(err)
@@ -172,6 +171,9 @@ function parseInput(data) {
     // console.log(tl.asxml())
     var res = parser.parse(tl)
     tpOptions = P2X.TreePrinterOptions();
+    if ('include-config' in options) {
+        tpOptions.scanConf = tpOptions.parseConf = tpOptions.treewriterConf = true
+    }
     var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)
     // console.log('result XML:')
     var res = tp.asxml(parser.root)

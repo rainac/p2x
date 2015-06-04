@@ -53,6 +53,11 @@ P2X.escapeBS = function(str){
         .replace(/\t/g, "\\t").replace(/\v/g, "\\v")
 }
 
+P2X.escapeBSQLines = function(str){
+    var escbs = P2X.escapeBS(str)
+    return '\'' + escbs.replace(/\\n((\\n)+|.)/g, "\\n'\n+'$1") + '\''
+}
+
 var escapeXML = function(str){
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 }
@@ -1099,9 +1104,10 @@ P2X.Parser = function(tokenInfo) {
 
 P2X.TreePrinterOptions = function() {
     return {
-        printScannerConfig: true,
-        printParserConfig: true,
-        printCaSteps: true,
+        parseConf: false,
+        scanConf: false,
+        treewriterConf: false,
+        caSteps: true,
         id: false,
         line: true,
         col: true, 
@@ -1118,13 +1124,38 @@ P2X.TreePrinterOptions = function() {
  }
 
 P2X.TreePrinter = function(tokenInfo, tpOptions) {
+    if (!tokenInfo) {
+        tokenInfo = P2X.TokenInfo()
+    }
+    if (!tpOptions) {
+        tpOptions = P2X.TreePrinterOptions()
+    }
     return {
         name: 'testTreePrinter',
         tokenInfo: tokenInfo,
         options: tpOptions,
-        asxml: function(t, indent) {
-            if (!indent) indent = ' '
+        asxml: function(t, indent, called) {
             var res = '';
+            if (!indent) indent = ' '
+            if (!called) {
+                res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
+                if (this.options.caSteps) {
+                    res += indent + "<ca:steps/>\n"
+                }
+                if (this.options.parseConf) {
+                    res += P2X.scanner.get().asxml()
+                }
+                if (this.options.parseConf) {
+                    var pcwr = P2X.ParserConfigRW();
+                    res += pcwr.asxml(this.tokenInfo.getconfig(), indent)
+                }
+                if (this.options.treewriterConf) {
+                    res += indent + '<tree-writer'
+                    for (key in this.options) {
+                        res += ' ' + key + '="' + this.options[key] + '"'
+                    }
+                }
+            }
             if (t) {
                 var tagname = 'op'
                 if (this.tokenInfo.isParen(t))
@@ -1137,54 +1168,51 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     tagname = 'id'
                 else if (t.token == TOKEN_ROOT)
                     tagname = 'root'
-                if (t.token == TOKEN_ROOT) {
-                    res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
-                    if (this.options.printCaSteps) {
-                        res += indent + "<ca:steps/>\n"
-                    }
-                    // if (this.options.printScannerConfig) {
-                    //     res += P2X.scanner.get().asxml()
-                    // }
-                     if (this.options.printParserConfig) {
-                         var pcwr = P2X.ParserConfigRW();
-//                         console.log('CCCC' + pcwr.asxml(this.tokenInfo.getconfig(), indent) + 'CCCC')
-                         res += pcwr.asxml(this.tokenInfo.getconfig(), indent)
-                     }
-                }
                 res += indent + '<' + tagname
-                if (this.options.line) {
-                    res += ' line="' + t.line + '"'
-                }
-                if (this.options.col) {
-                    res += ' col="' + t.col + '"'
+                if (t.line) {
+                    if (this.options.line) {
+                        res += ' line="' + t.line + '"'
+                    }
+                    if (this.options.col) {
+                        res += ' col="' + t.col + '"'
+                    }
                 }
                 if (this.options.code) {
                     res += ' code="' + this.tokenInfo.getOpCode(t) + '"'
                 }
                 if (t.text && t.token == TOKEN_IDENTIFIER)
                     res += ' repr="' + t.text + '"'
+                var ttext
                 if (this.options.type) {
-                    res += ' type="' + ENUM.ParserToken.names_index[t.token] + '"'
+                    if (t.token)
+                        ttext = ENUM.ParserToken.names_index[t.token]
+                    else 
+                        ttext = typeof t
+                    res += ' type="' + ttext + '"'
                 }
                 res += '>\n';
                 if (t.left) {
-                    res += this.asxml(t.left, indent + ' ');
+                    res += this.asxml(t.left, indent + ' ', true);
                 } else if (t.right) {
                     res += indent + ' <null/>\n';
                 }
-                if (t.text)
-                    res += indent + ' ' + P2X.TokenList.prototype.charasxml.apply({}, [t.text]) + '\n'
+                ttext = t.text || (t.token ? {text:''} : undefined) || t.toString() || string(t)
+                if (typeof ttext == "object" && Object.keys(ttext).indexOf('text') > -1)
+                    ttext = ttext.text
+                assert(typeof ttext == "string")
+                if (ttext)
+                    res += indent + ' ' + P2X.TokenList.prototype.charasxml.apply({}, [ttext]) + '\n'
                 if (t.content) {
-                    res += this.asxml(t.content, indent + ' ');
+                    res += this.asxml(t.content, indent + ' ', true);
                 } else if (t.right) {
                     if (this.options.strict)
                         res += indent + ' <null/>\n';
                 }
-                res += this.asxml(t.right, indent + ' ');
+                res += this.asxml(t.right, indent + ' ', true);
                 res += indent + '</' + tagname + '>\n';
-                if (t.token == TOKEN_ROOT) {
-                    res += '</' + 'code-xml' + '>\n';
-                }
+            }
+            if (!called) {
+                res += '</' + 'code-xml' + '>\n';
             }
             return res
         }
@@ -1287,6 +1315,7 @@ if (typeof window == 'undefined') {
     exports.JScanner = P2X.JScanner
     exports.ScannerConfig = P2X.ScannerConfig
     exports.scanner = P2X.scanner
+    exports.Token = P2X.Token
     exports.TokenList = P2X.TokenList
     exports.TokenInfo = P2X.TokenInfo
     exports.TokenProto = P2X.TokenProto
@@ -1300,5 +1329,6 @@ if (typeof window == 'undefined') {
     exports.p2xj = P2X.p2xj;
     exports.parseJSON = P2X.parseJSON;
     exports.escapeBS = P2X.escapeBS;
+    exports.escapeBSQLines = P2X.escapeBSQLines;
     //exports.P2X = P2X
 }

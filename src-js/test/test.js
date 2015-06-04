@@ -956,7 +956,149 @@ describe('P2X.Parser', function(){
   })
 })
 
+describe('P2X.TreePrinter', function(){
+    describe('#asxml()', function(){
+        it('It prints an XML tree of the object', function(){
+            var tp = P2X.TreePrinter()
+            var res = tp.asxml(undefined)
+            // console.log(P2X.escapeBSQLines(res))
+            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
++' <ca:steps/>\n'
++'</code-xml>\n'
+            assert.equal(res, check)
+        })
+        it('It prints an XML tree of the object', function(){
+            var tp = P2X.TreePrinter()
+            var res = tp.asxml(1)
+            // console.log(P2X.escapeBSQLines(res))
+            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
++' <ca:steps/>\n'
++' <op type=\"number\">\n'
++'  <ca:text>1</ca:text>\n'
++' </op>\n'
++'</code-xml>\n'
+            assert.equal(res, check)
+        })
+        it('It prints an XML tree of the object', function(){
+            var tp = P2X.TreePrinter()
+            var res = tp.asxml({token: TOKEN_ROOT})
+            // console.log(P2X.escapeBSQLines(res))
+            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
++' <ca:steps/>\n'
++' <root type=\"ROOT\">\n'
++' </root>\n'
++'</code-xml>\n'
+            assert.equal(res, check)
+        })
+        it('It prints an XML tree of the object', function(){
+            var tp = P2X.TreePrinter()
+            var res = tp.asxml({token: TOKEN_ROOT, right: { token: TOKEN_INTEGER, text: '2'}})
+            // console.log(P2X.escapeBSQLines(res))
+            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
++' <ca:steps/>\n'
++' <root type=\"ROOT\">\n'
++'  <null/>\n'
++'  <int type=\"INTEGER\">\n'
++'   <ca:text>2</ca:text>\n'
++'  </int>\n'
++' </root>\n'
++'</code-xml>\n'
+            assert.equal(res, check)
+        })
+        it('It prints an XML tree of the object', function(){
+            var tp = P2X.TreePrinter()
+            var res = tp.asxml({token: TOKEN_ROOT, right: { token: TOKEN_PLUS, text: '+', left: { token: TOKEN_INTEGER, text: '1'}, right: { token: TOKEN_INTEGER, text: '2'}}})
+            // console.log(P2X.escapeBSQLines(res))
+            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
++' <ca:steps/>\n'
++' <root type=\"ROOT\">\n'
++'  <null/>\n'
++'  <op type=\"PLUS\">\n'
++'   <int type=\"INTEGER\">\n'
++'    <ca:text>1</ca:text>\n'
++'   </int>\n'
++'   <ca:text>\+</ca:text>\n'
++'   <int type=\"INTEGER\">\n'
++'    <ca:text>2</ca:text>\n'
++'   </int>\n'
++'  </op>\n'
++' </root>\n'
++'</code-xml>\n'
+            assert.equal(res, check)
+        })
+        it('It prints an XML tree of the object', function(){
+            var tp = P2X.TreePrinter()
+            var tree = P2X.Token(TOKEN_ROOT)
+            tree.left = P2X.Token(TOKEN_PLUS, '+')
+            tree.left.left = P2X.Token(TOKEN_INTEGER, '1')
+            tree.left.right = P2X.Token(TOKEN_INTEGER, '2')
+            var res = tp.asxml(tree)
+            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
++' <ca:steps/>\n'
++' <root type=\"ROOT\">\n'
++'  <op type=\"PLUS\">\n'
++'   <int type=\"INTEGER\">\n'
++'    <ca:text>1</ca:text>\n'
++'   </int>\n'
++'   <ca:text>\+</ca:text>\n'
++'   <int type=\"INTEGER\">\n'
++'    <ca:text>2</ca:text>\n'
++'   </int>\n'
++'  </op>\n'
++' </root>\n'
++'</code-xml>\n'
+            assert.equal(res, check)
+        })
+        it('With option caSteps, the element can be included', function(){
+            var opts = P2X.TreePrinterOptions()
+            opts.caSteps = true
+            var tp = P2X.TreePrinter(undefined, opts)
+            var res = tp.asxml(1)
+            assert(res.indexOf('<ca:steps/>') > -1)
+        })
+        it('With option caSteps, the element can be included', function(){
+            var opts = P2X.TreePrinterOptions()
+            opts.caSteps = false
+            var tp = P2X.TreePrinter(undefined, opts)
+            var res = tp.asxml(1)
+            assert(res.indexOf('<ca:steps/>') == -1)
+        })
+    })
+})
+
 describe('P2X.TextUtils', function(){
+    describe('#escapeBSQLines()', function(){
+        it('should be identity with eval for strings', function(){
+            var str = 'ab\ncde'
+            var qlines = '\'ab\\n\'\n+\'cde\''
+            assert.equal(P2X.escapeBSQLines(str), qlines);
+        })
+        it('should be identity with eval for strings', function(){
+            var str = 'ab\ncd\ne'
+            var qlines = '\'ab\\n\'\n+\'cd\\n\'\n+\'e\''
+            assert.equal(P2X.escapeBSQLines(str), qlines);
+        })
+        it('should be identity with eval for strings', function(){
+            var str = 'ab\n cd\n e'
+            var qlines = '\'ab\\n\'\n+\' cd\\n\'\n+\' e\''
+            assert.equal(P2X.escapeBSQLines(str), qlines);
+        })
+        it('should be identity with eval for strings', function(){
+            var str = 'abcde\n'
+            var qlines = '\'abcde\\n\''
+            assert.equal(P2X.escapeBSQLines(str), qlines);
+        })
+        it('should be identity with eval for strings', function(){
+            var str = 'abc\n\nde'
+            var qlines = '\'abc\\n\'\n+\'\\nde\''
+            assert.equal(P2X.escapeBSQLines(str), qlines);
+        })
+        it('should be identity with eval for strings', function(){
+            var str = 'abc\n\n\n\nde'
+            var qlines = '\'abc\\n\'\n+\'\\n\\n\\nde\''
+            assert.equal(P2X.escapeBSQLines(str), qlines);
+        })
+    })
     describe('#escapeBS()', function(){
         it('should be identity with eval for strings', function(){
             var str = 'abcde'
@@ -990,9 +1132,10 @@ describe('P2X.CLI', function(){
     var xmlres2 = fs.readFileSync('../examples/out/l1p2r.xml')+''
 
     var pres1, pres2
+    var mode = '';
       
     function runP2XJS(scanConfigFile, configFile, inputFile, done) {
-        var cmd = 'p2xjs -S ' + scanConfigFile + ' -p ' + configFile + ' ' + inputFile
+        var cmd = 'p2xjs' + (mode ? ' ' + mode : '')  + ' -S ' + scanConfigFile + ' -p ' + configFile + ' ' + inputFile
         console.log('run ' + cmd)
         // system(cmd)
         var child = child_process.exec(cmd, { stdio: 'inherit' },
@@ -1021,9 +1164,37 @@ describe('P2X.CLI', function(){
         var configFile = '../examples/configs/default'
         var inputFile = '../examples/in/postfix1.exp'
         runP2XJS(scanConfigFile, configFile, inputFile, function(res) {
-            pres2 = res;
-            assert.equal(pres1, pres2)
+            assert.equal(pres1, res)
             done()
+        })
+    })
+
+    it('scanner config file can be converted to JSON separately', function(done) {
+        var scanConfigFile = '../examples/configs/scanner-c.xml'
+        var scanConfigFileXML = '../examples/configs/scanner-c.json'
+        mode = 'scanconf-xml2json'
+        runP2XJS(scanConfigFile, '', '', function(res) {
+            fs.readFile(scanConfigFileXML, function(err, data) {
+                assert.equal(res, data + '')
+                done()
+            })
+        })
+    })
+
+    it('scanner config file can be converted to JSON separately, used as config file', function(done) {
+        var scanConfigFile = '../examples/configs/scanner-c.xml'
+        var configFile = '../examples/configs/default'
+        var inputFile = '../examples/in/postfix1.exp'
+        mode = 'scanconf-xml2json'
+        runP2XJS(scanConfigFile, configFile, inputFile, function(res) {
+            fs.writeFile(scanConfigFileJSON, res, function(err) {
+                if (err) throw err;
+                mode = ''
+                runP2XJS(scanConfigFileJSON, configFile, inputFile, function(res) {
+                    assert.equal(pres1, res)
+                    done()
+                })
+            })
         })
     })
   })
