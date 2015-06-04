@@ -23,6 +23,7 @@ if (typeof window == 'undefined') {
         { short: 's', long: 'scan-only' },
         { short: 'S', long: 'scanner-config' },
         { short: 'i', long: 'arguments' },
+        { short: 'o', long: 'outfile' },
     ]
     
     // console.dir(argv)
@@ -86,7 +87,7 @@ function importParserConfig(pconf, callback) {
 }
 
 function interpretParserConfigText(pconf, callback) {
-    console.log(pconf)
+//    console.log(pconf)
     if (pconf[0] == '<') {
         pcrw = P2X.ParserConfigRW()
         callback(pcrw.loadXML(pconf))
@@ -141,7 +142,7 @@ function loadScannerConfig(cnfScanXML) {
     } else {
         sconf = P2X.parseJSON(cnfScanXML)
     }
-    console.log('Scanner config parsed:' + sconf)
+//    console.log('Scanner config parsed:' + sconf)
     scanner.set(sconf)
     // console.log('Scanner config loaded:')
     // console.log(scanner.get().asxml())
@@ -173,5 +174,12 @@ function parseInput(data) {
     tpOptions = P2X.TreePrinterOptions();
     var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)
     // console.log('result XML:')
-    console.log(tp.asxml(parser.root))
+    var res = tp.asxml(parser.root)
+
+    if ('outfile' in options) {
+        var outfile = options['outfile'][0];
+        fs.writeFile(outfile, res)
+    } else {
+        console.log(res)
+    }
 }

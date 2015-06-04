@@ -1099,8 +1099,9 @@ P2X.Parser = function(tokenInfo) {
 
 P2X.TreePrinterOptions = function() {
     return {
-        printScannerConfig: false,
-        printParserConfig: false,
+        printScannerConfig: true,
+        printParserConfig: true,
+        printCaSteps: true,
         id: false,
         line: true,
         col: true, 
@@ -1123,7 +1124,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         options: tpOptions,
         asxml: function(t, indent) {
             if (!indent) indent = ' '
-            res = '';
+            var res = '';
             if (t) {
                 var tagname = 'op'
                 if (this.tokenInfo.isParen(t))
@@ -1138,14 +1139,17 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     tagname = 'root'
                 if (t.token == TOKEN_ROOT) {
                     res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
-                    res += indent + "<ca:steps/>\n"
-                    if (this.options.printScannerConfig) {
-                        res += P2X.scanner.get().asxml(indent)
+                    if (this.options.printCaSteps) {
+                        res += indent + "<ca:steps/>\n"
                     }
-                    if (this.options.printParserConfig) {
-                        var pcwr = P2X.ParserConfigRW();
-                        res += pcwr.asxml(this.tokenInfo.getconfig(), indent)
-                    }
+                    // if (this.options.printScannerConfig) {
+                    //     res += P2X.scanner.get().asxml()
+                    // }
+                     if (this.options.printParserConfig) {
+                         var pcwr = P2X.ParserConfigRW();
+//                         console.log('CCCC' + pcwr.asxml(this.tokenInfo.getconfig(), indent) + 'CCCC')
+                         res += pcwr.asxml(this.tokenInfo.getconfig(), indent)
+                     }
                 }
                 res += indent + '<' + tagname
                 if (this.options.line) {
