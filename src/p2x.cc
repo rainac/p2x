@@ -226,7 +226,9 @@ struct TokenInfo {
   }
 
   void initMandatory() {
-    prototypes[TOKEN_JUXTA] = TokenProto(Token(TOKEN_JUXTA, "j"), 900, MODE_BINARY, ASSOC_LEFT);
+    TokenProto tpj = TokenProto(Token(TOKEN_JUXTA, "j"), 900, MODE_BINARY, ASSOC_LEFT);
+    tpj.outputMode = OUTPUT_MODE_NESTED;
+    prototypes[TOKEN_JUXTA] = tpj;
   }
 
   void initConvenient() {
@@ -1226,8 +1228,12 @@ struct TreeXMLWriter {
     aus << " mode='" << tp.mode << "'";
     if (Parser::isOp(tp.mode)) {
       aus << " precedence='" << tp.precedence << "'";
-      aus << " associativity='" << tp.associativity << "'";
-      aus << " output-mode='" << getOutputModeName(tp.outputMode) << "'";
+      if (tp.associativity != ASSOC_NONE) {
+        aus << " associativity='" << tp.associativity << "'";
+      }
+      if (tp.outputMode != OUTPUT_MODE_NESTED) {
+        aus << " output-mode='" << getOutputModeName(tp.outputMode) << "'";
+      }
     }
     if (tp.mode == MODE_UNARY_BINARY) {
       aus << " unary-precedence='" << tp.unaryPrecedence << "'";
@@ -2069,7 +2075,7 @@ int main(int argc, char *argv[]) {
     out << char(0xff);
   if (treeXMLWriter.options.xmlDecl)
     out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>" << treeXMLWriter.linebreak;
+  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "' ca:version='1.0'>" << treeXMLWriter.linebreak;
   out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
   out << treeXMLWriter.indentUnit << "<ca:scanner type='"
       << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
