@@ -226,6 +226,8 @@ struct TokenInfo {
   }
 
   void initMandatory() {
+    TokenProto tpi = TokenProto(Token(TOKEN_IGNORE, ""), 1, MODE_IGNORE);
+    prototypes[TOKEN_IGNORE] = tpi;
     TokenProto tpj = TokenProto(Token(TOKEN_JUXTA, "j"), 900, MODE_BINARY, ASSOC_LEFT);
     tpj.outputMode = OUTPUT_MODE_NESTED;
     prototypes[TOKEN_JUXTA] = tpj;
@@ -986,9 +988,14 @@ struct TreeXMLWriter {
       strict(),
       xmlDecl(),
       bom(),
+      scanConf(),
+      parseConf(),
+      treewriterConf(),
+      caSteps(true),
       encoding("default is in .ggo")
     {}
-    bool id, line, col, _char, prec, mode, type, code, indent, newlineAsBr, merged, strict, xmlDecl, bom;
+    bool id, line, col, _char, prec, mode, type, code, indent, newlineAsBr, merged, strict,
+      xmlDecl, bom, scanConf, parseConf, treewriterConf, caSteps;
     std::string encoding;
   };
   TokenInfo const &tokenInfo;
@@ -1010,10 +1017,12 @@ struct TreeXMLWriter {
   }
 
   void writeXMLLocAttrs(Token const *t, std::ostream &aus) const {
-    if (options.line)
-      aus << " line='" << t->line << "'";
-    if (options.col)
-      aus << " col='" << t->column << "'";
+    if (t->line) {
+      if (options.line)
+        aus << " line='" << t->line << "'";
+      if (options.col)
+        aus << " col='" << t->column << "'";
+    }
     if (options._char)
       aus << " char='" << t->character << "'";
   }
@@ -1753,6 +1762,15 @@ int main(int argc, char *argv[]) {
     options.xmlDecl = args.write_xml_declaration_flag;
   }
 
+  if (args.include_config_flag || args.include_scanner_config_flag) {
+    options.scanConf = true;
+  }
+  if (args.include_config_flag || args.include_parser_config_flag) {
+    options.parseConf = true;
+  }
+  if (args.include_config_flag || args.include_treewriter_config_flag) {
+    options.treewriterConf = true;
+  }
   options.bom = args.write_bom_flag;
 
   std::ostream &out = std::cout;
@@ -2076,11 +2094,15 @@ int main(int argc, char *argv[]) {
   if (treeXMLWriter.options.xmlDecl)
     out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "' ca:version='1.0'>" << treeXMLWriter.linebreak;
-  out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
-  out << treeXMLWriter.indentUnit << "<ca:scanner type='"
-      << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
-  treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
-  treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
+  if (treeXMLWriter.options.caSteps)
+    out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
+  if (treeXMLWriter.options.scanConf)
+    out << treeXMLWriter.indentUnit << "<ca:scanner type='"
+        << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
+  if (treeXMLWriter.options.parseConf)
+    treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
+  if (treeXMLWriter.options.treewriterConf)
+    treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
   treeXMLWriter.writeXML(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
 
