@@ -1,6 +1,6 @@
 <code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>
  <ca:steps/>
- <root line="0" col="0" type="ROOT">
+ <root type="ROOT">
   <null/>
   <paren line="1" col="1" type="L_PAREN">
    <id line="1" col="0" repr="f" type="IDENTIFIER">
