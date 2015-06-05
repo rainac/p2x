@@ -836,7 +836,7 @@ P2X.TokenInfo = function() {
         getOpCode: function (tl, repr) {
             var res
             if (typeof tl == 'object' && 'token' in tl) {
-                res = this.getOpCode(tl.token, tl.repr)
+                res = this.getOpCode(tl.token, tl.text)
             } else if (tl == TOKEN_IDENTIFIER && repr in this.seen) {
                 res = this.seen[repr]
             } else if (tl in ENUM.ParserToken.names_index) { // case TOKEN_IDENTIFIER handled before
@@ -1063,8 +1063,9 @@ P2X.Parser = function(tokenInfo) {
             var endFound = false;
             do {
                 first = this.input.next()
-                // console.log("Parser: next, code: " + this.tokenInfo.getOpCode(first)
-                //          + ', mode: ' + ENUM.getParserModeName(this.tokenInfo.mode(first)) + ', prec: ' + this.tokenInfo.prec(first))
+                // console.log("Parser: next, text='" + first.text
+                //             + "' code: " + this.tokenInfo.getOpCode(first)
+                //             + ', mode: ' + ENUM.getParserModeName(this.tokenInfo.mode(first)) + ', prec: ' + this.tokenInfo.prec(first))
                 // console.dir(first)
                 if (typeof first == "undefined") {
                     console.error("Parser: unexpected end found, exiting")

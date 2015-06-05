@@ -878,6 +878,32 @@ describe('P2X.Parser', function(){
         assert.equal(res, xmlres)
     })
 
+    it('testing named postfix op', function() {
+        var xmlres = fs.readFileSync('../examples/out/ftp3.xml')+''
+        var scConf = [
+            { re: '\\+',    action: TOKEN_PLUS },
+            { re: '\\*',    action: TOKEN_MULT },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+            { re: '[a-zA-Z]+', action: TOKEN_IDENTIFIER },
+        ]
+        var input = 'f T + 2'
+        var parseConf = [
+            { type: TOKEN_IDENTIFIER, repr: 'T', mode: MODE_POSTFIX, prec: 3000 },
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]
+        var tpopts = P2X.TreePrinterOptions()
+        tpopts.line = false
+        tpopts.col = false
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: tpopts}
+        res = P2X.p2xj(input, p2xConfig)
+
+        // console.log(res)
+        // console.log(xmlres)
+        assert.equal(res, xmlres)
+    })
+
     it('testing postfix op (missing prec)', function() {
         var xmlres = fs.readFileSync('../examples/out/ftp2.xml')+''
         var scConf = [
