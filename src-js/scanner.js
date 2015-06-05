@@ -159,7 +159,9 @@ P2X.TokenList.prototype.mkeof = function() {
     } else {
         eof = P2X.Token(TOKEN_EOF, '', 0, 1, 0)
     }
-    return new P2X.TokenList([].concat(this.list, [eof]))
+    var res = new P2X.TokenList([].concat(this.list, [eof]))
+    res.scanner = this.scanner
+    return res
 }
 P2X.TokenList.prototype.mkroot = function() {
     // return new P2X.TokenList([].concat([P2X.Token(TOKEN_ROOT, '', 0, 0, 0)], this.list))
@@ -1052,6 +1054,8 @@ P2X.Parser = function(tokenInfo) {
             if (typeof (this.endList) == "undefined") 
                 this.endList = [this.tokenInfo.getOpCode(TOKEN_EOF)]
             this.root = this.mkroot()
+            this.root.parser = this
+            this.root.scanner = tlist.scanner
             this.input = tlist;
 
             var first
@@ -1143,11 +1147,11 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     res += indent + "<ca:steps/>\n"
                 }
                 if (this.options.parseConf) {
-                    res += P2X.scanner.get().asxml()
+                    res += t.scanner.get().asxml()
                 }
                 if (this.options.parseConf) {
                     var pcwr = P2X.ParserConfigRW();
-                    res += pcwr.asxml(this.tokenInfo.getconfig(), indent)
+                    res += pcwr.asxml(t.parser.getconfig(), indent)
                 }
                 if (this.options.treewriterConf) {
                     res += indent + '<tree-writer'
