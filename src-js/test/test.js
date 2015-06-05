@@ -1135,8 +1135,11 @@ describe('P2X.CLI', function(){
     var mode = '';
       
     function runP2XJS(scanConfigFile, configFile, inputFile, done) {
-        var cmd = 'p2xjs' + (mode ? ' ' + mode : '')  + ' -S ' + scanConfigFile + ' -p ' + configFile + ' ' + inputFile
-        console.log('run ' + cmd)
+        var cmd = 'p2xjs' + (mode ? ' ' + mode : '')
+            + (scanConfigFile ? ' -S ' + scanConfigFile : '')
+            + (configFile ? ' -p ' + configFile : '')
+            + (inputFile ? ' ' + inputFile : '')
+        // console.log('run ' + cmd)
         // system(cmd)
         var child = child_process.exec(cmd, { stdio: 'inherit' },
                                        function(errc, stdout, stderr)
@@ -1145,10 +1148,9 @@ describe('P2X.CLI', function(){
                                                console.error('P2X exited with error:\n' + errc + stderr)
                                                assert(false);
                                            } else {
-                                               cnfXML = stdout;
                                                // console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
                                            }
-                                           done()
+                                           done(stdout)
                                        })
     }
       
@@ -1170,11 +1172,12 @@ describe('P2X.CLI', function(){
     })
 
     it('scanner config file can be converted to JSON separately', function(done) {
-        var scanConfigFile = '../examples/configs/scanner-c.xml'
-        var scanConfigFileXML = '../examples/configs/scanner-c.json'
+        var scanConfigFile = '../examples/configs/scanner-c.json'
+        var scanConfigFileXML = '../examples/configs/scanner-c.xml'
         mode = 'scanconf-xml2json'
-        runP2XJS(scanConfigFile, '', '', function(res) {
-            fs.readFile(scanConfigFileXML, function(err, data) {
+        runP2XJS(scanConfigFileXML, '', '', function(res) {
+            fs.readFile(scanConfigFile, function(err, data) {
+                if (err) throw err
                 assert.equal(res, data + '')
                 done()
             })
@@ -1183,10 +1186,11 @@ describe('P2X.CLI', function(){
 
     it('scanner config file can be converted to JSON separately, used as config file', function(done) {
         var scanConfigFile = '../examples/configs/scanner-c.xml'
+        var scanConfigFileJSON = '/tmp/scanner-c.json'
         var configFile = '../examples/configs/default'
         var inputFile = '../examples/in/postfix1.exp'
         mode = 'scanconf-xml2json'
-        runP2XJS(scanConfigFile, configFile, inputFile, function(res) {
+        runP2XJS(scanConfigFile, undefined, undefined, function(res) {
             fs.writeFile(scanConfigFileJSON, res, function(err) {
                 if (err) throw err;
                 mode = ''
