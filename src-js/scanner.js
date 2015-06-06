@@ -944,7 +944,8 @@ P2X.Parser = function(tokenInfo) {
             return P2X.Token(TOKEN_ROOT, '', 0, 0, 0);
         },
         mkJuxta: function(t) {
-            return P2X.Token(TOKEN_JUXTA, '', t.line, t.column, t.index);
+            var res = P2X.Token(TOKEN_JUXTA, '', t.index, t.line, t.col, t.index);
+            return res
         },
         getRM: function(t) {
             while (t.right) {
@@ -1023,16 +1024,6 @@ P2X.Parser = function(tokenInfo) {
                 this.pushUnary(t);
             } else {
                 this.pushBinary(t);
-            }
-        },
-        pushIgnoreNoEnter: function(t) {
-            if (!this.options.ignoreIgnore) {
-                var rm = this.getRM(root);
-                var tend = t;
-                while (tend.ignore) 
-                    tend = tend.ignore;
-                tend.ignore = rm.ignore;
-                rm.ignore = t;
             }
         },
         pushIgnore: function(t) {
@@ -1336,7 +1327,7 @@ P2X.p2xj = function(input, p2xConf, result) {
     scanner.set(scanConf)
 
     if (p2xConf.debug) {
-        result.scanconf = scanner.get().toSource()
+        result.scanconf = scanner.get()
     }
     
     var parseConf = p2xConf.parser
@@ -1354,7 +1345,7 @@ P2X.p2xj = function(input, p2xConf, result) {
 
     if (p2xConf.debug) {
         var pcrw = P2X.ParserConfigRW()
-        result.parseconf = pcrw.asJSON(parser.getconfig())
+        result.parseconf = parser.getconfig()
     }
     
     scanner.str(input)
@@ -1367,7 +1358,7 @@ P2X.p2xj = function(input, p2xConf, result) {
     var res = parser.parse(tl)
 
     if (p2xConf.debug) {
-        result.parseres = res
+        result.parseres = parser.root
     }
 
     var tpOptions = p2xConf.treeprinter;

@@ -917,6 +917,24 @@ describe('P2X.Parser', function(){
         assert.equal(res, check)        
     })
 
+    it('testing JUXTA ops', function() {
+        var scConf = [
+            { re: ' +', action: TOKEN_IGNORE },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+        ]
+        var input = '1 2 3 4'
+        var parseConf = {
+            ignoreIgnore: true,
+            rules: [ ]
+        }
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions(), debug: true}
+        var result = {}
+        var res = P2X.p2xj(input, p2xConfig, result)
+
+        assert.equal(result.parseres.right.line, 1)
+        assert.equal(result.parseres.right.col, 6)
+    })
+
     it('testing postfix op', function() {
         var xmlres = fs.readFileSync('../examples/out/ftp2.xml')+''
         var scConf = [

@@ -3,6 +3,7 @@
  <root type="ROOT">
   <null/>
   <paren line="1" col="0" type="L_PAREN">
+   <null/>
    <ca:text>(</ca:text>
    <op line="1" col="2" type="PLUS">
     <int line="1" col="1" type="INTEGER">
