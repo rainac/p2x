@@ -37,7 +37,7 @@
 {"re":"(\\n)","action":"TOKEN_NEWLINE"},
 {"re":"(\\t)","action":"TOKEN_TAB"},
 {"re":"( )+","action":"TOKEN_SPACE"},
-{"re":"(((([a-z])|([A-Z])|([\\u0100-\\uffff])))((([a-z])|([A-Z])|([\\u0100-\\uffff]))|([0-9])|(_))*)","action":"TOKEN_IDENTIFIER"},
+{"re":"(((([a-z])|([A-Z])|([\\u0080-\\uffff])))((([a-z])|([A-Z])|([\\u0080-\\uffff]))|([0-9])|(_))*)","action":"TOKEN_IDENTIFIER"},
 {"re":".","action":"TOKEN_ILLEGAL_CHAR"},
 ]
 

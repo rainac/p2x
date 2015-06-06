@@ -38,6 +38,6 @@
   <ca:lexem><ca:re>(\n)</ca:re><ca:action>TOKEN_NEWLINE</ca:action></ca:lexem>
   <ca:lexem><ca:re>(\t)</ca:re><ca:action>TOKEN_TAB</ca:action></ca:lexem>
   <ca:lexem><ca:re>( )+</ca:re><ca:action>TOKEN_SPACE</ca:action></ca:lexem>
-  <ca:lexem><ca:re>(((([a-z])|([A-Z])|([\u0100-\uffff])))((([a-z])|([A-Z])|([\u0100-\uffff]))|([0-9])|(_))*)</ca:re><ca:action>TOKEN_IDENTIFIER</ca:action></ca:lexem>
+  <ca:lexem><ca:re>(((([a-z])|([A-Z])|([\u0080-\uffff])))((([a-z])|([A-Z])|([\u0080-\uffff]))|([0-9])|(_))*)</ca:re><ca:action>TOKEN_IDENTIFIER</ca:action></ca:lexem>
   <ca:lexem><ca:re>.</ca:re><ca:action>TOKEN_ILLEGAL_CHAR</ca:action></ca:lexem>
 </ca:scanner-config>
