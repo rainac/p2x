@@ -1025,16 +1025,28 @@ P2X.Parser = function(tokenInfo) {
                 this.pushBinary(t);
             }
         },
+        pushIgnoreNoEnter: function(t) {
+            if (!this.options.ignoreIgnore) {
+                var rm = this.getRM(root);
+                var tend = t;
+                while (tend.ignore) 
+                    tend = tend.ignore;
+                tend.ignore = rm.ignore;
+                rm.ignore = t;
+            }
+        },
         pushIgnore: function(t) {
             if (!this.options.ignoreIgnore) {
+                // console.log('pushIgnore: ')
+                // console.dir(t)
                 var rm = this.getRM(this.root);
                 while (rm.content) {
                     rm = this.getRM(rm.content);
                 }
                 // console.log('rm: ')
-                // console.dir(rm)
                 t.ignore = rm.ignore;
                 rm.ignore = t;
+                // console.dir(rm)
             }
         },
         rightEdgeOpen: function() {
@@ -1110,19 +1122,16 @@ P2X.Parser = function(tokenInfo) {
                     // console.dir(parser.endList)
                     
                     var last = parser.parse(this.input)
-                    
                     parser.pushIgnore(last);
 
-                    first.content = parser.root.right
-                    
-                    assert(first.left == null)
-                    assert(first.right == null)
-                    
                     this.insertToken(first)
 
                     if (parser.root.ignore) {
                         this.pushIgnore(parser.root.ignore);
                     }
+
+                    first.content = parser.root.right
+                    
                 } else {
                     this.insertToken(first)
                 }
@@ -1204,7 +1213,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 res += '>\n';
                 if (t.left) {
                     res += this.asxml(t.left, indent + ' ', true);
-                } else if (t.right) {
+                } else if (t.right || t.content) {
                     res += indent + ' <null/>\n';
                 }
                 res += this.writeXMLTextElem(t, indent + ' ')
@@ -1269,6 +1278,9 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         },
         writeIgnoreXML: function(t, indent) {
             var res = ''
+            if (t.ignore) {
+                res += this.writeIgnoreXML(t.ignore, indent)
+            }
             res += indent + "<ca:ignore";
             if (this.options.id)
                 res += " id='" << t.id << "'";

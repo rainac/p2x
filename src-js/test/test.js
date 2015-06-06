@@ -778,6 +778,21 @@ describe('P2X.JScanner', function(){
 
     })
 
+    it('has UTF-8 support', function() {
+        var input = fs.readFileSync('../examples/in/utf8-ident.exp')+''
+        var scConf = P2X.parseJSON(fs.readFileSync('../examples/configs/scanner-c.json')+'')
+        var scanner = P2X.JScanner()
+        scanner.set(scConf)
+        scanner.str(input)
+        var tl = scanner.lexall()
+        // console.dir(tl)
+        // console.dir(tl.list.map(function(x) { return x.token }))
+        assert.equal(tl.list.length, 9);
+        assert.deepEqual(tl.list.map(function(x) { return x.token }),
+                         [31,68,31,68,31,68,31,68,31])
+
+    })
+
   })
 })
 
@@ -854,8 +869,52 @@ describe('P2X.Parser', function(){
         var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
         
-        // console.log(res)
+        console.log(res)
+        console.log(xmlres2)
         assert.equal(res, xmlres2)
+    })
+
+    it('testing ignored items', function() {
+        var scConf = [
+            { re: '\\(',    action: TOKEN_IGNORE },
+            { re: '\\)',    action: TOKEN_IGNORE },
+            { re: '=',      action: TOKEN_EQUAL },
+            { re: '\\+',    action: TOKEN_PLUS },
+            { re: '\\*',    action: TOKEN_MULT },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+        ]
+        var input = '1+()2'
+        var parseConf = {
+            ignoreIgnore: false,
+            rules: [
+                { type: TOKEN_L_PAREN, isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
+                { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+                { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+                { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+            ]
+        }
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var res = P2X.p2xj(input, p2xConfig)
+
+        var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
++' <ca:steps/>\n'
++' <root type=\"ROOT\">\n'
++'  <null/>\n'
++'  <op line=\"1\" col=\"1\" type=\"PLUS\">\n'
++'   <int line=\"1\" col=\"0\" type=\"INTEGER\">\n'
++'    <ca:text>1</ca:text>\n'
++'   </int>\n'
++'   <ca:text>\+</ca:text>\n'
++'   <ca:ignore line=\"1\" col=\"2\" type=\"IGNORE\"><ca:text>\(</ca:text></ca:ignore>\n'
++'   <ca:ignore line=\"1\" col=\"3\" type=\"IGNORE\"><ca:text>\)</ca:text></ca:ignore>\n'
++'   <int line=\"1\" col=\"4\" type=\"INTEGER\">\n'
++'    <ca:text>2</ca:text>\n'
++'   </int>\n'
++'  </op>\n'
++' </root>\n'
++'</code-xml>\n'
+
+        assert.equal(res, check)        
     })
 
     it('testing postfix op', function() {
