@@ -432,6 +432,9 @@ describe('P2X.ParserConfig', function(){
             tt.insert(P2X.TokenProto(TOKEN_PLUS, '/', MODE_UNARY_BINARY, ASSOC_LEFT, undefined, undefined, false))
             tt.insert(P2X.TokenProto(TOKEN_MULT, '*', MODE_BINARY, ASSOC_LEFT, undefined, undefined, false))
             assert.equal(tt.prec(TOKEN_TILDE), 2)
+            assert.equal(tt.prec(TOKEN_PLUS), 2)
+            assert.equal(tt.precUnary(TOKEN_PLUS), 2)
+            assert.equal(tt.prec(TOKEN_MULT), 2)
         })
         it('for plain token, opcode == type', function(){
             var tt = P2X.TokenInfo()
@@ -455,17 +458,29 @@ describe('P2X.ParserConfig', function(){
             } catch (ME) {
             }
         })
-        it('ignore mode is ignore', function(){
+        it('ignore mode is ignored', function(){
             var tt = P2X.TokenInfo()
             assert.equal(tt.mode(TOKEN_IGNORE), MODE_IGNORE)
         })
-        it('ignore mode is ignore', function(){
+        it('ignore mode is ignored', function(){
             try {
                 var tt = P2X.TokenInfo()
                 tt.insert(P2X.TokenProto(TOKEN_IGNORE, '/', MODE_UNARY, ASSOC_NONE, 100, undefined, false))
                 assert.equal(0, 1)
             } catch (ME) {
             }
+        })
+        it('precedence of unary_binary is determined dynamically', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(TOKEN_TILDE, '~', MODE_UNARY_BINARY, ASSOC_LEFT, 100, 200, false))
+            assert.equal(tt.mode(TOKEN_TILDE), MODE_UNARY_BINARY)
+            child = {token: TOKEN_INTEGER, text: '122'}
+            node = { token: MODE_UNARY_BINARY, text: '-', left: child, right: child}
+            assert.equal(tt.binary_prec({ token: TOKEN_TILDE, left: child, right: child}), 100)
+            assert.equal(tt.unary_prec({ token: TOKEN_TILDE, left: child, right: child}), 200)
+            assert.equal(tt.precedence({ token: TOKEN_TILDE, left: undefined, right: child}), 200)
+            assert.equal(tt.precedence({ token: TOKEN_TILDE, left: child, right: child}), 100)
+            assert.equal(tt.precedence({ token: TOKEN_TILDE, left: child, right: undefined}), 100)
         })
         it('it should be possible to change the prec, assoc of JUXTA', function() {
             var tt = P2X.TokenInfo()
@@ -799,7 +814,8 @@ describe('P2X.JScanner', function(){
 
 describe('P2X.Parser', function(){
   describe('#parse()', function(){
-    var xmlres = fs.readFileSync('../examples/out/1p2ep3.xml')+''
+      var xmlres = fs.readFileSync('../examples/out/1p2ep3.xml')+''
+      console.log(xmlres)
     var xmlres2 = fs.readFileSync('../examples/out/l1p2r.xml')+''
 
     it('it should return an expression tree', function() {
@@ -825,11 +841,13 @@ describe('P2X.Parser', function(){
 
         res = tp.asxml(parser.root)
 
-        // console.log(res)
+//        console.log(P2X.escapeBSQLines(res))
+        console.log(res)
         assert.equal(res, xmlres);
     })
 
     it('the same with the easy-to-use function', function() {
+        console.log('IT' + xmlres)
         var scConf = [
             { re: '=',      action: TOKEN_EQUAL },
             { re: '\\+',    action: TOKEN_PLUS },
@@ -843,7 +861,8 @@ describe('P2X.Parser', function(){
         var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
 
-        // console.log(res)
+        console.log(res)
+        console.log('RES' + xmlres)
         assert.equal(res, xmlres);
     })
 
@@ -862,7 +881,7 @@ describe('P2X.Parser', function(){
             rules: [
                 { type: TOKEN_L_PAREN, isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
                 { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
-                { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+                { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
                 { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
             ]
         }
@@ -889,7 +908,7 @@ describe('P2X.Parser', function(){
             rules: [
                 { type: TOKEN_L_PAREN, isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
                 { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
-                { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+                { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
                 { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
             ]
         }
@@ -948,7 +967,7 @@ describe('P2X.Parser', function(){
         var parseConf = [
             { type: TOKEN_QUOTE, mode: MODE_POSTFIX, prec: 3000 },
             { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
-            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
             { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
         ]
         var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
@@ -970,7 +989,7 @@ describe('P2X.Parser', function(){
         var parseConf = [
             { type: TOKEN_IDENTIFIER, repr: 'T', mode: MODE_POSTFIX, prec: 3000 },
             { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
-            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
             { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
         ]
         var tpopts = P2X.TreePrinterOptions()
@@ -997,7 +1016,7 @@ describe('P2X.Parser', function(){
         var parseConf = [
             { type: TOKEN_QUOTE, mode: MODE_POSTFIX },
             { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
-            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
             { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
         ]
         var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
@@ -1007,7 +1026,64 @@ describe('P2X.Parser', function(){
         assert.equal(res, xmlres)
     })
 
-    it('testing binary parenthesis', function() {
+      var xmlres_un = '<code-xml xmlns=\'http://johannes-willkomm.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm.de/xml/code-xml/attributes/\' ca:version=\'1.0\'>\n'
++' <ca:steps/>\n'
++' <root type="ROOT">\n'
++'  <null/>\n'
++'  <op line="1" col="3" type="MULT">\n'
++'   <op line="1" col="0" type="MINUS">\n'
++'    <null/>\n'
++'    <ca:text>-</ca:text>\n'
++'    <int line="1" col="1" type="INTEGER">\n'
++'     <ca:text>1</ca:text>\n'
++'    </int>\n'
++'   </op>\n'
++'   <ca:text>*</ca:text>\n'
++'   <int line="1" col="5" type="INTEGER">\n'
++'    <ca:text>2</ca:text>\n'
++'   </int>\n'
++'  </op>\n'
++' </root>\n'
++'</code-xml>\n'
+    it('testing unary op', function() {
+        var scConf = [
+            { re: '-',     action: TOKEN_MINUS },
+            { re: '\\*',    action: TOKEN_MULT },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+            { re: '[a-zA-Z]+', action: TOKEN_IDENTIFIER },
+        ]
+        var input = '-1 * 2'
+        var parseConf = [
+            { type: TOKEN_MINUS, mode: MODE_UNARY, prec: 3000 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        res = P2X.p2xj(input, p2xConfig)
+        
+//        console.log(P2X.escapeBSQLines(res, '\''))
+        assert.equal(res, xmlres_un)
+    })
+
+    it('testing unary_binary op', function() {
+        var scConf = [
+            { re: '-',     action: TOKEN_MINUS },
+            { re: '\\*',    action: TOKEN_MULT },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+            { re: '[a-zA-Z]+', action: TOKEN_IDENTIFIER },
+        ]
+        var input = '-1 * 2'
+        var parseConf = [
+            { type: TOKEN_MINUS, mode: MODE_UNARY_BINARY, prec: 1000, precU: 3000 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]
+        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        res = P2X.p2xj(input, p2xConfig)
+        
+        // console.log(P2X.escapeBSQLines(res, '\''))
+        assert.equal(res, xmlres_un)
+    })
+
+      it('testing binary parenthesis', function() {
         var xmlres = fs.readFileSync('../examples/out/fl1rg.xml')+''
         var scConf = [
             { re: '\\(',    action: TOKEN_L_PAREN },
@@ -1025,7 +1101,7 @@ describe('P2X.Parser', function(){
                 { type: TOKEN_L_PAREN, mode: MODE_BINARY, prec: 1050,
                   isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
                 { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
-                { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+                { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
                 { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
             ]
         }
@@ -1053,7 +1129,7 @@ describe('P2X.Parser', function(){
             rules: [
                 { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, prec: 3000, isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
                 { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
-                { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+                { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
                 { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
             ]
         }

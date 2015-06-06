@@ -46,15 +46,22 @@ var unescapeRegExp = function(str){
         .replace(/\\([.*+?^${}()|[\]\\])/g, "$1")
 }
 
-P2X.escapeBS = function(str){
-    return str
-        .replace(/[.*+\?^${}()|[\]\\"']/g, "\\$&")
+P2X.escapeBS = function(str, forQuote){
+    var res = str
+        .replace(/[\\]/g, "\\$&")
         .replace(/\n/g, "\\n").replace(/\r/g, "\\r")
         .replace(/\t/g, "\\t").replace(/\v/g, "\\v")
+    if (forQuote != '\'') {
+        res = res.replace(/\"/g, '\\"')
+    }
+    if (forQuote != "\"") {
+        res = res.replace(/\'/g, '\\\'')
+    }
+    return res
 }
 
 P2X.escapeBSQLines = function(str){
-    var escbs = P2X.escapeBS(str)
+    var escbs = P2X.escapeBS(str, '\'')
     return '\'' + escbs.replace(/\\n((\\n)+|.)/g, "\\n'\n+'$1") + '\''
 }
 
@@ -830,6 +837,13 @@ P2X.TokenInfo = function() {
         precUnary: function (tl) {
             return this.unary_prec(tl)
         },
+        precedence: function (tl) {
+            var tp = this.get(tl)
+            if (tp.mode == MODE_UNARY_BINARY && !tl.left)
+                return this.unary_prec(tl)
+            else
+                return this.binary_prec(tl)
+        },
         isParen: function (tl) {
             return this.get(tl).isParen || false
         },
@@ -969,14 +983,14 @@ P2X.Parser = function(tokenInfo) {
             // console.dir(tmp)
             // console.log('pushBinary: mode tmp: ' + ENUM.getParserModeName(this.tokenInfo.mode(tmp)) + ' prec ' + this.tokenInfo.prec(tmp))
             while (tmp.right
-                   && ((this.tokenInfo.prec(tmp) < prec && this.tokenInfo.mode(tmp) != MODE_POSTFIX) || 
+                   && ((this.tokenInfo.precedence(tmp) < prec && this.tokenInfo.mode(tmp) != MODE_POSTFIX) || 
                        (this.tokenInfo.tokenTypeEqual(tmp, t) && assoc == ASSOC_RIGHT))) {
                 // console.log('pushBinary: in while: ')
                 // console.dir(tmp)
                 parent = tmp;
                 tmp = tmp.right;
             }
-            if ((this.tokenInfo.prec(tmp) < prec && this.tokenInfo.mode(tmp) != MODE_POSTFIX) ||
+            if ((this.tokenInfo.precedence(tmp) < prec && this.tokenInfo.mode(tmp) != MODE_POSTFIX) ||
                 (this.tokenInfo.tokenTypeEqual(tmp, t) && assoc == ASSOC_RIGHT)) {
                 assert(tmp.right == undefined);
                 tmp.right = t;
@@ -1026,6 +1040,10 @@ P2X.Parser = function(tokenInfo) {
                 this.pushBinary(t);
             }
         },
+        rightEdgeOpen: function() {
+            var rm = this.getRMOp();
+            return (rm.right) && (this.tokenInfo.mode(rm) != MODE_POSTFIX);
+        },
         pushIgnore: function(t) {
             if (!this.options.ignoreIgnore) {
                 // console.log('pushIgnore: ')
@@ -1039,10 +1057,6 @@ P2X.Parser = function(tokenInfo) {
                 rm.ignore = t;
                 // console.dir(rm)
             }
-        },
-        rightEdgeOpen: function() {
-            var rm = this.getRMOp();
-            return rm.right == undefined && this.tokenInfo.mode(rm) != MODE_POSTFIX;
         },
         insertToken: function(first) {
             // console.log('insertToken: t: ')
