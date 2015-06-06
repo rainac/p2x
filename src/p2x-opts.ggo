@@ -33,6 +33,7 @@ option "scanner" S "Select scanner class" string typestr="strings|no_strings" de
 option "stdin-tty" -  "Read from stdin, even if it is a TTY" flag off
 
 section "Output options"
+option "outfile" o  "Write output to file" string typestr="Filename" optional
 option "input-encoding" e  "Input encoding" string typestr="Charset" multiple optional default="utf-8"
 option "indent" -  "Indent" flag on
 option "indent-unit" -  "Indentation unit" string default=" " multiple optional
