@@ -226,6 +226,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+generated_files = test_cmp_js.sh
 all: all-am
 
 .SUFFIXES:
@@ -330,8 +331,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-am
-
 clean-am: clean-generic mostlyclean-am
 
 distclean: distclean-am
@@ -409,8 +408,22 @@ uninstall-am:
 	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
 	pdf-am ps ps-am tags-am uninstall uninstall-am
 
-check:
+
+forall_tests.sh: update_forall_tests.sh
+	./update_forall_tests.sh
+
+test_%.sh: head_%.sh forall_tests.sh
+	cat $< forall_tests.sh > $@
+	echo ". shunit2" >> $@
+	chmod a+x $@
+
+all: $(generated_files)
+
+check: $(generated_files)
 	./all_tests.sh
+
+clean:
+	$(RM) $(generated_files)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
