@@ -927,11 +927,17 @@ P2X.Parser = function(tokenInfo) {
         input: undefined,
         tokenInfo: tokenInfo,
         endList: undefined,
+        options: {
+            ignoreIgnore: false
+        },
         getconfig: function () {
             return this.tokenInfo.getconfig()
         },
         setconfig: function (pc) {
             this.tokenInfo.setconfig(pc)
+            if ('ignoreIgnore' in pc) {
+                this.options.ignoreIgnore = pc.ignoreIgnore
+            }
             return this
         },
         mkroot: function() {
@@ -939,6 +945,12 @@ P2X.Parser = function(tokenInfo) {
         },
         mkJuxta: function(t) {
             return P2X.Token(TOKEN_JUXTA, '', t.line, t.column, t.index);
+        },
+        getRM: function(t) {
+            while (t.right) {
+                t = t.right;
+            }
+            return t;
         },
         getRMOp: function() {
             t = this.root
@@ -1013,6 +1025,18 @@ P2X.Parser = function(tokenInfo) {
                 this.pushBinary(t);
             }
         },
+        pushIgnore: function(t) {
+            if (!this.options.ignoreIgnore) {
+                var rm = this.getRM(this.root);
+                while (rm.content) {
+                    rm = this.getRM(rm.content);
+                }
+                // console.log('rm: ')
+                // console.dir(rm)
+                t.ignore = rm.ignore;
+                rm.ignore = t;
+            }
+        },
         rightEdgeOpen: function() {
             var rm = this.getRMOp();
             return rm.right == undefined && this.tokenInfo.mode(rm) != MODE_POSTFIX;
@@ -1029,7 +1053,7 @@ P2X.Parser = function(tokenInfo) {
                 this.pushItem(first);
                 break;
             case MODE_IGNORE:
-                // this.pushIgnoreAsBefore(first);
+                this.pushIgnore(first);
                 break;
             case MODE_UNARY:
                 this.pushUnary(first);
@@ -1080,13 +1104,14 @@ P2X.Parser = function(tokenInfo) {
                     // console.log('sub parser endlist:')
                     // console.dir(this.tokenInfo.endList(first))
                     
+                    parser.options = this.options
                     parser.endList = this.tokenInfo.endList(first).map(function(x){return x.token})
 
                     // console.dir(parser.endList)
                     
-                    var subTree = parser.parse(this.input)
+                    var last = parser.parse(this.input)
                     
-                    //parser.pushIgnoreAsBefore(last);
+                    parser.pushIgnore(last);
 
                     first.content = parser.root.right
                     
@@ -1095,9 +1120,9 @@ P2X.Parser = function(tokenInfo) {
                     
                     this.insertToken(first)
 
-                    // if (parser.root->ignore) {
-                    //     pushIgnore(parser.root->ignore);
-                    // }
+                    if (parser.root.ignore) {
+                        this.pushIgnore(parser.root.ignore);
+                    }
                 } else {
                     this.insertToken(first)
                 }
@@ -1174,39 +1199,18 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 else if (t.token == TOKEN_ROOT)
                     tagname = 'root'
                 res += indent + '<' + tagname
-                if (t.line) {
-                    if (this.options.line) {
-                        res += ' line="' + t.line + '"'
-                    }
-                    if (this.options.col) {
-                        res += ' col="' + t.col + '"'
-                    }
-                }
-                if (this.options.code) {
-                    res += ' code="' + this.tokenInfo.getOpCode(t) + '"'
-                }
-                if (t.text && t.token == TOKEN_IDENTIFIER)
-                    res += ' repr="' + t.text + '"'
-                var ttext
-                if (this.options.type) {
-                    if (t.token)
-                        ttext = ENUM.ParserToken.names_index[t.token]
-                    else 
-                        ttext = typeof t
-                    res += ' type="' + ttext + '"'
-                }
+                res += this.writeXMLLocAttrs(t)
+                res += this.writeXMLTypeAttrs(t)
                 res += '>\n';
                 if (t.left) {
                     res += this.asxml(t.left, indent + ' ', true);
                 } else if (t.right) {
                     res += indent + ' <null/>\n';
                 }
-                ttext = t.text || (t.token ? {text:''} : undefined) || t.toString() || string(t)
-                if (typeof ttext == "object" && Object.keys(ttext).indexOf('text') > -1)
-                    ttext = ttext.text
-                assert(typeof ttext == "string")
-                if (ttext)
-                    res += indent + ' ' + P2X.TokenList.prototype.charasxml.apply({}, [ttext]) + '\n'
+                res += this.writeXMLTextElem(t, indent + ' ')
+                if (t.ignore) {
+                    res += this.writeIgnoreXML(t.ignore, indent + ' ');
+                }
                 if (t.content) {
                     res += this.asxml(t.content, indent + ' ', true);
                 } else if (t.right) {
@@ -1219,6 +1223,59 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
             if (!called) {
                 res += '</' + 'code-xml' + '>\n';
             }
+            return res
+        },
+        writeXMLLocAttrs: function(t) {
+            var res = ''
+            if (t.line) {
+                if (this.options.line) {
+                    res += ' line="' + t.line + '"'
+                }
+                if (this.options.col) {
+                    res += ' col="' + t.col + '"'
+                }
+            }
+            return res
+        },
+        writeXMLTypeAttrs: function(t) {
+            var res = ''
+            if (t.text && t.token == TOKEN_IDENTIFIER)
+                res += ' repr="' + t.text + '"'
+            var ttext
+            if (this.options.type) {
+                if (t.token)
+                    ttext = ENUM.ParserToken.names_index[t.token]
+                else 
+                    ttext = typeof t
+                res += ' type="' + ttext + '"'
+            }
+            if (this.options.code) {
+                res += ' code="' + this.tokenInfo.getOpCode(t) + '"'
+            }
+            return res
+        },
+        writeXMLTextElem: function(t, indent) {
+            var res = ''
+            var ttext = t.text || (t.token ? {text:''} : undefined) || t.toString() || string(t)
+            if (typeof ttext == "object" && Object.keys(ttext).indexOf('text') > -1)
+                ttext = ttext.text
+            assert(typeof ttext == "string")
+            if (ttext) {
+                res = indent + P2X.TokenList.prototype.charasxml.apply({}, [ttext])
+                if (indent)
+                    res += '\n'
+            }
+            return res
+        },
+        writeIgnoreXML: function(t, indent) {
+            var res = ''
+            res += indent + "<ca:ignore";
+            if (this.options.id)
+                res += " id='" << t.id << "'";
+            res += this.writeXMLLocAttrs(t);
+            res += this.writeXMLTypeAttrs(t) + '>';
+            res += this.writeXMLTextElem(t, '')
+            res += "</ca:ignore>\n";
             return res
         }
     }
