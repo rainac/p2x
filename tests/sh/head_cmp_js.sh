@@ -23,7 +23,7 @@ checkExpFile() {
     opts=""
 
     skip=""
-    case $i in
+    case $infile in
         (utf8-ident.exp)
             skip=true
             ;;

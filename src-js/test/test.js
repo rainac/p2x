@@ -813,6 +813,58 @@ describe('P2X.JScanner', function(){
 
 
 describe('P2X.Parser', function(){
+  describe('#getRMOp()', function(){
+    it('it should return an expression tree', function() {
+
+        var parser = P2X.Parser()
+        var parseConf = [
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]
+        parser.setconfig(parseConf)
+
+        parser.root = {token: TOKEN_ROOT,
+                       left: undefined,
+                       right: {
+                           data: 'plus_top',
+                           token: TOKEN_PLUS,
+                           left: {
+                               data: 'MULT_left',
+                               token: TOKEN_MULT,
+                               left: {
+                                   token: TOKEN_INTEGER,
+                                   text: '123'
+                               },
+                               right: {
+                                   token: TOKEN_INTEGER,
+                                   text: '456'
+                               }
+                           },
+                           right: {
+                               data: 'MULT_right',
+                               token: TOKEN_MULT,
+                               left: {
+                                   data: 'MULT_right_op1',
+                                   token: TOKEN_INTEGER,
+                                   text: '123'
+                               },
+                               right: {
+                                   data: 'MULT_right_op2',
+                                   token: TOKEN_INTEGER,
+                                   text: '456'
+                               }
+                           }
+                       }
+                      }
+        
+        var rm = parser.getRMOp()
+        assert.equal(parser.tokenInfo.isOp(parser.root.right), true)
+        assert.equal(parser.tokenInfo.isOp(parser.root.right.left), true)
+        assert.equal(parser.tokenInfo.isOp(parser.root.right.right), true)
+        assert.equal(rm.data, 'MULT_right');
+    })
+  })
   describe('#parse()', function(){
       var xmlres = fs.readFileSync('../examples/out/1p2ep3.xml')+''
       console.log(xmlres)
@@ -842,7 +894,6 @@ describe('P2X.Parser', function(){
         res = tp.asxml(parser.root)
 
 //        console.log(P2X.escapeBSQLines(res))
-        console.log(res)
         assert.equal(res, xmlres);
     })
 
