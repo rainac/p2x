@@ -179,4 +179,16 @@ testParseTreeEqual_unary_binary13() {
     checkParseTreeEqual unary-binary13.exp "[NEWLINE]([PLUS]([MULT](1), 2), [MULT](1, [MINUS](., 2)))"
 }
 
+testParseTreeEqual_noclose() {
+    checkParseTreeEqual noclose.exp "[COMMA](int, [L_PAREN](., [NEWLINE]()))"
+}
+
+testParseTreeEqual_noclose2() {
+    checkParseTreeEqual noclose2.exp "[COMMA](int, [open](., [NEWLINE](3)))"
+}
+
+testParseTreeEqual_noclose3() {
+    checkParseTreeEqual noclose3.exp "[COMMA](int, [open](., [begin](., 3)))"
+}
+
 . shunit2

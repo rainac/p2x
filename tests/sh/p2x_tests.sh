@@ -98,4 +98,23 @@ testP2X9() {
     rm res.txt
 }
 
+testP2X10() {
+    p2x -o res.xml -p ../../examples/configs/default ../../examples/in/noclose3.exp 2> err.txt
+    xsltproc ../../src/xsl/parens.xsl res.xml > res.txt
+    err=$(cat err.txt)
+    txt=$(cat res.txt)
+    grep "EOF" res.xml > /dev/null
+    assertEquals "P2X XLM should not contain EOF token" "1" "$?"
+    grep "unexpected" err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "\"close\"" err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "\"finish\"" err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "\"endblock\"" err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    assertEquals "P2X work and produce the correct XML" "[COMMA](int, [open](., [begin](., 3)))" "$txt"
+    rm res.txt
+}
+
 . shunit2
