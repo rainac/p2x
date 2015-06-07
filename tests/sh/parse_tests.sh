@@ -167,4 +167,16 @@ testParseTreeEqual_post_par_4() {
     checkParseTreeEqual post-paren4.exp "[PLUS]([popen](xx, [PLUS](2, 3)), 4)" "-i NEWLINE"
 }
 
+testParseTreeEqual_unary_binary11() {
+    checkParseTreeEqual unary-binary11.exp "[PLUS]([PLUS](., 1), 2)"
+}
+
+testParseTreeEqual_unary_binary12() {
+    checkParseTreeEqual unary-binary12.exp "[MINUS]([MINUS](., 1), 2)"
+}
+
+testParseTreeEqual_unary_binary13() {
+    checkParseTreeEqual unary-binary13.exp "[NEWLINE]([PLUS]([MULT](1), 2), [MULT](1, [MINUS](., 2)))"
+}
+
 . shunit2
