@@ -1045,7 +1045,8 @@ P2X.Parser = function(tokenInfo) {
         },
         rightEdgeOpen: function() {
             var rm = this.getRMOp();
-            return (rm.right) && (this.tokenInfo.mode(rm) != MODE_POSTFIX);
+            var res = (!rm.right) && (this.tokenInfo.mode(rm) != MODE_POSTFIX)
+            return res
         },
         pushIgnore: function(t) {
             if (!this.options.ignoreIgnore) {
