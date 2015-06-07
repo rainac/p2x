@@ -5,11 +5,38 @@
 default namespace = "NAMESPACE_CX"
 namespace ca = "NAMESPACE_CA"
 
-start = code-xml
+start = code-xml | scan-xml
+
+scan-xml = element scan-xml {
+   scan-conf?,
+   node-content+
+}
+
+scan-conf = element ca:scanner { attribute type { text }?, lexem+ }
+
+lexem = element ca:lexem {
+      element ca:re { text },
+      element ca:action { text }
+}
+
+ca-op-def = element ca:op { 
+                     attribute type { text },
+                     attribute repr { text }?,
+                     attribute mode { text },
+                     attribute precedence { text }?,
+                     attribute unary-precedence { text }?,
+                     attribute associativity { text }?,
+                     attribute is-paren { text }?,
+                     element ca:closing-list {
+                        ca-op-def+
+                     }?
+               }
 
 code-xml = element code-xml {
-       element ca:steps { ca-step* },
-       element ca:scanner { attribute type { text } },
+       attribute ca:version { text },
+       element ca:steps { ca-step* }?,
+       scan-conf?,
+       element ca:parser { attribute type { text }?, ca-op-def+ }?,
        element ca:tree-writer { 
              attribute col { text },
              attribute merged { text },
@@ -21,9 +48,14 @@ code-xml = element code-xml {
              attribute newlineAsBr { text },
              attribute prec { text },
              attribute strict{ text },
+             attribute parseConf { text },
+             attribute scanConf { text },
+             attribute treewriterConf { text },
+             attribute caSteps { text },
+             attribute code { text },
              attribute type { text }
-       },
-       element ca:token-types { ca-op* },
+       }?,
+       element ca:token-types { ca-op* }?,
        root
 }
 
@@ -53,7 +85,7 @@ string-lit = element string {
      attr-node, ca-itr, annot*
 }
 
-integer = element integer {
+integer = element int {
      attr-node, ca-itr, annot*
 }
 
@@ -71,7 +103,7 @@ ca-step = element ca:step {
 }
 
 ca-op = element ca:op {
-      attr-code,
+      attr-code?,
       attr-type,
       attr-repr?,
       attr-mode,
@@ -100,7 +132,7 @@ ca-br = element ca:br {
         empty
 }
 
-attr-node = attr-id?, attr-repr?, attr-code, attr-type, attr-location?, attr-file?
+attr-node = attr-id?, attr-repr?, attr-code?, attr-type, attr-location?, attr-file?
 attr-id = attribute id { xsd:int }
 attr-code = attribute code { xsd:int }
 attr-prec = attribute precedence { xsd:int }
@@ -114,4 +146,4 @@ attr-is-paren = attribute is-paren { text }
 attr-location = attribute line { xsd:int }, attribute col { xsd:int }
 attr-file = attribute file { text }, attribute path { text }
 
-# $Id: code-xml.rnc.in 95 2014-10-27 08:21:37Z johannes.willkomm@googlemail.com $
+

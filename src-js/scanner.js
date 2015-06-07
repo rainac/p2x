@@ -318,7 +318,10 @@ P2X.ScannerConfig = function(x) {
         }
         
         if (typeof indent == 'undefined') indent = ' '
-        var res = indent + '<ca:scanner-config>\n'
+        var res = indent + '<ca:scanner'
+        if (this.type)
+            res += ' type="' + this.type + this.length + '"'
+        res += '>\n'
         for (var k = 0; k < this.length; ++k) {
             var rule = this[k]
             var val = rule.action, actstr = ''
@@ -333,7 +336,7 @@ P2X.ScannerConfig = function(x) {
             res += '<ca:action>' + actstr + '</ca:action>'
             res += '</ca:lexem>\n'
         }
-        res += indent + '</ca:scanner-config>\n'
+        res += indent + '</ca:scanner>\n'
         return res
     }
 
@@ -348,18 +351,18 @@ P2X.ScannerConfig = function(x) {
     res.loadXML = function(scConfXML) {
         var scanDoc = parseXml(scConfXML)
         switch (scanDoc.documentElement.nodeName) {
-        case 'ca:scanner-config':
+        case 'ca:scanner':
             return this.loadXMLDoc(scanDoc.documentElement)
             break
         default:
-            console.error('unexpected doc element name: ' + scanDoc.documentElement.nodeName)
-            console.error('unexpected doc element contains: ' + scanDoc.documentElement.firstChild.nodeValue)
+            console.error('p2x: unexpected doc element name: ' + scanDoc.documentElement.nodeName)
+            console.error('p2x: unexpected doc element contains: ' + scanDoc.documentElement.firstChild.nodeValue)
             return null
             break
         }
     }
     res.loadXMLDoc = function(scConfTT) {
-        // chead = scanList.getElementsByTagName('token-types')
+        // chead = scanList.getElementsByTagName('parser')
         // return this.loadXMLNode(chead[0])
         return this.loadXMLNode(scConfTT)
     }
@@ -734,11 +737,11 @@ P2X.ParserConfigRW = function(x) {
         if (!indent) indent = ' '
         var res = ''
         var tprw = P2X.TokenProtoRW()
-        res += indent + '<ca:token-types>\n'
+        res += indent + '<ca:parser>\n'
         for (var k = 0; k < obj.length; ++k) {
             res += tprw.asxml(obj[k], indent + ' ')
         }
-        res += indent + '</ca:token-types>\n'
+        res += indent + '</ca:parser>\n'
         return res
     }
     res.asJSON = function(obj, indent) {
@@ -759,11 +762,11 @@ P2X.ParserConfigRW = function(x) {
         return this.loadXMLDoc(scanDoc)
     }
     res.loadXMLDoc = function(scanList) {
-        chead = scanList.getElementsByTagName('ca:token-types')
+        chead = scanList.getElementsByTagName('ca:parser')
         if (chead.length) {
             return this.loadXMLNode(chead[0])
         } else {
-            console.error('cannot find ca:token-types in document, doc element name: ' + scanList.documentElement.nodeName)
+            console.error('cannot find ca:parser in document, doc element name: ' + scanList.documentElement.nodeName)
             console.error('unexpected doc element contains: ' + scanList.documentElement.firstChild.nodeValue)
         }
     }
@@ -1187,6 +1190,8 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     res += indent + "<ca:steps/>\n"
                 }
                 if (this.options.parseConf) {
+                    console.log('Scanner conf')
+                    console.dir(t.scanner.get())
                     res += t.scanner.get().asxml()
                 }
                 if (this.options.parseConf) {
@@ -1194,10 +1199,11 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     res += pcwr.asxml(t.parser.getconfig(), indent)
                 }
                 if (this.options.treewriterConf) {
-                    res += indent + '<tree-writer'
+                    res += indent + '<ca:tree-writer'
                     for (key in this.options) {
                         res += ' ' + key + '="' + this.options[key] + '"'
                     }
+                    res += '/>\n'
                 }
             }
             if (t) {

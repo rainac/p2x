@@ -1255,7 +1255,7 @@ struct TreeXMLWriter {
   }
 
   void writeXML(TokenInfo const &t, std::ostream &aus, std::string const &indent = "") const {
-    aus << indent << "<ca:token-types>" << linebreak;
+    aus << indent << "<ca:parser>" << linebreak;
     {
     TokenInfo::Prototypes::const_iterator it = t.prototypes.begin();
     for(; it != t.prototypes.end(); ++it) {
@@ -1266,7 +1266,7 @@ struct TreeXMLWriter {
     for(; it != t.opPrototypes.end(); ++it) {
       writeXML(it->second, aus, indent + indentUnit);
     }}
-    aus << indent << "</ca:token-types>" << linebreak;
+    aus << indent << "</ca:parser>" << linebreak;
   }
 
   void writeXML(TreeXMLWriter const &t, std::ostream &aus, std::string const &indent = "") const {
@@ -2045,9 +2045,9 @@ int main(int argc, char *argv[]) {
       out << char(0xff);
     if (treeXMLWriter.options.xmlDecl)
       out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-    out << "<token-types xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
+    out << "<parser xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
     treeXMLWriter.writeXML(tokenInfo, out, indentUnit);
-    out << "</token-types>\n";
+    out << "</parser>\n";
     return 0;
   }
 

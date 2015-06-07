@@ -1,4 +1,4 @@
-<ca:scanner-config xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">
+<ca:scanner xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">
   <ca:lexem><ca:re>((0x)?([0-9])+[uUlL]*)</ca:re><ca:action>TOKEN_INTEGER</ca:action></ca:lexem>
   <ca:lexem><ca:re>((\""\[\^\"\n\]\*"\")|('"\[\^\'\n\]\*"'))</ca:re><ca:action>TOKEN_STRING</ca:action></ca:lexem>
   <ca:lexem><ca:re>(((([0-9])+\.([0-9])+)|(([0-9])+(\.([0-9])*)?)|(([0-9])*\.([0-9])+))(([eEdD][+-]?([0-9])+)?[lLfF]?))</ca:re><ca:action>TOKEN_FLOAT</ca:action></ca:lexem>
@@ -40,4 +40,4 @@
   <ca:lexem><ca:re>( )+</ca:re><ca:action>TOKEN_SPACE</ca:action></ca:lexem>
   <ca:lexem><ca:re>(((([a-z])|([A-Z])|([\u0080-\uffff])))((([a-z])|([A-Z])|([\u0080-\uffff]))|([0-9])|(_))*)</ca:re><ca:action>TOKEN_IDENTIFIER</ca:action></ca:lexem>
   <ca:lexem><ca:re>.</ca:re><ca:action>TOKEN_ILLEGAL_CHAR</ca:action></ca:lexem>
-</ca:scanner-config>
+</ca:scanner>

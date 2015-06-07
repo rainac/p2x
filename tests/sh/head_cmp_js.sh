@@ -22,6 +22,16 @@ checkExpFile() {
     infile=$1
     opts=""
 
+    skip=""
+    case $i in
+        (utf8-ident.exp)
+            skip=true
+            ;;
+    esac
+    if [[ -n "$skip" ]]; then
+        return
+    fi
+
     mkParseTree "$infile" "res.txt" "p2x" "$opts"
     mkParseTree "$infile" "res2.txt" "p2xjs" "$opts"
     
