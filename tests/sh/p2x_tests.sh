@@ -66,11 +66,31 @@ testP2X7() {
 }
 
 testP2X8() {
-    p2x -o res.xml -p ../../examples/configs/default ../../examples/in/noclose.exp
+    p2x -o res.xml -p ../../examples/configs/default ../../examples/in/noclose.exp 2> err.txt
     xsltproc ../../src/xsl/parens.xsl res.xml > res.txt
+    err=$(cat err.txt)
     txt=$(cat res.txt)
-    assertEquals "P2X work and produce the correct XML" "$txt" "[JUXTA]([JUXTA](a, b), c)"
-    rm tmp.txt
+    grep "unexpected" err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "end" err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "R_PAREN" err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    assertEquals "P2X should work and produce the correct XML" "[COMMA](int, [L_PAREN](., [NEWLINE]()))" "$txt"
+    rm res.txt
+}
+
+testP2X9() {
+    p2x -o res.xml -p ../../examples/configs/default ../../examples/in/noclose2.exp 2> err.txt
+    xsltproc ../../src/xsl/parens.xsl res.xml > res.txt
+    err=$(cat err.txt)
+    txt=$(cat res.txt)
+    grep "unexpected" err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "\"close\"" err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    assertEquals "P2X work and produce the correct XML" "[COMMA](int, [open](., [NEWLINE](3)))" "$txt"
+    rm res.txt
 }
 
 . shunit2
