@@ -947,7 +947,8 @@ struct Parser {
         parser.endList = tokenInfo.endList(first);
         Token *last = parser.parse();
 
-        parser.pushIgnoreAsBefore(last);
+        if (last->token != TOKEN_EOF)
+          parser.pushIgnoreAsBefore(last);
 
         insertToken(first);
 

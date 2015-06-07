@@ -70,6 +70,8 @@ testP2X8() {
     xsltproc ../../src/xsl/parens.xsl res.xml > res.txt
     err=$(cat err.txt)
     txt=$(cat res.txt)
+    grep "EOF" res.xml > /dev/null
+    assertEquals "P2X XLM should not contain EOF token" "1" "$?"
     grep "unexpected" err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
     grep "end" err.txt > /dev/null
@@ -85,6 +87,9 @@ testP2X9() {
     xsltproc ../../src/xsl/parens.xsl res.xml > res.txt
     err=$(cat err.txt)
     txt=$(cat res.txt)
+#    cat res.xml
+    grep "EOF" res.xml > /dev/null
+    assertEquals "P2X XLM should not contain EOF token" "1" "$?"
     grep "unexpected" err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
     grep "\"close\"" err.txt > /dev/null
