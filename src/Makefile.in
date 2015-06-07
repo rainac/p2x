@@ -351,7 +351,7 @@ generated_files = p2x-opts.hh p2x-opts.cc namespaces.hh code-xml.rnc \
 flexPrefix = scan
 instbasedir = $(pkgdatadir)
 instdir = $(instbasedir)
-inst_DATA = code-xml.rnc
+inst_DATA = code-xml.rnc ../examples/configs/scanner-c.xml
 all: all-am
 
 .SUFFIXES:

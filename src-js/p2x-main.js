@@ -124,9 +124,16 @@ var scanner = P2X.JScanner()
 function readScannerConfig() {
     if ('scanner-config' in options) {
         var configFile = options['scanner-config'][0]
-        fs.readFile(configFile, function(err, data) {
-            if (err) throw(err)
-            loadScannerConfig('' + data)
+        var homePath = process.env.P2X_HOME
+        fs.readFile(homePath + '/share/p2x/scanner-' + configFile + '.xml', function(err, data) {
+            if (!err) {
+                loadScannerConfig('' + data)
+            } else {
+                fs.readFile(configFile, function(err, data) {
+                    if (err) throw(err)
+                    loadScannerConfig('' + data)
+                })
+            }
         })
     } else {
         emitter.emit('next', readInput, 'readInput');

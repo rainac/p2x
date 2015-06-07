@@ -66,7 +66,7 @@ code-xml.rnc: code-xml.rnc.in
 instbasedir=$(pkgdatadir)
 instdir= $(instbasedir)
 
-inst_DATA = code-xml.rnc
+inst_DATA = code-xml.rnc ../examples/configs/scanner-c.xml
 
 clean-local:
 	$(RM) -f $(generated_files)
