@@ -12,7 +12,7 @@ scan-xml = element scan-xml {
    node-content+
 }
 
-scan-conf = element ca:scanner { attribute type { text }?, lexem+ }
+scan-conf = element ca:scanner { attribute type { text }?, lexem* }
 
 lexem = element ca:lexem {
       element ca:re { text },
@@ -48,11 +48,11 @@ code-xml = element code-xml {
              attribute newlineAsBr { text },
              attribute prec { text },
              attribute strict{ text },
-             attribute parseConf { text },
-             attribute scanConf { text },
-             attribute treewriterConf { text },
-             attribute caSteps { text },
-             attribute code { text },
+             attribute parseConf { text }?,
+             attribute scanConf { text }?,
+             attribute treewriterConf { text }?,
+             attribute caSteps { text }?,
+             attribute code { text }?,
              attribute type { text }
        }?,
        element ca:token-types { ca-op* }?,
