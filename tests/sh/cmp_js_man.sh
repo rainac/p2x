@@ -40,7 +40,8 @@ testParseTreeEqual1() {
 }
 
 testParseTreeEqualAll() {
-    for i in ../../examples/in/*.exp; do
+#    for i in ../../examples/in/*.exp; do
+    for i in ../../examples/in/postfix_test2.exp; do
         skip=""
         case $(basename $i) in
             (utf8-ident.exp)
