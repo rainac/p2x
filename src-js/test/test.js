@@ -1410,6 +1410,16 @@ describe('P2X.CLI', function(){
         })
     })
 
+    it('a shortcut may be used for the scanner config', function(done) {
+        var scanConfigFile = 'c'
+        var configFile = '../examples/configs/default'
+        var inputFile = '../examples/in/postfix1.exp'
+        runP2XJS(scanConfigFile, configFile, inputFile, function(res) {
+            assert.equal(pres1, res)
+            done()
+        })
+    })
+
     it('scanner config file can be converted to JSON separately', function(done) {
         var scanConfigFile = '../examples/configs/scanner-c.json'
         var scanConfigFileXML = '../examples/configs/scanner-c.xml'
