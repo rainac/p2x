@@ -65,4 +65,12 @@ testP2X7() {
     rm tmp.out
 }
 
+testP2X8() {
+    p2x -o res.xml -p ../../examples/configs/default ../../examples/in/noclose.exp
+    xsltproc ../../src/xsl/parens.xsl res.xml > res.txt
+    txt=$(cat res.txt)
+    assertEquals "P2X work and produce the correct XML" "$txt" "[JUXTA]([JUXTA](a, b), c)"
+    rm tmp.txt
+}
+
 . shunit2

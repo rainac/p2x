@@ -915,12 +915,33 @@ struct Parser {
     do {
       // first = new Token(tokenList.next());
       first = tokenList.next();
+      if (not first) {
+        ls(LS::ERROR) << "error: unexpected end of input token list\n";
+        exit(4);
+      }
       ls(LS::DEBUG|LS::PARSE) << "Parser: next: " << *first
            << ": mode: " << tokenInfo.mode(first)
            << ": prec: " << tokenInfo.prec(first)
            << "\n";
       if (endList.find(tokenInfo.getOpCode(first)) != endList.end()) {
         endFound = true;
+      } else if (first->token == TOKEN_EOF) {
+        std::ostream &os = ls(LS::ERROR);
+        os << "error: unexpected end of input, expecting";
+        if (endList.size() > 1) {
+          os << " one of";
+        }
+        for (std::map<unsigned,TokenProto>::iterator it = endList.begin(); it != endList.end(); ++it) {
+          if (it->second.token == TOKEN_IDENTIFIER && it->second.text.size()) {
+            os << " \"" << it->second.text << "\"";
+          } else {
+            os << " " << it->second.token;
+          }
+        }
+        os << ".\n";
+        endFound = true;
+        --tokenList.offset;
+        break;
       } else if (tokenInfo.isParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
         parser.endList = tokenInfo.endList(first);
