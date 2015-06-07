@@ -426,7 +426,7 @@ describe('P2X.ParserConfig', function(){
                 assert(tokenInListB.indexOf(tokenInListA[k]) > -1)
             }
         })
-        it('undefined prec defaults to 1', function(){
+        it('undefined prec defaults to 2', function(){
             var tt = P2X.TokenInfo()
             tt.insert(P2X.TokenProto(TOKEN_TILDE, '~', MODE_UNARY, ASSOC_NONE, undefined, undefined, false))
             tt.insert(P2X.TokenProto(TOKEN_PLUS, '/', MODE_UNARY_BINARY, ASSOC_LEFT, undefined, undefined, false))
@@ -435,6 +435,16 @@ describe('P2X.ParserConfig', function(){
             assert.equal(tt.prec(TOKEN_PLUS), 2)
             assert.equal(tt.precUnary(TOKEN_PLUS), 2)
             assert.equal(tt.prec(TOKEN_MULT), 2)
+        })
+        it('undefined prec of item defaults to infinity', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(TOKEN_MULT, '*', MODE_ITEM, undefined, undefined, undefined, false))
+            assert.equal(tt.prec(TOKEN_MULT), 1e9)
+        })
+        it('undefined prec of item defaults to infinity', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(TOKEN_L_PAREN, '*', MODE_ITEM, undefined, undefined, undefined, true))
+            assert.equal(tt.prec(TOKEN_L_PAREN), 1e9)
         })
         it('for plain token, opcode == type', function(){
             var tt = P2X.TokenInfo()
@@ -481,6 +491,26 @@ describe('P2X.ParserConfig', function(){
             assert.equal(tt.precedence({ token: TOKEN_TILDE, left: undefined, right: child}), 200)
             assert.equal(tt.precedence({ token: TOKEN_TILDE, left: child, right: child}), 100)
             assert.equal(tt.precedence({ token: TOKEN_TILDE, left: child, right: undefined}), 100)
+        })
+        it('precedence of paren is infite from outside', function(){
+            var parseConf = {
+                ignoreIgnore: true,
+                rules: [
+                    { type: TOKEN_L_PAREN, isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
+                    { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+                    { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+                    { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+                ]
+            }
+            var parser = P2X.Parser()
+            parser.setconfig(parseConf)
+            var tokenp = {token: TOKEN_PLUS, left: {}, right: {}}
+            var token = {token: TOKEN_L_PAREN, left: {}, right: {}}
+            console.dir(parser.tokenInfo)
+            assert.equal(parser.tokenInfo.mode(tokenp), MODE_BINARY)
+            assert.equal(parser.tokenInfo.mode(token), MODE_ITEM)
+            assert.equal(parser.tokenInfo.isParen(token), true)
+            assert.equal(parser.tokenInfo.precedence(token), 1e9)
         })
         it('it should be possible to change the prec, assoc of JUXTA', function() {
             var tt = P2X.TokenInfo()

@@ -141,7 +141,9 @@ function arrayMax(arr) {
 };
 
 P2X.Token = function(tk, text, index, line, col, rule) {
-    if (typeof tk != 'number') {
+    if (typeof tk == 'object') {
+        return P2X.Token(tk.token, tk.text, tk.index, tk.line, tk.col)
+    } else if (typeof tk != 'number') {
         console.log('warning: str conversion')
         tk = ENUM.getParserTokenValue(String(tk))
     }
@@ -623,11 +625,20 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
             })
         }
         res = {
-            token: tk, repr: repr, mode: mode || MODE_ITEM, assoc: assoc || ASSOC_NONE,
-            prec: prec, precU: precU || 0,
+            token: tk, repr: repr,
+            mode: mode || MODE_ITEM,
+            assoc: assoc || ASSOC_NONE,
+            prec: prec || 2,
+            precU: precU || 2,
             isParen: isParen || false,
-            closingList: closingList || [],
+            closingList: closingList,
         }
+    }
+    if (res.isParen || res.mode == MODE_ITEM) {
+        res.prec = res.precU = 1e9
+    }
+    if (res.isParen) {
+        res.closingList = res.closingList || [ TOKEN_EOF ]
     }
     return res
 }
@@ -645,7 +656,7 @@ P2X.TokenProtoRW = function() {
             res += ' mode="' + ENUM.getParserModeName(obj.mode) + '"'
         if (obj.mode == MODE_UNARY_BINARY || obj.mode == MODE_BINARY)
             res += ' associativity="' + ENUM.getParserAssocName(obj.assoc) + '"'
-        if (typeof obj.prec != 'undefined')
+        if (obj.mode != MODE_ITEM && !obj.isParen)
             res += ' precedence="' + obj.prec + '"'
         if (obj.mode == MODE_UNARY_BINARY)
             res += ' unary-precedence="' + obj.precU + '"'
@@ -820,19 +831,19 @@ P2X.TokenInfo = function() {
             return isOp(this.mode(t));
         },
         mode: function (tl) {
-            return this.get(tl).mode || MODE_ITEM
+            return this.get(tl).mode
         },
         endList: function (tl) {
-            return this.get(tl).closingList || [ this.getOpCode(TOKEN_EOF) ]
+            return this.get(tl).closingList
         },
         assoc: function (tl) {
-            return this.get(tl).assoc || ASSOC_NONE
+            return this.get(tl).assoc
         },
         binary_prec: function (tl) {
-            return this.get(tl).prec || 2
+            return this.get(tl).prec
         },
         unary_prec: function (tl) {
-            return this.get(tl).precU || 2
+            return this.get(tl).precU
         },
         prec: function (tl) {
             return this.binary_prec(tl)
@@ -929,7 +940,7 @@ P2X.TokenInfo = function() {
                     assert(tokenProto.mode == MODE_UNARY)
                     assert(tokenProto.prec == 1)
                 }
-                this.tokenClasses[this.getOpCode(tokenProto.token)] = tokenProto
+                this.tokenClasses[this.getOpCode(tokenProto.token)] = P2X.TokenProto(tokenProto) // normalizes
             }
             return this
         },
@@ -982,14 +993,10 @@ P2X.Parser = function(tokenInfo) {
             var parent = null
             var assoc = this.tokenInfo.assoc(t)
             var prec = this.tokenInfo.binary_prec(t)
-            // console.log('pushBinary: enter')
-            // console.dir(tmp)
-            // console.log('pushBinary: mode tmp: ' + ENUM.getParserModeName(this.tokenInfo.mode(tmp)) + ' prec ' + this.tokenInfo.prec(tmp))
+
             while (tmp.right
                    && ((this.tokenInfo.precedence(tmp) < prec && this.tokenInfo.mode(tmp) != MODE_POSTFIX) || 
                        (this.tokenInfo.tokenTypeEqual(tmp, t) && assoc == ASSOC_RIGHT))) {
-                // console.log('pushBinary: in while: ')
-                // console.dir(tmp)
                 parent = tmp;
                 tmp = tmp.right;
             }
@@ -998,15 +1005,12 @@ P2X.Parser = function(tokenInfo) {
                 assert(tmp.right == undefined);
                 tmp.right = t;
             } else {
-                // console.log('pushBinary: ins+rotate ')
-                // console.dir(parent)
-                // console.dir(tmp)
                 t.left = tmp;
                 if (tmp === this.root) {
-                    assert(parent == undefined);
+                    // assert(parent == undefined);
                     this.root = t;
                 } else {
-                    assert(parent != undefined);
+                    // assert(parent != undefined);
                     parent.right = t;
                 }
             }
@@ -1114,24 +1118,26 @@ P2X.Parser = function(tokenInfo) {
                 // console.dir(first)
                 if (typeof first == "undefined") {
                     console.error("Parser: unexpected end found, exiting")
-                    console.dir(first)
+                    // console.dir(first)
                     endFound = true
                 } else if (this.endList.indexOf(this.tokenInfo.getOpCode(first)) > -1) {
                     // console.log("Parser: end found: "+ this.endList + ' ' + this.tokenInfo.getOpCode(first.token))
                     endFound = true
+                } else if (first.token == TOKEN_EOF) {
+                    console.error("Parser: unexpected end found")
+                    for (k in this.endList) {
+                        console.error("Parser: expecting " + this.endList[k])
+                    }
+                    endFound = true
                 } else if (this.tokenInfo.isParen(first)) {
                     var parser = P2X.Parser(this.tokenInfo)
 
-                    // console.log('sub parser endlist:')
-                    // console.dir(this.tokenInfo.endList(first))
-                    
                     parser.options = this.options
                     parser.endList = this.tokenInfo.endList(first).map(function(x){return x.token})
 
-                    // console.dir(parser.endList)
-                    
                     var last = parser.parse(this.input)
-                    parser.pushIgnore(last);
+                    if (last && last.token != TOKEN_EOF)
+                        parser.pushIgnore(last);
 
                     this.insertToken(first)
 
