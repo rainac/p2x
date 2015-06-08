@@ -1161,7 +1161,7 @@ P2X.TreePrinterOptions = function() {
         parseConf: false,
         scanConf: false,
         treewriterConf: false,
-        caSteps: true,
+        caSteps: false,
         id: false,
         line: true,
         col: true, 
@@ -1172,7 +1172,7 @@ P2X.TreePrinterOptions = function() {
         indent: true,
         newlineAsBr: true,
         merged: false,
-        strict: false,
+        strict: 0,
         encoding: 'utf-8'
     }
  }
@@ -1230,24 +1230,29 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 res += indent + '<' + tagname
                 res += this.writeXMLLocAttrs(t)
                 res += this.writeXMLTypeAttrs(t)
-                res += '>\n';
+                res += '>';
+                if (t.left || t.right || t.content|| t.ignore)
+                    res += '\n';
                 if (t.left) {
                     res += this.asxml(t.left, indent + ' ', true);
                 } else if (t.right || t.content) {
-                    res += indent + ' <null/>\n';
+                    if (this.options.strict > 0)
+                        res += indent + ' <null/>\n';
                 }
-                res += this.writeXMLTextElem(t, indent + ' ')
+                res += this.writeXMLTextElem(t, (t.left || t.right || t.content|| t.ignore) ? indent + ' ' : '')
                 if (t.ignore) {
                     res += this.writeIgnoreXML(t.ignore, indent + ' ');
                 }
                 if (t.content) {
                     res += this.asxml(t.content, indent + ' ', true);
                 } else if (t.right) {
-                    if (this.options.strict)
+                    if (this.options.strict > 1)
                         res += indent + ' <null/>\n';
                 }
                 res += this.asxml(t.right, indent + ' ', true);
-                res += indent + '</' + tagname + '>\n';
+                if (t.left || t.right || t.content|| t.ignore)
+                    res += indent
+                res += '</' + tagname + '>\n';
             }
             if (!called) {
                 res += '</' + 'code-xml' + '>\n';
