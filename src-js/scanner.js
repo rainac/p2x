@@ -1221,6 +1221,8 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     tagname = 'float'
                 else if (t.token == TOKEN_INTEGER)
                     tagname = 'int'
+                else if (t.token == TOKEN_STRING)
+                    tagname = 'string'
                 else if (t.token == TOKEN_IDENTIFIER && !this.tokenInfo.isOp(t))
                     tagname = 'id'
                 else if (t.token == TOKEN_ROOT)
@@ -1270,6 +1272,8 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 res += ' repr="' + t.text + '"'
             var ttext
             if (this.options.type) {
+                if (t.token)
+                    ttext = ENUM.ParserToken.names_index[t.token]
                 if (t.token)
                     ttext = ENUM.ParserToken.names_index[t.token]
                 else 
