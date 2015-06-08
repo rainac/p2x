@@ -1,4 +1,4 @@
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <script type="text/javascript" src="p2x.js"></script>
@@ -22,16 +22,16 @@
         
         var fb = document.getElementById('parseconf_feedback')
         var pcrw = P2X.ParserConfigRW()
-        fb.innerHTML = '<pre>' + pcrw.asJSON(res.parser.getconfig()) + '</pre>'
+        fb.innerHTML = '<kbd>' + pcrw.asJSON(res.parser.getconfig()) + '</kbd>'
 
         var fb = document.getElementById('twconf_feedback')
         var twcnf = res.treewriter.options.toSource()
-        fb.innerHTML = '<textarea readonly="readonly" class="json output">' + twcnf + '</textarea>'
+        fb.innerHTML = '<kbd>' + twcnf + '</kbd>'
 
         var tl = res.tokenlist
         var fb = document.getElementById('scan_feedback')
         tl.scanner = null
-        fb.innerHTML = '<textarea readonly="readonly" class="xml output">' + tl.asxml() + '</textarea>'
+        fb.innerHTML = '<kbd>' + tl.asxml() + '</kbd>'
         fb.children[0].scrollTop = fb.children[0].scrollHeight
         
         document.forms.p2x.output.value = output
@@ -72,12 +72,12 @@
         display: none;
         visibility: hidden;
         position: absolute;
-      }
+        }
     </style>
     <title>Scanner test page</title>
   </head>
   <body onload="init(); runP2X();">
-    <h1>TEST</h1>
+    <h1>P2X JS Test Page</h1>
 
     <form name="p2x" action="javascript: runP2X()">
       <table width="100%">
