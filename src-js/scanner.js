@@ -1397,14 +1397,30 @@ P2X.p2xj = function(input, p2xConf, result) {
         result.parseres = parser.root
     }
 
-    var tpOptions = p2xConf.treeprinter;
-    var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)
+    var tpOptions = p2xConf.treewriter, defOpts = P2X.TreePrinterOptions();
+    if (typeof tpOptions != "object") {
+        tpOptions = P2X.parseJSON(tpOptions)
+        if (typeof tpOptions == "undefined") {
+            console.error('Failed to parse treewriter config')
+            tpOptions = P2X.TreePrinterOptions()
+            result.error = 'Failed to parse treewriter config'
+        } else {
+            Object.keys(tpOptions).map(function(k) {
+                defOpts[k] = tpOptions[k]
+            })
+        }
+    }
+
+    var tp = P2X.TreePrinter(parser.tokenInfo, defOpts)
+
+    tp.asxml(parser.root)
 
     result.xmlres = tp.asxml(parser.root)
 
     if (p2xConf.debug) {
         result.scanner = scanner
         result.parser = parser
+        result.treewriter = tp
     }
     
     return result.xmlres
