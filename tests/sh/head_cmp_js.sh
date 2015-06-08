@@ -24,8 +24,9 @@ checkExpFile() {
 
     skip=""
     case $infile in
-        (utf8-ident.exp)
+        (utf8-ident.exp|german.utf8.exp|german.exp|fliesst.exp|letter.exp)
             skip=true
+            echo "skip"
             ;;
     esac
     if [[ -n "$skip" ]]; then
