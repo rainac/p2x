@@ -95,6 +95,17 @@ describe('P2X.ScannerConfig', function(){
               + '</ca:scanner>\n'
           assert.equal(inXml, setAndGetFromScannerXML(inXml));
       })
+      it('should return XML rule list', function(){
+          var inXml = '<ca:scanner>\n'
+              + '<ca:lexem><ca:re>\\(</ca:re><ca:action>TOKEN_MULT</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>\'</ca:re><ca:action>TOKEN_MINUS</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>\"</ca:re><ca:action>TOKEN_MINUS</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>\\\\</ca:re><ca:action>TOKEN_MINUS</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>\\)</ca:re><ca:action>TOKEN_MINUS</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>&amp;</ca:re><ca:action>TOKEN_PLUS</ca:action></ca:lexem>\n'
+              + '</ca:scanner>\n'
+          assert.equal(inXml, setAndGetFromScannerXML(inXml));
+      })
       function otstr(obj) {
           return JSON.stringify(obj);
       }

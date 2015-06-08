@@ -1,5 +1,6 @@
 
-generated_files = token.ncd.js modes.ncd.js assoc.ncd.js
+json_files = scanner-c.json
+generated_files = token.ncd.js modes.ncd.js assoc.ncd.js $(json_files)
 
 instbasedir=$(pkgdatadir)
 instdir= $(instbasedir)/js
@@ -12,6 +13,9 @@ inst_DATA = $(project_files)
 
 %.ncd.js: $(top_srcdir)/src/xml/%.ncd.xml
 	gennc -m JavaScript $^
+
+%.json: $(top_srcdir)/src/xml/%.xml
+	./p2xjs scanconf-xml2json -S $< > $@
 
 scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/scanner.xml
 	xsltproc -o $@ $^
