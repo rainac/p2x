@@ -7,19 +7,26 @@
         var p2xConf = {
           scanner: document.forms.p2x.scanconf.value,
           parser: document.forms.p2x.parseconf.value,
-          treeprinter: P2X.TreePrinterOptions(),
+          treewriter: document.forms.p2x.twconf.value,
           debug: true
         }
         var res = {}
         var input = document.forms.p2x.input.value
         var output = P2X.p2xj(input, p2xConf, res)
         
+        var fb = document.getElementById('input_feedback')
+        fb.innerHTML = '<kbd>' + input + '</kbd>'
+
         var fb = document.getElementById('scanconf_feedback')
         fb.innerHTML = '<kbd>' + res.scanner.get().toSource() + '</kbd>'
         
         var fb = document.getElementById('parseconf_feedback')
         var pcrw = P2X.ParserConfigRW()
         fb.innerHTML = '<pre>' + pcrw.asJSON(res.parser.getconfig()) + '</pre>'
+
+        var fb = document.getElementById('twconf_feedback')
+        var twcnf = res.treewriter.options.toSource()
+        fb.innerHTML = '<textarea readonly="readonly" class="json output">' + twcnf + '</textarea>'
 
         var tl = res.tokenlist
         var fb = document.getElementById('scan_feedback')
@@ -28,7 +35,17 @@
         fb.children[0].scrollTop = fb.children[0].scrollHeight
         
         document.forms.p2x.output.value = output
-     }
+      }
+      function init() {
+         var tareas = document.getElementsByTagName('textarea')
+         for (var k=0; k<tareas.length;++k) {
+           var x = tareas[k]
+           var handler = function() {
+              runP2X();
+           }
+           x.onkeyup = x.onchange = handler
+         }
+      }
     </script>
     <style type="text/css">
       .output {
@@ -39,36 +56,55 @@
         width: 100%;
         height: 20em;
       }
+      .hidden {
+        display: none;
+        visibility: hidden;
+      }
+      fieldset:hover > .hidden {
+        display: block;
+        visibility: visible;
+        padding: 2em;
+        border: 0.5em inset lightgreen;
+        border-radius: 0.7em;
+        font-weight: 600;
+      }
+      .messages {
+        display: none;
+        visibility: hidden;
+        position: absolute;
+      }
     </style>
     <title>Scanner test page</title>
   </head>
-  <body onload="runP2X();">
+  <body onload="init(); runP2X();">
     <h1>TEST</h1>
 
     <form name="p2x" action="javascript: runP2X()">
       <table width="100%">
         <tr>
-          <td width="50%" valign="top">
+          <td width="33%" valign="top">
             <fieldset>
               <legend>Transform input</legend>
-              <textarea name="input" cols="50" rows="10" onchange="runP2X()" onkeyup="runP2X()">
+              <textarea name="input" cols="50" rows="10" class="hidden">
 minus f(x)
               </textarea>
+              <div id="input_feedback" class="feedback">
+              </div>
             </fieldset>
           </td>
-          <td width="50%" valign="top">
+          <td valign="top" colspan="2">
             <fieldset>
               <legend>Transform output</legend>
-              <textarea name="output" cols="50" rows="10">
+              <textarea name="output" cols="50" rows="10" readonly="readonly">
               </textarea>
             </fieldset>
           </td>
         </tr>
         <tr>
-          <td width="50%" valign="top">
+          <td width="33%" valign="top">
             <fieldset>
               <legend>Scanner settings</legend>
-              <textarea name="scanconf" cols="50" rows="10">
+              <textarea name="scanconf" cols="50" rows="10" class="hidden">
 {
 name: 'Test',
 rules: [
@@ -91,10 +127,10 @@ rules: [
               </div>
             </fieldset>
           </td>
-          <td width="50%" valign="top">
+          <td width="33%" valign="top">
             <fieldset>
               <legend>Parser settings</legend>
-              <textarea name="parseconf" cols="50" rows="10">
+              <textarea name="parseconf" cols="50" rows="10" class="hidden">
 {
  rules: [                
   { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, prec: 2000, isParen: 1,
@@ -117,18 +153,28 @@ rules: [
               </div>
             </fieldset>
           </td>
+          <td width="33%" valign="top">
+            <fieldset>
+              <legend>Treewriter settings</legend>
+              <textarea name="twconf" cols="50" rows="10" class="hidden">
+{ line: false, col: true, strict: 0 }
+              </textarea>
+              <div id="twconf_feedback" class="feedback">
+              </div>
+            </fieldset>
+          </td>
         </tr>
         <tr>
-          <td width="50%" valign="top">
+          <td width="33%" valign="top">
             <fieldset>
               <legend>Scanner output</legend>
               <div id="scan_feedback" class="feedback">
               </div>
             </fieldset>
-<          </td>
-          <td width="50%" valign="top">
+          </td>
+          <td width="33%" valign="top">
             <fieldset>
-              <legend>Parser output</legend>
+              <legend>Parser output (Messages)</legend>
               <div id="parse_feedback" class="feedback">
               </div>
             </fieldset>
