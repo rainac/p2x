@@ -1,7 +1,7 @@
 
-generated_files = test_cmp_js.sh
+generated_files = test_cmp_js.sh forall_tests.sh
 
-forall_tests.sh: update_forall_tests.sh
+forall_tests.sh: update_forall_tests.sh ../../examples/in
 	./update_forall_tests.sh
 
 test_%.sh: head_%.sh forall_tests.sh
@@ -11,8 +11,10 @@ test_%.sh: head_%.sh forall_tests.sh
 
 all: $(generated_files)
 
-check: $(generated_files)
+check: all
 	./all_tests.sh
 
+install: all
+
 clean:
-	$(RM) $(generated_files)
+	$(RM) -f $(generated_files)
