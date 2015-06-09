@@ -1008,19 +1008,14 @@ describe('P2X.Parser', function(){
         var res = P2X.p2xj(input, p2xConfig)
 
         var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
-+' <ca:steps/>\n'
 +' <root type=\"ROOT\">\n'
 +'  <null/>\n'
 +'  <op line=\"1\" col=\"1\" type=\"PLUS\">\n'
-+'   <int line=\"1\" col=\"0\" type=\"INTEGER\">\n'
-+'    <ca:text>1</ca:text>\n'
-+'   </int>\n'
++'   <int line=\"1\" col=\"0\" type=\"INTEGER\"><ca:text>1</ca:text></int>\n'
 +'   <ca:text>\+</ca:text>\n'
 +'   <ca:ignore line=\"1\" col=\"2\" type=\"IGNORE\"><ca:text>\(</ca:text></ca:ignore>\n'
 +'   <ca:ignore line=\"1\" col=\"3\" type=\"IGNORE\"><ca:text>\)</ca:text></ca:ignore>\n'
-+'   <int line=\"1\" col=\"4\" type=\"INTEGER\">\n'
-+'    <ca:text>2</ca:text>\n'
-+'   </int>\n'
++'   <int line=\"1\" col=\"4\" type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
 +'  </op>\n'
 +' </root>\n'
 +'</code-xml>\n'
@@ -1087,7 +1082,7 @@ describe('P2X.Parser', function(){
         var tpopts = P2X.TreePrinterOptions()
         tpopts.line = false
         tpopts.col = false
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: tpopts}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: tpopts}
         res = P2X.p2xj(input, p2xConfig)
 
         // console.log(res)
@@ -1119,21 +1114,16 @@ describe('P2X.Parser', function(){
     })
 
       var xmlres_un = '<code-xml xmlns=\'http://johannes-willkomm.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm.de/xml/code-xml/attributes/\' ca:version=\'1.0\'>\n'
-+' <ca:steps/>\n'
 +' <root type="ROOT">\n'
 +'  <null/>\n'
 +'  <op line="1" col="3" type="MULT">\n'
 +'   <op line="1" col="0" type="MINUS">\n'
 +'    <null/>\n'
 +'    <ca:text>-</ca:text>\n'
-+'    <int line="1" col="1" type="INTEGER">\n'
-+'     <ca:text>1</ca:text>\n'
-+'    </int>\n'
++'    <int line="1" col="1" type="INTEGER"><ca:text>1</ca:text></int>\n'
 +'   </op>\n'
 +'   <ca:text>*</ca:text>\n'
-+'   <int line="1" col="5" type="INTEGER">\n'
-+'    <ca:text>2</ca:text>\n'
-+'   </int>\n'
++'   <int line="1" col="5" type="INTEGER"><ca:text>2</ca:text></int>\n'
 +'  </op>\n'
 +' </root>\n'
 +'</code-xml>\n'
@@ -1243,7 +1233,6 @@ describe('P2X.TreePrinter', function(){
             var res = tp.asxml(undefined)
             // console.log(P2X.escapeBSQLines(res))
             var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
-+' <ca:steps/>\n'
 +'</code-xml>\n'
             assert.equal(res, check)
         })
@@ -1252,10 +1241,7 @@ describe('P2X.TreePrinter', function(){
             var res = tp.asxml(1)
             // console.log(P2X.escapeBSQLines(res))
             var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
-+' <ca:steps/>\n'
-+' <op type=\"number\">\n'
-+'  <ca:text>1</ca:text>\n'
-+' </op>\n'
++' <op type=\"number\"><ca:text>1</ca:text></op>\n'
 +'</code-xml>\n'
             assert.equal(res, check)
         })
@@ -1264,9 +1250,7 @@ describe('P2X.TreePrinter', function(){
             var res = tp.asxml({token: TOKEN_ROOT})
             // console.log(P2X.escapeBSQLines(res))
             var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
-+' <ca:steps/>\n'
-+' <root type=\"ROOT\">\n'
-+' </root>\n'
++' <root type=\"ROOT\"></root>\n'
 +'</code-xml>\n'
             assert.equal(res, check)
         })
@@ -1275,32 +1259,25 @@ describe('P2X.TreePrinter', function(){
             var res = tp.asxml({token: TOKEN_ROOT, right: { token: TOKEN_INTEGER, text: '2'}})
             // console.log(P2X.escapeBSQLines(res))
             var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
-+' <ca:steps/>\n'
 +' <root type=\"ROOT\">\n'
 +'  <null/>\n'
-+'  <int type=\"INTEGER\">\n'
-+'   <ca:text>2</ca:text>\n'
-+'  </int>\n'
++'  <int type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
 +' </root>\n'
 +'</code-xml>\n'
             assert.equal(res, check)
         })
         it('It prints an XML tree of the object', function(){
-            var tp = P2X.TreePrinter()
+            var topts = P2X.TreePrinterOptions()
+            var tp = P2X.TreePrinter(undefined, topts)
             var res = tp.asxml({token: TOKEN_ROOT, right: { token: TOKEN_PLUS, text: '+', left: { token: TOKEN_INTEGER, text: '1'}, right: { token: TOKEN_INTEGER, text: '2'}}})
             // console.log(P2X.escapeBSQLines(res))
             var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
-+' <ca:steps/>\n'
 +' <root type=\"ROOT\">\n'
 +'  <null/>\n'
 +'  <op type=\"PLUS\">\n'
-+'   <int type=\"INTEGER\">\n'
-+'    <ca:text>1</ca:text>\n'
-+'   </int>\n'
++'   <int type=\"INTEGER\"><ca:text>1</ca:text></int>\n'
 +'   <ca:text>\+</ca:text>\n'
-+'   <int type=\"INTEGER\">\n'
-+'    <ca:text>2</ca:text>\n'
-+'   </int>\n'
++'   <int type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
 +'  </op>\n'
 +' </root>\n'
 +'</code-xml>\n'
@@ -1314,16 +1291,11 @@ describe('P2X.TreePrinter', function(){
             tree.left.right = P2X.Token(TOKEN_INTEGER, '2')
             var res = tp.asxml(tree)
             var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
-+' <ca:steps/>\n'
 +' <root type=\"ROOT\">\n'
 +'  <op type=\"PLUS\">\n'
-+'   <int type=\"INTEGER\">\n'
-+'    <ca:text>1</ca:text>\n'
-+'   </int>\n'
++'   <int type=\"INTEGER\"><ca:text>1</ca:text></int>\n'
 +'   <ca:text>\+</ca:text>\n'
-+'   <int type=\"INTEGER\">\n'
-+'    <ca:text>2</ca:text>\n'
-+'   </int>\n'
++'   <int type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
 +'  </op>\n'
 +' </root>\n'
 +'</code-xml>\n'

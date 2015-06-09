@@ -63,10 +63,11 @@
       fieldset:hover > .hidden {
         display: block;
         visibility: visible;
-        padding: 2em;
         border: 0.5em inset lightgreen;
         border-radius: 0.7em;
         font-weight: 600;
+        position: relative;
+        height: 3em;
       }
       .messages {
         display: none;
@@ -82,7 +83,7 @@
     <form name="p2x" action="javascript: runP2X()">
       <table width="100%">
         <tr>
-          <td width="33%" valign="top">
+          <td width="50%" valign="top">
             <fieldset>
               <legend>Transform input</legend>
               <textarea name="input" cols="50" rows="10" class="hidden">
@@ -92,7 +93,7 @@ minus f(x)
               </div>
             </fieldset>
           </td>
-          <td valign="top" colspan="2">
+          <td valign="top">
             <fieldset>
               <legend>Transform output</legend>
               <textarea name="output" cols="50" rows="10" readonly="readonly">
@@ -101,10 +102,10 @@ minus f(x)
           </td>
         </tr>
         <tr>
-          <td width="33%" valign="top">
+          <td valign="top" colspan="2">
             <fieldset>
               <legend>Scanner settings</legend>
-              <textarea name="scanconf" cols="50" rows="10" class="hidden">
+              <textarea name="scanconf" cols="50" rows="3" class="hidden">
 {
 name: 'Test',
 rules: [
@@ -127,10 +128,12 @@ rules: [
               </div>
             </fieldset>
           </td>
-          <td width="33%" valign="top">
+        </tr>
+        <tr>
+          <td width="50%" valign="top">
             <fieldset>
               <legend>Parser settings</legend>
-              <textarea name="parseconf" cols="50" rows="10" class="hidden">
+              <textarea name="parseconf" cols="50" rows="3" class="hidden">
 {
  rules: [                
   { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, prec: 2000, isParen: 1,
@@ -153,7 +156,7 @@ rules: [
               </div>
             </fieldset>
           </td>
-          <td width="33%" valign="top">
+          <td width="50%" valign="top">
             <fieldset>
               <legend>Treewriter settings</legend>
               <textarea name="twconf" cols="50" rows="10" class="hidden">
@@ -165,14 +168,14 @@ rules: [
           </td>
         </tr>
         <tr>
-          <td width="33%" valign="top">
+          <td width="50%" valign="top">
             <fieldset>
               <legend>Scanner output</legend>
               <div id="scan_feedback" class="feedback">
               </div>
             </fieldset>
           </td>
-          <td width="33%" valign="top">
+          <td width="50%" valign="top">
             <fieldset>
               <legend>Parser output (Messages)</legend>
               <div id="parse_feedback" class="feedback">
