@@ -551,7 +551,7 @@ describe('P2X.UniConfig', function(){
         var parseConf = {
             ignoreIgnore: true,
             rules: [
-                { type: 1001, isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
+                { type: 1001, mode: MODE_UNARY, prec: 100 },
                 { type: 1002, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
                 { type: 1003, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
                 { type: 1004, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 }
@@ -568,7 +568,7 @@ describe('P2X.UniConfig', function(){
         var uniConf = {
             ignoreIgnore: true,
             rules: [
-                { re: /abc/, isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
+                { re: /abc/, mode: MODE_UNARY, prec: 100 },
                 { re: /def/, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
                 { re: /123/, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
                 { re: /456/, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 }
@@ -576,11 +576,89 @@ describe('P2X.UniConfig', function(){
         }
         var up = P2X.UniConfParser()
         var res = up.split(uniConf)
-        // console.dir(uniConf)
-        // console.dir(res.scanConf)
-        // console.dir(res.parseConf)
-        assert.deepEqual(res.scanConf, scanConf)
-        assert.deepEqual(res.parseConf, parseConf)
+        assert.deepEqual(res.scanner, scanConf)
+        assert.deepEqual(res.parser, parseConf)
+    })
+    it('Closing lists are handles as well', function(){
+        var parseConf = {
+            ignoreIgnore: true,
+            rules: [
+                { type: 1001, isParen: 1, closingList: [ { type: 1002 } ] },
+            ]
+        }
+        var scanConf = {
+            rules: [
+                {re: /\(/, action: 1001 },
+                {re: /\)/, action: 1002 },
+            ]
+        }
+        var uniConf = {
+            ignoreIgnore: true,
+            rules: [
+                { re: /\(/, isParen: 1, closingList: [ { re: /\)/ } ] },
+            ],
+        }
+        var up = P2X.UniConfParser()
+        var res = up.split(uniConf)
+        assert.deepEqual(res.scanner, scanConf)
+        assert.deepEqual(res.parser, parseConf)
+    })
+    it('a treewriter options struct is preserved', function(){
+        var twConf = P2X.TreePrinterOptions()
+        var parseConf = {
+            ignoreIgnore: true,
+            rules: [
+                { type: 1001, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300 },
+            ]
+        }
+        var scanConf = {
+            rules: [
+                {re: 'abc', action: 1001 },
+            ]
+        }
+        var uniConf = {
+            ignoreIgnore: true,
+            rules: [
+                { re: 'abc', mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300 },
+            ],
+            treewriter: P2X.TreePrinterOptions()
+        }
+        var up = P2X.UniConfParser()
+        var res = up.split(uniConf)
+        assert.deepEqual(res.scanner, scanConf)
+        assert.deepEqual(res.parser, parseConf)
+        assert.deepEqual(res.treewriter, twConf)
+    })
+    it('a repeatedly occuring RE gets the same token ID', function(){
+        var parseConf = {
+            ignoreIgnore: true,
+            rules: [
+                { type: 1001, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300 },
+                { type: 1002, isParen: true, closingList: [ { type: 1003 }, { type: 1004 } ] },
+                { type: 1005, isParen: true, closingList: [ { type: 1003 }, { type: 1001 } ] },
+            ]
+        }
+        var scanConf = {
+            rules: [
+                {re: 'abc', action: 1001 },
+                {re: '\\(', action: 1002 },
+                {re: '\\)', action: 1003 },
+                {re: 'end', action: 1004 },
+                {re: 'gg',  action: 1005 },
+            ]
+        }
+        var uniConf = {
+            ignoreIgnore: true,
+            rules: [
+                { re: 'abc', mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300 },
+                { re: '\\(', isParen: true, closingList: [ { re: '\\)' }, { re: 'end' } ] },
+                { re: 'gg', isParen: true, closingList: [ { re: '\\)' }, { re: 'abc' } ] },
+            ]
+        }
+        var up = P2X.UniConfParser()
+        var res = up.split(uniConf)
+        assert.deepEqual(res.scanner, scanConf)
+        assert.deepEqual(res.parser, parseConf)
     })
   })
 })

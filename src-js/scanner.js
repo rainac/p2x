@@ -1427,22 +1427,40 @@ P2X.p2xj = function(input, p2xConf, result) {
 P2X.UniConfParser = function() {
     return {
         split: function(uniConf) {
-            var scrule, prule, k, res
-            res = { scanConf: { rules: [] }, parseConf: { rules: [] } }
+            var scrule, prule, k, res, count = 0, scrules = {}, reid
+            function getREID(re) {
+                if (re in scrules) {
+                    return scrules[re]
+                } else {
+                    var reid = count
+                    scrules[re] = reid
+                    res.scanner.rules[reid] = {re: re, action: 1001 + reid}
+                    ++count
+                    return reid
+                }
+            }
+            res = { scanner: { rules: [] }, parser: { rules: [] }, treewriter: uniConf.treewriter }
             for (k=0; k < uniConf.rules.length; ++k) {
                 rule = uniConf.rules[k]
-                res.scanConf.rules[k] = { re: rule.re, action: 1001 + k }
-                prule = { type: 1001 + k }
+                reid = getREID(rule.re)
+                prule = { type: 1001 + reid }
                 Object.keys(rule).map(function(x) {
-                    if (x != 're') {
+                    if (x == 'closingList') {
+                        cl = rule[x]
+                        prule[x] = cl.map(function(clitem) {
+                            reid = getREID(clitem.re)
+                            var nit = { type: 1001 + reid }
+                            return nit
+                        })
+                    } else if (x != 're') {
                         prule[x] = rule[x]
                     }
                 })
-                res.parseConf.rules[k] = prule
+                res.parser.rules[k] = prule
             }
             Object.keys(uniConf).map(function(x) {
-                if (x != 'rules') {
-                    res.parseConf[x] = uniConf[x]
+                if (x != 'rules' && x != 'treewriter') {
+                    res.parser[x] = uniConf[x]
                 }
             })
             return res
