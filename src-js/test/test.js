@@ -241,7 +241,7 @@ describe('P2X.ScannerConfig', function(){
       it('ScannerConfig can be serialized to JSON (file input)', function(){
           var configFile = '../examples/configs/scanner-test1.json'
           var scanner = P2X.JScanner()
-          console.log('load file ' + configFile)
+          // console.log('load file ' + configFile)
           var data = fs.readFileSync(configFile)
           scanner.set(P2X.parseJSON(data))
           // console.log('Scanner config loaded:')
@@ -253,7 +253,7 @@ describe('P2X.ScannerConfig', function(){
       it('ScannerConfig can be serialized to JSON (scanner-c template input)', function(){
           var configFile = '../examples/configs/scanner-c.json'
           var scanner = P2X.JScanner()
-          console.log('load file ' + configFile)
+          // console.log('load file ' + configFile)
           var data = fs.readFileSync(configFile)
           scanner.set(P2X.parseJSON(data))
           // console.log('Scanner config loaded:')
@@ -517,7 +517,7 @@ describe('P2X.ParserConfig', function(){
             parser.setconfig(parseConf)
             var tokenp = {token: TOKEN_PLUS, left: {}, right: {}}
             var token = {token: TOKEN_L_PAREN, left: {}, right: {}}
-            console.dir(parser.tokenInfo)
+            // console.dir(parser.tokenInfo)
             assert.equal(parser.tokenInfo.mode(tokenp), MODE_BINARY)
             assert.equal(parser.tokenInfo.mode(token), MODE_ITEM)
             assert.equal(parser.tokenInfo.isParen(token), true)
@@ -545,6 +545,45 @@ describe('P2X.ParserConfig', function(){
     })
 })
 
+describe('P2X.UniConfig', function(){
+  describe('#split()', function(){
+    it('can split a fused config into ScannerConfig and ParseConfig', function(){
+        var parseConf = {
+            ignoreIgnore: true,
+            rules: [
+                { type: 1001, isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
+                { type: 1002, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+                { type: 1003, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+                { type: 1004, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 }
+            ]
+        }
+        var scanConf = {
+            rules: [
+                {re: /abc/, action: 1001 },
+                {re: /def/, action: 1002 },
+                {re: /123/, action: 1003 },
+                {re: /456/, action: 1004 }
+            ]
+        }
+        var uniConf = {
+            ignoreIgnore: true,
+            rules: [
+                { re: /abc/, isParen: 1, closingList: [ { type: TOKEN_R_PAREN } ] },
+                { re: /def/, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+                { re: /123/, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+                { re: /456/, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 }
+            ]
+        }
+        var up = P2X.UniConfParser()
+        var res = up.split(uniConf)
+        // console.dir(uniConf)
+        // console.dir(res.scanConf)
+        // console.dir(res.parseConf)
+        assert.deepEqual(res.scanConf, scanConf)
+        assert.deepEqual(res.parseConf, parseConf)
+    })
+  })
+})
 
 describe('P2X.TokenList', function(){
   describe('#construct()', function(){
@@ -908,7 +947,7 @@ describe('P2X.Parser', function(){
   })
   describe('#parse()', function(){
       var xmlres = fs.readFileSync('../examples/out/1p2ep3.xml')+''
-      console.log(xmlres)
+      // console.log(xmlres)
     var xmlres2 = fs.readFileSync('../examples/out/l1p2r.xml')+''
 
     it('it should return an expression tree', function() {
@@ -939,7 +978,7 @@ describe('P2X.Parser', function(){
     })
 
     it('the same with the easy-to-use function', function() {
-        console.log('IT' + xmlres)
+        // console.log('IT' + xmlres)
         var scConf = [
             { re: '=',      action: TOKEN_EQUAL },
             { re: '\\+',    action: TOKEN_PLUS },
@@ -950,11 +989,11 @@ describe('P2X.Parser', function(){
             { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
             { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
         ]
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
 
-        console.log(res)
-        console.log('RES' + xmlres)
+        // console.log(res)
+        // console.log('RES' + xmlres)
         assert.equal(res, xmlres);
     })
 
@@ -977,11 +1016,11 @@ describe('P2X.Parser', function(){
                 { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
             ]
         }
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
         
-        console.log(res)
-        console.log(xmlres2)
+        // console.log(res)
+        // console.log(xmlres2)
         assert.equal(res, xmlres2)
     })
 
@@ -1004,7 +1043,7 @@ describe('P2X.Parser', function(){
                 { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
             ]
         }
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
         var res = P2X.p2xj(input, p2xConfig)
 
         var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
@@ -1033,7 +1072,7 @@ describe('P2X.Parser', function(){
             ignoreIgnore: true,
             rules: [ ]
         }
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions(), debug: true}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions(), debug: true}
         var result = {}
         var res = P2X.p2xj(input, p2xConfig, result)
 
@@ -1057,7 +1096,7 @@ describe('P2X.Parser', function(){
             { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
             { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
         ]
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
 
         // console.log(res)
@@ -1106,7 +1145,7 @@ describe('P2X.Parser', function(){
             { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
             { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
         ]
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
 
         // console.log(res)
@@ -1139,7 +1178,7 @@ describe('P2X.Parser', function(){
             { type: TOKEN_MINUS, mode: MODE_UNARY, prec: 3000 },
             { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
         ]
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
         
 //        console.log(P2X.escapeBSQLines(res, '\''))
@@ -1158,7 +1197,7 @@ describe('P2X.Parser', function(){
             { type: TOKEN_MINUS, mode: MODE_UNARY_BINARY, prec: 1000, precU: 3000 },
             { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
         ]
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
         
         // console.log(P2X.escapeBSQLines(res, '\''))
@@ -1187,7 +1226,7 @@ describe('P2X.Parser', function(){
                 { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
             ]
         }
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
 
 //        console.log(res)
@@ -1215,7 +1254,7 @@ describe('P2X.Parser', function(){
                 { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
             ]
         }
-        var p2xConfig = {scanner: scConf, parser: parseConf, treeprinter: P2X.TreePrinterOptions()}
+        var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
         res = P2X.p2xj(input, p2xConfig)
 
 //        console.log(res)

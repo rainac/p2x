@@ -1424,6 +1424,32 @@ P2X.p2xj = function(input, p2xConf, result) {
     return result.xmlres
 }
 
+P2X.UniConfParser = function() {
+    return {
+        split: function(uniConf) {
+            var scrule, prule, k, res
+            res = { scanConf: { rules: [] }, parseConf: { rules: [] } }
+            for (k=0; k < uniConf.rules.length; ++k) {
+                rule = uniConf.rules[k]
+                res.scanConf.rules[k] = { re: rule.re, action: 1001 + k }
+                prule = { type: 1001 + k }
+                Object.keys(rule).map(function(x) {
+                    if (x != 're') {
+                        prule[x] = rule[x]
+                    }
+                })
+                res.parseConf.rules[k] = prule
+            }
+            Object.keys(uniConf).map(function(x) {
+                if (x != 'rules') {
+                    res.parseConf[x] = uniConf[x]
+                }
+            })
+            return res
+        }
+    }
+}
+
 P2X.scanner = P2X.JScanner('p2x1main')
 
 if (typeof window == 'undefined') {
@@ -1445,5 +1471,6 @@ if (typeof window == 'undefined') {
     exports.parseJSON = P2X.parseJSON;
     exports.escapeBS = P2X.escapeBS;
     exports.escapeBSQLines = P2X.escapeBSQLines;
+    exports.UniConfParser = P2X.UniConfParser;
     //exports.P2X = P2X
 }
