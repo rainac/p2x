@@ -1010,7 +1010,7 @@ struct TreeXMLWriter {
       scanConf(),
       parseConf(),
       treewriterConf(),
-      caSteps(true),
+      caSteps(false),
       encoding("default is in .ggo")
     {}
     bool id, line, col, _char, prec, mode, type, code, indent, newlineAsBr, merged, strict,
@@ -1138,56 +1138,11 @@ struct TreeXMLWriter {
       writeXMLLocAttrs(t, aus);
       writeXMLTypeAttrs(t, aus);
       writeXMLPrecAttrs(t, aus);
-      aus << ">" << linebreak;
+      aus << ">";
     }
-    /*
-    // writeXMLTypeElem(t, aus, indent);
-    if (tokenInfo.isParen(t)) {
-      if (t->left or t->right) {
-        aus << indent << indentUnit << "<children>" << linebreak;
-        //        indent = indent + indentUnit;
-      } else {
-        if (t->content) {
-          aus << indent << indentUnit << "<null/>" << linebreak;
-        }
-      }
+    if (t->left || t->right || t->content || t->ignore) {
+      aus << linebreak;
     }
-    if (t->left != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML(t->left, aus, subindent, passParent);
-    } else if (t->right != 0) {
-      aus << indent << indentUnit << "<null/>" << linebreak;
-    }
-    bool const wrt = writeXMLTextElem(t, aus, subindent);
-    if (wrt) aus << linebreak;
-    if (not tokenInfo.isParen(t) and t->ignore) {
-      writeIgnoreXML(t->ignore, aus, subindent);
-    }
-    if (t->right != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) == ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML(t->right, aus, subindent, passParent);
-    } / * else if (t->left != 0) {
-      aus << indent << indentUnit << "<null/>" << linebreak;
-    } * /
-    if (tokenInfo.isParen(t)) {
-      if (t->ignore) {
-        writeIgnoreXML(t->ignore, aus, subindent);
-      }
-      if (t->left or t->right) {
-        // indent = indent_;
-        aus << indent << indentUnit << "</children>" << linebreak;
-      }
-      if (t->content) {
-        writeXML(t->content, aus, subindent);
-      }
-    }
-    */
     if (t->left != 0) {
       Token const *passParent = 0;
       if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
@@ -1197,16 +1152,15 @@ struct TreeXMLWriter {
     } else if (t->right != 0 or t->content != 0) {
       aus << indent << indentUnit << "<null/>" << linebreak;
     }
-    bool const wrt = writeXMLTextElem(t, aus, subindent);
-    if (wrt) aus << linebreak;
-    // if (not tokenInfo.isParen(t) and t->ignore) {
-    //   writeIgnoreXML(t->ignore, aus, subindent);
-    // }
-    // if (tokenInfo.isParen(t)) {
+    std::string tsubind;
+    if (t->left || t->right || t->content || t->ignore) {
+      tsubind = subindent;
+    }
+    bool const wrt = writeXMLTextElem(t, aus, tsubind);
+    if (wrt and tsubind.size()) aus << linebreak;
     if (t->ignore) {
       writeIgnoreXML(t->ignore, aus, subindent);
     }
-    // }
     if (t->content) {
       writeXML(t->content, aus, subindent);
     } else if (tokenInfo.isParen(t) and t->right != 0) {
@@ -1223,7 +1177,10 @@ struct TreeXMLWriter {
       writeXML(t->right, aus, subindent, passParent);
     } 
     if (tags) {
-      aus << indent << "</" << elemName << ">" << linebreak;
+      if (t->left || t->right || t->content || t->ignore) {
+        aus << indent;
+      }
+      aus << "</" << elemName << ">" << linebreak;
     }
   }
 
@@ -1781,14 +1738,17 @@ int main(int argc, char *argv[]) {
     options.xmlDecl = args.write_xml_declaration_flag;
   }
 
-  if (args.include_config_flag || args.include_scanner_config_flag) {
+  if (args.include_config_flag || args.element_scanner_flag) {
     options.scanConf = true;
   }
-  if (args.include_config_flag || args.include_parser_config_flag) {
+  if (args.include_config_flag || args.element_parser_flag) {
     options.parseConf = true;
   }
-  if (args.include_config_flag || args.include_treewriter_config_flag) {
+  if (args.include_config_flag || args.element_treewriter_flag) {
     options.treewriterConf = true;
+  }
+  if (args.element_ca_steps_flag) {
+    options.caSteps = true;
   }
   options.bom = args.write_bom_flag;
 

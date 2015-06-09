@@ -52,10 +52,12 @@ option "attribute-mode" -  "Emit attribute mode with token mode" flag off hidden
 option "attribute-type" -  "Emit attribute type with token type" flag on hidden
 option "attribute-id" -  "Emit attribute id with token id" flag off hidden
 
+option "element-ca-steps" -  "Emit element ca:steps" flag off hidden
+option "element-scanner" - "Add scanner configuration info to the output XML" flag off hidden
+option "element-parser" - "Add parser configuration info to the output XML" flag off hidden
+option "element-treewriter" - "Add treewriter configuration info to the output XML" flag off hidden
+
 section "Config options"
 # option "dump-config" -  "Dump configuration to stdout and exit" flag off hidden
-option "dump-config-XML" D  "Dump configuration in XML format to stdout and exit" flag off
+# option "dump-config-XML" D  "Dump configuration in XML format to stdout and exit" flag off
 option "include-config" c  "Add configuration info to the output XML" flag off
-option "include-scanner-config" - "Add scanner configuration info to the output XML" flag off hidden
-option "include-parser-config" - "Add parser configuration info to the output XML" flag off hidden
-option "include-treewriter-config" - "Add treewriter configuration info to the output XML" flag off hidden
