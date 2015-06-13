@@ -1196,7 +1196,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 if (this.options.caSteps) {
                     res += indent + "<ca:steps/>\n"
                 }
-                if (this.options.parseConf) {
+                if (this.options.scanConf) {
                     console.log('Scanner conf')
                     console.dir(t.scanner.get())
                     res += t.scanner.get().asxml()

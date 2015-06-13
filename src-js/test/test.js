@@ -1412,6 +1412,13 @@ describe('P2X.Parser', function(){
 
 describe('P2X.TreePrinter', function(){
     describe('#asxml()', function(){
+        var tree = P2X.Token(TOKEN_ROOT)
+        tree.left = P2X.Token(TOKEN_PLUS, '+')
+        tree.left.left = P2X.Token(TOKEN_INTEGER, '1')
+        tree.left.right = P2X.Token(TOKEN_INTEGER, '2')
+        tree.scanner = P2X.JScanner()
+        tree.parser = P2X.Parser()
+        
         it('It prints an XML tree of the object', function(){
             var tp = P2X.TreePrinter()
             var res = tp.asxml(undefined)
@@ -1469,10 +1476,6 @@ describe('P2X.TreePrinter', function(){
         })
         it('It prints an XML tree of the object', function(){
             var tp = P2X.TreePrinter()
-            var tree = P2X.Token(TOKEN_ROOT)
-            tree.left = P2X.Token(TOKEN_PLUS, '+')
-            tree.left.left = P2X.Token(TOKEN_INTEGER, '1')
-            tree.left.right = P2X.Token(TOKEN_INTEGER, '2')
             var res = tp.asxml(tree)
             var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
 +' <root type=\"ROOT\">\n'
@@ -1498,6 +1501,38 @@ describe('P2X.TreePrinter', function(){
             var tp = P2X.TreePrinter(undefined, opts)
             var res = tp.asxml(1)
             assert(res.indexOf('<ca:steps/>') == -1)
+        })
+        it('With option scanConf, the element can be included', function(){
+            var opts = P2X.TreePrinterOptions()
+            opts.scanConf = true
+            var tp = P2X.TreePrinter(undefined, opts)
+            var res = tp.asxml(tree)
+            assert(res.indexOf('<ca:scanner>') > -1)
+            assert(res.indexOf('</ca:scanner>') > -1)
+        })
+        it('With option scanConf, the element can be included', function(){
+            var opts = P2X.TreePrinterOptions()
+            opts.scanConf = false
+            var tp = P2X.TreePrinter(undefined, opts)
+            var res = tp.asxml(tree)
+            assert(res.indexOf('<ca:scanner>') == -1)
+            assert(res.indexOf('</ca:scanner>') == -1)
+        })
+        it('With option parseConf, the element can be included', function(){
+            var opts = P2X.TreePrinterOptions()
+            opts.parseConf = true
+            var tp = P2X.TreePrinter(undefined, opts)
+            var res = tp.asxml(tree)
+            assert(res.indexOf('<ca:parser>') > -1)
+            assert(res.indexOf('</ca:parser>') > -1)
+        })
+        it('With option parseConf, the element can be included', function(){
+            var opts = P2X.TreePrinterOptions()
+            opts.parseConf = false
+            var tp = P2X.TreePrinter(undefined, opts)
+            var res = tp.asxml(tree)
+            assert(res.indexOf('<ca:parser>') == -1)
+            assert(res.indexOf('</ca:parser>') == -1)
         })
     })
 })
