@@ -1425,6 +1425,13 @@ describe('P2X.TreePrinter', function(){
         tree.scanner = P2X.JScanner()
         tree.parser = P2X.Parser()
         
+        var tree2 = P2X.Token(TOKEN_ROOT)
+        tree2.left = P2X.Token(1100, '+')
+        tree2.left.left = P2X.Token(1101, '1')
+        tree2.left.right = P2X.Token(1101, '2')
+        tree2.scanner = P2X.JScanner()
+        tree2.parser = P2X.Parser()
+
         it('It prints an XML tree of the object', function(){
             var tp = P2X.TreePrinter()
             var res = tp.asxml(undefined)
@@ -1489,6 +1496,20 @@ describe('P2X.TreePrinter', function(){
 +'   <int type=\"INTEGER\"><ca:text>1</ca:text></int>\n'
 +'   <ca:text>\+</ca:text>\n'
 +'   <int type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
++'  </op>\n'
++' </root>\n'
++'</code-xml>\n'
+            assert.equal(res, check)
+        })
+        it('It prints an XML tree of the object', function(){
+            var tp = P2X.TreePrinter()
+            var res = tp.asxml(tree2)
+            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
++' <root type=\"ROOT\">\n'
++'  <op type=\"1100\">\n'
++'   <op type=\"1101\"><ca:text>1</ca:text></op>\n'
++'   <ca:text>\+</ca:text>\n'
++'   <op type=\"1101\"><ca:text>2</ca:text></op>\n'
 +'  </op>\n'
 +' </root>\n'
 +'</code-xml>\n'

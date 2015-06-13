@@ -1278,11 +1278,13 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 res += ' repr="' + t.text + '"'
             var ttext
             if (this.options.type) {
-                if (t.token)
-                    ttext = ENUM.ParserToken.names_index[t.token]
-                if (t.token)
-                    ttext = ENUM.ParserToken.names_index[t.token]
-                else 
+                if (t.token) {
+                    if (t.token in ENUM.ParserToken.names_index) {
+                        ttext = ENUM.ParserToken.names_index[t.token]
+                    } else {
+                        ttext = t.token
+                    }
+                } else 
                     ttext = typeof t
                 res += ' type="' + ttext + '"'
             }
@@ -1458,13 +1460,13 @@ P2X.UniConfParser = function() {
             for (k=0; k < uniConf.rules.length; ++k) {
                 rule = uniConf.rules[k]
                 reid = getREID(rule.re)
-                prule = { token: 1001 + reid }
+                prule = { type: 1001 + reid }
                 Object.keys(rule).map(function(x) {
                     if (x == 'closingList') {
                         cl = rule[x]
                         prule[x] = cl.map(function(clitem) {
                             reid = getREID(clitem.re)
-                            var nit = { token: 1001 + reid }
+                            var nit = { type: 1001 + reid }
                             return nit
                         })
                     } else if (x != 're') {
