@@ -875,6 +875,7 @@ P2X.TokenInfo = function() {
                 }
                 res = this.seen[tl]
             } else {
+                res = tl
             }
             return res
         },
@@ -1353,14 +1354,12 @@ P2X.p2xj = function(input, p2xConf, result) {
     if (typeof p2xConf.rules != "object") {
         p2xConf.rules = P2X.parseJSON(p2xConf.rules)
     }
-    console.dir(p2xConf)
     if (typeof p2xConf.rules != "undefined") {
         if (p2xConf.debug) {
             result.uniConf = p2xConf.rules
         }
         p2xConf = P2X.UniConfParser().split(p2xConf)
     }
-    console.dir(p2xConf)
     var scanConf = p2xConf.scanner
     if (typeof scanConf != "object") {
         scanConf = P2X.parseJSON(scanConf)
@@ -1387,12 +1386,15 @@ P2X.p2xj = function(input, p2xConf, result) {
         }
     }
 
+    console.dir(parseConf)
     var parser = P2X.Parser()
     parser.setconfig(parseConf)
+    console.dir(parser.getconfig())
 
     if (p2xConf.debug) {
         var pcrw = P2X.ParserConfigRW()
-        result.parseconf = parser.getconfig()
+        result.parseconf = parseConf
+//        result.parseconf = parser.getconfig()
     }
     
     scanner.str(input)
@@ -1456,13 +1458,13 @@ P2X.UniConfParser = function() {
             for (k=0; k < uniConf.rules.length; ++k) {
                 rule = uniConf.rules[k]
                 reid = getREID(rule.re)
-                prule = { type: 1001 + reid }
+                prule = { token: 1001 + reid }
                 Object.keys(rule).map(function(x) {
                     if (x == 'closingList') {
                         cl = rule[x]
                         prule[x] = cl.map(function(clitem) {
                             reid = getREID(clitem.re)
-                            var nit = { type: 1001 + reid }
+                            var nit = { token: 1001 + reid }
                             return nit
                         })
                     } else if (x != 're') {

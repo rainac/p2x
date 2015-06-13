@@ -463,6 +463,12 @@ describe('P2X.ParserConfig', function(){
             tt.insert(P2X.TokenProto(TOKEN_TILDE, '~', MODE_UNARY, ASSOC_NONE, undefined, undefined, false))
             assert.equal(tt.getOpCode(TOKEN_TILDE), TOKEN_TILDE)
         })
+        it('for plain token, opcode == type', function(){
+            var tt = P2X.TokenInfo()
+            assert.equal(tt.getOpCode(1111), 1111)
+            tt.insert(P2X.TokenProto(1111, '~', MODE_UNARY, ASSOC_NONE, undefined, undefined, false))
+            assert.equal(tt.getOpCode(1111), 1111)
+        })
         it('ROOT prec is 1', function(){
             var tt = P2X.TokenInfo()
             tt.insert(P2X.TokenProto(TOKEN_TILDE, '~', MODE_UNARY, ASSOC_NONE, undefined, undefined, false))
