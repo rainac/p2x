@@ -558,6 +558,7 @@ describe('P2X.UniConfig', function(){
             ]
         }
         var scanConf = {
+            ignoreIgnore: true,
             rules: [
                 {re: /abc/, action: 1001 },
                 {re: /def/, action: 1002 },
@@ -587,6 +588,7 @@ describe('P2X.UniConfig', function(){
             ]
         }
         var scanConf = {
+            ignoreIgnore: true,
             rules: [
                 {re: /\(/, action: 1001 },
                 {re: /\)/, action: 1002 },
@@ -612,6 +614,7 @@ describe('P2X.UniConfig', function(){
             ]
         }
         var scanConf = {
+            ignoreIgnore: true,
             rules: [
                 {re: 'abc', action: 1001 },
             ]
@@ -639,6 +642,7 @@ describe('P2X.UniConfig', function(){
             ]
         }
         var scanConf = {
+            ignoreIgnore: true,
             rules: [
                 {re: 'abc', action: 1001 },
                 {re: '\\(', action: 1002 },
@@ -659,7 +663,70 @@ describe('P2X.UniConfig', function(){
         var res = up.split(uniConf)
         assert.deepEqual(res.scanner, scanConf)
         assert.deepEqual(res.parser, parseConf)
+    }),
+    it('any other fields are preserved', function(){
+        var twConf = P2X.TreePrinterOptions()
+        var parseConf = {
+            ignoreIgnore: true,
+            rules: [
+                { type: 1001, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300 },
+            ]
+        }
+        var scanConf = {
+            ignoreIgnore: true,
+            rules: [
+                {re: 'abc', action: 1001 },
+            ]
+        }
+        var uniConf = {
+            ignoreIgnore: true,
+            rules: [
+                { re: 'abc', mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300 },
+            ],
+            treewriter: P2X.TreePrinterOptions(),
+            debug: true,
+            foo: 'bar',
+        }
+        var up = P2X.UniConfParser()
+        var res = up.split(uniConf)
+        assert.deepEqual(res.scanner, scanConf)
+        assert.deepEqual(res.parser, parseConf)
+        assert.deepEqual(res.treewriter, twConf)
+        assert.equal(res.debug, uniConf.debug)
+        assert.equal(res.foo, uniConf.foo)
+        assert.equal(res.rules, uniConf.rules)
     })
+    // it('uni rules may also be a string', function(){
+    //     var twConf = P2X.TreePrinterOptions()
+    //     var parseConf = {
+    //         ignoreIgnore: true,
+    //         rules: [
+    //             { type: 1001, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300 },
+    //         ]
+    //     }
+    //     var scanConf = {
+    //         ignoreIgnore: true,
+    //         rules: [
+    //             {re: 'abc', action: 1001 },
+    //         ]
+    //     }
+    //     var uniConf = "{\n"+
+    //         "ignoreIgnore: true,\n"+
+    //         "rules: [\n"+
+    //         "    { re: 'abc', mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300 },\n"+
+    //         "],\n"+
+    //         "treewriter: P2X.TreePrinterOptions(),\n"+
+    //         "debug: true,\n"+
+    //         "foo: 'bar',\n"+
+    //     "}"
+    //     var up = P2X.UniConfParser()
+    //     var res = up.split(uniConf)
+    //     assert.deepEqual(res.scanner, scanConf)
+    //     assert.deepEqual(res.parser, parseConf)
+    //     assert.deepEqual(res.treewriter, twConf)
+    //     assert.equal(res.debug, true)
+    //     assert.equal(res.foo, 'bar')
+    // })
   })
 })
 

@@ -1347,10 +1347,21 @@ P2X.parseJSON = function(text) {
 }
 
 P2X.p2xj = function(input, p2xConf, result) {
-    var scanConf = p2xConf.scanner
     if (typeof result == "undefined") {
         result = {}
     }
+    if (typeof p2xConf.rules != "object") {
+        p2xConf.rules = P2X.parseJSON(p2xConf.rules)
+    }
+    console.dir(p2xConf)
+    if (typeof p2xConf.rules != "undefined") {
+        if (p2xConf.debug) {
+            result.uniConf = p2xConf.rules
+        }
+        p2xConf = P2X.UniConfParser().split(p2xConf)
+    }
+    console.dir(p2xConf)
+    var scanConf = p2xConf.scanner
     if (typeof scanConf != "object") {
         scanConf = P2X.parseJSON(scanConf)
         if (typeof scanConf == "undefined") {
@@ -1398,16 +1409,18 @@ P2X.p2xj = function(input, p2xConf, result) {
     }
 
     var tpOptions = p2xConf.treewriter, defOpts = P2X.TreePrinterOptions();
-    if (typeof tpOptions != "object") {
-        tpOptions = P2X.parseJSON(tpOptions)
-    }
-    if (typeof tpOptions == "undefined") {
-        console.error('Failed to parse treewriter config')
-        result.error = 'Failed to parse treewriter config'
-    } else {
-        Object.keys(tpOptions).map(function(k) {
-            defOpts[k] = tpOptions[k]
-        })
+    if (typeof tpOptions != "undefined") {
+        if (typeof tpOptions != "object") {
+            tpOptions = P2X.parseJSON(tpOptions)
+        }
+        if (typeof tpOptions == "undefined") {
+            console.error('Failed to parse treewriter config')
+            result.error = 'Failed to parse treewriter config'
+        } else {
+            Object.keys(tpOptions).map(function(k) {
+                defOpts[k] = tpOptions[k]
+            })
+        }
     }
     var tp = P2X.TreePrinter(parser.tokenInfo, defOpts)
 
@@ -1439,7 +1452,7 @@ P2X.UniConfParser = function() {
                     return reid
                 }
             }
-            res = { scanner: { rules: [] }, parser: { rules: [] }, treewriter: uniConf.treewriter }
+            res = { scanner: { rules: [] }, parser: { rules: [] } }
             for (k=0; k < uniConf.rules.length; ++k) {
                 rule = uniConf.rules[k]
                 reid = getREID(rule.re)
@@ -1459,8 +1472,11 @@ P2X.UniConfParser = function() {
                 res.parser.rules[k] = prule
             }
             Object.keys(uniConf).map(function(x) {
-                if (x != 'rules' && x != 'treewriter') {
+                if (x == 'ignoreIgnore') {
                     res.parser[x] = uniConf[x]
+                    res.scanner[x] = uniConf[x]
+                } else {
+                    res[x] = uniConf[x]
                 }
             })
             return res
