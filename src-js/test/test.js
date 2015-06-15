@@ -422,6 +422,21 @@ describe('P2X.ParserConfig', function(){
             assert.deepEqual(confA, confB);
       })
 
+        it('ParserConfig can be serialized to JSON', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(1100, '/', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1101, '*', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1102, '=', MODE_IGNORE))
+            var pcrw = P2X.ParserConfigRW()
+            confA = tt.getconfig()
+
+            tt.setconfig(P2X.parseJSON(pcrw.asJSON(confA)))
+            tt.normalize()
+            confB = tt.getconfig()
+
+            assert.deepEqual(confA, confB);
+      })
+
         it('rules for ROOT and JUXTA are always present', function() {
             var tt = P2X.TokenInfo()
             var confSet = [

@@ -680,7 +680,12 @@ P2X.TokenProtoRW = function() {
         if (!indent) indent = ' '
         var res = ''
         res += '{'
-        res += ' type: TOKEN_' + ENUM.getParserTokenName(obj.token) + ''
+        res += ' type: '
+        if (obj.token in ENUM.ParserToken.names_index) {
+            res += 'TOKEN_' + ENUM.getParserTokenName(obj.token)
+        } else {
+            res += obj.token
+        }
         if (obj.repr)
             res += ', repr: "' + obj.repr + '"'
         if (typeof obj.mode != 'undefined')
@@ -1198,8 +1203,8 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     res += indent + "<ca:steps/>\n"
                 }
                 if (this.options.scanConf) {
-                    console.log('Scanner conf')
-                    console.dir(t.scanner.get())
+                    // console.log('Scanner conf')
+                    // console.dir(t.scanner.get())
                     res += t.scanner.get().asxml()
                 }
                 if (this.options.parseConf) {
@@ -1323,7 +1328,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
     }
 }
 
-P2X.parseJSONEval = function(text) {
+P2X.parseEvalExpr = function(text) {
     var result, code, XXX
     code = 'var XXX = ' + text
     try {
@@ -1336,18 +1341,7 @@ P2X.parseJSONEval = function(text) {
     return XXX;
 }
 
-P2X.parseJSON = function(text) {
-    var result, code, XXX
-    code = 'var XXX = ' + text
-    try {
-        eval(code)
-    } catch (me) {
-        console.error('Failed to parse config struct: ' + me)
-        console.error('Bad code: ' + code)
-        XXX = undefined
-    }
-    return XXX;
-}
+P2X.parseJSON = P2X.parseEvalExpr
 
 P2X.p2xj = function(input, p2xConf, result) {
     if (typeof result == "undefined") {
@@ -1388,10 +1382,8 @@ P2X.p2xj = function(input, p2xConf, result) {
         }
     }
 
-    console.dir(parseConf)
     var parser = P2X.Parser()
     parser.setconfig(parseConf)
-    console.dir(parser.getconfig())
 
     if (p2xConf.debug) {
         var pcrw = P2X.ParserConfigRW()
