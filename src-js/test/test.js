@@ -3,6 +3,14 @@ var assert = require("assert")
 var fs = require("fs")
 var child_process = require('child_process')
 
+    function allLinesEqual(str1, str2) {
+        ln1 = str1.split('\n')
+        ln2 = str2.split('\n')
+        for (k= 0; k < ln1.length; ++k) {
+            assert.equal(ln1[k], ln2[k])
+        }
+    }
+
 describe('Array', function(){
   describe('#indexOf()', function(){
     it('should return -1 when the value is not present', function(){
@@ -1143,14 +1151,6 @@ describe('P2X.Parser', function(){
         assert.equal(res, xmlres);
     })
 
-    function allLinesEqual(str1, str2) {
-        ln1 = str1.split('\n')
-        ln2 = str2.split('\n')
-        for (k= 0; k < ln1.length; ++k) {
-            assert.equal(ln1[k], ln2[k])
-        }
-    }
-
     it('it should return an expression tree (custom names)', function() {
         var scanner = P2X.JScanner()
         var scConf = [
@@ -1484,6 +1484,17 @@ describe('P2X.TreePrinter', function(){
         tree2.scanner = P2X.JScanner()
         tree2.parser = P2X.Parser()
 
+        var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\''
+            + ' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
+            +' <root type=\"ROOT\">\n'
+            +'  <op type=\"PLUS\">\n'
+            +'   <int type=\"INTEGER\"><ca:text>1</ca:text></int>\n'
+            +'   <ca:text>\+</ca:text>\n'
+            +'   <int type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
+            +'  </op>\n'
+            +' </root>\n'
+            +'</code-xml>\n'
+
         it('It prints an XML tree of the object', function(){
             var tp = P2X.TreePrinter()
             var res = tp.asxml(undefined)
@@ -1525,33 +1536,13 @@ describe('P2X.TreePrinter', function(){
         it('It prints an XML tree of the object', function(){
             var topts = P2X.TreePrinterOptions()
             var tp = P2X.TreePrinter(undefined, topts)
-            var res = tp.asxml({token: TOKEN_ROOT, right: { token: TOKEN_PLUS, text: '+', left: { token: TOKEN_INTEGER, text: '1'}, right: { token: TOKEN_INTEGER, text: '2'}}})
-            // console.log(P2X.escapeBSQLines(res))
-            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
-+' <root type=\"ROOT\">\n'
-+'  <null/>\n'
-+'  <op type=\"PLUS\">\n'
-+'   <int type=\"INTEGER\"><ca:text>1</ca:text></int>\n'
-+'   <ca:text>\+</ca:text>\n'
-+'   <int type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
-+'  </op>\n'
-+' </root>\n'
-+'</code-xml>\n'
-            assert.equal(res, check)
+            var res = tp.asxml(tree)
+            allLinesEqual(res, check)
         })
         it('It prints an XML tree of the object', function(){
             var tp = P2X.TreePrinter()
             var res = tp.asxml(tree)
-            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
-+' <root type=\"ROOT\">\n'
-+'  <op type=\"PLUS\">\n'
-+'   <int type=\"INTEGER\"><ca:text>1</ca:text></int>\n'
-+'   <ca:text>\+</ca:text>\n'
-+'   <int type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
-+'  </op>\n'
-+' </root>\n'
-+'</code-xml>\n'
-            assert.equal(res, check)
+            allLinesEqual(res, check)
         })
         it('It prints an XML tree of the object', function(){
             var tp = P2X.TreePrinter()
@@ -1612,6 +1603,13 @@ describe('P2X.TreePrinter', function(){
             var res = tp.asxml(tree)
             assert(res.indexOf('<ca:parser>') == -1)
             assert(res.indexOf('</ca:parser>') == -1)
+        })
+        it('With indent, indentation can be turned off', function(){
+            var topts = P2X.TreePrinterOptions()
+            var tp = P2X.TreePrinter(undefined, topts)
+            topts.indent = false
+            var res = tp.asxml(tree)
+            allLinesEqual(res, check.replace(/ (?!.*>)/g, ''))
         })
     })
 })

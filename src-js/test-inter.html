@@ -88,7 +88,7 @@
             <fieldset>
               <legend>Transform input</legend>
               <textarea name="input" cols="50" rows="10" class="hidden">
-minus f(x)
+minus f(x, y)
               </textarea>
               <div id="input_feedback" class="feedback">
               </div>
@@ -123,7 +123,7 @@ minus f(x)
   { re: '\\^|pow',   mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1300, name: 'pow' },
   { re: '%|mod',     mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1400, name: 'mod' },
   { re: '[0-9]+', name: 'int' },
-  { re: '[a-zA-Z_][a-zA-Z0-9_]*', name: 'string' },
+  { re: '[a-zA-Z_][a-zA-Z0-9_]*', name: 'id' },
  ]
 }
               </textarea>
@@ -137,8 +137,10 @@ minus f(x)
               <textarea name="twconf" cols="50" rows="10" class="hidden">
 { line: false, col: true,
   strict: 0,
+  type: 0,
   scanConf: 0,
   parseConf: 0,
+  indent: 0
 }
               </textarea>
               <div id="twconf_feedback" class="feedback">
