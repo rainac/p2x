@@ -607,10 +607,10 @@ var isOp = function(mode) {
             || mode == MODE_POSTFIX)
 }
 
-P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingList) {
+P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingList, name) {
     var res
     if (typeof tk == 'object')
-        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.closingList) 
+        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.closingList, tk.name) 
     else {
         if (!tk in ENUM.ParserToken.names_index) {
             console.error('Value token ' + tk + ' must be in the set of allowed token: ')
@@ -632,6 +632,7 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
             precU: precU || 2,
             isParen: isParen || false,
             closingList: closingList,
+            name: name
         }
     }
     if (res.isParen || res.mode == MODE_ITEM) {
@@ -834,6 +835,9 @@ P2X.TokenInfo = function() {
         },
         isOp: function(t) { 
             return isOp(this.mode(t));
+        },
+        tagName: function (tl) {
+            return this.get(tl).name
         },
         mode: function (tl) {
             return this.get(tl).mode
@@ -1221,7 +1225,9 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
             }
             if (t) {
                 var tagname = 'op'
-                if (this.tokenInfo.isParen(t))
+                if (this.tokenInfo.tagName(t))
+                    tagname = this.tokenInfo.tagName(t)
+                else if (this.tokenInfo.isParen(t))
                     tagname = 'paren'
                 else if (t.token == TOKEN_FLOAT)
                     tagname = 'float'

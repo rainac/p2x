@@ -114,16 +114,16 @@ minus f(x)
      { re: '\\)' }
     ]
   },
-  { re: '=|eq',      mode: MODE_BINARY,       assoc: ASSOC_RIGHT, prec: 500 },
-  { re: ',',         mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 800 },
-  { re: '\\+|plus',  mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
-  { re: '-|minus',   mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
-  { re: '\\*|times', mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1100 },
-  { re: '/|div',     mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1200 },
-  { re: '\\^|pow',   mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1300 },
-  { re: '%|mod',     mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1400 },
-  { re: '[0-9]+' },
-  { re: '[a-zA-Z_][a-zA-Z0-9_]*' },
+  { re: '=|eq',      mode: MODE_BINARY,       assoc: ASSOC_RIGHT, prec: 500, name: 'eq' },
+  { re: ',',         mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 800, name: 'comma' },
+  { re: '\\+|plus',  mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200, name: 'plus' },
+  { re: '-|minus',   mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200, name: 'minus' },
+  { re: '\\*|times', mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1100, name: 'times' },
+  { re: '/|div',     mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1200, name: 'div' },
+  { re: '\\^|pow',   mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1300, name: 'pow' },
+  { re: '%|mod',     mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1400, name: 'mod' },
+  { re: '[0-9]+', name: 'int' },
+  { re: '[a-zA-Z_][a-zA-Z0-9_]*', name: 'string' },
  ]
 }
               </textarea>

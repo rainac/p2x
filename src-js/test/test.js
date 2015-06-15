@@ -1143,6 +1143,43 @@ describe('P2X.Parser', function(){
         assert.equal(res, xmlres);
     })
 
+    function allLinesEqual(str1, str2) {
+        ln1 = str1.split('\n')
+        ln2 = str2.split('\n')
+        for (k= 0; k < ln1.length; ++k) {
+            assert.equal(ln1[k], ln2[k])
+        }
+    }
+
+    it('it should return an expression tree (custom names)', function() {
+        var scanner = P2X.JScanner()
+        var scConf = [
+            { re: '=',      action: 1101 },
+            { re: '\\+',    action: 1102 },
+            { re: '[0-9]+', action: 1103 },
+        ]
+        var input = '1+2=+3'
+        scanner.set(scConf)
+        scanner.str(input)
+        var tl = scanner.lexall().mkeof()
+        var parser = P2X.Parser()
+        var parseConf = [
+            { type: 1101, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500, name: 'op' },
+            { type: 1102, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200, name: 'op' },
+            { type: 1103, mode: MODE_ITEM, name: 'int' },
+        ]
+        parser.setconfig(parseConf)
+        var res = parser.parse(tl)
+        var tpOptions = P2X.TreePrinterOptions();
+        tpOptions.type = false
+        var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)
+
+        res = tp.asxml(parser.root)
+
+//        console.log(P2X.escapeBSQLines(res))
+        allLinesEqual(res, xmlres.replace(/ type=".*"/g, ''));
+    })
+
     it('the same with the easy-to-use function', function() {
         // console.log('IT' + xmlres)
         var scConf = [
