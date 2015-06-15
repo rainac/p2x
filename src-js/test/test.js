@@ -224,6 +224,16 @@ describe('P2X.ScannerConfig', function(){
           // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
           assert.deepEqual(scConf, P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()));
       })
+      it('ScannerConfig can be serialized to JSON (object with rules)', function(){
+          var scConf = { ignored: true, rules: [
+              { re: '\'\\\'', action: 1148 },
+              { re: 'abc', action: 11120 },
+          ] }
+           console.dir(scConf)
+           console.dir(P2X.ScannerConfig(scConf))
+           console.dir(P2X.ScannerConfig(scConf).asjson())
+          assert.deepEqual(scConf, P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()));
+      })
       it('ScannerConfig can be serialized to JSON (nl, tab char)', function(){
           var scConf = [
               { re: '\'\n\t', action: 1148 },

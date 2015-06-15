@@ -270,6 +270,13 @@ P2X.TokenList.prototype.loadXMLNode = function(scanList) {
 }
 
 P2X.ScannerConfig = function(x) {
+    if (typeof x == 'object' && 'rules' in x) {
+        var res = P2X.ScannerConfig(x.rules)
+        Object.keys(x).map(function(k){
+            res[k] = x[k]
+        })
+        return res
+    }
     var res = Array.apply({}, x);
 
     function getREString(re) {
@@ -306,6 +313,9 @@ P2X.ScannerConfig = function(x) {
             res += indent + JSON.stringify({re: getREString(rule.re), action: actstr}) + ',\n'
         }
         res += indent + ']\n'
+        if (this.ignored) {
+            res = '{rules:' + res + ',ignored:true}'
+        }
         return res
     }
 
@@ -461,11 +471,15 @@ P2X.JScanner = function(name) {
             return this
         },
         get: function() {
-            scconf = Array(this.actions.length)
+            var scconf = Array(this.actions.length)
             for (var k in this.actions) {
                 scconf[k] = {re: this.actions[k][0].source, action: this.actions[k].snd_source}
             }
-            return P2X.ScannerConfig(scconf)
+            var res = P2X.ScannerConfig(scconf)
+            if (this.include_ignored)
+                res.ignored = true
+            console.dir(res)
+            return res
         },
         str: function(str) {
             this.input = str;
@@ -1361,6 +1375,12 @@ P2X.p2xj = function(input, p2xConf, result) {
             result.uniConf = p2xConf.rules
         }
         p2xConf = P2X.UniConfParser().split(p2xConf)
+        Object.keys(p2xConf).map(function(k){
+            if (k != 'scanner' && k != 'parser' && k != 'rules') {
+                p2xConf.scanner[k] = p2xConf[k]
+                p2xConf.parser[k] = p2xConf[k]
+            }
+        })
     }
     var scanConf = p2xConf.scanner
     if (typeof scanConf != "object") {
