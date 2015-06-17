@@ -22,8 +22,9 @@ if (typeof window == 'undefined') {
         { short: 'p', long: 'prec-list' },
         { short: 's', long: 'scan-only' },
         { short: 'S', long: 'scanner-config' },
+        { short: 'c', long: 'config' },
         { short: 'o', long: 'outfile' },
-        { short: 'c', long: 'include-config', flag: 1 },
+        { short: 'C', long: 'include-config', flag: 1 },
     ]
     
     // console.dir(argv)
@@ -136,7 +137,7 @@ function readScannerConfig() {
             }
         })
     } else {
-        emitter.emit('next', readInput, 'readInput');
+        emitter.emit('next', readUnifiedConfig, 'readInput');
     }
 }
 
@@ -156,12 +157,36 @@ function loadScannerConfig(cnfScanXML) {
     emitter.emit('next', readInput);
 }
 
-function readInput() {
+function readUnifiedConfig() {
+    if ('config' in options) {
+        var configFile = options['config'][0]
+        fs.readFile(configFile, function(err, data) {
+            if (err) throw(err)
+            var uniConf = P2X.parseJSON(data)
+            var up = P2X.UniConfParser()
+            var res = up.split(uniConf)
+            if (P2X.debug) {
+                console.log('C:')
+                console.dir(uniConf)
+                console.dir(res.parser)
+                console.log('SC: ' + P2X.JScanner().set(res.scanner).asjson())
+                console.log('PC: ' + P2X.Parser().setconfig(res.parser).tokenInfo.asJSON())
+            }
+            scanner.set(res.scanner)
+            parser.setconfig(res.parser)
+            emitter.emit('next', function() { readInput(res) }, 'readInput');
+        })
+    } else {
+        emitter.emit('next', readInput, 'readInput');
+    }
+}
+
+function readInput(uniConf) {
     if (options.arguments.length > 0) {
         var inFile = options['arguments'][0]
         fs.readFile(inFile, function(err, data) {
             if (err) throw(err)
-            parseInput(data + '')
+            parseInput(data + '', uniConf)
         })
     } else {
         emitter.emit('fail', function() {
@@ -170,14 +195,14 @@ function readInput() {
     }
 }
 
-function parseInput(data) {
+function parseInput(data, uniConf) {
     scanner.str(data)
     var tl = scanner.lexall().mkeof()
     // console.log('scanned token list:')
     // console.dir(tl)
     // console.log(tl.asxml())
     var res = parser.parse(tl)
-    tpOptions = P2X.TreePrinterOptions();
+    tpOptions = P2X.TreePrinterOptions(uniConf ? uniConf.treewriter : undefined);
     if ('include-config' in options) {
         tpOptions.scanConf = tpOptions.parseConf = tpOptions.treewriterConf = true
     }

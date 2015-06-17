@@ -2,6 +2,8 @@
 
 var P2X = P2X || {};
 
+P2X.debug = P2X.debug || 0
+
 P2X.importObject = function(obj, target) {
     for (var k in obj) {
 //        console.log('import: ' + k)
@@ -478,8 +480,10 @@ P2X.JScanner = function(name) {
             var res = P2X.ScannerConfig(scconf)
             if (this.include_ignored)
                 res.ignored = true
-            console.dir(res)
             return res
+        },
+        asjson: function() {
+            return this.get().asjson()
         },
         str: function(str) {
             this.input = str;
@@ -631,6 +635,8 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
             console.dir(ENUM.ParserToken.names_index)
             assert(false)
         }
+        if (typeof mode == 'string')
+            mode = ENUM.getParserModeValue(mode)
         if (tk != TOKEN_IDENTIFIER)
             repr = ''
         if (closingList) {
@@ -667,8 +673,9 @@ P2X.TokenProtoRW = function() {
         res += ' type="' + ENUM.getParserTokenName(obj.token) + '"'
         if (obj.token == TOKEN_IDENTIFIER && obj.repr)
             res += ' repr="' + obj.repr + '"'
-        if (typeof obj.mode != 'undefined')
+        if (typeof obj.mode != 'undefined') {
             res += ' mode="' + ENUM.getParserModeName(obj.mode) + '"'
+        }
         if (obj.mode == MODE_UNARY_BINARY || obj.mode == MODE_BINARY)
             res += ' associativity="' + ENUM.getParserAssocName(obj.assoc) + '"'
         if (obj.mode != MODE_ITEM && !obj.isParen)
@@ -703,8 +710,9 @@ P2X.TokenProtoRW = function() {
         }
         if (obj.repr)
             res += ', repr: "' + obj.repr + '"'
-        if (typeof obj.mode != 'undefined')
+        if (typeof obj.mode != 'undefined') {
             res += ', mode: MODE_' + ENUM.getParserModeName(obj.mode) + ''
+        }
         if (obj.mode == MODE_UNARY_BINARY || obj.mode == MODE_BINARY)
             res += ', assoc: ASSOC_' + ENUM.getParserAssocName(obj.assoc) + ''
         if (typeof obj.prec != 'undefined')
@@ -947,6 +955,10 @@ P2X.TokenInfo = function() {
             }
             return this
         },
+        asJSON: function() {
+            var pcrw = P2X.ParserConfigRW()
+            return pcrw.asJSON(this.getconfig())
+        },
         insert: function (tokenProto) {
             if (tokenProto.token == TOKEN_IDENTIFIER && tokenProto.repr) {
                 // this creates the new op code
@@ -981,6 +993,9 @@ P2X.Parser = function(tokenInfo) {
         endList: undefined,
         options: {
             ignoreIgnore: false
+        },
+        asJSON: function () {
+            return this.tokenInfo.asJSON()  
         },
         getconfig: function () {
             return this.tokenInfo.getconfig()
@@ -1180,8 +1195,8 @@ P2X.Parser = function(tokenInfo) {
     }        
 }
 
-P2X.TreePrinterOptions = function() {
-    return {
+P2X.TreePrinterOptions = function(obj) {
+    var res = {
         parseConf: false,
         scanConf: false,
         treewriterConf: false,
@@ -1199,6 +1214,13 @@ P2X.TreePrinterOptions = function() {
         strict: 1,
         encoding: 'utf-8'
     }
+    if (typeof obj == "object") {
+        Object.keys(res).map(function(k){
+            if (k in obj)
+                res[k] = obj[k]
+        })
+    }
+    return res
  }
 
 P2X.TreePrinter = function(tokenInfo, tpOptions) {
@@ -1463,13 +1485,20 @@ P2X.UniConfParser = function() {
     return {
         split: function(uniConf) {
             var scrule, prule, k, res, count = 0, scrules = {}, reid
-            function getREID(re) {
-                if (re in scrules) {
-                    return scrules[re]
+            function getREID(rule) {
+                if (rule.re in scrules) {
+                    return scrules[rule.re]
                 } else {
                     var reid = count
-                    scrules[re] = reid
-                    res.scanner.rules[reid] = {re: re, action: 1001 + reid}
+                    scrules[rule.re] = reid
+                    scrule = {}
+                    Object.keys(rule).map(function(x) {
+                        if (x != 'assoc' && x != 'mode' && x != 'prec' && x != 'precU' && x != 'closingList' && x != 'isParen') {
+                            scrule[x] = rule[x]
+                        }
+                    })
+                    scrule.action = 1001 + reid
+                    res.scanner.rules[reid] = scrule
                     ++count
                     return reid
                 }
@@ -1477,13 +1506,13 @@ P2X.UniConfParser = function() {
             res = { scanner: { rules: [] }, parser: { rules: [] } }
             for (k=0; k < uniConf.rules.length; ++k) {
                 rule = uniConf.rules[k]
-                reid = getREID(rule.re)
+                reid = getREID(rule)
                 prule = { type: 1001 + reid }
                 Object.keys(rule).map(function(x) {
                     if (x == 'closingList') {
                         cl = rule[x]
                         prule[x] = cl.map(function(clitem) {
-                            reid = getREID(clitem.re)
+                            reid = getREID(clitem)
                             var nit = { type: 1001 + reid }
                             return nit
                         })
@@ -1501,6 +1530,8 @@ P2X.UniConfParser = function() {
                     res[x] = uniConf[x]
                 }
             })
+            // res.scanner = P2X.ScannerConfig(res.scanner)
+            // res.parser = P2X.ParserConfig(res.parser)
             return res
         }
     }
@@ -1528,5 +1559,6 @@ if (typeof window == 'undefined') {
     exports.escapeBS = P2X.escapeBS;
     exports.escapeBSQLines = P2X.escapeBSQLines;
     exports.UniConfParser = P2X.UniConfParser;
+    exports.debug = P2X.debug;
     //exports.P2X = P2X
 }

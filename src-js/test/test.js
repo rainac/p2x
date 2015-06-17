@@ -206,6 +206,17 @@ describe('P2X.ScannerConfig', function(){
           // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
           assert.deepEqual(scConf, P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()));
       })
+      it('ScannerConfig can be serialized to JSON (also directly)', function(){
+          var scConf = [
+              { re: '\'', action: 1148 },
+              { re: 'abc', action: 11120 },
+          ]
+          var scanner = P2X.JScanner()
+          scanner.set(P2X.ScannerConfig(scConf))
+          // console.dir(scConf)
+          // console.dir(P2X.parseJSON(P2X.ScannerConfig(scConf).asjson()))
+          assert.deepEqual(scConf, P2X.parseJSON(scanner.asjson()));
+      })
       it('ScannerConfig can be serialized to JSON (II)', function(){
           var scConf = [
               { re: '\'', action: 1148 },
@@ -366,6 +377,7 @@ describe('P2X.ParserConfig', function(){
     describe('#construct()', function(){
     })
     describe('#asxml()', function(){
+        var confA, confB
         it('should return XML rule list', function(){
             xmlRes = '<ca:scanner>\n'
                 + '<ca:lexem><ca:re>/abc/</ca:re><ca:action>function () { return action*2 }</ca:action></ca:lexem>\n'
@@ -454,6 +466,47 @@ describe('P2X.ParserConfig', function(){
 
             assert.deepEqual(confA, confB);
       })
+
+        it('ParserConfig can be serialized to JSON (also directly)', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(1100, '/', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1101, '*', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1102, '=', MODE_IGNORE))
+            confA = tt.getconfig()
+            tt.setconfig(P2X.parseJSON(tt.asJSON()))
+            tt.normalize()
+            confB = tt.getconfig()
+            assert.deepEqual(confA, confB);
+      })
+
+        it('ParserConfig can be serialized to JSON (also from the parser)', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(1100, '/', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1101, '*', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1102, '=', MODE_IGNORE))
+            var parser = P2X.Parser();
+            parser.setconfig(tt.getconfig())
+            confA = tt.getconfig()
+            tt.setconfig(P2X.parseJSON(parser.asJSON()))
+            tt.normalize()
+            confB = tt.getconfig()
+            assert.deepEqual(confA, confB);
+      })
+
+        it('Parser mode can be a string', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(1100, '/', 'BINARY', ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1101, '*', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1102, '=', MODE_IGNORE))
+            var pcrw = P2X.ParserConfigRW()
+            confA = tt.getconfig()
+
+            tt.setconfig(P2X.parseJSON(pcrw.asJSON(confA)))
+            tt.normalize()
+            confB = tt.getconfig()
+
+            assert.deepEqual(confA, confB);
+        })
 
         it('rules for ROOT and JUXTA are always present', function() {
             var tt = P2X.TokenInfo()
@@ -662,6 +715,33 @@ describe('P2X.UniConfig', function(){
             ignoreIgnore: true,
             rules: [
                 { re: 'abc', mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300 },
+            ],
+            treewriter: P2X.TreePrinterOptions()
+        }
+        var up = P2X.UniConfParser()
+        var res = up.split(uniConf)
+        assert.deepEqual(res.scanner, scanConf)
+        assert.deepEqual(res.parser, parseConf)
+        assert.deepEqual(res.treewriter, twConf)
+    })
+    it('name fields are passed to the scanner and parser rules', function(){
+        var twConf = P2X.TreePrinterOptions()
+        var parseConf = {
+            ignoreIgnore: true,
+            rules: [
+                { type: 1001, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300, name: 'testN' },
+            ]
+        }
+        var scanConf = {
+            ignoreIgnore: true,
+            rules: [
+                {re: 'abc', action: 1001, name: 'testN' },
+            ]
+        }
+        var uniConf = {
+            ignoreIgnore: true,
+            rules: [
+                { re: 'abc', mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 300, name: 'testN' },
             ],
             treewriter: P2X.TreePrinterOptions()
         }
@@ -1478,6 +1558,20 @@ describe('P2X.Parser', function(){
   })
 })
 
+describe('P2X.TreePrinterOptions', function(){
+    describe('#construct()', function(){
+        it('Should honour existing fields in the first argument', function(){
+            tpOptions1 = { line: 0, col: 0, type: 0 };
+            tpOptions2 = P2X.TreePrinterOptions(tpOptions1);
+            Object.keys(tpOptions1).map(function(k){
+                assert(k in tpOptions1)
+                assert(k in tpOptions2)
+                assert.equal(tpOptions1[k], tpOptions2[k])
+            })
+        })
+    })
+})
+
 describe('P2X.TreePrinter', function(){
     describe('#asxml()', function(){
         var tree = P2X.Token(TOKEN_ROOT)
@@ -1689,7 +1783,7 @@ describe('P2X.CLI', function(){
     var xmlres = fs.readFileSync('../examples/out/1p2ep3.xml')+''
     var xmlres2 = fs.readFileSync('../examples/out/l1p2r.xml')+''
 
-    var pres1, pres2
+    var pres1, pres2, pres3
     var mode = '';
       
     function runP2XJS(scanConfigFile, configFile, inputFile, done) {
@@ -1697,6 +1791,23 @@ describe('P2X.CLI', function(){
             + (scanConfigFile ? ' -S ' + scanConfigFile : '')
             + (configFile ? ' -p ' + configFile : '')
             + (inputFile ? ' ' + inputFile : '')
+        console.log('run ' + cmd)
+        // system(cmd)
+        var child = child_process.exec(cmd, { stdio: 'inherit' },
+                                       function(errc, stdout, stderr)
+                                       {
+                                           if (errc) {
+                                               console.error('P2X exited with error:\n' + errc + stderr)
+                                               assert(false);
+                                           } else {
+                                               // console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
+                                           }
+                                           done(stdout)
+                                       })
+    }
+      
+    function runP2XJSNew(p2xConfigFile, inputFile, done) {
+        var cmd = 'p2xjs -c ' + p2xConfigFile + ' ' + inputFile
         console.log('run ' + cmd)
         // system(cmd)
         var child = child_process.exec(cmd, { stdio: 'inherit' },
@@ -1769,5 +1880,28 @@ describe('P2X.CLI', function(){
             })
         })
     })
+
+    it('another test with JSON config files (prepare unified)', function(done) {
+        var scanConfigFile = '../examples/configs/unified-scanner.json'
+        var configFile = '../examples/configs/unified-parser.json'
+        // var p2xConfigFile = '../examples/configs/unified.json'
+        var inputFile = '../examples/in/postfix1.exp'
+        runP2XJS(scanConfigFile, configFile, inputFile, function(res) {
+            pres3 = res
+            done()
+        })
+    })
+
+    it('config can be given as a unified P2X file', function(done) {
+        // var scanConfigFile = '../examples/configs/unified-scanner.json'
+        // var configFile = '../examples/configs/unified-parser.json'
+        var p2xConfigFile = '../examples/configs/unified.json'
+        var inputFile = '../examples/in/postfix1.exp'
+        runP2XJSNew(p2xConfigFile, inputFile, function(res) {
+            allLinesEqual(pres3, res)
+            done()
+        })
+    })
+
   })
 })
