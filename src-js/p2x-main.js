@@ -196,6 +196,10 @@ function readInput(uniConf) {
 }
 
 function parseInput(data, uniConf) {
+    if (P2X.debug) {
+        console.dir(scanner.get())
+        console.dir(parser.getconfig())
+    }
     scanner.str(data)
     var tl = scanner.lexall().mkeof()
     // console.log('scanned token list:')
@@ -203,6 +207,9 @@ function parseInput(data, uniConf) {
     // console.log(tl.asxml())
     var res = parser.parse(tl)
     tpOptions = P2X.TreePrinterOptions(uniConf ? uniConf.treewriter : undefined);
+    if (P2X.debug) {
+        console.dir(tpOptions)
+    }
     if ('include-config' in options) {
         tpOptions.scanConf = tpOptions.parseConf = tpOptions.treewriterConf = true
     }
