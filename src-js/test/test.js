@@ -1834,6 +1834,36 @@ describe('P2X.TextUtils', function(){
     })
 })
 
+describe('P2X.parseOptions', function(){
+    var POpts = require('../parse-opts.js')
+    var optDefs = [
+        { short: 'p', long: 'prec-list' },
+        { short: 's', long: 'scan-only' },
+        { short: 'S', long: 'scanner-config' },
+        { short: 'c', long: 'config' },
+        { short: 'o', long: 'outfile' },
+        { short: 'C', long: 'include-config', flag: 1 },
+    ]
+
+    var argv = ['', '', '-c', 'test.conf', 'text.txt', 'text2.txt']
+
+    it('should return an object with parsed options', function(){
+        options = POpts.parseOptions(argv, optDefs)
+        assert.deepEqual(options['include-config'], undefined)
+        assert.deepEqual(options['config'], ['test.conf'])
+        assert.equal(options['arguments'][0], 'text.txt')
+        assert.equal(options['arguments'][1], 'text2.txt')
+    })
+
+    it('flags do not consume an argument', function(){
+        var argv = ['', '', '-C', '-c', 'test.conf', 'text.txt', 'text2.txt']
+        options = POpts.parseOptions(argv, optDefs)
+        assert.deepEqual(options['include-config'], [1])
+        assert.deepEqual(options['config'], ['test.conf'])
+        assert.equal(options['arguments'][0], 'text.txt')
+        assert.equal(options['arguments'][1], 'text2.txt')
+    })
+})
 
 describe('P2X.CLI', function(){
   describe('#p2xjs()', function(){
@@ -1957,6 +1987,19 @@ describe('P2X.CLI', function(){
         var inputFile = '../examples/in/postfix1.exp'
         runP2XJSNew(p2xConfigFile, inputFile, function(res) {
             allLinesEqual(pres3, res)
+            done()
+        })
+    })
+
+    it('flag -C can dump the config status to the XML', function(done) {
+        var p2xConfigFile = '../examples/configs/unified.json'
+        var inputFile = '../examples/in/postfix1.exp'
+        p2x_options = '-C 1'
+        runP2XJSNew(p2xConfigFile, inputFile, function(res) {
+            assert(res.indexOf('<ca:scanner') > -1)
+            assert(res.indexOf('<ca:parser') > -1)
+            assert(res.indexOf('<ca:tree-writer') > -1)
+            assert(res.indexOf('<id line="1" col="21" type="1004"><ca:text>s</ca:text></id>') > -1)
             done()
         })
     })

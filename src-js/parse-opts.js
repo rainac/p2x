@@ -26,23 +26,31 @@ POpts.parseOptions = function(argv, optDefs) {
     }
     
     var procShortOption = function(optDef) {
+        var opt, optarg = 1
         opt = argv[k].substring(1, 2)
-        if (argv[k].length > 2) {
-            optarg = argv[k].substring(2)
+        if (optDef.flag) {
         } else {
-            ++k
-            optarg = argv[k]
+            if (argv[k].length > 2) {
+                optarg = argv[k].substring(2)
+            } else {
+                ++k
+                optarg = argv[k]
+            }
         }
         optDef.action(optarg)
     }
     
     var procLongOption = function(optDef) {
+        var opt, optarg = 1
         opt = argv[k].substring(2, 2+optDef.long.length)
-        if (argv[k].length > 3+optDef.long.length) {
-            optarg = argv[k].substring(3+optDef.long.length)
+        if (optDef.flag) {
         } else {
-            ++k
-            optarg = argv[k]
+            if (argv[k].length > 3+optDef.long.length) {
+                optarg = argv[k].substring(3+optDef.long.length)
+            } else {
+                ++k
+                optarg = argv[k]
+            }
         }
         optDef.action(optarg)
     }
