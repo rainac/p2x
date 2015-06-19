@@ -52,9 +52,50 @@ TokenInfo has function outputMode
 
 Reading XML: should be doable with expat parser
 
-*** TODO Option --output, -o
+*** DONE Option --output, -o
+    CLOSED: [2015-06-08 Mo 22:17]
 
 Write output to file instead of stdout
+
+*** TODO Javascript implementation
+
+**** TODO Javascript XML identical to C/C++
+
+First test: check examples for identical XML output to C/C++
+
+**** TODO Also for non-UTF-8 input???
+
+**** TODO Report parser errors in HTML page
+
+*** TODO Develop a unified config
+
+    - Basically, eliminate the TOKEN_ stuff
+    - In Parser config, specify the RE directly
+    - To support this in C/C++ we will have to dynamically generate
+      the flex scanner and compile it from the user input
+
+*** DONE Consolidate XML names
+    CLOSED: [2015-06-08 Mo 22:18]
+
+    - code-xml :: the root element, has optionally as
+      - ca:scanner :: scanner configuration
+      - ca:parser :: parser configuration
+      - ca:treewriter :: treewriter configuration, and must have elements
+      - root :: the parse tree
+
+*** DONE Add am attribute from ca namespace
+    CLOSED: [2015-06-08 Mo 22:24]
+
+Added code-xml/@ca:version
+
+*** TODO remove reduncancy from the XML
+
+**** TODO Skip type attr when there is a special element name
+
+Such as int, float, string
+
+**** DONE Skip ca:text when empty
+     CLOSED: [2015-06-08 Mo 22:22]
 
 ** TODO Source code cleanup
 
