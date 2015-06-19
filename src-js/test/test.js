@@ -523,6 +523,63 @@ describe('P2X.ParserConfig', function(){
                 assert(tokenInListB.indexOf(tokenInListA[k]) > -1)
             }
         })
+        it('rules may be given as arbitrary objects', function() {
+            var tt = P2X.TokenInfo()
+            var confSet = [
+                { type: TOKEN_DIV, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 100 },
+                { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 100 },
+            ]
+            tt.setconfig(confSet);
+            var confA = tt.getconfig()
+            var res = ' <ca:parser>\n'
++'  <ca:op type="ROOT" mode="UNARY" precedence="1"/>\n'
++'  <ca:op type="MULT" mode="BINARY" associativity="LEFT" precedence="100"/>\n'
++'  <ca:op type="DIV" mode="BINARY" associativity="LEFT" precedence="100"/>\n'
++'  <ca:op type="JUXTA" mode="BINARY" associativity="LEFT" precedence="2"/>\n'
++'  <ca:op type="IGNORE" mode="IGNORE" precedence="2"/>\n'
++' </ca:parser>\n'
+            // console.log(tt.asxml())
+            allLinesEqual(res, tt.asxml())
+        })
+        it('rules may be given as arbitrary objects', function() {
+            var tt = P2X.TokenInfo()
+            var confSet = [
+                { token: 1100, mode: 'binary', assoc: 'left', prec: 100, name: "foo" },
+                { token: 1200, mode: 'BINARY', assoc: 'left', prec: 100 },
+            ]
+            tt.setconfig(confSet);
+            var confA = tt.getconfig()
+            // console.log(tt.asxml())
+            assert(tt.asxml().indexOf('type="1100"') > -1)
+            assert(tt.asxml().indexOf('type="1200"') > -1)
+            assert(tt.asxml().indexOf('name="foo"') > -1)
+        })
+        it('fields may be missing (default binary assoc is left)', function() {
+            var tt = P2X.TokenInfo()
+            var confSet = [
+                { token: 1100, mode: 'binary', prec: 100, name: "foo" },
+                { token: 1200, mode: 'unary', prec: 100, name: "foo" },
+                { token: 1300, mode: 'unary_binary', prec: 100, name: "foo" },
+                { token: 1400, mode: 'item', prec: 100, name: "foo" },
+            ]
+            tt.setconfig(confSet);
+            var confA = tt.getconfig()
+            // console.log(tt.asxml())
+            assert(tt.asxml().match(/type="1100".*associativity="LEFT"/))
+//            assert(tt.asxml().match(/type="1200".*associativity="NONE"/))
+            assert(tt.asxml().match(/type="1300".*associativity="LEFT"/))
+//            assert(tt.asxml().match(/type="1400".*associativity="NONE"/))
+        })
+        it('fields may be missing (default mode is item)', function() {
+            var tt = P2X.TokenInfo()
+            var confSet = [
+                { token: 1100, name: "foo" },
+            ]
+            tt.setconfig(confSet);
+            var confA = tt.getconfig()
+            // console.log(tt.asxml())
+            assert(tt.asxml().indexOf('mode="ITEM"') > -1)
+        })
         it('undefined prec defaults to 2', function(){
             var tt = P2X.TokenInfo()
             tt.insert(P2X.TokenProto(TOKEN_TILDE, '~', MODE_UNARY, ASSOC_NONE, undefined, undefined, false))

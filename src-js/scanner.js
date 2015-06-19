@@ -637,6 +637,8 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
         }
         if (typeof mode == 'string')
             mode = ENUM.getParserModeValue(mode)
+        if (typeof assoc == 'string')
+            assoc = ENUM.getParserAssocValue(assoc)
         if (tk != TOKEN_IDENTIFIER)
             repr = ''
         if (closingList) {
@@ -644,22 +646,23 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
                 return P2X.TokenProto(x)
             })
         }
+        var defAssoc = (mode == MODE_BINARY || mode == MODE_UNARY_BINARY) ? ASSOC_LEFT : ASSOC_NONE
         res = {
             token: tk, repr: repr,
             mode: mode || MODE_ITEM,
-            assoc: assoc || ASSOC_NONE,
+            assoc: assoc || defAssoc,
             prec: prec || 2,
             precU: precU || 2,
             isParen: isParen || false,
             closingList: closingList,
             name: name
         }
-    }
-    if (res.isParen || res.mode == MODE_ITEM) {
-        res.prec = res.precU = 1e9
-    }
-    if (res.isParen) {
-        res.closingList = res.closingList || [ TOKEN_EOF ]
+        if (res.isParen || res.mode == MODE_ITEM) {
+            res.prec = res.precU = 1e9
+        }
+        if (res.isParen) {
+            res.closingList = res.closingList || [ TOKEN_EOF ]
+        }
     }
     return res
 }
@@ -670,7 +673,13 @@ P2X.TokenProtoRW = function() {
         if (!indent) indent = ' '
         var res = ''
         res += indent + '<ca:op'
-        res += ' type="' + ENUM.getParserTokenName(obj.token) + '"'
+        res += ' type="'
+        if (obj.token in ENUM.ParserToken.names_index) {
+            res += ENUM.getParserTokenName(obj.token)
+        } else {
+            res += obj.token
+        }
+        res += '"'
         if (obj.token == TOKEN_IDENTIFIER && obj.repr)
             res += ' repr="' + obj.repr + '"'
         if (typeof obj.mode != 'undefined') {
@@ -680,6 +689,8 @@ P2X.TokenProtoRW = function() {
             res += ' associativity="' + ENUM.getParserAssocName(obj.assoc) + '"'
         if (obj.mode != MODE_ITEM && !obj.isParen)
             res += ' precedence="' + obj.prec + '"'
+        if (obj.name)
+            res += ' name="' + obj.name + '"'
         if (obj.mode == MODE_UNARY_BINARY)
             res += ' unary-precedence="' + obj.precU + '"'
         if (obj.isParen)
@@ -959,12 +970,16 @@ P2X.TokenInfo = function() {
             var pcrw = P2X.ParserConfigRW()
             return pcrw.asJSON(this.getconfig())
         },
+        asxml: function() {
+            var pcrw = P2X.ParserConfigRW()
+            return pcrw.asxml(this.getconfig())
+        },
         insert: function (tokenProto) {
             if (tokenProto.token == TOKEN_IDENTIFIER && tokenProto.repr) {
                 // this creates the new op code
                 // console.log('inserting token proto for named ID ' + tokenProto.repr + ': ' + this.getOpCode(tokenProto.repr))
                 // console.log(' prec ' + tokenProto.prec)
-                this.tokenClasses[this.getOpCode(tokenProto.repr)] = tokenProto
+                this.tokenClasses[this.getOpCode(tokenProto.repr)] = P2X.TokenProto(tokenProto)
             } else if (typeof tokenProto.token == "undefined") {
             } else {
                 if (tokenProto.token == TOKEN_JUXTA) {
@@ -996,6 +1011,9 @@ P2X.Parser = function(tokenInfo) {
         },
         asJSON: function () {
             return this.tokenInfo.asJSON()  
+        },
+        asxml: function() {
+            return this.tokenInfo.asxml()  
         },
         getconfig: function () {
             return this.tokenInfo.getconfig()

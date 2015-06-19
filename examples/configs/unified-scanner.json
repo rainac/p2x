@@ -2,5 +2,5 @@
     {"re":"\\n","action":1001},
     {"re":":","action":1002},
     {"re":",","action":1003},
-    {"re":"[a-zA-Z]*","action":1004},
+    {"re":"[a-zA-Z]+","action":1004},
 ]
