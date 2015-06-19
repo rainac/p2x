@@ -1842,9 +1842,10 @@ describe('P2X.CLI', function(){
 
     var pres1, pres2, pres3
     var mode = '';
+    var p2x_options = '';
       
     function runP2XJS(scanConfigFile, configFile, inputFile, done) {
-        var cmd = 'p2xjs' + (mode ? ' ' + mode : '')
+        var cmd = 'p2xjs' + ' ' + p2x_options + (mode ? ' ' + mode : '')
             + (scanConfigFile ? ' -S ' + scanConfigFile : '')
             + (configFile ? ' -p ' + configFile : '')
             + (inputFile ? ' ' + inputFile : '')
@@ -1864,7 +1865,7 @@ describe('P2X.CLI', function(){
     }
       
     function runP2XJSNew(p2xConfigFile, inputFile, done) {
-        var cmd = 'p2xjs -c ' + p2xConfigFile + ' ' + inputFile
+        var cmd = 'p2xjs' + ' ' + p2x_options + ' -c ' + p2xConfigFile + ' ' + inputFile
         console.log('run ' + cmd)
         // system(cmd)
         var child = child_process.exec(cmd, { stdio: 'inherit' },
