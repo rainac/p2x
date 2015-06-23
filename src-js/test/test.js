@@ -1994,7 +1994,7 @@ describe('P2X.CLI', function(){
     it('flag -C can dump the config status to the XML', function(done) {
         var p2xConfigFile = '../examples/configs/unified.json'
         var inputFile = '../examples/in/postfix1.exp'
-        p2x_options = '-C 1'
+        p2x_options = '-C'
         runP2XJSNew(p2xConfigFile, inputFile, function(res) {
             assert(res.indexOf('<ca:scanner') > -1)
             assert(res.indexOf('<ca:parser') > -1)
