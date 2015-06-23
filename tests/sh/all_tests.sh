@@ -10,13 +10,13 @@ test1() {
     run_suite val_tests.sh
 }
 test2() {
-    run_suite reproduce_strict_tests.sh
+    run_suite test_reproduce_strict.sh
 }
 test3() {
-    run_suite reproduce_tests.sh
+    run_suite test_reproduce.sh
 }
 test4() {
-    run_suite reparse_tests.sh
+    run_suite test_reparse.sh
 }
 test5() {
     run_suite parse_tests.sh
@@ -26,6 +26,12 @@ test6() {
 }
 test7() {
     run_suite p2x_tests.sh
+}
+test8() {
+    run_suite test_cmp_js.sh
+}
+test9() {
+    run_suite p2xjs_mocha_tests.sh
 }
 
 . shunit2
