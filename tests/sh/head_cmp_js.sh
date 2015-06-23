@@ -8,7 +8,7 @@ mkParseTree() {
     p2x="$3"
     _opts="$4"
     xmltmp=$(basename $outfile .txt).xml
-    if [[ "$p2x" = "p2xjs" ]]; then
+    if test "$p2x" = "p2xjs"; then
         _opts="$_opts -S  ../../examples/configs/scanner-c.json"
     fi
     _opts="$_opts -o $xmltmp"
@@ -29,7 +29,7 @@ checkExpFile() {
             echo "skip"
             ;;
     esac
-    if [[ -n "$skip" ]]; then
+    if test -n "$skip"; then
         return
     fi
 
@@ -47,6 +47,6 @@ checkExpFile() {
 }
 
 testParseTreeEqual1() {
-    checkExpFile postfix-test.exp 
+    checkExpFile bin-paren-empty.exp
 }
 

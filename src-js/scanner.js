@@ -1109,6 +1109,16 @@ P2X.Parser = function(tokenInfo) {
             var res = (!rm.right) && (this.tokenInfo.mode(rm) != MODE_POSTFIX)
             return res
         },
+        pushIgnoreNew: function(t) {
+            if (!this.options.ignoreIgnore) {
+                var rm = this.getRM(this.root)
+                var tend = t
+                while (tend.ignore)
+                    tend = tend.ignore
+                tend.ignore = rm.ignore
+                rm.ignore = t
+            }
+        },
         pushIgnore: function(t) {
             if (!this.options.ignoreIgnore) {
                 // console.log('pushIgnore: ')
@@ -1199,7 +1209,7 @@ P2X.Parser = function(tokenInfo) {
                     this.insertToken(first)
 
                     if (parser.root.ignore) {
-                        this.pushIgnore(parser.root.ignore);
+                        this.pushIgnoreNew(parser.root.ignore);
                     }
 
                     first.content = parser.root.right

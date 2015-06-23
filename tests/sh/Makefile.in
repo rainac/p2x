@@ -226,7 +226,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-generated_files = test_cmp_js.sh forall_tests.sh
+generated_files = test_cmp_js.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh forall_tests.sh
 all: all-am
 
 .SUFFIXES:
@@ -418,13 +418,20 @@ test_%.sh: head_%.sh forall_tests.sh
 
 all: $(generated_files)
 
-check: all
-	./all_tests.sh
+test-log.txt: all
+	echo running tests ...
+	-./all_tests.sh > $@ 2>&1
+	echo done running tests
+
+test-report.html: test-log.txt
+	grep -E "(^Ran|^FAILED|^OK|^ASSERT)" $< | tee $@
+
+check: test-report.html
 
 install: all
 
 clean:
-	$(RM) -f $(generated_files)
+	$(RM) -f $(generated_files) test-log.txt test-report.html
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
