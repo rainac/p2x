@@ -16,12 +16,11 @@ checkExpFile() {
     xsltproc ../../src/xsl/$reprxsl res.xml > res.txt
     diff ../../examples/in/$i res.txt > /dev/null
     assertEquals "Reproduce test $i did not return same result" 0 $?
-#    rm res.xml res.txt
+    rm res.xml res.txt
 }
 
 testReproduce() {
     checkExpFile bin-paren-empty.exp
 }
-
 
 #. shunit2
