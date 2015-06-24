@@ -1,5 +1,5 @@
 
-generated_files = test_cmp_js.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh forall_tests.sh
+generated_files = test_cmp_js.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh test_output_stability.sh forall_tests.sh
 
 forall_tests.sh: update_forall_tests.sh ../../examples/in
 	./update_forall_tests.sh
