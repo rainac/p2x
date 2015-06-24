@@ -33,5 +33,8 @@ test8() {
 test9() {
     run_suite p2xjs_mocha_tests.sh
 }
+test10() {
+    run_suite test_output_stability.sh
+}
 
 . shunit2
