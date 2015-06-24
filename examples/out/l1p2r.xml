@@ -5,9 +5,9 @@
    <null/>
    <ca:text>(</ca:text>
    <op line="1" col="2" type="PLUS">
-    <int line="1" col="1" type="INTEGER"><ca:text>1</ca:text></int>
+    <integer line="1" col="1" type="INTEGER"><ca:text>1</ca:text></integer>
     <ca:text>+</ca:text>
-    <int line="1" col="3" type="INTEGER"><ca:text>2</ca:text></int>
+    <integer line="1" col="3" type="INTEGER"><ca:text>2</ca:text></integer>
    </op>
   </paren>
  </root>

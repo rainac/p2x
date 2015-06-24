@@ -33,7 +33,7 @@ checkExpFile() {
         return
     fi
 
-    mkParseTree "$infile" "res.txt" "p2x" "$opts"
+    mkParseTree "$infile" "res.txt" "p2x" "$opts -w"
     mkParseTree "$infile" "res2.txt" "p2xjs" "$opts"
     
     xmlstarlet c14n res.xml > cres.xml

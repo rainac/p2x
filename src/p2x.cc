@@ -1005,6 +1005,7 @@ struct TreeXMLWriter {
       indent(true), newlineAsBr(true),
       merged(),
       strict(),
+      sparse(),
       xmlDecl(),
       bom(),
       scanConf(),
@@ -1013,7 +1014,7 @@ struct TreeXMLWriter {
       caSteps(false),
       encoding("default is in .ggo")
     {}
-    bool id, line, col, _char, prec, mode, type, code, indent, newlineAsBr, merged, strict,
+    bool id, line, col, _char, prec, mode, type, code, indent, newlineAsBr, merged, strict,sparse,
       xmlDecl, bom, scanConf, parseConf, treewriterConf, caSteps;
     std::string encoding;
   };
@@ -1108,7 +1109,7 @@ struct TreeXMLWriter {
     } else if (t->token == TOKEN_FLOAT) {
       elemName = "float";
     } else if (t->token == TOKEN_INTEGER) {
-      elemName = "int";
+      elemName = "integer";
     } else if (t->token == TOKEN_IDENTIFIER) {
       if (tokenInfo.mode(t) == MODE_ITEM) {
         elemName = "id";
@@ -1140,7 +1141,8 @@ struct TreeXMLWriter {
       writeXMLPrecAttrs(t, aus);
       aus << ">";
     }
-    if (t->left || t->right || t->content || t->ignore) {
+    bool const caTextOnNewLine = !options.sparse || t->left || t->right || t->content || t->ignore;
+    if (caTextOnNewLine) {
       aus << linebreak;
     }
     if (t->left != 0) {
@@ -1153,7 +1155,7 @@ struct TreeXMLWriter {
       aus << indent << indentUnit << "<null/>" << linebreak;
     }
     std::string tsubind;
-    if (t->left || t->right || t->content || t->ignore) {
+    if (caTextOnNewLine) {
       tsubind = subindent;
     }
     bool const wrt = writeXMLTextElem(t, aus, tsubind);
@@ -1177,7 +1179,7 @@ struct TreeXMLWriter {
       writeXML(t->right, aus, subindent, passParent);
     } 
     if (tags) {
-      if (t->left || t->right || t->content || t->ignore) {
+      if (caTextOnNewLine) {
         aus << indent;
       }
       aus << "</" << elemName << ">" << linebreak;
@@ -1260,6 +1262,7 @@ struct TreeXMLWriter {
     aus << " newlineAsBr='" << t.options.newlineAsBr << "'";
     aus << " prec='" << t.options.prec << "'";
     aus << " strict='" << t.options.strict << "'";
+    aus << " sparse='" << t.options.sparse << "'";
     aus << " type='" << t.options.type << "'";
     aus << "/>" << linebreak;
   }
@@ -1724,6 +1727,7 @@ int main(int argc, char *argv[]) {
   options.indent = args.indent_flag;
   options.merged = args.merged_flag;
   options.strict = args.strict_flag;
+  options.sparse = args.sparse_flag;
 
   std::string indentUnit = args.indent_unit_arg[0];
   if (args.indent_unit_given) {

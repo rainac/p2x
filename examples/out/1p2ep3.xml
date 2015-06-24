@@ -3,15 +3,15 @@
   <null/>
   <op line="1" col="3" type="EQUAL">
    <op line="1" col="1" type="PLUS">
-    <int line="1" col="0" type="INTEGER"><ca:text>1</ca:text></int>
+    <integer line="1" col="0" type="INTEGER"><ca:text>1</ca:text></integer>
     <ca:text>+</ca:text>
-    <int line="1" col="2" type="INTEGER"><ca:text>2</ca:text></int>
+    <integer line="1" col="2" type="INTEGER"><ca:text>2</ca:text></integer>
    </op>
    <ca:text>=</ca:text>
    <op line="1" col="4" type="PLUS">
     <null/>
     <ca:text>+</ca:text>
-    <int line="1" col="5" type="INTEGER"><ca:text>3</ca:text></int>
+    <integer line="1" col="5" type="INTEGER"><ca:text>3</ca:text></integer>
    </op>
   </op>
  </root>

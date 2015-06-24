@@ -7,7 +7,7 @@
     <ca:text>'</ca:text>
    </op>
    <ca:text>+</ca:text>
-   <int line="1" col="3" type="INTEGER"><ca:text>2</ca:text></int>
+   <integer line="1" col="3" type="INTEGER"><ca:text>2</ca:text></integer>
   </op>
  </root>
 </code-xml>

@@ -226,7 +226,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-generated_files = test_cmp_js.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh forall_tests.sh
+generated_files = test_cmp_js.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh test_output_stability.sh forall_tests.sh
 all: all-am
 
 .SUFFIXES:

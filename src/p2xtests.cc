@@ -119,7 +119,7 @@ struct ParseTests  : public CppUnit::TestFixture {
     CPPUNIT_ASSERT(0 == system(diffCommand.c_str()));
     CPPUNIT_ASSERT(0 == system(delCommand.c_str()));
   }
-  
+  /*
   void doParseTest1latin1(std::string exname) {
     doParseTest1(exname, "-e iso88591");
   }
@@ -439,7 +439,7 @@ struct ParseTests  : public CppUnit::TestFixture {
   void testParse104() {
     doParseTest1("unary-minus2");
   }
-
+  */
 
   void doParseMergedNewline(std::string exname, std::string flags = "") {
     // Test whether the "merged" output for a node yields identical
@@ -478,6 +478,7 @@ struct ParseTests  : public CppUnit::TestFixture {
   }
 
   CPPUNIT_TEST_SUITE( ParseTests );
+  /*
   CPPUNIT_TEST( testParse0 );
   CPPUNIT_TEST( testParse1 );
   CPPUNIT_TEST( testParse2 );
@@ -583,7 +584,8 @@ struct ParseTests  : public CppUnit::TestFixture {
   CPPUNIT_TEST( testParse102 );
   CPPUNIT_TEST( testParse103 );
   CPPUNIT_TEST( testParse104 );
-
+  */
+  
   CPPUNIT_TEST( testParse200 );
   CPPUNIT_TEST( testParse201 );
   CPPUNIT_TEST_SUITE_END();

@@ -1,5 +1,5 @@
 # This file is part of P2X.
-# Copyright © 2013 Johannes Willkomm 
+# Copyright Â© 2013 Johannes Willkomm
 # See the file p2x.cc for copying conditions.  
 
 default namespace = "NAMESPACE_CX"
@@ -9,8 +9,10 @@ start = code-xml | scan-xml
 
 scan-xml = element scan-xml {
    scan-conf?,
-   node-content+
+   scan-list-content
 }
+
+scan-list-content = node | ca-ignore
 
 scan-conf = element ca:scanner { attribute type { text }?, lexem* }
 
@@ -85,7 +87,9 @@ string-lit = element string {
      attr-node, ca-itr, annot*
 }
 
-integer = element int {
+integer = element integer {
+     attr-node, ca-itr, annot*
+} | element int {
      attr-node, ca-itr, annot*
 }
 

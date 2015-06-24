@@ -1313,7 +1313,7 @@ describe('P2X.Parser', function(){
         var parseConf = [
             { type: 1101, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500, name: 'op' },
             { type: 1102, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200, name: 'op' },
-            { type: 1103, mode: MODE_ITEM, name: 'int' },
+            { type: 1103, mode: MODE_ITEM, name: 'integer' },
         ]
         parser.setconfig(parseConf)
         var res = parser.parse(tl)
@@ -1371,7 +1371,7 @@ describe('P2X.Parser', function(){
         
         // console.log(res)
         // console.log(xmlres2)
-        assert.equal(res, xmlres2)
+        allLinesEqual(res, xmlres2)
     })
 
     it('testing ignored items', function() {
@@ -1400,11 +1400,11 @@ describe('P2X.Parser', function(){
 +' <root type=\"ROOT\">\n'
 +'  <null/>\n'
 +'  <op line=\"1\" col=\"1\" type=\"PLUS\">\n'
-+'   <int line=\"1\" col=\"0\" type=\"INTEGER\"><ca:text>1</ca:text></int>\n'
++'   <integer line=\"1\" col=\"0\" type=\"INTEGER\"><ca:text>1</ca:text></integer>\n'
 +'   <ca:text>\+</ca:text>\n'
 +'   <ca:ignore line=\"1\" col=\"2\" type=\"IGNORE\"><ca:text>\(</ca:text></ca:ignore>\n'
 +'   <ca:ignore line=\"1\" col=\"3\" type=\"IGNORE\"><ca:text>\)</ca:text></ca:ignore>\n'
-+'   <int line=\"1\" col=\"4\" type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
++'   <integer line=\"1\" col=\"4\" type=\"INTEGER\"><ca:text>2</ca:text></integer>\n'
 +'  </op>\n'
 +' </root>\n'
 +'</code-xml>\n'
@@ -1476,7 +1476,7 @@ describe('P2X.Parser', function(){
 
         // console.log(res)
         // console.log(xmlres)
-        assert.equal(res, xmlres)
+        allLinesEqual(res, xmlres)
     })
 
     it('testing postfix op (missing prec)', function() {
@@ -1509,10 +1509,10 @@ describe('P2X.Parser', function(){
 +'   <op line="1" col="0" type="MINUS">\n'
 +'    <null/>\n'
 +'    <ca:text>-</ca:text>\n'
-+'    <int line="1" col="1" type="INTEGER"><ca:text>1</ca:text></int>\n'
++'    <integer line="1" col="1" type="INTEGER"><ca:text>1</ca:text></integer>\n'
 +'   </op>\n'
 +'   <ca:text>*</ca:text>\n'
-+'   <int line="1" col="5" type="INTEGER"><ca:text>2</ca:text></int>\n'
++'   <integer line="1" col="5" type="INTEGER"><ca:text>2</ca:text></integer>\n'
 +'  </op>\n'
 +' </root>\n'
 +'</code-xml>\n'
@@ -1580,7 +1580,7 @@ describe('P2X.Parser', function(){
         res = P2X.p2xj(input, p2xConfig)
 
 //        console.log(res)
-        assert.equal(res, xmlres)
+        allLinesEqual(res, xmlres)
     })
 
     it('testing postfix parenthesis', function() {
@@ -1608,7 +1608,7 @@ describe('P2X.Parser', function(){
         res = P2X.p2xj(input, p2xConfig)
 
 //        console.log(res)
-        assert.equal(res, xmlres)
+        allLinesEqual(res, xmlres)
     })
 
 
@@ -1649,9 +1649,9 @@ describe('P2X.TreePrinter', function(){
             + ' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
             +' <root type=\"ROOT\">\n'
             +'  <op type=\"PLUS\">\n'
-            +'   <int type=\"INTEGER\"><ca:text>1</ca:text></int>\n'
+            +'   <integer type=\"INTEGER\"><ca:text>1</ca:text></integer>\n'
             +'   <ca:text>\+</ca:text>\n'
-            +'   <int type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
+            +'   <integer type=\"INTEGER\"><ca:text>2</ca:text></integer>\n'
             +'  </op>\n'
             +' </root>\n'
             +'</code-xml>\n'
@@ -1689,7 +1689,7 @@ describe('P2X.TreePrinter', function(){
             var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
 +' <root type=\"ROOT\">\n'
 +'  <null/>\n'
-+'  <int type=\"INTEGER\"><ca:text>2</ca:text></int>\n'
++'  <integer type=\"INTEGER\"><ca:text>2</ca:text></integer>\n'
 +' </root>\n'
 +'</code-xml>\n'
             assert.equal(res, check)
