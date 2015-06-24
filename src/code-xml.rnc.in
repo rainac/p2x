@@ -89,6 +89,8 @@ string-lit = element string {
 
 integer = element integer {
      attr-node, ca-itr, annot*
+} | element int {
+     attr-node, ca-itr, annot*
 }
 
 float = element float {
