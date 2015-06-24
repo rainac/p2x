@@ -49,7 +49,7 @@ testOutputValid() {
         p2x $opts -p ../../examples/configs/default $i > res.xml
 #        runWithTimeout xmlstarlet val -e -r ../../src/code-xml.rng res.xml
         xmlstarlet val -b -e -r ../../src/code-xml.rng res.xml
-        assertEquals "R test suite has errors or failures" 0 $?
+        assertEquals "validation has errors or failures" 0 $?
         rm res.xml
     done
 
