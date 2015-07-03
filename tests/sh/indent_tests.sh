@@ -66,7 +66,7 @@ testP2_indent_not_too_bad() {
         ls -lrt /tmp/p2x-out.xml
         sz_indent_sm=$(ls -l /tmp/p2x-out.xml | cut -d ' ' -f 5)
 
-        let incr=$sz_indent_sm/$sz_noindent_sm
+        let incr=$(( 1.0*$sz_indent_sm/$sz_noindent_sm ))
 
         echo ""
         echo "*"
