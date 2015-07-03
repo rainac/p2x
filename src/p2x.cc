@@ -978,7 +978,7 @@ struct TreeXMLWriter {
     Options() :
       id(true), line(), col(), _char(),
       prec(), mode(), type(true),
-      indent(true), indentLogarithmic(false), newlineAsBr(true),
+      indent(true), indentLogarithmic(true), newlineAsBr(true),
       merged(),
       strict(),
       encoding("default is in .ggo")

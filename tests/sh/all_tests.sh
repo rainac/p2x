@@ -28,4 +28,8 @@ test7() {
     run_suite p2x_tests.sh
 }
 
+test_indentation() {
+    run_suite indent_tests.sh
+}
+
 . shunit2
