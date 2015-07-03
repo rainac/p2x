@@ -978,12 +978,12 @@ struct TreeXMLWriter {
     Options() :
       id(true), line(), col(), _char(),
       prec(), mode(), type(true),
-      indent(true), newlineAsBr(true),
+      indent(true), indentLogarithmic(false), newlineAsBr(true),
       merged(),
       strict(),
       encoding("default is in .ggo")
     {}
-    bool id, line, col, _char, prec, mode, type, indent, newlineAsBr, merged, strict;
+    bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, merged, strict;
     std::string encoding;
   };
   TokenInfo const &tokenInfo;
@@ -1063,7 +1063,11 @@ struct TreeXMLWriter {
   }
 
   void writeXML(Token const *t, std::ostream &aus, 
-                std::string const &indent_ = "", Token const *parent = 0) const {
+                std::string const &indent_ = "", Token const *parent = 0,
+                int level = 0) const {
+    if (level == 0) {
+      level = ceil(double(indent_.size())/indentUnit.size());
+    }
     std::string indent = indent_;
     std::string elemName;
     if (tokenInfo.isParen(t)) {
@@ -1093,7 +1097,8 @@ struct TreeXMLWriter {
                           and merged);
 
     std::string subindent = indent;
-    if (tags) {
+    unsigned const minStraightIndentLevel = 135;
+    if ( tags and (!options.indentLogarithmic or double(indent.size()) / indentUnit.size() < minStraightIndentLevel + log(level) ) ) {
       subindent += indentUnit;
     }
     if (tags) {
@@ -1158,7 +1163,7 @@ struct TreeXMLWriter {
       if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
         passParent = t;
       }
-      writeXML(t->left, aus, subindent, passParent);
+      writeXML(t->left, aus, subindent, passParent, level+1);
     } else if (t->right != 0 or t->content != 0) {
       aus << indent << indentUnit << "<null/>" << linebreak;
     }
@@ -1173,7 +1178,7 @@ struct TreeXMLWriter {
     }
     // }
     if (t->content) {
-      writeXML(t->content, aus, subindent);
+      writeXML(t->content, aus, subindent, 0, level+1);
     } else if (tokenInfo.isParen(t) and t->right != 0) {
       // if content _could_ be there, indicate this with null in strict mode
       if (options.strict) {
@@ -1185,7 +1190,7 @@ struct TreeXMLWriter {
       if (merged and tokenInfo.assoc(t) == ASSOC_RIGHT) {
         passParent = t;
       }
-      writeXML(t->right, aus, subindent, passParent);
+      writeXML(t->right, aus, subindent, passParent, level+1);
     } 
     if (tags) {
       aus << indent << "</" << elemName << ">" << linebreak;
