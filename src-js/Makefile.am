@@ -32,7 +32,10 @@ node_modules = $(addprefix node_modules/, $(node_module_names))
 node_modules/most-xml:
 	npm link most-xml
 
-install-data-local:
+$(instdir):
+	$(INSTALL) -d $@
+
+install-data-local: $(instdir)
 	cd $(instdir) && npm link most-xml
 	$(INSTALL) -d $(apache_confd)
 	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2x-js.conf
