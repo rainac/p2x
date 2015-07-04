@@ -23,14 +23,11 @@ testP2X_clean_install_master() {
     cd p2x-tmp
     assertEquals "P2X run must succeed" 0 $?
 
+    git checkout master
+    assertEquals "P2X checkout must succeed" 0 $?
+
     ./configure --quiet --prefix=$TMP
     assertEquals "P2X configure run must succeed" 0 $?
-
-    make -s -j8 install
-    assertEquals "P2X make run must succeed" 0 $?
-
-    make git-clean
-    assertEquals "P2X make run must succeed" 0 $?
 
     make -s -j8 install
     assertEquals "P2X make run must succeed" 0 $?
@@ -55,12 +52,6 @@ testP2X_clean_install_current_branch() {
 
     ./configure --quiet --prefix=$TMP
     assertEquals "P2X configure run must succeed" 0 $?
-
-    make -s -j8 install
-    assertEquals "P2X make run must succeed" 0 $?
-
-    make git-clean
-    assertEquals "P2X make run must succeed" 0 $?
 
     make -s -j8 install
     assertEquals "P2X make run must succeed" 0 $?
