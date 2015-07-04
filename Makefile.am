@@ -29,4 +29,7 @@ distclean-local:
 	$(RM) -f svn-version.txt version.txt
 	$(RM) -rf autom4te.cache
 
+git-clean:
+	git clean -d
+
 METASOURCES = AUTO

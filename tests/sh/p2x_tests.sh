@@ -1,6 +1,10 @@
-#! /bin/bash
+#! /bin/zsh
 
-#set -x
+zmodload zsh/mathfunc
+set -o shwordsplit
+echo $0
+export SHUNIT_PARENT=$0
+export LANG=C # for grep used in shunit2, depends on english output
 
 testP2X1() {
     p2x notthere.txt > log 2> err

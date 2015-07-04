@@ -37,4 +37,8 @@ test10() {
     run_suite test_output_stability.sh
 }
 
+test_indentation() {
+    run_suite indent_tests.sh
+}
+
 . shunit2
