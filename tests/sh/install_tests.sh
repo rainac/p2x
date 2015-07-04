@@ -13,7 +13,8 @@ export TMP=${TMP:-/tmp}
 
 P2X_SOURCE=${P2X_SOURCE:-https://github.com/rainac/p2x.git}
 
-testP2X_clean_install_master() {
+runInstallation() {
+    branch=$1
 
     rm -rf p2x-tmp
 
@@ -23,42 +24,30 @@ testP2X_clean_install_master() {
     cd p2x-tmp
     assertEquals "P2X run must succeed" 0 $?
 
-    git checkout master
-    assertEquals "P2X checkout must succeed" 0 $?
+    git checkout $branch
+    assertEquals "P2X checkout of branch $branch must succeed" 0 $?
 
-    ./configure --quiet --prefix=$TMP
+    ./configure --quiet --prefix=$TMP/p2x-build-test
     assertEquals "P2X configure run must succeed" 0 $?
 
     make -s -j8 install
     assertEquals "P2X make run must succeed" 0 $?
 
+    test -x $TMP/p2x-build-test/bin/p2x
+    assertEquals "P2X executable must be installed" 0 $?
+
     cd ..
     rm -rf p2x-tmp
+    rm -rf $TMP/p2x-build-test
+}
+
+testP2X_clean_install_master() {
+    runInstallation master
 }
 
 testP2X_clean_install_current_branch() {
-
     curBranch=$(git branch | grep '*' | awk '{ print $2 }')
-
-    rm -rf p2x-tmp
-
-    git clone $P2X_SOURCE p2x-tmp
-    assertEquals "git clone of P2X must succeed" 0 $?
-
-    cd p2x-tmp
-    assertEquals "P2X run must succeed" 0 $?
-
-    git checkout $curBranch
-    assertEquals "P2X checkout must succeed" 0 $?
-
-    ./configure --quiet --prefix=$TMP
-    assertEquals "P2X configure run must succeed" 0 $?
-
-    make -s -j8 install
-    assertEquals "P2X make run must succeed" 0 $?
-
-    cd ..
-    rm -rf p2x-tmp
+    runInstallation $curBranch
 }
 
 . shunit2
