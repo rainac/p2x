@@ -41,4 +41,8 @@ test_indentation() {
     run_suite indent_tests.sh
 }
 
+test_inst() {
+    run_suite install_tests.sh
+}
+
 . shunit2
