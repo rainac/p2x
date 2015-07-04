@@ -20,4 +20,8 @@ test1() {
     run_suite false_test.sh
 }
 
+test_inst() {
+    run_suite install_tests.sh
+}
+
 . shunit2
