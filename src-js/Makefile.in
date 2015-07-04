@@ -186,6 +186,7 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 MV = @MV@
+NPM = @NPM@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -267,6 +268,8 @@ dist_bin_SCRIPTS = p2xjs
 project_files = $(generated_files) scanner.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js
 inst_DATA = $(project_files)
 apache_confd = $(sysconfdir)/apache2/conf.d
+node_module_names = most-xml
+node_modules = $(addprefix node_modules/, $(node_module_names))
 all: all-am
 
 .SUFFIXES:
@@ -515,7 +518,7 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-instDATA
 %.ncd.js: $(top_srcdir)/src/xml/%.ncd.xml
 	gennc -m JavaScript $^
 
-%.json: $(top_srcdir)/src/xml/%.xml
+%.json: $(top_srcdir)/src/xml/%.xml $(node_modules)
 	./p2xjs scanconf-xml2json -S $< > $@
 
 scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/scanner.xml
@@ -523,6 +526,9 @@ scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/sca
 
 clean-local:
 	$(RM) -f $(generated_files)
+
+node_modules/most-xml:
+	npm link most-xml
 
 install-data-local:
 	cd $(instdir) && npm link most-xml

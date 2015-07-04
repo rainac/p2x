@@ -14,7 +14,7 @@ inst_DATA = $(project_files)
 %.ncd.js: $(top_srcdir)/src/xml/%.ncd.xml
 	gennc -m JavaScript $^
 
-%.json: $(top_srcdir)/src/xml/%.xml
+%.json: $(top_srcdir)/src/xml/%.xml $(node_modules)
 	./p2xjs scanconf-xml2json -S $< > $@
 
 scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/scanner.xml
@@ -24,6 +24,13 @@ clean-local:
 	$(RM) -f $(generated_files)
 
 apache_confd=$(sysconfdir)/apache2/conf.d
+
+node_module_names = most-xml
+
+node_modules = $(addprefix node_modules/, $(node_module_names))
+
+node_modules/most-xml:
+	npm link most-xml
 
 install-data-local:
 	cd $(instdir) && npm link most-xml
