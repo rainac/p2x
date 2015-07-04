@@ -35,6 +35,7 @@ testP2X_clean_install_master() {
     make -s -j8 install
     assertEquals "P2X make run must succeed" 0 $?
 
+    rm -rf p2x-tmp
 }
 
 testP2X_clean_install_current_branch() {
@@ -64,6 +65,7 @@ testP2X_clean_install_current_branch() {
     make -s -j8 install
     assertEquals "P2X make run must succeed" 0 $?
 
+    rm -rf p2x-tmp
 }
 
 . shunit2
