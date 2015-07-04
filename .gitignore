@@ -17,3 +17,6 @@ svn-version.txt
 version.txt
 *~
 tests/sh/test_*.sh
+src-js/node_modules
+src-js/scanner-c.json
+tests/sh/forall_tests.sh
