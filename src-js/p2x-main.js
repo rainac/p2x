@@ -124,9 +124,6 @@ function interpretParserConfigText(pconf, callback) {
             })
         });
 
-        var cnfFileName = 'tmppconf.txt'
-
-
     }
 }
 
