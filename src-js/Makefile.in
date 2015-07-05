@@ -268,7 +268,7 @@ dist_bin_SCRIPTS = p2xjs
 project_files = $(generated_files) scanner.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js
 inst_DATA = $(project_files)
 apache_confd = $(sysconfdir)/apache2/conf.d
-node_module_names = most-xml
+node_module_names = most-xml tmp
 node_modules = $(addprefix node_modules/, $(node_module_names))
 all: all-am
 
@@ -285,7 +285,6 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src-js/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu src-js/Makefile
-.PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -527,14 +526,16 @@ scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/sca
 clean-local:
 	$(RM) -f $(generated_files)
 
-node_modules/most-xml:
-	npm link most-xml
+.PRECIOUS: node_modules/%
+
+node_modules/%:
+	npm link $*
 
 $(instdir):
 	$(INSTALL) -d $@
 
 install-data-local: $(instdir)
-	cd $(instdir) && npm link most-xml
+	cd $(instdir) $(foreach f, $(node_module_names), && npm link $(f))
 	$(INSTALL) -d $(apache_confd)
 	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2x-js.conf
 

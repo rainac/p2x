@@ -39,10 +39,14 @@ if test "x$NPM" = "x"; then
    AC_MSG_ERROR([mandatory program npm was not found])
 fi
 
-if ! $NPM list -g most-xml > /dev/null; then
-   AC_MSG_ERROR([mandatory program node-js module most-xml is not installed])
-   AC_MSG_ERROR([please do $NPM install -g most-xml])
-fi
+npm_packages="most-xml tmp"
+
+for pkg in $npm_packages; do
+    if ! $NPM list -g $pkg > /dev/null; then
+       AC_MSG_ERROR([mandatory program node-js module "$pkg" is not installed
+                     please do "$NPM install -g $pkg"])
+    fi
+done
 
 AC_CHECK_PROGS([TRANG], [trang])
 AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])

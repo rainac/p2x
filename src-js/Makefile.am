@@ -25,18 +25,20 @@ clean-local:
 
 apache_confd=$(sysconfdir)/apache2/conf.d
 
-node_module_names = most-xml
+node_module_names = most-xml tmp
 
 node_modules = $(addprefix node_modules/, $(node_module_names))
 
-node_modules/most-xml:
-	npm link most-xml
+.PRECIOUS: node_modules/%
+
+node_modules/%:
+	npm link $*
 
 $(instdir):
 	$(INSTALL) -d $@
 
 install-data-local: $(instdir)
-	cd $(instdir) && npm link most-xml
+	cd $(instdir) $(foreach f, $(node_module_names), && npm link $(f))
 	$(INSTALL) -d $(apache_confd)
 	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2x-js.conf
 

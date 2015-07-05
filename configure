@@ -5487,10 +5487,14 @@ if test "x$NPM" = "x"; then
    as_fn_error $? "mandatory program npm was not found" "$LINENO" 5
 fi
 
-if ! $NPM list -g most-xml > /dev/null; then
-   as_fn_error $? "mandatory program node-js module most-xml is not installed" "$LINENO" 5
-   as_fn_error $? "please do $NPM install -g most-xml" "$LINENO" 5
-fi
+npm_packages="most-xml tmp"
+
+for pkg in $npm_packages; do
+    if ! $NPM list -g $pkg > /dev/null; then
+       as_fn_error $? "mandatory program node-js module \"$pkg\" is not installed
+                     please do \"$NPM install -g $pkg\"" "$LINENO" 5
+    fi
+done
 
 for ac_prog in trang
 do
