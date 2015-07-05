@@ -1,6 +1,5 @@
-
 if (typeof window == 'undefined') {
-    
+
     var fs = require('fs')
     // console.log('load scanner script')
     var P2X = require('./scanner.js')
@@ -8,6 +7,8 @@ if (typeof window == 'undefined') {
     var child_process = require('child_process')
     var POpts = require('./parse-opts.js')
     var events = require('events')
+
+    var tmp = require('tmp')
 
     var ENUM = {}
     ENUM.ParserMode = require('./modes.ncd.js')
@@ -26,18 +27,18 @@ if (typeof window == 'undefined') {
         { short: 'o', long: 'outfile' },
         { short: 'C', long: 'include-config', flag: 1 },
     ]
-    
+
     // console.dir(argv)
     options = POpts.parseOptions(argv, optDefs)
     // console.dir(options)
 
     var emitter = new events.EventEmitter()
-    
+
     emitter.on('parserConfigOK', function(next) {
         // console.log('event parserConfigOK was triggered:')
         next()
     })
-    
+
     emitter.on('scannerConfigOK', function(next) {
         // console.log('event scannerConfigOK was triggered:')
         next()
@@ -48,12 +49,12 @@ if (typeof window == 'undefined') {
         // console.dir(ev)
         next()
     })
-    
+
     emitter.on('fail', function(next, ev) {
         console.error('error: p2xjs: ')
         next()
     })
-    
+
 }
 
 var parser = P2X.Parser()
@@ -95,28 +96,37 @@ function interpretParserConfigText(pconf, callback) {
         callback(P2X.parseJSON(pconf))
     } else {
 
+        tmp.file(function _tempFileCreated(err, cnfFileName, fd, cleanupCallback) {
+            if (err) throw err;
+
+            console.log("File: ", cnfFileName);
+            console.log("Filedescriptor: ", fd);
+
+            fs.writeFile(cnfFileName, pconf, function(err) {
+                if (err) throw(err)
+
+                var cmd = 'p2x -T -p ' + cnfFileName
+                console.log('run ' + cmd)
+                var cnfXML
+                // system(cmd)
+                var child = child_process.exec(cmd, { stdio: 'inherit' },
+                                               function(errc, stdout, stderr)
+                                               {
+                                                   if (errc) {
+                                                       console.error('P2X exited with error:\n' + errc + stderr)
+                                                   } else {
+                                                       cnfXML = stdout;
+                                                       // console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
+                                                       interpretParserConfigText(cnfXML, callback)
+                                                   }
+                                                   cleanupCallback();
+                                               })
+            })
+        });
+
         var cnfFileName = 'tmppconf.txt'
 
-        fs.writeFile(cnfFileName, pconf, function(err) {
-            if (err) throw(err)
 
-            var cmd = 'p2x -T -p ' + cnfFileName
-            // console.log('run ' + cmd)
-            var cnfXML
-            // system(cmd)
-            var child = child_process.exec(cmd, { stdio: 'inherit' },
-                                           function(errc, stdout, stderr)
-                                           {
-                                               if (errc) {
-                                                   console.error('P2X exited with error:\n' + errc + stderr)
-                                               } else {
-                                                   cnfXML = stdout;
-                                                   // console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
-                                                   interpretParserConfigText(cnfXML, callback)
-                                               }
-                                           })
-        })
-        
     }
 }
 
