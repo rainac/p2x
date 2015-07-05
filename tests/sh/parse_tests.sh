@@ -11,6 +11,7 @@ checkParseTreeEqual() {
     res=$(cat res.txt)
     echo "$infile: $(cat ../../examples/in/$infile)  =>  $res"
     assertEquals "Parse tree is not in expected form: '$exp' != '$res'" "$exp" "$res"
+    rm res.txt res.xml
 }
 
 testParseTreeEqual1() {

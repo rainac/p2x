@@ -1,12 +1,28 @@
 
 generated_files = test_cmp_js.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh test_output_stability.sh forall_tests.sh
 
+good = val_tests test_reproduce_strict test_reproduce test_reparse	\
+parse_tests merge_tests p2x_tests test_cmp_js p2xjs_mocha_tests		\
+test_output_stability indent_tests
+
+bad = false_test
+
+good_test_results = $(addprefix result_suite_good_,$(good))
+bad_test_results = $(addprefix result_suite_bad_,$(bad))
+
+result_suite_good_%: %.sh
+	./$<
+
+result_suite_bad_%: %.sh
+	! ./$<
+
 forall_tests.sh: update_forall_tests.sh ../../examples/in
 	./update_forall_tests.sh
 
 test_%.sh: head_%.sh forall_tests.sh
 	cat $< forall_tests.sh > $@
 	echo ". shunit2" >> $@
+	echo "if test -d \"\$$tmpdir\"; then rm -rf \$$tmpdir; fi" >> $@
 	chmod a+x $@
 
 all: $(generated_files)
@@ -19,7 +35,11 @@ test-log.txt: all
 test-report.html: test-log.txt
 	grep -E "(^Ran|^FAILED|^OK|^ASSERT)" $< | tee $@
 
-check: test-report.html
+check: check-good check-bad
+
+check-good: $(good_test_results)
+
+check-bad: $(bad_test_results)
 
 install: all
 

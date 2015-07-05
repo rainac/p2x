@@ -83,7 +83,7 @@ testP2X8() {
     grep "R_PAREN" err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
     assertEquals "P2X should work and produce the correct XML" "[COMMA](int, [L_PAREN](., [NEWLINE]()))" "$txt"
-    rm res.txt
+    rm res.txt err.txt res.xml
 }
 
 testP2X9() {
@@ -99,7 +99,7 @@ testP2X9() {
     grep "\"close\"" err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
     assertEquals "P2X work and produce the correct XML" "[COMMA](int, [open](., [NEWLINE](3)))" "$txt"
-    rm res.txt
+    rm res.txt err.txt res.xml
 }
 
 testP2X10() {
@@ -118,7 +118,7 @@ testP2X10() {
     grep "\"endblock\"" err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
     assertEquals "P2X work and produce the correct XML" "[COMMA](int, [open](., [begin](., 3)))" "$txt"
-    rm res.txt
+    rm res.txt err.txt res.xml
 }
 
 . shunit2

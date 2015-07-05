@@ -2,12 +2,15 @@
 
 #set -x
 
+tmpdir=${TMP:-/tmp}/shnuit2-test-$$
+mkdir $tmpdir
+
 mkParseTree() {
     infile="$1"
     outfile="$2"
     p2x="$3"
     _opts="$4"
-    xmltmp=$(basename $outfile .txt).xml
+    xmltmp=$tmpdir/$(basename $outfile .txt).xml
     if test "$p2x" = "p2xjs"; then
         _opts="$_opts -S  ../../examples/configs/scanner-c.json"
     fi
@@ -33,15 +36,15 @@ checkExpFile() {
         return
     fi
 
-    mkParseTree "$infile" "res.txt" "p2x" "$opts -w"
-    mkParseTree "$infile" "res2.txt" "p2xjs" "$opts"
+    mkParseTree "$infile" "$tmpdir/res.txt" "p2x" "$opts -w"
+    mkParseTree "$infile" "$tmpdir/res2.txt" "p2xjs" "$opts"
     
-    xmlstarlet c14n res.xml > cres.xml
-    xmlstarlet c14n res2.xml > cres2.xml
+    xmlstarlet c14n $tmpdir/res.xml > $tmpdir/cres.xml
+    xmlstarlet c14n $tmpdir/res2.xml > $tmpdir/cres2.xml
 
-    diff cres.xml cres2.xml #> /dev/null
+    diff $tmpdir/cres.xml $tmpdir/cres2.xml #> /dev/null
     assertEquals "XML parse trees C++/JS not equal" "$?" "0"
-    diff res.txt res2.txt #> /dev/null
+    diff $tmpdir/res.txt $tmpdir/res2.txt #> /dev/null
     assertEquals "Parse trees C++/JS not equal" "$?" "0"
 
 }

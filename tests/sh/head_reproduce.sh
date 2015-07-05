@@ -1,5 +1,8 @@
 #! /bin/bash
 
+tmpdir=${TMP:-/tmp}/shnuit2-test-$$
+mkdir $tmpdir
+
 checkExpFile() {
     i=$1
     echo "Parse file $i"
@@ -12,11 +15,10 @@ checkExpFile() {
         opts="-e latin1"
         reprxsl=reproduce-latin1.xsl
     fi
-    p2x $opts -p ../../examples/configs/default ../../examples/in/$i > res.xml
-    xsltproc ../../src/xsl/$reprxsl res.xml > res.txt
-    diff ../../examples/in/$i res.txt > /dev/null
+    p2x $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
+    xsltproc ../../src/xsl/$reprxsl $tmpdir/res.xml > $tmpdir/res.txt
+    diff ../../examples/in/$i $tmpdir/res.txt > /dev/null
     assertEquals "Reproduce test $i did not return same result" 0 $?
-    rm res.xml res.txt
 }
 
 testReproduce() {

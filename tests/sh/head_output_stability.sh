@@ -22,7 +22,7 @@ checkExpFile() {
 
         diff check.xml res2.xml
         assertEquals "Output has changed to the stored version" 0 $?
-#        rm res.xml
+        rm res.xml check.xml res2.xml
     else
         :
         #echo "no stored output for $i: $stored_out"

@@ -1,5 +1,8 @@
 #! /bin/bash
 
+tmpdir=${TMP:-/tmp}/shnuit2-test-$$
+mkdir $tmpdir
+
 runWithTimeout() {
     rm -f done.txt fail.txt
     ($* && touch done.txt || touch fail.txt) &
@@ -46,14 +49,14 @@ testOutputValid() {
         then
             opts="-e latin1"
         fi
-        p2x $opts -p ../../examples/configs/default $i > res.xml
+        p2x $opts -p ../../examples/configs/default $i > $tmpdir/res.xml
 #        runWithTimeout xmlstarlet val -e -r ../../src/code-xml.rng res.xml
-        xmlstarlet val -b -e -r ../../src/code-xml.rng res.xml
+        xmlstarlet val -b -e -r ../../src/code-xml.rng $tmpdir/res.xml
         assertEquals "validation has errors or failures" 0 $?
-        rm res.xml
     done
 
 }
 
 . shunit2
 
+rm -rf $tmpdir
