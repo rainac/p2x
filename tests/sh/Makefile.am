@@ -21,8 +21,7 @@ forall_tests.sh: update_forall_tests.sh ../../examples/in
 
 test_%.sh: head_%.sh forall_tests.sh
 	cat $< forall_tests.sh > $@
-	echo ". shunit2" >> $@
-	echo "if test -d \"\$$tmpdir\"; then rm -rf \$$tmpdir; fi" >> $@
+	echo ". ./myshunit2" >> $@
 	chmod a+x $@
 
 all: $(generated_files)
