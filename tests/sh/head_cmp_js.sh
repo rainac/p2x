@@ -2,7 +2,7 @@
 
 #set -x
 
-tmpdir=${TMP:-/tmp}/shnuit2-test-$$
+tmpdir=${TMP:-/tmp}/shunit2-test-$$
 mkdir $tmpdir
 
 mkParseTree() {

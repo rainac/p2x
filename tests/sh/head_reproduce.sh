@@ -1,6 +1,6 @@
 #! /bin/bash
 
-tmpdir=${TMP:-/tmp}/shnuit2-test-$$
+tmpdir=${TMP:-/tmp}/shunit2-test-$$
 mkdir $tmpdir
 
 checkExpFile() {
