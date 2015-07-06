@@ -1,9 +1,6 @@
 #! /bin/bash
 
-#set -x
-
-tmpdir=${TMP:-/tmp}/shunit2-test-$$
-mkdir $tmpdir
+. setup_tmp.sh
 
 mkParseTree() {
     infile="$1"

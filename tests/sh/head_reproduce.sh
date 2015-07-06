@@ -1,7 +1,6 @@
 #! /bin/bash
 
-tmpdir=${TMP:-/tmp}/shunit2-test-$$
-mkdir $tmpdir
+. setup_tmp.sh
 
 checkExpFile() {
     i=$1

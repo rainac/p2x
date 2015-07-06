@@ -1,5 +1,8 @@
 #! /bin/bash
 #set -x
+
+. setup_tmp.sh
+
 checkExpFile() {
     i=$1
     opts=""
@@ -13,16 +16,14 @@ checkExpFile() {
     if test -f "$stored_out"; then
         echo "Parse file $i"
 
-        rm -f res.xml res2.xml
-        p2x $opts -p ../../examples/configs/default ../../examples/in/$i > res.xml
-        xsltproc -o res2.xml ../../src/xsl/but-root.xsl res.xml
+        p2x $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
+        xsltproc -o $tmpdir/res2.xml ../../src/xsl/but-root.xsl $tmpdir/res.xml
 
-        rm -f check.xml
-        sed -e 's/ code="[^"]*"//' $stored_out  > check.xml
+        rm -f $tmpdir/check.xml
+        sed -e 's/ code="[^"]*"//' $stored_out  > $tmpdir/check.xml
 
-        diff check.xml res2.xml
+        diff $tmpdir/check.xml $tmpdir/res2.xml
         assertEquals "Output has changed to the stored version" 0 $?
-        rm res.xml check.xml res2.xml
     else
         :
         #echo "no stored output for $i: $stored_out"
