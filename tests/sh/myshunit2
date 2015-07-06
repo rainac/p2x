@@ -750,6 +750,8 @@ _shunit_cleanup()
   # do our work
   rm -fr "${__shunit_tmpDir}"
 
+  if [[ -n "$SHUNIT_EXIT" ]]; then $SHUNIT_EXIT; fi
+
   # exit for all non-EXIT signals
   if [ ${_shunit_name_} != 'EXIT' ]; then
     _shunit_warn "trapped and now handling the (${_shunit_name_}) signal"
