@@ -11,10 +11,10 @@ good_test_results = $(addprefix result_suite_good_,$(good))
 bad_test_results = $(addprefix result_suite_bad_,$(bad))
 
 result_suite_good_%: %.sh
-	./$<
+	./$< > log_$*.txt 2>&1
 
 result_suite_bad_%: %.sh
-	! ./$<
+	! ./$< > log_$*.txt 2>&1
 
 forall_tests.sh: update_forall_tests.sh ../../examples/in
 	./update_forall_tests.sh
@@ -43,4 +43,4 @@ check-bad: $(bad_test_results)
 install: all
 
 clean:
-	$(RM) -f $(generated_files) test-log.txt test-report.html
+	$(RM) -f $(generated_files) test-log.txt test-report.html log_*.txt
