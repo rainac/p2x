@@ -20,3 +20,4 @@ tests/sh/test_*.sh
 src-js/node_modules
 src-js/scanner-c.json
 tests/sh/forall_tests.sh
+tests/sh/log_*.txt
