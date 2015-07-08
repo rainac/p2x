@@ -5,8 +5,8 @@
 # See the file p2x.cc for copying conditions.  
 #
 
-AC_INIT(p2x, 0.4.0, [johannes@johannes-willkomm.de], 
-                p2x, [http://p2x.googlecode.com/])
+AC_INIT(p2x, 0.4.1, [johannes@johannes-willkomm.de], 
+                p2x, [http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
