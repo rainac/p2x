@@ -19,19 +19,24 @@ p2x_DEPENDENCIES =
 
 p2xtests_LDADD = -lcppunit
 
-generated_files = p2x-opts.hh p2x-opts.cc namespaces.hh code-xml.rnc
+generated_files = namespaces.hh code-xml.rnc
+if acond_GENGETOPT_AVAIL
+generated_files += p2x-opts.hh p2x-opts.cc
+endif
 if acond_TRANG_AVAIL
 generated_files += code-xml.rng
 endif
 
 p2x.cc: $(generated_files)
 
+if acond_GENGETOPT_AVAIL
 # The headerfile of the commandline arguments parser is generated from
 # the .ggo file.
 p2x-opts.hh: p2x-opts.cc
 p2x-opts.cc: p2x-opts.ggo
 	$(GENGETOPT) -F $(*F) -c cc -H hh -C --no-handle-version \
                --no-handle-help --no-handle-error -i $< --unamed-opts
+endif
 
 code-xml.rng: code-xml.rnc
 	$(TRANG) $< $@

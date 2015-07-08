@@ -30,9 +30,7 @@ AC_CHECK_PROGS([BASENAME], [basename])
 AC_CHECK_PROGS([GHEAD], [ghead head])
 
 AC_CHECK_PROGS([GENGETOPT], [gengetopt])
-if test "x$GENGETOPT" = "x"; then
-   AC_MSG_ERROR([mandatory program gengetopt was not found])
-fi
+AM_CONDITIONAL(acond_GENGETOPT_AVAIL, [test "x$GENGETOPT" != "x"])
 
 AC_CHECK_PROGS([TRANG], [trang])
 AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])

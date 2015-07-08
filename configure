@@ -636,6 +636,8 @@ acond_STATIC_BUILD_TRUE
 acond_TRANG_AVAIL_FALSE
 acond_TRANG_AVAIL_TRUE
 TRANG
+acond_GENGETOPT_AVAIL_FALSE
+acond_GENGETOPT_AVAIL_TRUE
 GENGETOPT
 GHEAD
 BASENAME
@@ -5436,9 +5438,14 @@ fi
   test -n "$GENGETOPT" && break
 done
 
-if test "x$GENGETOPT" = "x"; then
-   as_fn_error $? "mandatory program gengetopt was not found" "$LINENO" 5
+ if test "x$GENGETOPT" != "x"; then
+  acond_GENGETOPT_AVAIL_TRUE=
+  acond_GENGETOPT_AVAIL_FALSE='#'
+else
+  acond_GENGETOPT_AVAIL_TRUE='#'
+  acond_GENGETOPT_AVAIL_FALSE=
 fi
+
 
 for ac_prog in trang
 do
@@ -6374,6 +6381,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${acond_GENGETOPT_AVAIL_TRUE}" && test -z "${acond_GENGETOPT_AVAIL_FALSE}"; then
+  as_fn_error $? "conditional \"acond_GENGETOPT_AVAIL\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${acond_TRANG_AVAIL_TRUE}" && test -z "${acond_TRANG_AVAIL_FALSE}"; then

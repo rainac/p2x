@@ -88,7 +88,8 @@ host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = p2x$(EXEEXT) $(am__EXEEXT_1)
 @acond_BUILD_TESTS_TRUE@am__append_1 = p2xtests
-@acond_TRANG_AVAIL_TRUE@am__append_2 = code-xml.rng
+@acond_GENGETOPT_AVAIL_TRUE@am__append_2 = p2x-opts.hh p2x-opts.cc
+@acond_TRANG_AVAIL_TRUE@am__append_3 = code-xml.rng
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am scanner.cc \
 	scanner-no-strings.cc scanner-r.cc scanner-c.cc \
@@ -346,8 +347,8 @@ p2x_LDADD =
 p2x_LDFLAGS = 
 p2x_DEPENDENCIES = 
 p2xtests_LDADD = -lcppunit
-generated_files = p2x-opts.hh p2x-opts.cc namespaces.hh code-xml.rnc \
-	$(am__append_2)
+generated_files = namespaces.hh code-xml.rnc $(am__append_2) \
+	$(am__append_3)
 flexPrefix = scan
 instbasedir = $(pkgdatadir)
 instdir = $(instbasedir)
@@ -821,10 +822,10 @@ p2x.cc: $(generated_files)
 
 # The headerfile of the commandline arguments parser is generated from
 # the .ggo file.
-p2x-opts.hh: p2x-opts.cc
-p2x-opts.cc: p2x-opts.ggo
-	$(GENGETOPT) -F $(*F) -c cc -H hh -C --no-handle-version \
-               --no-handle-help --no-handle-error -i $< --unamed-opts
+@acond_GENGETOPT_AVAIL_TRUE@p2x-opts.hh: p2x-opts.cc
+@acond_GENGETOPT_AVAIL_TRUE@p2x-opts.cc: p2x-opts.ggo
+@acond_GENGETOPT_AVAIL_TRUE@	$(GENGETOPT) -F $(*F) -c cc -H hh -C --no-handle-version \
+@acond_GENGETOPT_AVAIL_TRUE@               --no-handle-help --no-handle-error -i $< --unamed-opts
 
 code-xml.rng: code-xml.rnc
 	$(TRANG) $< $@
