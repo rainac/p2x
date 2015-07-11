@@ -19,10 +19,11 @@ checkExpFile() {
         p2x $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
         xsltproc -o $tmpdir/res2.xml ../../src/xsl/but-root.xsl $tmpdir/res.xml
 
-        rm -f $tmpdir/check.xml
+        sed -e 's/ code="[^"]*"//' $tmpdir/res2.xml  > $tmpdir/res3.xml
+
         sed -e 's/ code="[^"]*"//' $stored_out  > $tmpdir/check.xml
 
-        diff $tmpdir/check.xml $tmpdir/res2.xml
+        diff $tmpdir/check.xml $tmpdir/res3.xml
         assertEquals "Output has changed to the stored version" 0 $?
     else
         :
