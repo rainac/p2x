@@ -1110,54 +1110,6 @@ struct TreeXMLWriter {
       writeXMLPrecAttrs(t, aus);
       aus << ">" << linebreak;
     }
-    /*
-    // writeXMLTypeElem(t, aus, indent);
-    if (tokenInfo.isParen(t)) {
-      if (t->left or t->right) {
-        aus << indent << indentUnit << "<children>" << linebreak;
-        //        indent = indent + indentUnit;
-      } else {
-        if (t->content) {
-          aus << indent << indentUnit << "<null/>" << linebreak;
-        }
-      }
-    }
-    if (t->left != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML(t->left, aus, subindent, passParent);
-    } else if (t->right != 0) {
-      aus << indent << indentUnit << "<null/>" << linebreak;
-    }
-    bool const wrt = writeXMLTextElem(t, aus, subindent);
-    if (wrt) aus << linebreak;
-    if (not tokenInfo.isParen(t) and t->ignore) {
-      writeIgnoreXML(t->ignore, aus, subindent);
-    }
-    if (t->right != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) == ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML(t->right, aus, subindent, passParent);
-    } / * else if (t->left != 0) {
-      aus << indent << indentUnit << "<null/>" << linebreak;
-    } * /
-    if (tokenInfo.isParen(t)) {
-      if (t->ignore) {
-        writeIgnoreXML(t->ignore, aus, subindent);
-      }
-      if (t->left or t->right) {
-        // indent = indent_;
-        aus << indent << indentUnit << "</children>" << linebreak;
-      }
-      if (t->content) {
-        writeXML(t->content, aus, subindent);
-      }
-    }
-    */
     if (t->left != 0) {
       Token const *passParent = 0;
       if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
@@ -1169,18 +1121,12 @@ struct TreeXMLWriter {
     }
     bool const wrt = writeXMLTextElem(t, aus, subindent);
     if (wrt) aus << linebreak;
-    // if (not tokenInfo.isParen(t) and t->ignore) {
-    //   writeIgnoreXML(t->ignore, aus, subindent);
-    // }
-    // if (tokenInfo.isParen(t)) {
     if (t->ignore) {
       writeIgnoreXML(t->ignore, aus, subindent);
     }
-    // }
     if (t->content) {
       writeXML(t->content, aus, subindent, 0, level+1);
     } else if (tokenInfo.isParen(t) and t->right != 0) {
-      // if content _could_ be there, indicate this with null in strict mode
       if (options.strict) {
         aus << indent << indentUnit << "<null/>" << linebreak;
       }
@@ -1207,7 +1153,6 @@ struct TreeXMLWriter {
     writeXMLLocAttrs(t, aus);
     writeXMLTypeAttrs(t, aus);
     aus << ">";
-    // writeXMLTypeElem(t, aus, indent);
     writeXMLTextElem(t, aus);
     aus << "</ca:ignore>" << linebreak;
   }
