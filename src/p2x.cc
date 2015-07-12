@@ -981,9 +981,11 @@ struct TreeXMLWriter {
       indent(true), indentLogarithmic(true), newlineAsBr(true),
       merged(),
       strict(),
+      minStraightIndentLevel(135),
       encoding("default is in .ggo")
     {}
     bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, merged, strict;
+    unsigned minStraightIndentLevel;
     std::string encoding;
   };
   TokenInfo const &tokenInfo;
@@ -1097,8 +1099,7 @@ struct TreeXMLWriter {
                           and merged);
 
     std::string subindent = indent;
-    unsigned const minStraightIndentLevel = 135;
-    if ( tags and (!options.indentLogarithmic or double(indent.size()) / indentUnit.size() < minStraightIndentLevel + log(level) ) ) {
+    if ( tags and (!options.indentLogarithmic or double(indent.size()) / indentUnit.size() < options.minStraightIndentLevel + log(level) ) ) {
       subindent += indentUnit;
     }
     if (tags) {
