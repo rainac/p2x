@@ -1218,7 +1218,7 @@ struct TreeXMLWriter {
       }
 
     }
-    void onContent(Token const *t, Token const *parent) {
+    void onContent(Token const *t, Token const * /* parent */) {
       ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
 
       setupNode(t);
