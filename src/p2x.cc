@@ -973,12 +973,35 @@ struct FPParser {
 
 };
 
+#define p2x_stack_use_list
+// #define p2x_stack_use_vector
+
+#ifdef p2x_stack_use_vector
+// use std::vector as stack
+#define stackCont vector
+#define sPush push_back
+#define sPop pop_back
+#define sTop back
+#elifdef p2x_stack_use_list
+// use std::vector as stack
+#define stackCont list
+#define sPush push_back
+#define sPop pop_back
+#define sTop back
+#else
+// use std::stack as stack
+#define stackCont stack
+#define sPush push
+#define sPop pop
+#define sTop top
+#endif
+
 template <class HandlerClass>
 struct TreeTraverser {
   enum State { ST_ENTER, ST_BETWEEN, ST_LEAVE };
   typedef std::pair<State, Token const*> StackItem;
   HandlerClass *m_obj;
-  std::vector<StackItem> m_stack;
+  std::stackCont<StackItem> m_stack;
   std::string m_indent;
 
   TreeTraverser(HandlerClass *obj) : m_obj(obj) {}
@@ -991,16 +1014,16 @@ struct TreeTraverser {
 
     switch (t.first) {
     case ST_ENTER:
-      m_stack.push_back(std::make_pair(ST_LEAVE, t.second));
+      m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
       if (t.second->right) {
-        m_stack.push_back(std::make_pair(ST_ENTER, t.second->right));
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->right));
       }
       if (t.second->content) {
-        m_stack.push_back(std::make_pair(ST_ENTER, t.second->content));
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->content));
       }
-      m_stack.push_back(std::make_pair(ST_BETWEEN, t.second));
+      m_stack.sPush(std::make_pair(ST_BETWEEN, t.second));
       if (t.second->left) {
-        m_stack.push_back(std::make_pair(ST_ENTER, t.second->left));
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->left));
       }
       (m_obj->*enterFcn)(t.second);
       break;
@@ -1015,10 +1038,10 @@ struct TreeTraverser {
   }
 
   void traverseTree(Token const *t) {
-    m_stack.push_back(std::make_pair(ST_ENTER, t));
+    m_stack.sPush(std::make_pair(ST_ENTER, t));
     while(not m_stack.empty()) {
-      StackItem n = m_stack.back();
-      m_stack.pop_back();
+      StackItem n = m_stack.sTop();
+      m_stack.sPop();
       handleNode(n);
     }
 
