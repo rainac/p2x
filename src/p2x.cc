@@ -984,15 +984,15 @@ struct FPParser {
 
   Token *parseStream(std::istream &ins) {
     Timer tScan;
-    ls(LS::TIMES) << "Scanning input...";
+    std::ostream &lout = (ls(LS::TIMES) << "Scanning input...");
     scanner.readTokenList(ins);
     TokenList tokenList(scanner.tokenList);
-    ls(LS::TIMES) << "done in " << tScan << " s" << std::endl;
+    lout << "done in " << tScan << " s" << std::endl;
     Timer tParse;
-    ls(LS::TIMES) << "Parsing input... ";
+    std::ostream &lout2 = (ls(LS::TIMES) << "Parsing input... ");
     Parser parser(tokenInfo, options, tokenList);
     parser.parse();
-    ls(LS::TIMES) << "done in " << tParse << " s" << std::endl;
+    lout2 << "done in " << tParse << " s" << std::endl;
     return parser.root;
   }
 
@@ -2067,18 +2067,18 @@ int main(int argc, char *argv[]) {
 
   if (args.scan_only_given) {
     Timer tScanner;
-    ls(LS::INFO|LS::SCAN) << "Scanning input: " << fileList[0] << ": " << strerror(errno) << std::endl;
+    std::ostream &lout = ls(LS::TIMES) << "Scanning input... ";
     Scanner scanner(scannerType);
     scanner.readTokenList(*inStream);
-    ls(LS::INFO|LS::SCAN) << "Done scanning input in " << tScanner << " s" << std::endl;
+    lout << "done in " << tScanner << " s" << std::endl;
     Timer tScanXML;
-    ls(LS::INFO|LS::SCAN) << "Writing scanned token list in XML format" << std::endl;
+    std::ostream &lout2 = ls(LS::INFO|LS::SCAN) << "Writing scanned token list in XML format... ";
     TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
     out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
     out << "<scan-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
     treeXMLWriter.writeXML(scanner.tokenList, out, indentUnit);
     out << "</scan-xml>\n";
-    ls(LS::INFO|LS::SCAN) << "Done writing scanned token list in " << tScanXML << " s" << std::endl;
+    lout2 << "Done writing scanned token list in " << tScanXML << " s" << std::endl;
     return 0;
   }
 
@@ -2091,7 +2091,7 @@ int main(int argc, char *argv[]) {
   Token *root = fpParser.parseStream(*inStream);
 
   Timer tXML;
-  ls(LS::TIMES) << "Writing tree to XML... ";
+  std::ostream &lout = ls(LS::TIMES) << "Writing tree to XML... ";
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>" << treeXMLWriter.linebreak;
@@ -2102,7 +2102,7 @@ int main(int argc, char *argv[]) {
   treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
   treeXMLWriter.writeXML(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
-  ls(LS::TIMES) << "done in " << tXML << " s" << std::endl;
+  lout << "done in " << tXML << " s" << std::endl;
 
   if (_out != &std::cout) {
     delete _out;
