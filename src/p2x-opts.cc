@@ -53,6 +53,7 @@ const char *gengetopt_args_info_full_help[] = {
   "  -S, --scanner=strings|no_strings\n                                Select scanner class  (default=`strings')",
   "      --stdin-tty               Read from stdin, even if it is a TTY\n                                  (default=off)",
   "\nOutput options:",
+  "  -o, --outfile=Filename        Write output to file",
   "  -e, --input-encoding=Charset  Input encoding  (default=`utf-8')",
   "      --indent                  Indent  (default=on)",
   "      --indent-unit=STRING      Indentation unit  (default=` ')",
@@ -97,11 +98,12 @@ init_help_array(void)
   gengetopt_args_info_help[22] = gengetopt_args_info_full_help[22];
   gengetopt_args_info_help[23] = gengetopt_args_info_full_help[23];
   gengetopt_args_info_help[24] = gengetopt_args_info_full_help[24];
-  gengetopt_args_info_help[25] = 0; 
+  gengetopt_args_info_help[25] = gengetopt_args_info_full_help[25];
+  gengetopt_args_info_help[26] = 0; 
   
 }
 
-const char *gengetopt_args_info_help[26];
+const char *gengetopt_args_info_help[27];
 
 typedef enum {ARG_NO
   , ARG_FLAG
@@ -168,6 +170,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->scan_only_given = 0 ;
   args_info->scanner_given = 0 ;
   args_info->stdin_tty_given = 0 ;
+  args_info->outfile_given = 0 ;
   args_info->input_encoding_given = 0 ;
   args_info->indent_given = 0 ;
   args_info->indent_unit_given = 0 ;
@@ -212,6 +215,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->scanner_arg = NULL;
   args_info->scanner_orig = NULL;
   args_info->stdin_tty_flag = 0;
+  args_info->outfile_arg = NULL;
+  args_info->outfile_orig = NULL;
   args_info->input_encoding_arg = NULL;
   args_info->input_encoding_orig = NULL;
   args_info->indent_flag = 1;
@@ -271,23 +276,24 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->scanner_min = 0;
   args_info->scanner_max = 0;
   args_info->stdin_tty_help = gengetopt_args_info_full_help[17] ;
-  args_info->input_encoding_help = gengetopt_args_info_full_help[19] ;
+  args_info->outfile_help = gengetopt_args_info_full_help[19] ;
+  args_info->input_encoding_help = gengetopt_args_info_full_help[20] ;
   args_info->input_encoding_min = 0;
   args_info->input_encoding_max = 0;
-  args_info->indent_help = gengetopt_args_info_full_help[20] ;
-  args_info->indent_unit_help = gengetopt_args_info_full_help[21] ;
+  args_info->indent_help = gengetopt_args_info_full_help[21] ;
+  args_info->indent_unit_help = gengetopt_args_info_full_help[22] ;
   args_info->indent_unit_min = 0;
   args_info->indent_unit_max = 0;
-  args_info->newline_as_br_help = gengetopt_args_info_full_help[22] ;
-  args_info->merged_help = gengetopt_args_info_full_help[23] ;
-  args_info->strict_help = gengetopt_args_info_full_help[24] ;
-  args_info->attribute_line_help = gengetopt_args_info_full_help[25] ;
-  args_info->attribute_column_help = gengetopt_args_info_full_help[26] ;
-  args_info->attribute_char_help = gengetopt_args_info_full_help[27] ;
-  args_info->attribute_precedence_help = gengetopt_args_info_full_help[28] ;
-  args_info->attribute_mode_help = gengetopt_args_info_full_help[29] ;
-  args_info->attribute_type_help = gengetopt_args_info_full_help[30] ;
-  args_info->attribute_id_help = gengetopt_args_info_full_help[31] ;
+  args_info->newline_as_br_help = gengetopt_args_info_full_help[23] ;
+  args_info->merged_help = gengetopt_args_info_full_help[24] ;
+  args_info->strict_help = gengetopt_args_info_full_help[25] ;
+  args_info->attribute_line_help = gengetopt_args_info_full_help[26] ;
+  args_info->attribute_column_help = gengetopt_args_info_full_help[27] ;
+  args_info->attribute_char_help = gengetopt_args_info_full_help[28] ;
+  args_info->attribute_precedence_help = gengetopt_args_info_full_help[29] ;
+  args_info->attribute_mode_help = gengetopt_args_info_full_help[30] ;
+  args_info->attribute_type_help = gengetopt_args_info_full_help[31] ;
+  args_info->attribute_id_help = gengetopt_args_info_full_help[32] ;
   
 }
 
@@ -438,6 +444,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_multiple_string_field (args_info->item_given, &(args_info->item_arg), &(args_info->item_orig));
   free_multiple_string_field (args_info->brace_given, &(args_info->brace_arg), &(args_info->brace_orig));
   free_multiple_string_field (args_info->scanner_given, &(args_info->scanner_arg), &(args_info->scanner_orig));
+  free_string_field (&(args_info->outfile_arg));
+  free_string_field (&(args_info->outfile_orig));
   free_multiple_string_field (args_info->input_encoding_given, &(args_info->input_encoding_arg), &(args_info->input_encoding_orig));
   free_multiple_string_field (args_info->indent_unit_given, &(args_info->indent_unit_arg), &(args_info->indent_unit_orig));
   
@@ -510,6 +518,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
   write_multiple_into_file(outfile, args_info->scanner_given, "scanner", args_info->scanner_orig, 0);
   if (args_info->stdin_tty_given)
     write_into_file(outfile, "stdin-tty", 0, 0 );
+  if (args_info->outfile_given)
+    write_into_file(outfile, "outfile", args_info->outfile_orig, 0);
   write_multiple_into_file(outfile, args_info->input_encoding_given, "input-encoding", args_info->input_encoding_orig, 0);
   if (args_info->indent_given)
     write_into_file(outfile, "indent", 0, 0 );
@@ -1097,6 +1107,7 @@ cmdline_parser_internal (
         { "scan-only",	0, NULL, 's' },
         { "scanner",	1, NULL, 'S' },
         { "stdin-tty",	0, NULL, 0 },
+        { "outfile",	1, NULL, 'o' },
         { "input-encoding",	1, NULL, 'e' },
         { "indent",	0, NULL, 0 },
         { "indent-unit",	1, NULL, 0 },
@@ -1113,7 +1124,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:e:m", long_options, &option_index);
+      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:m", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1243,6 +1254,18 @@ cmdline_parser_internal (
           if (update_multiple_arg_temp(&scanner_list, 
               &(local_args_info.scanner_given), optarg, 0, "strings", ARG_STRING,
               "scanner", 'S',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'o':	/* Write output to file.  */
+        
+        
+          if (update_arg( (void *)&(args_info->outfile_arg), 
+               &(args_info->outfile_orig), &(args_info->outfile_given),
+              &(local_args_info.outfile_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "outfile", 'o',
               additional_error))
             goto failure;
         

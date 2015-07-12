@@ -98,6 +98,9 @@ struct gengetopt_args_info
   const char *scanner_help; /**< @brief Select scanner class help description.  */
   int stdin_tty_flag;	/**< @brief Read from stdin, even if it is a TTY (default=off).  */
   const char *stdin_tty_help; /**< @brief Read from stdin, even if it is a TTY help description.  */
+  char * outfile_arg;	/**< @brief Write output to file.  */
+  char * outfile_orig;	/**< @brief Write output to file original value given at command line.  */
+  const char *outfile_help; /**< @brief Write output to file help description.  */
   char ** input_encoding_arg;	/**< @brief Input encoding (default='utf-8').  */
   char ** input_encoding_orig;	/**< @brief Input encoding original value given at command line.  */
   unsigned int input_encoding_min; /**< @brief Input encoding's minimum occurreces */
@@ -149,6 +152,7 @@ struct gengetopt_args_info
   unsigned int scan_only_given ;	/**< @brief Whether scan-only was given.  */
   unsigned int scanner_given ;	/**< @brief Whether scanner was given.  */
   unsigned int stdin_tty_given ;	/**< @brief Whether stdin-tty was given.  */
+  unsigned int outfile_given ;	/**< @brief Whether outfile was given.  */
   unsigned int input_encoding_given ;	/**< @brief Whether input-encoding was given.  */
   unsigned int indent_given ;	/**< @brief Whether indent was given.  */
   unsigned int indent_unit_given ;	/**< @brief Whether indent-unit was given.  */
