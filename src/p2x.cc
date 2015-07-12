@@ -60,6 +60,7 @@ Copyright (C) 2013,2014 Johannes Willkomm
 #include <vector>
 #include <map>
 #include <set>
+#include <stack>
 #include <limits>
 #include <stdlib.h>
 #include <math.h>
