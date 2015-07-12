@@ -1134,7 +1134,7 @@ struct TreeXMLWriter {
 
     void setIndent() {
       int ilevel = std::min<int>(m_level, m_xmlWriter.options.minStraightIndentLevel + log(std::max<size_t>(m_level, 1)));
-      std::cerr << "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n";
+      ls(LS::DEBUG|LS::PARSE) << "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n";
       indent.clear();
       indent.insert(indent.begin(), ilevel, m_xmlWriter.indentUnit[0]);
       subindent = indent + m_xmlWriter.indentUnit[0];
