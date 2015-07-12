@@ -1007,14 +1007,22 @@ struct TreeTraverser {
 
   TreeTraverser(HandlerClass *obj) : m_obj(obj) {}
 
-  void (HandlerClass::*enterFcn)(Token const *);
-  void (HandlerClass::*leaveFcn)(Token const *);
-  void (HandlerClass::*contentFcn)(Token const *);
+  void (HandlerClass::*enterFcn)(Token const *, Token const *);
+  void (HandlerClass::*leaveFcn)(Token const *, Token const *);
+  void (HandlerClass::*contentFcn)(Token const *, Token const *);
 
   void handleNode(StackItem const t) {
 
     switch (t.first) {
     case ST_ENTER:
+      (m_obj->*enterFcn)(t.second, m_stack.sTop().second);
+      m_stack.sPush(std::make_pair(ST_BETWEEN, t.second));
+      if (t.second->left) {
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->left));
+      }
+      break;
+    case ST_BETWEEN:
+      (m_obj->*contentFcn)(t.second, m_stack.sTop().second);
       m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
       if (t.second->right) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->right));
@@ -1022,25 +1030,18 @@ struct TreeTraverser {
       if (t.second->content) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->content));
       }
-      m_stack.sPush(std::make_pair(ST_BETWEEN, t.second));
-      if (t.second->left) {
-        m_stack.sPush(std::make_pair(ST_ENTER, t.second->left));
-      }
-      (m_obj->*enterFcn)(t.second);
-      break;
-    case ST_BETWEEN:
-      (m_obj->*contentFcn)(t.second);
       break;
     case ST_LEAVE:
-      (m_obj->*leaveFcn)(t.second);
+      (m_obj->*leaveFcn)(t.second, m_stack.sTop().second);
       break;
     }
 
   }
 
   void traverseTree(Token const *t) {
+    m_stack.sPush(std::make_pair(ST_ENTER, (Token const*)0));
     m_stack.sPush(std::make_pair(ST_ENTER, t));
-    while(not m_stack.empty()) {
+    while(m_stack.top().second) {
       StackItem n = m_stack.sTop();
       m_stack.sPop();
       handleNode(n);
@@ -1146,13 +1147,11 @@ struct TreeXMLWriter {
     size_t m_level;
     std::string indent, subindent, elemName;
     bool merged, tags;
-    Token const *parent;
     std::ostream &aus;
 
     TreePrintHelper(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
       m_xmlWriter(xmlWriter),
       m_level(),
-      parent(),
       aus(aus)
     {}
 
@@ -1190,19 +1189,19 @@ struct TreeXMLWriter {
     }
 
     void setupNode(Token const *t) {
-      setIndent();
-      setElemName(t);
       merged = m_xmlWriter.options.merged
         or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
     }
 
-    void onEnter(Token const *t) {
+    void onEnter(Token const *t, Token const *parent) {
       ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
       setupNode(t);
+      setElemName(t);
+      setIndent();
+
       tags = not(parent
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
-
       if (tags) {
         aus << indent << "<" << elemName << "";
         if (m_xmlWriter.options.id)
@@ -1211,22 +1210,19 @@ struct TreeXMLWriter {
         m_xmlWriter.writeXMLTypeAttrs(t, aus);
         m_xmlWriter.writeXMLPrecAttrs(t, aus);
         aus << ">" << m_xmlWriter.linebreak;
+        ++m_level;
       }
       if (t->left != 0) {
-        if (merged and m_xmlWriter.tokenInfo.assoc(t) != ASSOC_RIGHT) {
-          parent = t;
-        }
       } else if (t->right != 0 or t->content != 0) {
         aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
       }
 
-      ++m_level;
-      parent = t;
     }
-    void onContent(Token const *t) {
+    void onContent(Token const *t, Token const *parent) {
       ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
 
       setupNode(t);
+      setIndent();
 
       bool const wrt = m_xmlWriter.writeXMLTextElem(t, aus, indent);
       if (wrt) aus << m_xmlWriter.linebreak;
@@ -1239,14 +1235,18 @@ struct TreeXMLWriter {
         }
       }
     }
-    void onLeave(Token const *t) {
+    void onLeave(Token const *t, Token const *parent) {
       ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
 
-      --m_level;
-
       setupNode(t);
+      setElemName(t);
 
+      tags = not(parent
+                 and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
+                 and merged);
       if (tags) {
+        --m_level;
+        setIndent();
         aus << indent << "</" << elemName << ">" << m_xmlWriter.linebreak;
       }
     }
