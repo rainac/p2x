@@ -66,6 +66,7 @@ Copyright (C) 2013,2014 Johannes Willkomm
 #include <errno.h>
 #include <assert.h>
 #include <unistd.h>
+#include <time.h>
 #ifndef __WIN32
 #include <sys/time.h>
 #endif
@@ -108,7 +109,8 @@ std::string winGetFolderPath() {
 #endif
 
 #ifdef __WIN32
-double getSecs() { return time(0); }
+// double getSecs() { return time(0); }
+double getSecs() { return GetTickCount() * 1e3; }
 #else
 double getSecs() {
   struct timeval tv;
