@@ -1869,7 +1869,13 @@ int main(int argc, char *argv[]) {
   }
 
 
-  std::ostream &out = std::cout;
+  std::ostream *_out = &std::cout;
+
+  if (args.outfile_given) {
+    _out = new std::ofstream(args.outfile_arg, std::ios::binary);
+  }
+
+  std::ostream &out = *_out;
 
 
   TokenInfo tokenInfo;
@@ -2189,6 +2195,10 @@ int main(int argc, char *argv[]) {
   treeXMLWriter.writeXML(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
 
+  if (_out != &std::cout) {
+    delete _out;
+    _out = 0;
+  }
 }
 #endif
 
