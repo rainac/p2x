@@ -556,6 +556,27 @@ struct TokenInfo {
     }
     return res;
   }
+  int unary_prec(Token const * const t) const {
+    int res = std::numeric_limits<int>::max();
+    ParserMode const m = mode(t);
+    assert(m == MODE_UNARY || m == MODE_UNARY_BINARY);
+    if (isOp(m)) {
+      res = 1;
+      if (t->token == TOKEN_ROOT) {
+        res = 0;
+      } else {
+        TokenProto const *proto = getProto(t);
+        if (proto) {
+          if (m == MODE_UNARY) {
+            res = proto->precedence;
+          } else if (m == MODE_UNARY_BINARY) {
+            res = proto->unaryPrecedence;
+          }
+        }
+      }
+    }
+    return res;
+  }
   OutputMode outputMode(Token const * const t) const {
     OutputMode res = OUTPUT_MODE_NONE;
     ParserMode m = mode(t);
