@@ -7,7 +7,7 @@
 if test -n "$P2X_SUFFIX"; then
    version_suffix=-$P2X_SUFFIX
 fi
-AC_INIT(p2x, 0.5.0, [johannes@johannes-willkomm.de],
+AC_INIT(p2x, 0.5.0-x, [johannes@johannes-willkomm.de],
                 p2x, [http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
