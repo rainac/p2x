@@ -803,7 +803,9 @@ struct Parser {
     --it;
     if (tokenInfo.mode(it->second) == MODE_ITEM)
       --it;
+#ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "rmop = " << it->second << " " << *it->second << " " << tokenInfo.prec(it->second) << "\n";
+#endif
     assert(tokenInfo.mode(it->second) != MODE_ITEM);
     return it->second;
   }
@@ -853,8 +855,10 @@ struct Parser {
       rmop->right = t;
     }
     int const prec = tokenInfo.prec(t);
+#ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "rmop prec = " << tokenInfo.prec(rmop) << "\n";
     ls(LS::DEBUG|LS::PARSE) << "prec = " << prec << "\n";
+#endif
     leastMap[prec] = t;
   }
 
@@ -871,6 +875,8 @@ struct Parser {
     Token *tmp = 0, *parent = 0;
     ParserAssoc const assoc = tokenInfo.assoc(t);
     int const prec = tokenInfo.binary_prec(t);
+
+#ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "prec = " << prec << "\n";
     ls(LS::DEBUG|LS::PARSE) << "Looking for " << prec << " in the map" << "\n";
     ls(LS::DEBUG|LS::PARSE) << " assoc " << assoc << "" << "\n";
@@ -878,6 +884,8 @@ struct Parser {
     for (; it != leastMap.end(); ++it) {
       ls(LS::DEBUG|LS::PARSE) << "Item: " << it->first << " " << it->second << "" << "\n";
     }
+#endif
+
     it = leastMap.lower_bound(prec + (assoc == ASSOC_RIGHT ? 1 : 0));
 
     --it;
@@ -934,12 +942,16 @@ struct Parser {
   }
 
   void insertToken(Token *first) {
+#ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "insert Token: " << (void*)first << " " << *first << "\n";
+#endif
     ParserMode firstMode = tokenInfo.mode(first);
     assert(not(firstMode & MODE_PAREN)); // MODE_PAREN bit is cleared
     assert(firstMode != 0); // mode is not 0
     assert(firstMode != MODE_PAREN); // mode is not MODE_PAREN
+#ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "mode = " << firstMode << "\n";
+#endif
     switch(firstMode) {
     case MODE_ITEM:
       pushItem(first);
@@ -974,10 +986,12 @@ struct Parser {
     do {
       // first = new Token(tokenList.next());
       first = tokenList.next();
+#ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "Parser: next: " << *first
            << ": mode: " << tokenInfo.mode(first)
            << ": prec: " << tokenInfo.prec(first)
            << "\n";
+#endif
       if (endList.find(tokenInfo.getOpCode(first)) != endList.end()) {
         endFound = true;
       } else if (tokenInfo.isParen(first)) {
@@ -1226,7 +1240,9 @@ struct TreeXMLWriter {
     void setIndent() {
       if (m_xmlWriter.options.indent) {
         int ilevel = std::min<int>(m_level, m_xmlWriter.options.minStraightIndentLevel + log(std::max<size_t>(m_level, 1)));
+#ifndef NDEBUG
         ls(LS::DEBUG|LS::PARSE) << "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n";
+#endif
         indent.clear();
         indent.insert(indent.begin(), ilevel, m_xmlWriter.indentUnit[0]);
         subindent = indent;
@@ -1262,7 +1278,9 @@ struct TreeXMLWriter {
     }
 
     void onEnter(Token const *t, Token const *parent) {
+#ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
+#endif
       setupNode(t);
       setElemName(t);
       setIndent();
@@ -1287,7 +1305,9 @@ struct TreeXMLWriter {
 
     }
     void onContent(Token const *t, Token const * /* parent */) {
+#ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
+#endif
 
       setupNode(t);
       setIndent();
@@ -1304,7 +1324,9 @@ struct TreeXMLWriter {
       }
     }
     void onLeave(Token const *t, Token const *parent) {
+#ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
+#endif
 
       setupNode(t);
       setElemName(t);
