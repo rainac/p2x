@@ -49,7 +49,7 @@ testParseTreeEqual8() {
 
 testParseTreeEqual9() {
     # see what happens when unary hits binary with same prec
-    checkParseTreeEqual unary-prec3.exp "[c]([ueqc](., 2), 3)"
+    checkParseTreeEqual unary-prec3.exp "[b]([ueqc](., 2), 3)"
 }
 
 testParseTreeEqual9a() {
@@ -114,7 +114,7 @@ testParseTreeEqual_ub_8() {
     checkParseTreeEqual unary-binary8.exp "[b]([e](1, [ub](., 2)), 3)"
 }
 testParseTreeEqual_ub_9() {
-    checkParseTreeEqual unary-binary9.exp "[d]([e](1, [ub](., 2)), 3)"
+    checkParseTreeEqual unary-binary9.exp "[e](1, [ub](., [d](2, 3)))"
 }
 testParseTreeEqual_ub_10() {
     checkParseTreeEqual unary-binary10.exp "[e](1, [ub](., [f](2, 3)))"
