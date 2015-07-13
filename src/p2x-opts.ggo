@@ -41,6 +41,7 @@ option "newline-as-br" -  "Emit newline text as ca:br element of ca:text" flag o
 option "merged" m  "Collect children of equal operator chains, output all binary nodes in MERGED mode" flag off
 option "strict" -  "Strict output mode: paren children always indicated by null elements" flag off
 
+option "write-recursive" -  "Recursive output writing" flag hidden off 
 option "attribute-line" -  "Emit attribute line with source line" flag on hidden
 option "attribute-column" -  "Emit attribute column with source column" flag on hidden
 option "attribute-char" -  "Emit attribute column with source char" flag off hidden

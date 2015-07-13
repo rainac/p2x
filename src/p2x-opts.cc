@@ -60,6 +60,7 @@ const char *gengetopt_args_info_full_help[] = {
   "      --newline-as-br           Emit newline text as ca:br element of ca:text\n                                  (default=on)",
   "  -m, --merged                  Collect children of equal operator chains,\n                                  output all binary nodes in MERGED mode\n                                  (default=off)",
   "      --strict                  Strict output mode: paren children always\n                                  indicated by null elements  (default=off)",
+  "      --write-recursive         Recursive output writing  (default=off)",
   "      --attribute-line          Emit attribute line with source line\n                                  (default=on)",
   "      --attribute-column        Emit attribute column with source column\n                                  (default=on)",
   "      --attribute-char          Emit attribute column with source char\n                                  (default=off)",
@@ -177,6 +178,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->newline_as_br_given = 0 ;
   args_info->merged_given = 0 ;
   args_info->strict_given = 0 ;
+  args_info->write_recursive_given = 0 ;
   args_info->attribute_line_given = 0 ;
   args_info->attribute_column_given = 0 ;
   args_info->attribute_char_given = 0 ;
@@ -225,6 +227,7 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->newline_as_br_flag = 1;
   args_info->merged_flag = 0;
   args_info->strict_flag = 0;
+  args_info->write_recursive_flag = 0;
   args_info->attribute_line_flag = 1;
   args_info->attribute_column_flag = 1;
   args_info->attribute_char_flag = 0;
@@ -287,13 +290,14 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->newline_as_br_help = gengetopt_args_info_full_help[23] ;
   args_info->merged_help = gengetopt_args_info_full_help[24] ;
   args_info->strict_help = gengetopt_args_info_full_help[25] ;
-  args_info->attribute_line_help = gengetopt_args_info_full_help[26] ;
-  args_info->attribute_column_help = gengetopt_args_info_full_help[27] ;
-  args_info->attribute_char_help = gengetopt_args_info_full_help[28] ;
-  args_info->attribute_precedence_help = gengetopt_args_info_full_help[29] ;
-  args_info->attribute_mode_help = gengetopt_args_info_full_help[30] ;
-  args_info->attribute_type_help = gengetopt_args_info_full_help[31] ;
-  args_info->attribute_id_help = gengetopt_args_info_full_help[32] ;
+  args_info->write_recursive_help = gengetopt_args_info_full_help[26] ;
+  args_info->attribute_line_help = gengetopt_args_info_full_help[27] ;
+  args_info->attribute_column_help = gengetopt_args_info_full_help[28] ;
+  args_info->attribute_char_help = gengetopt_args_info_full_help[29] ;
+  args_info->attribute_precedence_help = gengetopt_args_info_full_help[30] ;
+  args_info->attribute_mode_help = gengetopt_args_info_full_help[31] ;
+  args_info->attribute_type_help = gengetopt_args_info_full_help[32] ;
+  args_info->attribute_id_help = gengetopt_args_info_full_help[33] ;
   
 }
 
@@ -530,6 +534,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "merged", 0, 0 );
   if (args_info->strict_given)
     write_into_file(outfile, "strict", 0, 0 );
+  if (args_info->write_recursive_given)
+    write_into_file(outfile, "write-recursive", 0, 0 );
   if (args_info->attribute_line_given)
     write_into_file(outfile, "attribute-line", 0, 0 );
   if (args_info->attribute_column_given)
@@ -1114,6 +1120,7 @@ cmdline_parser_internal (
         { "newline-as-br",	0, NULL, 0 },
         { "merged",	0, NULL, 'm' },
         { "strict",	0, NULL, 0 },
+        { "write-recursive",	0, NULL, 0 },
         { "attribute-line",	0, NULL, 0 },
         { "attribute-column",	0, NULL, 0 },
         { "attribute-char",	0, NULL, 0 },
@@ -1401,6 +1408,18 @@ cmdline_parser_internal (
             if (update_arg((void *)&(args_info->strict_flag), 0, &(args_info->strict_given),
                 &(local_args_info.strict_given), optarg, 0, 0, ARG_FLAG,
                 check_ambiguity, override, 1, 0, "strict", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Recursive output writing.  */
+          else if (strcmp (long_options[option_index].name, "write-recursive") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->write_recursive_flag), 0, &(args_info->write_recursive_given),
+                &(local_args_info.write_recursive_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "write-recursive", '-',
                 additional_error))
               goto failure;
           

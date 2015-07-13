@@ -1900,6 +1900,7 @@ int main(int argc, char *argv[]) {
   options.indent = args.indent_flag;
   options.merged = args.merged_flag;
   options.strict = args.strict_flag;
+  options.writeRec = args.write_recursive_flag;
 
   std::string indentUnit = args.indent_unit_arg[0];
   if (args.indent_unit_given) {
