@@ -578,6 +578,27 @@ struct TokenInfo {
     }
     return res;
   }
+  int unary_prec(Token const * const t) const {
+    int res = std::numeric_limits<int>::max();
+    ParserMode const m = mode(t);
+    assert(m == MODE_UNARY || m == MODE_UNARY_BINARY);
+    if (isOp(m)) {
+      res = 1;
+      if (t->token == TOKEN_ROOT) {
+        res = 0;
+      } else {
+        TokenProto const *proto = getProto(t);
+        if (proto) {
+          if (m == MODE_UNARY) {
+            res = proto->precedence;
+          } else if (m == MODE_UNARY_BINARY) {
+            res = proto->unaryPrecedence;
+          }
+        }
+      }
+    }
+    return res;
+  }
   OutputMode outputMode(Token const * const t) const {
     OutputMode res = OUTPUT_MODE_NONE;
     ParserMode m = mode(t);
@@ -752,6 +773,8 @@ struct Parser {
   Options const &options;
   TokenList &tokenList;
   EndList endList;
+  typedef std::map<int, Token*> LPrecMap;
+  LPrecMap leastMap;
 
   Parser(TokenInfo const &tokenInfo, Options const &options, TokenList &tokenList) :
     root(), tokenInfo(tokenInfo), options(options), tokenList(tokenList) {
@@ -775,14 +798,23 @@ struct Parser {
   bool isOp(Token *t) const { 
     return tokenInfo.isOp(t);
   }
-  Token *getRMOp(Token *t) const {
+  Token *getRMOp(Token * = 0) const {
+    LPrecMap::const_iterator it = leastMap.end();
+    --it;
+    if (tokenInfo.mode(it->second) == MODE_ITEM)
+      --it;
+    ls(LS::DEBUG|LS::PARSE) << "rmop = " << it->second << " " << *it->second << " " << tokenInfo.prec(it->second) << "\n";
+    assert(tokenInfo.mode(it->second) != MODE_ITEM);
+    return it->second;
+  }
+  Token *old_getRMOp(Token *t) const {
     while (t->right and isOp(t->right)) {
       t = t->right;
     }
     return t;
   }
   bool rightEdgeOpen() const {
-    Token *rm = getRMOp(root);
+    Token *rm = getRMOp();
     return rm->right == 0 and tokenInfo.mode(rm) != MODE_POSTFIX;
   }
 
@@ -807,12 +839,12 @@ struct Parser {
   // Class Item
   void pushItem(Token *t) {
     assert(root);
-    Token *rmop = getRMOp(root);
+    Token *rmop = getRMOp();
     if (tokenInfo.mode(rmop) == MODE_POSTFIX or rmop->right != 0) {
       Token *op = mkJuxta(t);
       pushBinary(op);
 #ifndef NDEBUG
-      Token *rmop2 = getRMOp(root);
+      Token *rmop2 = getRMOp();
 #endif
       assert(rmop2->right == 0);
       assert(rmop2 == op);
@@ -820,40 +852,46 @@ struct Parser {
     } else {
       rmop->right = t;
     }
+    int const prec = tokenInfo.prec(t);
+    ls(LS::DEBUG|LS::PARSE) << "rmop prec = " << tokenInfo.prec(rmop) << "\n";
+    ls(LS::DEBUG|LS::PARSE) << "prec = " << prec << "\n";
+    leastMap[prec] = t;
   }
 
   // Class Unary
   void pushUnary(Token *t) {
     pushItem(t);
+    int const prec = tokenInfo.unary_prec(t);
+    leastMap.erase((++leastMap.find(prec)), leastMap.end());
   }
 
   // Class Binary
   void pushBinary(Token *t) {
     assert(root);
-    Token *tmp = root, *parent = 0;
+    Token *tmp = 0, *parent = 0;
     ParserAssoc const assoc = tokenInfo.assoc(t);
     int const prec = tokenInfo.binary_prec(t);
-    while (tmp->right != 0
-           and ((tokenInfo.prec(tmp) < prec and tokenInfo.mode(tmp) != MODE_POSTFIX) or
-                (tokenTypeEqual(tmp, t) and assoc == ASSOC_RIGHT))) {
-      parent = tmp;
-      tmp = tmp->right;
+    ls(LS::DEBUG|LS::PARSE) << "prec = " << prec << "\n";
+    ls(LS::DEBUG|LS::PARSE) << "Looking for " << prec << " in the map" << "\n";
+    ls(LS::DEBUG|LS::PARSE) << " assoc " << assoc << "" << "\n";
+    LPrecMap::iterator it = leastMap.begin();
+    for (; it != leastMap.end(); ++it) {
+      ls(LS::DEBUG|LS::PARSE) << "Item: " << it->first << " " << it->second << "" << "\n";
     }
-    if ((tokenInfo.prec(tmp) < prec and tokenInfo.mode(tmp) != MODE_POSTFIX) or
-        (tokenTypeEqual(tmp, t) and assoc == ASSOC_RIGHT)) {
-      assert(tmp->right == 0);
-      // t->right = tmp->right; // tmp->right == 0
-      tmp->right = t;
-    } else {
+    it = leastMap.lower_bound(prec + (assoc == ASSOC_RIGHT ? 1 : 0));
+
+    --it;
+    while(tokenInfo.mode(it->second) == MODE_POSTFIX) --it;
+
+    parent = it->second;
+    tmp = parent->right; // !!!
+
+    parent->right = t;
+    if (tmp)
       t->left = tmp;
-      if (tmp == root) {
-        assert(parent == 0);
-        root = t;
-      } else {
-        assert(parent != 0);
-        parent->right = t;
-      }
-    }
+
+    leastMap[prec] = t;
+    leastMap.erase((++leastMap.find(prec)), leastMap.end());
   }
 
   // Class Unary/Binary
@@ -896,10 +934,12 @@ struct Parser {
   }
 
   void insertToken(Token *first) {
-    int firstMode = tokenInfo.mode(first);
+    ls(LS::DEBUG|LS::PARSE) << "insert Token: " << (void*)first << " " << *first << "\n";
+    ParserMode firstMode = tokenInfo.mode(first);
     assert(not(firstMode & MODE_PAREN)); // MODE_PAREN bit is cleared
     assert(firstMode != 0); // mode is not 0
     assert(firstMode != MODE_PAREN); // mode is not MODE_PAREN
+    ls(LS::DEBUG|LS::PARSE) << "mode = " << firstMode << "\n";
     switch(firstMode) {
     case MODE_ITEM:
       pushItem(first);
@@ -929,6 +969,7 @@ struct Parser {
   Token *parse() {
     Token *first = 0;
     root = mkRoot();
+    leastMap[tokenInfo.prec(root)] = root;
     bool endFound = false;
     do {
       // first = new Token(tokenList.next());
@@ -1989,7 +2030,8 @@ int main(int argc, char *argv[]) {
         ls(LS::INFO|LS::DEBUG)  << "Parsing config file " << precPath << "\n";
         Token *croot = configParser.parseStream(configFile);
         TreeXMLWriter::Options options;
-        TreeXMLWriter treeXMLWriter(tokenInfo, options);
+        options.line = options.col = options.prec /* = options.sparse */ = 1;
+        TreeXMLWriter treeXMLWriter(configParser.tokenInfo, options);
         // LS::mask |= LS::DEBUG;
         ls(LS::DEBUG|LS::CONFIG) << "Dumping XML of config file\n";
         treeXMLWriter.writeXML(croot, ls(LS::DEBUG|LS::CONFIG), "");
