@@ -1237,16 +1237,23 @@ struct TreeXMLWriter {
       aus(aus)
     {}
 
+    void setWhiteLen(std::string &str, size_t ilevel) const {
+      if (str.size() < ilevel) {
+        str.insert(str.end(), ilevel-str.size(), m_xmlWriter.indentUnit[0]);
+      }
+      if (str.size() > ilevel) {
+        str.resize(ilevel);
+      }
+    }
+
     void setIndent() {
       if (m_xmlWriter.options.indent) {
         int ilevel = std::min<int>(m_level, m_xmlWriter.options.minStraightIndentLevel + log(std::max<size_t>(m_level, 1)));
 #ifndef NDEBUG
         ls(LS::DEBUG|LS::PARSE) << "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n";
 #endif
-        indent.clear();
-        indent.insert(indent.begin(), ilevel, m_xmlWriter.indentUnit[0]);
-        subindent = indent;
-        subindent += m_xmlWriter.indentUnit[0];
+        setWhiteLen(indent, ilevel);
+        setWhiteLen(subindent, ilevel+1);
       }
     }
 
