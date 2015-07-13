@@ -110,7 +110,7 @@ std::string winGetFolderPath() {
 
 #ifdef __WIN32
 // double getSecs() { return time(0); }
-double getSecs() { return GetTickCount() * 1e3; }
+double getSecs() { return GetTickCount() * 1e-3; }
 #else
 double getSecs() {
   struct timeval tv;
