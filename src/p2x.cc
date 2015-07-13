@@ -60,6 +60,7 @@ Copyright (C) 2013,2014 Johannes Willkomm
 #include <vector>
 #include <map>
 #include <set>
+#include <stack>
 #include <limits>
 #include <stdlib.h>
 #include <math.h>
@@ -973,6 +974,83 @@ struct FPParser {
 
 };
 
+#define p2x_stack_use_list
+// #define p2x_stack_use_vector
+
+#ifdef p2x_stack_use_vector
+// use std::vector as stack
+#define stackCont vector
+#define sPush push_back
+#define sPop pop_back
+#define sTop back
+#elifdef p2x_stack_use_list
+// use std::vector as stack
+#define stackCont list
+#define sPush push_back
+#define sPop pop_back
+#define sTop back
+#else
+// use std::stack as stack
+#define stackCont stack
+#define sPush push
+#define sPop pop
+#define sTop top
+#endif
+
+template <class HandlerClass>
+struct TreeTraverser {
+  enum State { ST_ENTER, ST_BETWEEN, ST_LEAVE };
+  typedef std::pair<State, Token const*> StackItem;
+  HandlerClass *m_obj;
+  std::stackCont<StackItem> m_stack;
+  std::string m_indent;
+
+  TreeTraverser(HandlerClass *obj) : m_obj(obj) {}
+
+  void (HandlerClass::*enterFcn)(Token const *, Token const *);
+  void (HandlerClass::*leaveFcn)(Token const *, Token const *);
+  void (HandlerClass::*contentFcn)(Token const *, Token const *);
+
+  void handleNode(StackItem const t) {
+
+    switch (t.first) {
+    case ST_ENTER:
+      (m_obj->*enterFcn)(t.second, m_stack.sTop().second);
+      m_stack.sPush(std::make_pair(ST_BETWEEN, t.second));
+      if (t.second->left) {
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->left));
+      }
+      break;
+    case ST_BETWEEN:
+      (m_obj->*contentFcn)(t.second, m_stack.sTop().second);
+      m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
+      if (t.second->right) {
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->right));
+      }
+      if (t.second->content) {
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->content));
+      }
+      break;
+    case ST_LEAVE:
+      (m_obj->*leaveFcn)(t.second, m_stack.sTop().second);
+      break;
+    }
+
+  }
+
+  void traverseTree(Token const *t) {
+    m_stack.sPush(std::make_pair(ST_ENTER, (Token const*)0));
+    m_stack.sPush(std::make_pair(ST_ENTER, t));
+    while(m_stack.top().second) {
+      StackItem n = m_stack.sTop();
+      m_stack.sPop();
+      handleNode(n);
+    }
+
+  }
+
+};
+
 struct TreeXMLWriter {
   struct Options {
     Options() :
@@ -981,9 +1059,11 @@ struct TreeXMLWriter {
       indent(true), indentLogarithmic(true), newlineAsBr(true),
       merged(),
       strict(),
+      minStraightIndentLevel(135),
       encoding("default is in .ggo")
     {}
     bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, merged, strict;
+    unsigned minStraightIndentLevel;
     std::string encoding;
   };
   TokenInfo const &tokenInfo;
@@ -1062,9 +1142,137 @@ struct TreeXMLWriter {
     return res;
   }
 
+  struct TreePrintHelper {
+    TreeXMLWriter const &m_xmlWriter;
+    size_t m_level;
+    std::string indent, subindent, elemName;
+    bool merged, tags;
+    std::ostream &aus;
+
+    TreePrintHelper(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
+      m_xmlWriter(xmlWriter),
+      m_level(),
+      aus(aus)
+    {}
+
+    void setIndent() {
+      if (m_xmlWriter.options.indent) {
+        int ilevel = std::min<int>(m_level, m_xmlWriter.options.minStraightIndentLevel + log(std::max<size_t>(m_level, 1)));
+        ls(LS::DEBUG|LS::PARSE) << "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n";
+        indent.clear();
+        indent.insert(indent.begin(), ilevel, m_xmlWriter.indentUnit[0]);
+        subindent = indent;
+        subindent += m_xmlWriter.indentUnit[0];
+      }
+    }
+
+    void setElemName(Token const *t) {
+      if (m_xmlWriter.tokenInfo.isParen(t)) {
+        elemName = "paren";
+      } else if (t->token == TOKEN_STRING) {
+        elemName = "string";
+      } else if (t->token == TOKEN_FLOAT) {
+        elemName = "float";
+      } else if (t->token == TOKEN_INTEGER) {
+        elemName = "integer";
+      } else if (t->token == TOKEN_IDENTIFIER) {
+        if (m_xmlWriter.tokenInfo.mode(t) == MODE_ITEM) {
+          elemName = "id";
+        } else {
+          elemName = "op";
+        }
+      } else if (t->token == TOKEN_ROOT) {
+        elemName = "root";
+      } else {
+        elemName = "op";
+      }
+    }
+
+    void setupNode(Token const *t) {
+      merged = m_xmlWriter.options.merged
+        or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
+    }
+
+    void onEnter(Token const *t, Token const *parent) {
+      ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
+      setupNode(t);
+      setElemName(t);
+      setIndent();
+
+      tags = not(parent
+                 and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
+                 and merged);
+      if (tags) {
+        aus << indent << "<" << elemName << "";
+        if (m_xmlWriter.options.id)
+          aus << " id='" << t->id << "'";
+        m_xmlWriter.writeXMLLocAttrs(t, aus);
+        m_xmlWriter.writeXMLTypeAttrs(t, aus);
+        m_xmlWriter.writeXMLPrecAttrs(t, aus);
+        aus << ">" << m_xmlWriter.linebreak;
+        ++m_level;
+      }
+      if (t->left != 0) {
+      } else if (t->right != 0 or t->content != 0) {
+        aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
+      }
+
+    }
+    void onContent(Token const *t, Token const * /* parent */) {
+      ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
+
+      setupNode(t);
+      setIndent();
+
+      bool const wrt = m_xmlWriter.writeXMLTextElem(t, aus, indent);
+      if (wrt) aus << m_xmlWriter.linebreak;
+      if (t->ignore) {
+        m_xmlWriter.writeIgnoreXML(t->ignore, aus, indent);
+      }
+      if (not t->content and m_xmlWriter.tokenInfo.isParen(t) and t->right != 0) {
+        if (m_xmlWriter.options.strict) {
+          aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
+        }
+      }
+    }
+    void onLeave(Token const *t, Token const *parent) {
+      ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
+
+      setupNode(t);
+      setElemName(t);
+
+      tags = not(parent
+                 and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
+                 and merged);
+      if (tags) {
+        --m_level;
+        setIndent();
+        aus << indent << "</" << elemName << ">" << m_xmlWriter.linebreak;
+      }
+    }
+  };
+
   void writeXML(Token const *t, std::ostream &aus, 
-                std::string const &indent_ = "", Token const *parent = 0,
+                std::string const & = "", Token const * = 0,
                 int level = 0) const {
+
+    TreePrintHelper printer(*this, aus);
+    printer.m_level = level + 1;
+
+    TreeTraverser<TreePrintHelper> traverser(&printer);
+
+    traverser.enterFcn = &TreePrintHelper::onEnter;
+    traverser.contentFcn = &TreePrintHelper::onContent;
+    traverser.leaveFcn = &TreePrintHelper::onLeave;
+
+    traverser.traverseTree(t);
+
+  }
+
+  void writeXML_(Token const *t, std::ostream &aus,
+                 std::string const &indent_ = "", Token const *parent = 0,
+                 int level = 0) const {
+
     if (level == 0) {
       level = ceil(double(indent_.size())/indentUnit.size());
     }
@@ -1097,8 +1305,7 @@ struct TreeXMLWriter {
                           and merged);
 
     std::string subindent = indent;
-    unsigned const minStraightIndentLevel = 135;
-    if ( tags and (!options.indentLogarithmic or double(indent.size()) / indentUnit.size() < minStraightIndentLevel + log(level) ) ) {
+    if ( tags and (!options.indentLogarithmic or double(indent.size()) / indentUnit.size() < options.minStraightIndentLevel + log(level) ) ) {
       subindent += indentUnit;
     }
     if (tags) {
@@ -1110,54 +1317,6 @@ struct TreeXMLWriter {
       writeXMLPrecAttrs(t, aus);
       aus << ">" << linebreak;
     }
-    /*
-    // writeXMLTypeElem(t, aus, indent);
-    if (tokenInfo.isParen(t)) {
-      if (t->left or t->right) {
-        aus << indent << indentUnit << "<children>" << linebreak;
-        //        indent = indent + indentUnit;
-      } else {
-        if (t->content) {
-          aus << indent << indentUnit << "<null/>" << linebreak;
-        }
-      }
-    }
-    if (t->left != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML(t->left, aus, subindent, passParent);
-    } else if (t->right != 0) {
-      aus << indent << indentUnit << "<null/>" << linebreak;
-    }
-    bool const wrt = writeXMLTextElem(t, aus, subindent);
-    if (wrt) aus << linebreak;
-    if (not tokenInfo.isParen(t) and t->ignore) {
-      writeIgnoreXML(t->ignore, aus, subindent);
-    }
-    if (t->right != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) == ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML(t->right, aus, subindent, passParent);
-    } / * else if (t->left != 0) {
-      aus << indent << indentUnit << "<null/>" << linebreak;
-    } * /
-    if (tokenInfo.isParen(t)) {
-      if (t->ignore) {
-        writeIgnoreXML(t->ignore, aus, subindent);
-      }
-      if (t->left or t->right) {
-        // indent = indent_;
-        aus << indent << indentUnit << "</children>" << linebreak;
-      }
-      if (t->content) {
-        writeXML(t->content, aus, subindent);
-      }
-    }
-    */
     if (t->left != 0) {
       Token const *passParent = 0;
       if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
@@ -1169,18 +1328,12 @@ struct TreeXMLWriter {
     }
     bool const wrt = writeXMLTextElem(t, aus, subindent);
     if (wrt) aus << linebreak;
-    // if (not tokenInfo.isParen(t) and t->ignore) {
-    //   writeIgnoreXML(t->ignore, aus, subindent);
-    // }
-    // if (tokenInfo.isParen(t)) {
     if (t->ignore) {
       writeIgnoreXML(t->ignore, aus, subindent);
     }
-    // }
     if (t->content) {
       writeXML(t->content, aus, subindent, 0, level+1);
     } else if (tokenInfo.isParen(t) and t->right != 0) {
-      // if content _could_ be there, indicate this with null in strict mode
       if (options.strict) {
         aus << indent << indentUnit << "<null/>" << linebreak;
       }
@@ -1207,7 +1360,6 @@ struct TreeXMLWriter {
     writeXMLLocAttrs(t, aus);
     writeXMLTypeAttrs(t, aus);
     aus << ">";
-    // writeXMLTypeElem(t, aus, indent);
     writeXMLTextElem(t, aus);
     aus << "</ca:ignore>" << linebreak;
   }
