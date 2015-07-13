@@ -880,13 +880,15 @@ struct Parser {
     ls(LS::DEBUG|LS::PARSE) << "prec = " << prec << "\n";
     ls(LS::DEBUG|LS::PARSE) << "Looking for " << prec << " in the map" << "\n";
     ls(LS::DEBUG|LS::PARSE) << " assoc " << assoc << "" << "\n";
-    LPrecMap::iterator it = leastMap.begin();
-    for (; it != leastMap.end(); ++it) {
-      ls(LS::DEBUG|LS::PARSE) << "Item: " << it->first << " " << it->second << "" << "\n";
+    {
+      LPrecMap::iterator it = leastMap.begin();
+      for (; it != leastMap.end(); ++it) {
+        ls(LS::DEBUG|LS::PARSE) << "Item: " << it->first << " " << it->second << "" << "\n";
+      }
     }
 #endif
 
-    it = leastMap.lower_bound(prec + (assoc == ASSOC_RIGHT ? 1 : 0));
+    LPrecMap::iterator it = leastMap.lower_bound(prec + (assoc == ASSOC_RIGHT ? 1 : 0));
 
     --it;
     while(tokenInfo.mode(it->second) == MODE_POSTFIX) --it;
