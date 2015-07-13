@@ -626,7 +626,7 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 VERSION_NUMBER
-SVN_REVISION
+VCS_REVISION
 EGREP
 GREP
 acond_BUILD_TESTS_FALSE
@@ -5932,21 +5932,17 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-if test -z "$SVN_REVISION"; then
-   SVN_REVISION=`./vcs-version.sh`
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking value for SVN_REVISION" >&5
-$as_echo_n "checking value for SVN_REVISION... " >&6; }
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $SVN_REVISION" >&5
-$as_echo "$SVN_REVISION" >&6; }
+VCS_REVISION=`./vcs-version.sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking value for VCS_REVISION" >&5
+$as_echo_n "checking value for VCS_REVISION... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $VCS_REVISION" >&5
+$as_echo "$VCS_REVISION" >&6; }
 
 
 echo "creating version.txt"
 echo "$VERSION" > version.txt
 
-echo "creating svn-version.txt"
-echo "$SVN_REVISION" > svn-version.txt
-av_LONG_VERSION="$VERSION-`cat svn-version.txt | tr ':' '_'`"
+av_LONG_VERSION="$VERSION-$VCS_REVISION"
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking value for LONG_VERSION" >&5
 $as_echo_n "checking value for LONG_VERSION... " >&6; }
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $av_LONG_VERSION" >&5
