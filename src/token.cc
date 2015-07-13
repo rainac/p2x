@@ -6,6 +6,7 @@ See the file p2x.cc for copying conditions.
 
 #include <string>
 #include <strings.h>
+#include <stdio.h>
 #include "token.hh"
 
 Token::Token() : 

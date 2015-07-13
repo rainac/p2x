@@ -67,6 +67,10 @@ Copyright (C) 2013,2014 Johannes Willkomm
 #include <errno.h>
 #include <assert.h>
 #include <unistd.h>
+#include <time.h>
+#ifndef __WIN32
+#include <sys/time.h>
+#endif
 #include "config.h"
 #include "token.hh"
 #include "xmlOstream.hh"
@@ -86,12 +90,10 @@ Copyright (C) 2013,2014 Johannes Willkomm
 #include "p2x-opts.hh"
 #include "namespaces.hh"
 
-
 #ifdef __WIN32
 #include <windows.h>
 #include <shlobj.h>
 #undef ERROR
-
 
 std::string winGetFolderPath() {
   std::string result;
@@ -106,6 +108,25 @@ std::string winGetFolderPath() {
   return result;
 }
 #endif
+
+#ifdef __WIN32
+// double getSecs() { return time(0); }
+double getSecs() { return GetTickCount() * 1e3; }
+#else
+double getSecs() {
+  struct timeval tv;
+  gettimeofday(&tv, 0);
+  return tv.tv_sec + tv.tv_usec * 1e-6;
+}
+#endif
+
+struct Timer {
+  double m_start;
+  Timer() : m_start(getSecs()) {}
+  void reset() { m_start = getSecs(); }
+  operator double() const { return getSecs() - m_start; }
+  double get() const { return getSecs() - m_start; }
+};
 
 struct GetEnvString {
   std::string value;
@@ -965,10 +986,16 @@ struct FPParser {
   }
 
   Token *parseStream(std::istream &ins) {
+    Timer tScan;
+    std::ostream &lout = (ls(LS::TIMES) << "Scanning input...");
     scanner.readTokenList(ins);
     TokenList tokenList(scanner.tokenList);
+    lout << "done in " << tScan << " s" << std::endl;
+    Timer tParse;
+    std::ostream &lout2 = (ls(LS::TIMES) << "Parsing input... ");
     Parser parser(tokenInfo, options, tokenList);
     parser.parse();
+    lout2 << "done in " << tParse << " s" << std::endl;
     return parser.root;
   }
 
@@ -2193,13 +2220,19 @@ int main(int argc, char *argv[]) {
   }
 
   if (args.scan_only_given) {
+    Timer tScanner;
+    std::ostream &lout = ls(LS::TIMES) << "Scanning input... ";
     Scanner scanner(scannerType);
     scanner.readTokenList(*inStream);
+    lout << "done in " << tScanner << " s" << std::endl;
+    Timer tScanXML;
+    std::ostream &lout2 = ls(LS::INFO|LS::SCAN) << "Writing scanned token list in XML format... ";
     TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
     out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
     out << "<scan-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
     treeXMLWriter.writeXML(scanner.tokenList, out, indentUnit);
     out << "</scan-xml>\n";
+    lout2 << "Done writing scanned token list in " << tScanXML << " s" << std::endl;
     return 0;
   }
 
@@ -2211,6 +2244,8 @@ int main(int argc, char *argv[]) {
 
   Token *root = fpParser.parseStream(*inStream);
 
+  Timer tXML;
+  std::ostream &lout = ls(LS::TIMES) << "Writing tree to XML... ";
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>" << treeXMLWriter.linebreak;
@@ -2221,6 +2256,7 @@ int main(int argc, char *argv[]) {
   treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
   treeXMLWriter.writeXML(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
+  lout << "done in " << tXML << " s" << std::endl;
 
   if (_out != &std::cout) {
     delete _out;
