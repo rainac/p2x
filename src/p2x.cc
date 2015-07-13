@@ -866,37 +866,17 @@ struct Parser {
       ls(LS::DEBUG|LS::PARSE) << "Item: " << it->first << " " << it->second << "" << "\n";
     }
     it = leastMap.lower_bound(prec + (assoc == ASSOC_RIGHT ? 1 : 0));
-    if (it != leastMap.end()) {
-      tmp = it->second;
-      --it;
-      parent = it->second;
-      tmp = parent->right; // !!!
-    } else {
-      ls(LS::DEBUG|LS::PARSE) << "least map is not prepared\n";
-      tmp = m_rmop;
-    }
-    if ((tokenInfo.prec(tmp) < prec and tokenInfo.mode(tmp) != MODE_POSTFIX) or
-        (tokenTypeEqual(tmp, t) and assoc == ASSOC_RIGHT)) {
-      assert(tmp->right == 0);
-      // t->right = tmp->right; // tmp->right == 0
-      tmp->right = t;
-    } else {
+
+    --it;
+    while(tokenInfo.mode(it->second) == MODE_POSTFIX) --it;
+
+    parent = it->second;
+    tmp = parent->right; // !!!
+
+    parent->right = t;
+    if (tmp)
       t->left = tmp;
-      if (tmp == root) {
-        assert(parent == 0);
-        root = t;
-      } else {
-        assert(parent != 0);
-        parent->right = t;
-      }
-    }
-    if (isOp(t)) {
-      m_rmop = t;
-      #ifndef NDEBUG
-      Token *rm1 = getRMOp(), *rm2 = old_getRMOp(root);
-      #endif
-      assert(rm1 == rm2);
-    }
+
     leastMap[prec] = t;
     leastMap.erase((++leastMap.find(prec)), leastMap.end());
   }
