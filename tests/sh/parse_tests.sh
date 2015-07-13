@@ -196,7 +196,7 @@ testParseTreeEqual_binary_incrp() {
 
 testParseTreeEqual_question_mark() {
     # see what happens when unary follows binary with higher prec
-    checkParseTreeEqual question.exp "[QUESTION]([EQUAL]([JUXTA](Is, [MULT]([MULT](2, 2), 2)), 7))"
+    checkParseTreeEqual question.exp "[EQUAL]([JUXTA](Is, [MULT]([MULT](2, 2), 2)), [QUESTION](7))"
 }
 
 . shunit2
