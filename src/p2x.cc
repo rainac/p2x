@@ -777,7 +777,16 @@ struct Parser {
   bool isOp(Token *t) const { 
     return tokenInfo.isOp(t);
   }
-  Token *getRMOp(Token *t = 0) const {
+  Token *getRMOp(Token * = 0) const {
+    LPrecMap::const_iterator it = leastMap.end();
+    --it;
+    if (tokenInfo.mode(it->second) == MODE_ITEM)
+      --it;
+    ls(LS::DEBUG|LS::PARSE) << "rmop = " << it->second << " " << *it->second << " " << tokenInfo.prec(it->second) << "\n";
+    assert(tokenInfo.mode(it->second) != MODE_ITEM);
+    return it->second;
+  }
+  Token *new_old_getRMOp(Token *t = 0) const {
     assert(t == 0 or t == root);
     return m_rmop;
   }
