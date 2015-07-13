@@ -839,6 +839,8 @@ struct Parser {
       m_rmop = t;
       assert(getRMOp() == old_getRMOp(root));
     }
+    int const prec = tokenInfo.unary_prec(t);
+    leastMap.erase((++leastMap.find(prec)), leastMap.end());
   }
 
   // Class Binary
