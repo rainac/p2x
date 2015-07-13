@@ -1141,10 +1141,11 @@ struct TreeXMLWriter {
       indent(true), indentLogarithmic(true), newlineAsBr(true),
       merged(),
       strict(),
+      writeRec(true),
       minStraightIndentLevel(135),
       encoding("default is in .ggo")
     {}
-    bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, merged, strict;
+    bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, merged, strict, writeRec;
     unsigned minStraightIndentLevel;
     std::string encoding;
   };
@@ -1350,6 +1351,15 @@ struct TreeXMLWriter {
   };
 
   void writeXML(Token const *t, std::ostream &aus, 
+                std::string const &v = "", Token const *w = 0,
+                int level = 0) const {
+    if (options.writeRec) {
+      writeXML_Rec(t, aus, v, w, level);
+    } else {
+      writeXML_Stack(t, aus, v, w, level);
+    }
+  }
+  void writeXML_Stack(Token const *t, std::ostream &aus,
                 std::string const & = "", Token const * = 0,
                 int level = 0) const {
 
@@ -1366,7 +1376,7 @@ struct TreeXMLWriter {
 
   }
 
-  void writeXML_(Token const *t, std::ostream &aus,
+  void writeXML_Rec(Token const *t, std::ostream &aus,
                  std::string const &indent_ = "", Token const *parent = 0,
                  int level = 0) const {
 
@@ -1419,7 +1429,7 @@ struct TreeXMLWriter {
       if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
         passParent = t;
       }
-      writeXML(t->left, aus, subindent, passParent, level+1);
+      writeXML_Rec(t->left, aus, subindent, passParent, level+1);
     } else if (t->right != 0 or t->content != 0) {
       aus << indent << indentUnit << "<null/>" << linebreak;
     }
@@ -1429,7 +1439,7 @@ struct TreeXMLWriter {
       writeIgnoreXML(t->ignore, aus, subindent);
     }
     if (t->content) {
-      writeXML(t->content, aus, subindent, 0, level+1);
+      writeXML_Rec(t->content, aus, subindent, 0, level+1);
     } else if (tokenInfo.isParen(t) and t->right != 0) {
       if (options.strict) {
         aus << indent << indentUnit << "<null/>" << linebreak;
@@ -1440,7 +1450,7 @@ struct TreeXMLWriter {
       if (merged and tokenInfo.assoc(t) == ASSOC_RIGHT) {
         passParent = t;
       }
-      writeXML(t->right, aus, subindent, passParent, level+1);
+      writeXML_Rec(t->right, aus, subindent, passParent, level+1);
     } 
     if (tags) {
       aus << indent << "</" << elemName << ">" << linebreak;
@@ -1980,6 +1990,7 @@ int main(int argc, char *argv[]) {
   options.indent = args.indent_flag;
   options.merged = args.merged_flag;
   options.strict = args.strict_flag;
+  options.writeRec = args.write_recursive_flag;
 
   std::string indentUnit = args.indent_unit_arg[0];
   if (args.indent_unit_given) {

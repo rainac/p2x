@@ -119,6 +119,8 @@ struct gengetopt_args_info
   const char *merged_help; /**< @brief Collect children of equal operator chains, output all binary nodes in MERGED mode help description.  */
   int strict_flag;	/**< @brief Strict output mode: paren children always indicated by null elements (default=off).  */
   const char *strict_help; /**< @brief Strict output mode: paren children always indicated by null elements help description.  */
+  int write_recursive_flag;	/**< @brief Recursive output writing (default=off).  */
+  const char *write_recursive_help; /**< @brief Recursive output writing help description.  */
   int attribute_line_flag;	/**< @brief Emit attribute line with source line (default=on).  */
   const char *attribute_line_help; /**< @brief Emit attribute line with source line help description.  */
   int attribute_column_flag;	/**< @brief Emit attribute column with source column (default=on).  */
@@ -159,6 +161,7 @@ struct gengetopt_args_info
   unsigned int newline_as_br_given ;	/**< @brief Whether newline-as-br was given.  */
   unsigned int merged_given ;	/**< @brief Whether merged was given.  */
   unsigned int strict_given ;	/**< @brief Whether strict was given.  */
+  unsigned int write_recursive_given ;	/**< @brief Whether write-recursive was given.  */
   unsigned int attribute_line_given ;	/**< @brief Whether attribute-line was given.  */
   unsigned int attribute_column_given ;	/**< @brief Whether attribute-column was given.  */
   unsigned int attribute_char_given ;	/**< @brief Whether attribute-char was given.  */
