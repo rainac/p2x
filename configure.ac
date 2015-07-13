@@ -4,8 +4,7 @@
 # Copyright © 2013 Johannes Willkomm 
 # See the file p2x.cc for copying conditions.  
 #
-
-AC_INIT(p2x, 0.4.1, [johannes@johannes-willkomm.de], 
+AC_INIT(p2x, 0.5.0, [johannes@johannes-willkomm.de],
                 p2x, [http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
@@ -83,19 +82,15 @@ target_os_short=`echo "$target_os" |sed -e s/-.*//`
 AC_DEFINE_UNQUOTED(HOST_OS_SHORT, "$target_os_short", [Short host os type])
 AC_DEFINE_UNQUOTED(install_prefix, "$prefix", [The prefix where P2X is installed.])
 
-if test -z "$SVN_REVISION"; then
-   SVN_REVISION=`./vcs-version.sh`
-fi                         
-AC_MSG_CHECKING([value for SVN_REVISION])
-AC_MSG_RESULT([$SVN_REVISION])
-AC_SUBST([SVN_REVISION])
+VCS_REVISION=`./vcs-version.sh`
+AC_MSG_CHECKING([value for VCS_REVISION])
+AC_MSG_RESULT([$VCS_REVISION])
+AC_SUBST([VCS_REVISION])
 
 echo "creating version.txt"
 echo "$VERSION" > version.txt
 
-echo "creating svn-version.txt"
-echo "$SVN_REVISION" > svn-version.txt
-av_LONG_VERSION="$VERSION-`cat svn-version.txt | tr ':' '_'`"
+av_LONG_VERSION="$VERSION-$VCS_REVISION"
 AC_MSG_CHECKING([value for LONG_VERSION])
 AC_MSG_RESULT([$av_LONG_VERSION])
 AC_DEFINE_UNQUOTED(LONG_VERSION, "$av_LONG_VERSION", [Long version string])
