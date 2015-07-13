@@ -753,10 +753,9 @@ struct Parser {
   EndList endList;
   typedef std::map<int, Token*> LPrecMap;
   LPrecMap leastMap;
-  Token *m_rmop;
 
   Parser(TokenInfo const &tokenInfo, Options const &options, TokenList &tokenList) :
-    root(), tokenInfo(tokenInfo), options(options), tokenList(tokenList), m_rmop() {
+    root(), tokenInfo(tokenInfo), options(options), tokenList(tokenList) {
     endList.insert(std::make_pair(unsigned(TOKEN_EOF), Token(TOKEN_EOF, "")));
   }
 
@@ -785,10 +784,6 @@ struct Parser {
     ls(LS::DEBUG|LS::PARSE) << "rmop = " << it->second << " " << *it->second << " " << tokenInfo.prec(it->second) << "\n";
     assert(tokenInfo.mode(it->second) != MODE_ITEM);
     return it->second;
-  }
-  Token *new_old_getRMOp(Token *t = 0) const {
-    assert(t == 0 or t == root);
-    return m_rmop;
   }
   Token *old_getRMOp(Token *t) const {
     while (t->right and isOp(t->right)) {
@@ -844,10 +839,6 @@ struct Parser {
   // Class Unary
   void pushUnary(Token *t) {
     pushItem(t);
-    if (isOp(t)) {
-      m_rmop = t;
-      assert(getRMOp() == old_getRMOp(root));
-    }
     int const prec = tokenInfo.unary_prec(t);
     leastMap.erase((++leastMap.find(prec)), leastMap.end());
   }
@@ -956,7 +947,6 @@ struct Parser {
   Token *parse() {
     Token *first = 0;
     root = mkRoot();
-    m_rmop = root;
     leastMap[tokenInfo.prec(root)] = root;
     bool endFound = false;
     do {
