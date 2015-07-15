@@ -62,6 +62,7 @@ Copyright (C) 2013,2014 Johannes Willkomm
 #include <set>
 #include <stack>
 #include <limits>
+#include <limits.h>
 #include <stdlib.h>
 #include <math.h>
 #include <errno.h>
@@ -540,7 +541,7 @@ struct TokenInfo {
   */
   
   int prec(Token const * const t) const {
-    int res = std::numeric_limits<int>::max();
+    int res = INT_MAX;
     ParserMode m = mode(t);
     if (isOp(m)) {
       res = 1;
@@ -839,7 +840,7 @@ struct Parser {
 
   // The push methods
   // Class Item
-  void pushItem(Token *t) {
+  void pushItem_(Token *t) {
     assert(root);
     Token *rmop = getRMOp();
     if (tokenInfo.mode(rmop) == MODE_POSTFIX or rmop->right != 0) {
@@ -854,18 +855,24 @@ struct Parser {
     } else {
       rmop->right = t;
     }
-    int const prec = tokenInfo.prec(t);
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "rmop prec = " << tokenInfo.prec(rmop) << "\n";
+#endif
+  }
+  void pushItem(Token *t) {
+    pushItem_(t);
+#ifndef NDEBUG
+    int const prec = INT_MAX; // == tokenInfo.prec(t);
     ls(LS::DEBUG|LS::PARSE) << "prec = " << prec << "\n";
 #endif
-    leastMap[prec] = t;
+    leastMap[INT_MAX] = t;
   }
 
   // Class Unary
   void pushUnary(Token *t) {
-    pushItem(t);
+    pushItem_(t);
     int const prec = tokenInfo.unary_prec(t);
+    leastMap[prec] = t;
     leastMap.erase((++leastMap.find(prec)), leastMap.end());
   }
 
