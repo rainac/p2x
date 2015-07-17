@@ -787,7 +787,7 @@ struct Parser {
     root = 0;
   }
 
-  Token *getRM(Token *) const {
+  Token *getRM() const {
     LPrecMap::const_iterator it = leastMap.end();
     --it;
     return it->second;
@@ -798,7 +798,7 @@ struct Parser {
   bool isOp(Token *t) const { 
     return tokenInfo.isOp(t);
   }
-  Token *getRMOp(Token * = 0) const {
+  Token *getRMOp() const {
     LPrecMap::const_iterator it = leastMap.end();
     --it;
     if (tokenInfo.mode(it->second) == MODE_ITEM)
@@ -927,7 +927,7 @@ struct Parser {
   // Class Ignore
   void pushIgnore(Token *t) {
     if (not options.ignoreIgnore) {
-      Token *rm = getRM(root);
+      Token *rm = getRM();
       Token *tend = t;
       while (tend->ignore) 
         tend = tend->ignore;
@@ -940,7 +940,7 @@ struct Parser {
   // insert position. this is the old behaviour
   void pushIgnoreAsBefore(Token *t) {
     if (not options.ignoreIgnore) {
-      Token *rm = getRM(root);
+      Token *rm = getRM();
       while (rm->content) {
         rm = rm->content->rmt;
       }
@@ -1031,7 +1031,7 @@ struct Parser {
     } while(not endFound);
 
     if (root->right)
-      root->right->rmt = getRM(root);
+      root->right->rmt = getRM();
     return first;
   }
 
