@@ -943,7 +943,7 @@ struct Parser {
     if (not options.ignoreIgnore) {
       Token *rm = getRM(root);
       while (rm->content) {
-        rm = getRM(rm->content);
+        rm = rm->content->rmop;
       }
       t->ignore = rm->ignore;
       rm->ignore = t;
@@ -1030,6 +1030,9 @@ struct Parser {
         insertToken(first);
       } 
     } while(not endFound);
+
+    if (root->right)
+      root->right->rmop = getRM(root);
     return first;
   }
 
