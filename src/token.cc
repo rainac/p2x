@@ -1,6 +1,6 @@
 /* 
 This file is part of P2X.
-Copyright © 2013 Johannes Willkomm 
+Copyright © 2013,2015 Johannes Willkomm
 See the file p2x.cc for copying conditions.  
 */
 
@@ -14,6 +14,7 @@ Token::Token() :
   right(),
   ignore(), 
   content(), 
+  rmop(),
   id(++count),
   line(), 
   column(),
@@ -28,6 +29,7 @@ Token::Token(ParserToken token, std::string text, int line, int column, int char
 Token::~Token() {
   left = right = 0;
   content = ignore = 0;
+  rmop = 0;
   token = TOKEN_EOF;
 }
 
