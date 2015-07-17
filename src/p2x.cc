@@ -787,11 +787,10 @@ struct Parser {
     root = 0;
   }
 
-  Token *getRM(Token *t) const {
-    while (t->right) {
-      t = t->right;
-    }
-    return t;
+  Token *getRM(Token *) const {
+    LPrecMap::const_iterator it = leastMap.end();
+    --it;
+    return it->second;
   }
   static bool isOp(ParserMode mode) { 
     return TokenInfo::isOp(mode);
