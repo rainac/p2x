@@ -1018,7 +1018,9 @@ struct Parser {
         insertToken(first);
 
         if (parser.root->ignore) {
-          pushIgnore(parser.root->ignore);
+          // pushIgnore(parser.root->ignore);
+          assert(first->ignore == 0);
+          first->ignore = parser.root->ignore;
         }
 
         // assert(first->left == 0); not any more ...
