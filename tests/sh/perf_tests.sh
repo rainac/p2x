@@ -116,11 +116,11 @@ print -dpng $(basename $inFile .txt).png
 EOF
 }
 
-testP2_plot_results() {
-    plotResult results_plus.txt
-    plotResult results_eq.txt
-    plotResult results_eqs.txt
-}
+# testP2_plot_results() {
+#     plotResult results_plus.txt
+#     plotResult results_eq.txt
+#     plotResult results_eqs.txt
+# }
 
 testP2_cleanup() {
     rm results_plus.txt results_eq.txt results_eqs.txt

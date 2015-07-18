@@ -32,4 +32,8 @@ test_indentation() {
     run_suite indent_tests.sh
 }
 
+test_performance() {
+    run_suite perf_tests.sh
+}
+
 . shunit2
