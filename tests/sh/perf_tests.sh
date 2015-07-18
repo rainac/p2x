@@ -54,6 +54,16 @@ testP2_perf_plus_not_too_bad() {
     for kb in $KB_LIST; do
         runTest $kb "1+"
     done
+    octave --quiet <<EOF
+v = load('$times_file');
+bps = v(:,1) ./ v(:,2)
+min(bps)
+mean(bps)
+max(bps)
+assert(mean(bps) < min(bps)*3)
+assert(max(bps) < mean(bps)*3)
+EOF
+    assertEquals "performance should be relatively equal" "0" "$?"
 }
 
 testP2_perf_eq_not_too_bad() {
@@ -62,6 +72,16 @@ testP2_perf_eq_not_too_bad() {
     for kb in $KB_LIST; do
         runTest $kb "1="
     done
+    octave --quiet <<EOF
+v = load('$times_file');
+bps = v(:,1) ./ v(:,2)
+min(bps)
+mean(bps)
+max(bps)
+assert(mean(bps) < min(bps)*3)
+assert(max(bps) < mean(bps)*3)
+EOF
+    assertEquals "performance should be relatively equal" "0" "$?"
 }
 
 testP2_perf_eqs_not_too_bad() {
@@ -70,6 +90,16 @@ testP2_perf_eqs_not_too_bad() {
     for kb in $KB_LIST; do
         runTest $kb "1= "
     done
+    octave --quiet <<EOF
+v = load('$times_file');
+bps = v(:,1) ./ v(:,2)
+min(bps)
+mean(bps)
+max(bps)
+assert(mean(bps) < min(bps)*3)
+assert(max(bps) < mean(bps)*3)
+EOF
+    assertEquals "performance should be relatively equal" "0" "$?"
 }
 
 plotResult() {
@@ -90,6 +120,10 @@ testP2_plot_results() {
     plotResult results_plus.txt
     plotResult results_eq.txt
     plotResult results_eqs.txt
+}
+
+testP2_cleanup() {
+    rm results_plus.txt results_eq.txt results_eqs.txt
 }
 
 . shunit2
