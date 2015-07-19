@@ -2321,13 +2321,13 @@ int main(int argc, char *argv[]) {
     scanner.readTokenList(*inStream);
     lout << "done in " << tScanner << " s" << std::endl;
     Timer tScanXML;
-    std::ostream &lout2 = ls(LS::INFO|LS::SCAN) << "Writing scanned token list in XML format... ";
+    std::ostream &lout2 = ls(LS::TIMES) << "Writing scan list to XML... ";
     TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
     out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
     out << "<scan-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
     treeXMLWriter.writeXML(scanner.tokenList, out, indentUnit);
     out << "</scan-xml>\n";
-    lout2 << "Done writing scanned token list in " << tScanXML << " s" << std::endl;
+    lout2 << "done in " << tScanner << " s" << std::endl;
     return 0;
   }
 
