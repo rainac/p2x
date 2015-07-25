@@ -1499,7 +1499,8 @@ struct TreeXMLWriter {
     if (Parser::isOp(tp.mode)) {
       aus << " precedence='" << tp.precedence << "'";
       aus << " associativity='" << tp.associativity << "'";
-      aus << " output-mode='" << getOutputModeName(tp.outputMode) << "'";
+      if (tp.outputMode)
+        aus << " output-mode='" << getOutputModeName(tp.outputMode) << "'";
     }
     if (tp.mode == MODE_UNARY_BINARY) {
       aus << " unary-precedence='" << tp.unaryPrecedence << "'";
