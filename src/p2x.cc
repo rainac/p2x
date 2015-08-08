@@ -1002,12 +1002,19 @@ struct Parser {
 #endif
       if (endList.find(tokenInfo.getOpCode(first)) != endList.end()) {
         endFound = true;
+      } else if (first->token == TOKEN_EOF) {
+        ls(LS::WARNING) << "unexpected end of input encountered" << std::endl;
+        endFound = true;
       } else if (tokenInfo.isParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
         parser.endList = tokenInfo.endList(first);
         Token *last = parser.parse();
 
-        parser.pushIgnoreAsBefore(last);
+        if (last->token == TOKEN_EOF) {
+          endFound = true;
+        } else {
+          parser.pushIgnoreAsBefore(last);
+        }
 
         first->content = parser.root->right;
 
