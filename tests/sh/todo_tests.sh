@@ -20,8 +20,4 @@ test1() {
     run_suite false_test.sh
 }
 
-test2() {
-    run_suite p2x_tests2.sh
-}
-
 . shunit2
