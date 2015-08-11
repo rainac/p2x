@@ -2306,9 +2306,9 @@ int main(int argc, char *argv[]) {
 
 
   // Start processing input
-  std::istream *inStream = &std::cin;
+  std::istream *inStream = &std::cin, *infile = 0;
   if (not fileList.empty()) {
-    std::ifstream *infile = new std::ifstream(fileList[0].c_str());
+    infile = new std::ifstream(fileList[0].c_str());
     if (infile and *infile) {
       inStream = infile;
     } else {
@@ -2361,9 +2361,15 @@ int main(int argc, char *argv[]) {
   out << "</code-xml>\n";
   lout << "done in " << tXML << " s" << std::endl;
 
+  if (infile) {
+    delete infile;
+    infile = 0;
+  }
   if (_out != &std::cout) {
     delete _out;
     _out = 0;
   }
+
+  cmdline_parser_free(&args);
 }
 #endif
