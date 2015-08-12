@@ -1032,6 +1032,8 @@ struct Parser {
         // assert(first->left == 0); not any more ...
         // assert(first->right == 0); not any more ...
 
+        first = last;
+
       } else {
         insertToken(first);
       } 
