@@ -1063,16 +1063,20 @@ struct FPParser {
   }
 
   Token *parseStream(std::istream &ins) {
+    Timer tAll;
     Timer tScan;
     std::ostream &lout = (ls(LS::TIMES) << "Scanning input...");
     scanner.readTokenList(ins);
-    TokenList tokenList(scanner.tokenList);
     lout << "done in " << tScan << " s" << std::endl;
-    Timer tParse;
-    std::ostream &lout2 = (ls(LS::TIMES) << "Parsing input... ");
+    TokenList tokenList(scanner.tokenList);
     Parser parser(tokenInfo, options, tokenList);
-    parser.parse();
-    lout2 << "done in " << tParse << " s" << std::endl;
+    {
+      Timer tParse;
+      std::ostream &lout2 = (ls(LS::TIMES) << "Parsing input... ");
+      parser.parse();
+      lout2 << "done in " << tParse << " s" << std::endl;
+      ls(LS::TIMES) << "loaded in " << tAll << " s" << std::endl;
+    }
     return parser.root;
   }
 
