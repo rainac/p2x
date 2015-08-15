@@ -4,7 +4,7 @@
 # Copyright © 2013 Johannes Willkomm 
 # See the file p2x.cc for copying conditions.  
 #
-AC_INIT(p2x, 0.5.0-x, [johannes@johannes-willkomm.de],
+AC_INIT(p2x, 0.5.0, [johannes@johannes-willkomm.de],
                 p2x, [http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
