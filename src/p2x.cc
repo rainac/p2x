@@ -1414,7 +1414,7 @@ struct TreeXMLWriter {
     TreeTraverser<TreePrintHelper> traverser(&printer);
 
     traverser.enterFcn = &TreePrintHelper::onEnter;
-    traverser.contentFcn = &TreePrintHelper::onContent;
+    traverser.contentFcn1 = &TreePrintHelper::onContent;
     traverser.leaveFcn = &TreePrintHelper::onLeave;
 
     traverser.traverseTree(t);
