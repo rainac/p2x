@@ -1761,6 +1761,28 @@ struct TreeXMLWriter {
 
 };
 
+void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
+                  TreeXMLWriter::Options const &options, std::string const &indentUnit,
+                  std::ostream &out, ScannerType scannerType) {
+  TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
+  out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>" << treeXMLWriter.linebreak;
+  out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
+  out << treeXMLWriter.indentUnit << "<ca:scanner type='"
+      << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
+  treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
+  treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
+  treeXMLWriter.writeXML(root, out, treeXMLWriter.indentUnit);
+  out << "</code-xml>\n";
+}
+
+void writeTreeMATLAB(Token *root, TokenInfo const &tokenInfo,
+                     TreeXMLWriter::Options const &options, std::string const &indentUnit,
+                     std::ostream &out, ScannerType ) {
+  TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
+  treeXMLWriter.writeMATLAB_Stack(root, out, treeXMLWriter.indentUnit);
+}
+
 std::ostream &configErrorStart(std::ostream &s, std::string const &fname, Token const *t) {
   s << fname << ":" << t->line << ":" << t->column << ":error: config: ";
   return s;
@@ -2548,16 +2570,9 @@ int main(int argc, char *argv[]) {
 
   Timer tXML;
   std::ostream &lout = ls(LS::TIMES) << "Writing tree to XML... ";
-  TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
-  out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>" << treeXMLWriter.linebreak;
-  out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
-  out << treeXMLWriter.indentUnit << "<ca:scanner type='"
-      << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
-  treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
-  treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
-  treeXMLWriter.writeXML(root, out, treeXMLWriter.indentUnit);
-  out << "</code-xml>\n";
+
+  writeTreeXML(root, tokenInfo, options, indentUnit, out, scannerType);
+
   lout << "done in " << tXML << " s" << std::endl;
 
   if (infile) {
