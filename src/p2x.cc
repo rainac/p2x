@@ -1577,6 +1577,23 @@ struct TreeXMLWriter {
     traverser.traverseTree(t);
 
   }
+  void writeMATLAB_Stack(Token const *t, std::ostream &aus,
+                std::string const & = "", Token const * = 0,
+                int level = 0) const {
+
+    TreePrintHelperMATLAB printer(*this, aus);
+    printer.m_level = level + 1;
+
+    TreeTraverser<TreePrintHelperMATLAB> traverser(&printer);
+
+    traverser.enterFcn = &TreePrintHelperMATLAB::onEnter;
+    traverser.contentFcn1 = &TreePrintHelperMATLAB::onContent1;
+    traverser.contentFcn2 = &TreePrintHelperMATLAB::onContent2;
+    traverser.leaveFcn = &TreePrintHelperMATLAB::onLeave;
+
+    traverser.traverseTree(t);
+
+  }
 
   void writeXML_Rec(Token const *t, std::ostream &aus,
                  std::string const &indent_ = "", Token const *parent = 0,
