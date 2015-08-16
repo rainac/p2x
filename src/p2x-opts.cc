@@ -60,6 +60,7 @@ const char *gengetopt_args_info_full_help[] = {
   "      --newline-as-br           Emit newline text as ca:br element of ca:text\n                                  (default=on)",
   "  -m, --merged                  Collect children of equal operator chains,\n                                  output all binary nodes in MERGED mode\n                                  (default=off)",
   "      --strict                  Strict output mode: paren children always\n                                  indicated by null elements  (default=off)",
+  "      --output-mode=Mode        Write output as XML/JSON/MATLAB",
   "      --write-recursive         Recursive output writing  (default=off)",
   "      --attribute-line          Emit attribute line with source line\n                                  (default=on)",
   "      --attribute-column        Emit attribute column with source column\n                                  (default=on)",
@@ -100,11 +101,12 @@ init_help_array(void)
   gengetopt_args_info_help[23] = gengetopt_args_info_full_help[23];
   gengetopt_args_info_help[24] = gengetopt_args_info_full_help[24];
   gengetopt_args_info_help[25] = gengetopt_args_info_full_help[25];
-  gengetopt_args_info_help[26] = 0; 
+  gengetopt_args_info_help[26] = gengetopt_args_info_full_help[26];
+  gengetopt_args_info_help[27] = 0; 
   
 }
 
-const char *gengetopt_args_info_help[27];
+const char *gengetopt_args_info_help[28];
 
 typedef enum {ARG_NO
   , ARG_FLAG
@@ -178,6 +180,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->newline_as_br_given = 0 ;
   args_info->merged_given = 0 ;
   args_info->strict_given = 0 ;
+  args_info->output_mode_given = 0 ;
   args_info->write_recursive_given = 0 ;
   args_info->attribute_line_given = 0 ;
   args_info->attribute_column_given = 0 ;
@@ -227,6 +230,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->newline_as_br_flag = 1;
   args_info->merged_flag = 0;
   args_info->strict_flag = 0;
+  args_info->output_mode_arg = NULL;
+  args_info->output_mode_orig = NULL;
   args_info->write_recursive_flag = 0;
   args_info->attribute_line_flag = 1;
   args_info->attribute_column_flag = 1;
@@ -290,14 +295,15 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->newline_as_br_help = gengetopt_args_info_full_help[23] ;
   args_info->merged_help = gengetopt_args_info_full_help[24] ;
   args_info->strict_help = gengetopt_args_info_full_help[25] ;
-  args_info->write_recursive_help = gengetopt_args_info_full_help[26] ;
-  args_info->attribute_line_help = gengetopt_args_info_full_help[27] ;
-  args_info->attribute_column_help = gengetopt_args_info_full_help[28] ;
-  args_info->attribute_char_help = gengetopt_args_info_full_help[29] ;
-  args_info->attribute_precedence_help = gengetopt_args_info_full_help[30] ;
-  args_info->attribute_mode_help = gengetopt_args_info_full_help[31] ;
-  args_info->attribute_type_help = gengetopt_args_info_full_help[32] ;
-  args_info->attribute_id_help = gengetopt_args_info_full_help[33] ;
+  args_info->output_mode_help = gengetopt_args_info_full_help[26] ;
+  args_info->write_recursive_help = gengetopt_args_info_full_help[27] ;
+  args_info->attribute_line_help = gengetopt_args_info_full_help[28] ;
+  args_info->attribute_column_help = gengetopt_args_info_full_help[29] ;
+  args_info->attribute_char_help = gengetopt_args_info_full_help[30] ;
+  args_info->attribute_precedence_help = gengetopt_args_info_full_help[31] ;
+  args_info->attribute_mode_help = gengetopt_args_info_full_help[32] ;
+  args_info->attribute_type_help = gengetopt_args_info_full_help[33] ;
+  args_info->attribute_id_help = gengetopt_args_info_full_help[34] ;
   
 }
 
@@ -452,6 +458,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->outfile_orig));
   free_multiple_string_field (args_info->input_encoding_given, &(args_info->input_encoding_arg), &(args_info->input_encoding_orig));
   free_multiple_string_field (args_info->indent_unit_given, &(args_info->indent_unit_arg), &(args_info->indent_unit_orig));
+  free_string_field (&(args_info->output_mode_arg));
+  free_string_field (&(args_info->output_mode_orig));
   
   
   for (i = 0; i < args_info->inputs_num; ++i)
@@ -534,6 +542,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "merged", 0, 0 );
   if (args_info->strict_given)
     write_into_file(outfile, "strict", 0, 0 );
+  if (args_info->output_mode_given)
+    write_into_file(outfile, "output-mode", args_info->output_mode_orig, 0);
   if (args_info->write_recursive_given)
     write_into_file(outfile, "write-recursive", 0, 0 );
   if (args_info->attribute_line_given)
@@ -1120,6 +1130,7 @@ cmdline_parser_internal (
         { "newline-as-br",	0, NULL, 0 },
         { "merged",	0, NULL, 'm' },
         { "strict",	0, NULL, 0 },
+        { "output-mode",	1, NULL, 0 },
         { "write-recursive",	0, NULL, 0 },
         { "attribute-line",	0, NULL, 0 },
         { "attribute-column",	0, NULL, 0 },
@@ -1408,6 +1419,20 @@ cmdline_parser_internal (
             if (update_arg((void *)&(args_info->strict_flag), 0, &(args_info->strict_given),
                 &(local_args_info.strict_given), optarg, 0, 0, ARG_FLAG,
                 check_ambiguity, override, 1, 0, "strict", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Write output as XML/JSON/MATLAB.  */
+          else if (strcmp (long_options[option_index].name, "output-mode") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->output_mode_arg), 
+                 &(args_info->output_mode_orig), &(args_info->output_mode_given),
+                &(local_args_info.output_mode_given), optarg, 0, 0, ARG_STRING,
+                check_ambiguity, override, 0, 0,
+                "output-mode", '-',
                 additional_error))
               goto failure;
           
