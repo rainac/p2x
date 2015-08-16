@@ -2753,7 +2753,17 @@ int main(int argc, char *argv[]) {
   Timer tXML;
   std::ostream &lout = ls(LS::TIMES) << "Writing tree to XML... ";
 
-  writeTreeXML(root, tokenInfo, options, indentUnit, out, scannerType);
+  std::string outputMode = "x";
+  if (args.output_mode_given) {
+    outputMode = args.output_mode_arg[0];
+  }
+
+  if (outputMode == "x")
+    writeTreeXML(root, tokenInfo, options, indentUnit, out, scannerType);
+  else if (outputMode == "j")
+    writeTreeJSON(root, tokenInfo, options, indentUnit, out, scannerType);
+  else if (outputMode == "m")
+    writeTreeMATLAB(root, tokenInfo, options, indentUnit, out, scannerType);
 
   lout << "done in " << tXML << " s" << std::endl;
 
