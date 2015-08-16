@@ -1107,7 +1107,7 @@ struct FPParser {
 
 template <class HandlerClass>
 struct TreeTraverser {
-  enum State { ST_ENTER, ST_BETWEEN, ST_LEAVE };
+  enum State { ST_ENTER, ST_BETWEEN1, ST_BETWEEN2, ST_LEAVE };
   typedef std::pair<State, Token const*> StackItem;
   HandlerClass *m_obj;
   std::stackCont<StackItem> m_stack;
@@ -1117,26 +1117,31 @@ struct TreeTraverser {
 
   void (HandlerClass::*enterFcn)(Token const *, Token const *);
   void (HandlerClass::*leaveFcn)(Token const *, Token const *);
-  void (HandlerClass::*contentFcn)(Token const *, Token const *);
+  void (HandlerClass::*contentFcn1)(Token const *, Token const *);
+  void (HandlerClass::*contentFcn2)(Token const *, Token const *);
 
   void handleNode(StackItem const t) {
 
     switch (t.first) {
     case ST_ENTER:
       (m_obj->*enterFcn)(t.second, m_stack.sTop().second);
-      m_stack.sPush(std::make_pair(ST_BETWEEN, t.second));
+      m_stack.sPush(std::make_pair(ST_BETWEEN1, t.second));
       if (t.second->left) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->left));
       }
       break;
-    case ST_BETWEEN:
-      (m_obj->*contentFcn)(t.second, m_stack.sTop().second);
+    case ST_BETWEEN1:
+      (m_obj->*contentFcn1)(t.second, m_stack.sTop().second);
+      m_stack.sPush(std::make_pair(ST_BETWEEN2, t.second));
+      if (t.second->content) {
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->content));
+      }
+      break;
+    case ST_BETWEEN2:
+      (m_obj->*contentFcn2)(t.second, m_stack.sTop().second);
       m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
       if (t.second->right) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->right));
-      }
-      if (t.second->content) {
-        m_stack.sPush(std::make_pair(ST_ENTER, t.second->content));
       }
       break;
     case ST_LEAVE:
