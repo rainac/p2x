@@ -1113,39 +1113,53 @@ struct TreeTraverser {
   std::stackCont<StackItem> m_stack;
   std::string m_indent;
 
-  TreeTraverser(HandlerClass *obj) : m_obj(obj) {}
-
   void (HandlerClass::*enterFcn)(Token const *, Token const *);
   void (HandlerClass::*leaveFcn)(Token const *, Token const *);
   void (HandlerClass::*contentFcn1)(Token const *, Token const *);
   void (HandlerClass::*contentFcn2)(Token const *, Token const *);
 
+  TreeTraverser(HandlerClass *obj) :
+    m_obj(obj),
+    enterFcn(),
+    leaveFcn(),
+    contentFcn1(),
+    contentFcn2()
+  {}
+
   void handleNode(StackItem const t) {
 
     switch (t.first) {
     case ST_ENTER:
-      (m_obj->*enterFcn)(t.second, m_stack.sTop().second);
+      if (enterFcn) {
+        (m_obj->*enterFcn)(t.second, m_stack.sTop().second);
+      }
       m_stack.sPush(std::make_pair(ST_BETWEEN1, t.second));
       if (t.second->left) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->left));
       }
       break;
     case ST_BETWEEN1:
-      (m_obj->*contentFcn1)(t.second, m_stack.sTop().second);
+      if (contentFcn1) {
+        (m_obj->*contentFcn1)(t.second, m_stack.sTop().second);
+      }
       m_stack.sPush(std::make_pair(ST_BETWEEN2, t.second));
       if (t.second->content) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->content));
       }
       break;
     case ST_BETWEEN2:
-      (m_obj->*contentFcn2)(t.second, m_stack.sTop().second);
+      if (contentFcn2) {
+        (m_obj->*contentFcn2)(t.second, m_stack.sTop().second);
+      }
       m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
       if (t.second->right) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->right));
       }
       break;
     case ST_LEAVE:
-      (m_obj->*leaveFcn)(t.second, m_stack.sTop().second);
+      if (leaveFcn) {
+        (m_obj->*leaveFcn)(t.second, m_stack.sTop().second);
+      }
       break;
     }
 
