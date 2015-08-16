@@ -1395,6 +1395,163 @@ struct TreeXMLWriter {
     }
   };
 
+  struct TreePrintHelperMATLAB {
+    TreeXMLWriter const &m_xmlWriter;
+    size_t m_level;
+    std::string indent, subindent, elemName;
+    bool merged, tags;
+    std::ostream &aus;
+
+    TreePrintHelperMATLAB(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
+      m_xmlWriter(xmlWriter),
+      m_level(),
+      aus(aus)
+    {}
+
+    void setWhiteLen(std::string &str, size_t ilevel) const {
+      if (str.size() < ilevel) {
+        str.insert(str.end(), ilevel-str.size(), m_xmlWriter.indentUnit[0]);
+      }
+      if (str.size() > ilevel) {
+        str.resize(ilevel);
+      }
+    }
+
+    void setIndent() {
+      if (m_xmlWriter.options.indent) {
+        int ilevel = std::min<int>(m_level, m_xmlWriter.options.minStraightIndentLevel + log(std::max<size_t>(m_level, 1)));
+#ifndef NDEBUG
+        ls(LS::DEBUG|LS::PARSE) << "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n";
+#endif
+        setWhiteLen(indent, ilevel);
+        setWhiteLen(subindent, ilevel+1);
+      }
+    }
+
+    void setElemName(Token const *t) {
+      if (m_xmlWriter.tokenInfo.isParen(t)) {
+        elemName = "paren";
+      } else if (t->token == TOKEN_STRING) {
+        elemName = "string";
+      } else if (t->token == TOKEN_FLOAT) {
+        elemName = "float";
+      } else if (t->token == TOKEN_INTEGER) {
+        elemName = "integer";
+      } else if (t->token == TOKEN_IDENTIFIER) {
+        if (m_xmlWriter.tokenInfo.mode(t) == MODE_ITEM) {
+          elemName = "id";
+        } else {
+          elemName = "op";
+        }
+      } else if (t->token == TOKEN_ROOT) {
+        elemName = "root";
+      } else {
+        elemName = "op";
+      }
+    }
+
+    void setupNode(Token const *t) {
+      merged = m_xmlWriter.options.merged
+        or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
+    }
+
+    void writeSFLocAttrs(Token const *t, std::ostream &aus) const {
+      if (m_xmlWriter.options.line)
+        aus << ",'line'," << t->line << "";
+      if (m_xmlWriter.options.col)
+        aus << ",'col'," << t->column << "";
+      if (m_xmlWriter.options._char)
+        aus << ",'char','" << t->character << "'";
+    }
+
+    void writeSFTypeAttrs(Token const *t, std::ostream &aus) const {
+      if (t->token == TOKEN_IDENTIFIER) {
+        aus << ",'code'," << m_xmlWriter.tokenInfo.getOpCode(t) << "";
+        aus << ",'repr','" << t->text << "'";
+      } else {
+        aus << ",'code'," << int(t->token) << "";
+      }
+      if (m_xmlWriter.options.type)
+        aus << ",'type','" << Token::getParserTokenName(t->token) << "'";
+    }
+
+    void onEnter(Token const *t, Token const *parent) {
+#ifndef NDEBUG
+      ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
+#endif
+      setupNode(t);
+      setElemName(t);
+      setIndent();
+
+      tags = true || not(parent
+                 and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
+                 and merged);
+      if (tags) {
+        aus << indent << "struct('name','" << elemName << "'";
+        if (m_xmlWriter.options.id)
+          aus << ",'id'," << t->id << "";
+        // m_xmlWriter.writeSFLocAttrs(t, aus);
+        // m_xmlWriter.writeSFTypeAttrs(t, aus);
+        // aus << ")\n";
+        ++m_level;
+      }
+      if (t->left or m_xmlWriter.options.strict)
+        aus << ",'left',";
+      if (not t->left and m_xmlWriter.options.strict) {
+        aus << "''";
+      }
+
+    }
+    void onContent1(Token const *t, Token const * /* parent */) {
+#ifndef NDEBUG
+      ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
+#endif
+
+      setupNode(t);
+      setIndent();
+
+      if (t->token == TOKEN_INTEGER || t->token == TOKEN_FLOAT) {
+        aus << ",'value',";
+        aus << t->text << "";
+      } else if (t->token == TOKEN_NEWLINE) {
+        aus << ",'value',";
+        aus << "'\\n'...\n";
+      } else if (not t->text.empty()) {
+        aus << ",'value',";
+        aus << "'" << t->text << "'" << "";
+      }
+      if (t->content or m_xmlWriter.options.strict)
+        aus << ",'content',";
+      if (not t->content and m_xmlWriter.options.strict) {
+        aus << "''";
+      }
+    }
+    void onContent2(Token const *t, Token const * /* parent */) {
+      if (t->right or m_xmlWriter.options.strict)
+        aus << ",'right',";
+      if (not t->right and m_xmlWriter.options.strict) {
+        aus << "''";
+      }
+    }
+    void onLeave(Token const *t, Token const *parent) {
+#ifndef NDEBUG
+      ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
+#endif
+
+      setupNode(t);
+      setElemName(t);
+
+      tags = true || not(parent
+                 and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
+                 and merged);
+      if (tags) {
+        --m_level;
+        setIndent();
+        aus << indent << ")...\n";
+      }
+    }
+  };
+
   void writeXML(Token const *t, std::ostream &aus, 
                 std::string const &v = "", Token const *w = 0,
                 int level = 0) const {
