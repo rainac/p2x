@@ -24,7 +24,7 @@ test5() {
 test6() {
     run_suite merge_tests.sh
 }
-test7() {
+test_p2x_suite() {
     run_suite p2x_tests.sh
 }
 test8() {
@@ -43,6 +43,14 @@ test_indentation() {
 
 test_inst() {
     run_suite install_tests.sh
+}
+
+test_performance() {
+    run_suite perf_tests.sh
+}
+
+test_p2x_suite2() {
+    run_suite p2x_tests2.sh
 }
 
 . shunit2

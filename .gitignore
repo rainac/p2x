@@ -9,8 +9,6 @@ config.status
 src/code-xml.rnc
 src/code-xml.rng
 src/namespaces.hh
-src/p2x-opts.cc
-src/p2x-opts.hh
 src/p2xtests
 stamp-h1
 svn-version.txt

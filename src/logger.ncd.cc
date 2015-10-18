@@ -11,7 +11,8 @@ static char const *getLogLevelName(unsigned long c) {
        case DEBUG: return "DEBUG";
        case CONFIG: return "CONFIG";
        case PARSE: return "PARSE";
-       case SCAN: return "SCAN"; 
+       case SCAN: return "SCAN";
+       case TIMES: return "TIMES"; 
         default: break;
       }
       return "unknown value in enumeration LogLevel";
@@ -25,7 +26,8 @@ static char const *getLogLevelName(unsigned long c) {
        case DEBUG: return "";
        case CONFIG: return "";
        case PARSE: return "";
-       case SCAN: return ""; 
+       case SCAN: return "";
+       case TIMES: return ""; 
         default: break;
       }
       return "unknown value in enumeration LogLevel";
@@ -48,7 +50,9 @@ static char const *getLogLevelName(unsigned long c) {
        } else if (strcasecmp("PARSE", name) == 0) {
           return PARSE; 
        } else if (strcasecmp("SCAN", name) == 0) {
-          return SCAN;  
+          return SCAN; 
+       } else if (strcasecmp("TIMES", name) == 0) {
+          return TIMES;  
        } else {
           if (! res) {
             fprintf(stderr, "error: unknown %s constant named `%s'\n",
@@ -60,7 +64,7 @@ static char const *getLogLevelName(unsigned long c) {
        }
     }
     static unsigned long getNumLogLevel() {
-      return 8;
+      return 9;
     }
     static LogLevel getLogLevel(int which) {
       switch(which) { 
@@ -71,7 +75,8 @@ static char const *getLogLevelName(unsigned long c) {
        case 4: return DEBUG;
        case 5: return CONFIG;
        case 6: return PARSE;
-       case 7: return SCAN; 
+       case 7: return SCAN;
+       case 8: return TIMES; 
        default: break;
       }
       fprintf(stderr, "error: LogLevel constant index %d out of range\n",

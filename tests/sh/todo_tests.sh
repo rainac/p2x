@@ -20,4 +20,14 @@ test1() {
     run_suite false_test.sh
 }
 
+test1_invalid_conf_should_exit_nonz() {
+    cat > fail.conf <<EOF
+COMMA BINAY 200
+EOF
+    echo "ab c" | p2x -p fail.conf > log 2> err
+    assertNotEquals "P2X should fail and report error here!" "0" "$?"
+    rm log err
+    rm fail.conf
+}
+
 . shunit2

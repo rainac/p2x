@@ -50,7 +50,30 @@ testParseTreeEqual8() {
 
 testParseTreeEqual9() {
     # see what happens when unary hits binary with same prec
-    checkParseTreeEqual unary-prec3.exp "[c]([ueqc](., 2), 3)"
+    checkParseTreeEqual unary-prec3.exp "[b]([ueqc](., 2), 3)"
+}
+
+testParseTreeEqual9a() {
+    # see what happens when unary follows binary with higher prec
+    checkParseTreeEqual unary-prec4.exp "[e](2, [ueqc](., 4))"
+}
+
+testParseTreeEqual9a() {
+    # see what happens when unary follows binary with higher prec
+    checkParseTreeEqual unary-prec4.exp "[e](2, [ueqc](., 4))"
+}
+
+testParseTreeEqual9b() {
+    # see what happens when unary follows binary with higher prec, and
+    # is then followed by a binary with higher prec
+    echo this test does not work in the current master
+#    checkParseTreeEqual unary-prec5.exp "[e](2, [ueqc](., [d](3, 4)))"
+}
+
+testParseTreeEqual9c() {
+    # see what happens when unary follows binary with higher prec, and
+    # is then followed by a binary with lower prec
+    checkParseTreeEqual unary-prec6.exp "[a]([e](2, [ueqc](., 3)), 4)"
 }
 
 testParseTreeEqual10() {
@@ -92,7 +115,7 @@ testParseTreeEqual_ub_8() {
     checkParseTreeEqual unary-binary8.exp "[b]([e](1, [ub](., 2)), 3)"
 }
 testParseTreeEqual_ub_9() {
-    checkParseTreeEqual unary-binary9.exp "[d]([e](1, [ub](., 2)), 3)"
+    checkParseTreeEqual unary-binary9.exp "[e](1, [ub](., [d](2, 3)))"
 }
 testParseTreeEqual_ub_10() {
     checkParseTreeEqual unary-binary10.exp "[e](1, [ub](., [f](2, 3)))"
@@ -190,6 +213,15 @@ testParseTreeEqual_noclose2() {
 
 testParseTreeEqual_noclose3() {
     checkParseTreeEqual noclose3.exp "[COMMA](int, [open](., [begin](., 3)))"
+}
+
+testParseTreeEqual_binary_incrp() {
+    checkParseTreeEqual incrp.exp "[PLUS](1, [MULT](2, [POW](3, 4)))"
+}
+
+testParseTreeEqual_question_mark() {
+    # see what happens when unary follows binary with higher prec
+    checkParseTreeEqual question.exp "[EQUAL]([JUXTA](Is, [MULT]([MULT](2, 2), 2)), [QUESTION](7))"
 }
 
 . shunit2

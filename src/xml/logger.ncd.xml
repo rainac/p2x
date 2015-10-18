@@ -12,4 +12,5 @@
   <c name="CONFIG" val="0x10"/>
   <c name="PARSE" val="0x20"/>
   <c name="SCAN" val="0x40"/>
+  <c name="TIMES" val="0x80"/>
 </ncdef>

@@ -1,11 +1,12 @@
 /* 
 This file is part of P2X.
-Copyright © 2013 Johannes Willkomm 
+Copyright © 2013,2015 Johannes Willkomm
 See the file p2x.cc for copying conditions.  
 */
 
 #include <string>
 #include <strings.h>
+#include <stdio.h>
 #include "token.hh"
 
 Token::Token() : 
@@ -13,6 +14,7 @@ Token::Token() :
   right(),
   ignore(), 
   content(), 
+  rmt(),
   id(++count),
   line(), 
   column(),
@@ -27,6 +29,7 @@ Token::Token(ParserToken token, std::string text, int line, int column, int char
 Token::~Token() {
   left = right = 0;
   content = ignore = 0;
+  rmt = 0;
   token = TOKEN_EOF;
 }
 
