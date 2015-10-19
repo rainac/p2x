@@ -35,21 +35,23 @@ runWithTimeout() {
     fi
 }
 
+mydir=$(dirname $BASH_SOURCE)
+
 testOutputValid() {
 
-    for i in ../../examples/in/*.exp; do
+    for i in $mydir/../../examples/in/*.exp; do
         echo "Validate file $i"
         opts=""
-        if [[ "$i" = "../../examples/in/german.exp" ]] \
-            || [[ "$i" = "../../examples/in/letter.exp" ]] \
-            || [[ "$i" = "../../examples/in/fliesst.exp" ]]
+        if [[ "$i" = "$mydir/../../examples/in/german.exp" ]] \
+            || [[ "$i" = "$mydir/../../examples/in/letter.exp" ]] \
+            || [[ "$i" = "$mydir/../../examples/in/fliesst.exp" ]]
         then
             opts="-e latin1"
         fi
-        p2x $opts -p ../../examples/configs/default $i > res.xml
+        p2x $opts -p $mydir/../../examples/configs/default $i > res.xml
 #        runWithTimeout xmlstarlet val -e -r ../../src/code-xml.rng res.xml
-        xmlstarlet val -b -e -r ../../src/code-xml.rng res.xml
-        assertEquals "R test suite has errors or failures" 0 $?
+        xmlstarlet val -b -e -r $mydir/../../src/code-xml.rng res.xml
+        assertEquals "Validating XML output for $i failed" 0 $?
         rm res.xml
     done
 
