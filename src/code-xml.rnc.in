@@ -35,10 +35,9 @@ ca-op-def = element ca:op {
                }
 
 code-xml = element code-xml {
-       attribute ca:version { text },
+       attribute ca:version { text }?,
        element ca:steps { ca-step* }?,
        scan-conf?,
-       element ca:parser { attribute type { text }?, ca-op-def+ }?,
        element ca:tree-writer { 
              attribute col { text },
              attribute merged { text },
@@ -55,8 +54,10 @@ code-xml = element code-xml {
              attribute treewriterConf { text }?,
              attribute caSteps { text }?,
              attribute code { text }?,
-             attribute type { text }
+             attribute type { text },
+             attribute sparse { text }?
        }?,
+       element ca:parser { attribute type { text }?, ca-op-def+ }?,
        element ca:token-types { ca-op* }?,
        root
 }
