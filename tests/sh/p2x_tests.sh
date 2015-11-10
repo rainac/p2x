@@ -109,7 +109,7 @@ testP2X10() {
     assertEquals "P2X XLM should not contain EOF token" "1" "$?"
     grep "unexpected" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
-    grep "\"close\"" $tmpdir/err.txt > /dev/null
+    grep "\"endblock\"" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
     grep "\"finish\"" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
