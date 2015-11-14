@@ -1386,8 +1386,11 @@ struct TreeXMLWriter {
         m_xmlWriter.writeXMLLocAttrs(t, aus);
         m_xmlWriter.writeXMLTypeAttrs(t, aus);
         m_xmlWriter.writeXMLPrecAttrs(t, aus);
-        aus << ">" << m_xmlWriter.linebreak;
-        ++m_level;
+        aus << ">";
+        if ((t->left != 0) + (t->right != 0) + (t->content != 0) + (t->ignore != 0) > 0) {
+          aus << m_xmlWriter.linebreak;
+          ++m_level;
+        }
       }
       if (t->left != 0) {
       } else if (t->right != 0 or t->content != 0) {
@@ -1403,8 +1406,9 @@ struct TreeXMLWriter {
       setupNode(t);
       setIndent();
 
-      bool const wrt = m_xmlWriter.writeXMLTextElem(t, aus, indent);
-      if (wrt) aus << m_xmlWriter.linebreak;
+      bool const ownLine = (t->left != 0) + (t->right != 0) + (t->content != 0) + (t->ignore != 0) > 0;
+      bool const wrt = m_xmlWriter.writeXMLTextElem(t, aus, ownLine ? indent : "");
+      if (wrt and ownLine) aus << m_xmlWriter.linebreak;
       if (t->ignore) {
         m_xmlWriter.writeIgnoreXML(t->ignore, aus, indent);
       }
@@ -1426,9 +1430,13 @@ struct TreeXMLWriter {
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
       if (tags) {
-        --m_level;
-        setIndent();
-        aus << indent << "</" << elemName << ">" << m_xmlWriter.linebreak;
+        bool const ownLine = (t->left != 0) + (t->right != 0) + (t->content != 0) + (t->ignore != 0) > 0;
+        if (ownLine) {
+          --m_level;
+          setIndent();
+          aus << indent;
+        }
+        aus << "</" << elemName << ">" << m_xmlWriter.linebreak;
       }
     }
   };
