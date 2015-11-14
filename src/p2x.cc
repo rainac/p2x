@@ -2158,12 +2158,19 @@ void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
                   std::ostream &out, ScannerType scannerType) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>" << treeXMLWriter.linebreak;
-  out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
-  out << treeXMLWriter.indentUnit << "<ca:scanner type='"
-      << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
-  treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
-  treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
+  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "' ca:version='1.0'>" << treeXMLWriter.linebreak;
+  if (options.caSteps)
+    out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
+  if (options.scanConf) {
+    out << treeXMLWriter.indentUnit << "<ca:scanner type='"
+        << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
+  }
+  if (options.treewriterConf) {
+    treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
+  }
+  if (options.parseConf) {
+    treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
+  }
   treeXMLWriter.writeXML(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
 }
