@@ -25,6 +25,7 @@ if (typeof window == 'undefined') {
         { short: 'S', long: 'scanner-config' },
         { short: 'c', long: 'config' },
         { short: 'o', long: 'outfile' },
+        { short: 'O', long: 'output-mode' },
         { short: 'C', long: 'include-config', flag: 1 },
         { short: 'D', long: 'debug', flag: 1 },
     ]
@@ -220,6 +221,10 @@ function parseInput(data, uniConf) {
     }
     if ('include-config' in options) {
         tpOptions.scanConf = tpOptions.parseConf = tpOptions.treewriterConf = true
+    }
+    if ('output-mode' in options) {
+        tpOptions.outputMode = 'y'
+        tpOptions = P2X.TreePrinterOptions(tpOptions)
     }
     var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)
     // console.log('result XML:')
