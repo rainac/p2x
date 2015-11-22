@@ -1,6 +1,7 @@
 #! /bin/bash
 
 NODE=nodejs
+NODEFLAGS=
 
 if ! test -x $(which $NODE); then 
    NODE=node
@@ -40,4 +41,9 @@ else
     exit 1
 fi
 
-$NODE $file $*
+if [[ "$@" == *"--debug"* ]]; then
+    NODEOPTS=--debug
+    set -x
+fi
+
+$NODE $NODEOPTS $file $*
