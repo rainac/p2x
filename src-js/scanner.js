@@ -2,6 +2,10 @@
 
 var P2X = P2X || {};
 
+P2X.HashMap = require('./hashmap.js')
+
+P2X.maxPrec = 1e5
+
 P2X.debug = P2X.debug || 0
 
 P2X.importObject = function(obj, target) {
@@ -658,7 +662,7 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
             name: name
         }
         if (res.isParen || res.mode == MODE_ITEM) {
-            res.prec = res.precU = 1e9
+            res.prec = res.precU = P2X.maxPrec
         }
         if (res.isParen) {
             res.closingList = res.closingList || [ TOKEN_EOF ]
@@ -852,7 +856,7 @@ P2X.TokenInfo = function() {
         seen: {},
         opCodes: 0,
         defaultInfo: P2X.TokenProto({
-            token: TOKEN_EOF, repr: 'unknown', mode: MODE_ITEM, assoc: ASSOC_NONE, prec: 1e10, precU: 1e10, isParen: false
+            token: TOKEN_EOF, repr: 'unknown', mode: MODE_ITEM, assoc: ASSOC_NONE, prec: P2X.maxPrec, precU: P2X.maxPrec, isParen: false
         }),
         tokenTypeEqual: function (s, t) {
             return s.token == t.token
@@ -885,7 +889,13 @@ P2X.TokenInfo = function() {
             return this.get(tl).prec
         },
         unary_prec: function (tl) {
-            return this.get(tl).precU
+            var tp = this.get(tl), res
+            if (tp.mode == MODE_UNARY) {
+                res = tp.prec;
+            } else if (tp.mode == MODE_UNARY_BINARY) {
+                res = tp.precU;
+            }
+            return res
         },
         prec: function (tl) {
             return this.binary_prec(tl)
@@ -1045,47 +1055,38 @@ P2X.Parser = function(tokenInfo) {
             }
             return t
         },
+        updateLeastMap: function(t, prec) {
+            this.leastMap.insert(prec, t)
+            this.leastMap.erase(1+this.leastMap.lower_bound(prec), this.leastMap.end())
+        },
         pushBinary: function(t) {
-            var tmp = this.root
-            var parent = null
+            var tmp, parent
             var assoc = this.tokenInfo.assoc(t)
             var prec = this.tokenInfo.binary_prec(t)
 
-            while (tmp.right
-                   && ((this.tokenInfo.precedence(tmp) < prec && this.tokenInfo.mode(tmp) != MODE_POSTFIX) || 
-                       (this.tokenInfo.tokenTypeEqual(tmp, t) && assoc == ASSOC_RIGHT))) {
-                parent = tmp;
-                tmp = tmp.right;
-            }
-            if ((this.tokenInfo.precedence(tmp) < prec && this.tokenInfo.mode(tmp) != MODE_POSTFIX) ||
-                (this.tokenInfo.tokenTypeEqual(tmp, t) && assoc == ASSOC_RIGHT)) {
-                assert(tmp.right == undefined);
-                tmp.right = t;
-            } else {
+            var it = this.leastMap.lower_bound(prec + (assoc == ASSOC_RIGHT ? 1 : 0));
+
+            --it;
+            while(this.tokenInfo.mode(this.leastMap.second(it)) == MODE_POSTFIX) --it;
+
+            parent = this.leastMap.second(it);
+            tmp = parent.right; // !!!
+
+            parent.right = t;
+            if (tmp)
                 t.left = tmp;
-                if (tmp === this.root) {
-                    // assert(parent == undefined);
-                    this.root = t;
-                } else {
-                    // assert(parent != undefined);
-                    parent.right = t;
-                }
-            }
+
+            this.updateLeastMap(t, prec)
         },
         pushPostfix: function(t) {
             return this.pushBinary(t)
         },
-        pushItem: function(t) {
+        pushItem_: function(t) {
             var rmop = this.getRMOp();
-            // console.log('pushItem: RM op: ' + rmop)
-            // console.dir(rmop)
             if (this.tokenInfo.mode(rmop) == MODE_POSTFIX || rmop.right) {
-                op = this.mkJuxta(t);
+                var op = this.mkJuxta(t);
                 this.pushBinary(op);
-                rmop2 = this.getRMOp();
-                // console.log('pushItem: RM op II: ' + rmop)
-                // console.dir(rmop)
-                // console.dir(rmop2)
+                var rmop2 = this.getRMOp();
                 assert(rmop2.right == undefined);
                 assert(rmop2 === op);
                 op.right = t;
@@ -1094,8 +1095,15 @@ P2X.Parser = function(tokenInfo) {
             }
             return this
         },
+        pushItem: function(t) {
+            this.pushItem_(t)
+            this.leastMap.insert(P2X.maxPrec, t)
+        },
         pushUnary: function(t) {
-            return this.pushItem(t)
+            this.pushItem_(t)
+            var prec = this.tokenInfo.unary_prec(t);
+            this.updateLeastMap(t, prec)
+            return this
         },
         pushUnaryBinary: function(t) {
             if (this.rightEdgeOpen()) {
@@ -1170,9 +1178,12 @@ P2X.Parser = function(tokenInfo) {
             if (typeof (this.endList) == "undefined") 
                 this.endList = [this.tokenInfo.getOpCode(TOKEN_EOF)]
             this.root = this.mkroot()
-            this.root.parser = this
-            this.root.scanner = tlist.scanner
+            this.result = {}
+            this.result.parser = this
+            this.result.scanner = tlist.scanner
             this.input = tlist;
+            this.leastMap = P2X.HashMap.HashMap(P2X.maxPrec+1)
+            this.leastMap.insert(this.tokenInfo.prec(this.root), this.root)
 
             var first
 
@@ -1262,10 +1273,10 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         name: 'testTreePrinter',
         tokenInfo: tokenInfo,
         options: tpOptions,
-        asxml: function(t, indent, called) {
+        asxml: function(t, indent, metainfo) {
             var res = '';
             if (!indent) indent = ' '
-            if (!called) {
+            if (metainfo && typeof metainfo != 'boolean') {
                 res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
                 if (this.options.caSteps) {
                     res += indent + "<ca:steps/>\n"
@@ -1273,11 +1284,11 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 if (this.options.scanConf) {
                     // console.log('Scanner conf')
                     // console.dir(t.scanner.get())
-                    res += t.scanner.get().asxml()
+                    res += metainfo.scanner.get().asxml()
                 }
                 if (this.options.parseConf) {
                     var pcwr = P2X.ParserConfigRW();
-                    res += pcwr.asxml(t.parser.getconfig(), indent)
+                    res += pcwr.asxml(metainfo.parser.getconfig(), indent)
                 }
                 if (this.options.treewriterConf) {
                     res += indent + '<ca:tree-writer'
@@ -1330,7 +1341,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     res += indent
                 res += '</' + tagname + '>\n';
             }
-            if (!called) {
+            if (metainfo && typeof metainfo != 'boolean') {
                 res += '</' + 'code-xml' + '>\n';
             }
             return res
