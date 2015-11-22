@@ -223,7 +223,7 @@ function parseInput(data, uniConf) {
     }
     var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)
     // console.log('result XML:')
-    var res = tp.asxml(parser.root)
+    var res = tp.asxml(parser.root, ' ', parser.result)
 
     if ('outfile' in options) {
         var outfile = options['outfile'][0];
