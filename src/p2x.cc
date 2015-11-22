@@ -1488,22 +1488,24 @@ struct TreeXMLWriter {
 
   bool writeXMLTextElem(Token const *t, std::ostream &aus, std::string const &indent = "") const {
     bool res = 0;
+    if (t->text.size() and (t->left or t->right or t->content or t->ignore))
+      aus << indent;
     if (t->token == TOKEN_NEWLINE) {
       if (m_xmlWriter.options.newlineAsBr) {
-        aus << indent << "<c:br/>";
+        aus << "<c:br/>";
       } else {
-        aus << indent << "<c:t>\n</c:t>";
+        aus << "<c:t>\n</c:t>";
       }
       res = 1;
     } else if (t->token == TOKEN_CRETURN) {
       if (m_xmlWriter.options.newlineAsBr) {
-        aus << indent << "<c:cr/>";
+        aus << "<c:cr/>";
       } else {
-        aus << indent << "<c:t>\r</c:t>";
+        aus << "<c:t>\r</c:t>";
       }
       res = 1;
     } else if (t->text.size()) {
-      aus << indent << "<c:t>";
+      aus << "<c:t>";
       XMLOstream x(aus);
       x << t->text;
       aus << "</c:t>";
@@ -1545,7 +1547,9 @@ struct TreeXMLWriter {
         m_xmlWriter.writeXMLLocAttrs(t, aus);
         // m_xmlWriter.writeXMLTypeAttrs(t, aus);
         // m_xmlWriter.writeXMLPrecAttrs(t, aus);
-        aus << ">" << m_xmlWriter.linebreak;
+        aus << ">";
+        if (t->left or t->right or t->content or t->ignore)
+          aus << m_xmlWriter.linebreak;
         ++m_level;
       }
       if (t->left != 0) {
@@ -1563,7 +1567,8 @@ struct TreeXMLWriter {
       setIndent();
 
       bool const wrt = writeXMLTextElem(t, aus, indent);
-      if (wrt) aus << m_xmlWriter.linebreak;
+      if (wrt and (t->left or t->right or t->content or t->ignore))
+        aus << m_xmlWriter.linebreak;
       if (t->ignore) {
         writeIgnoreXML(t->ignore, aus, indent);
       }
@@ -1587,7 +1592,9 @@ struct TreeXMLWriter {
       if (tags) {
         --m_level;
         setIndent();
-        aus << indent << "</" << elemName << ">" << m_xmlWriter.linebreak;
+        if (t->left or t->right or t->content or t->ignore)
+          aus << indent;
+        aus << "</" << elemName << ">" << m_xmlWriter.linebreak;
       }
     }
   };
