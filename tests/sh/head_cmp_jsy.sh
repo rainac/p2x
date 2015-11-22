@@ -33,8 +33,8 @@ checkExpFile() {
         return
     fi
 
-    mkParseTree "$infile" "$tmpdir/res.txt" "p2x" "$opts -w --output-format y"
-    mkParseTree "$infile" "$tmpdir/res2.txt" "p2xjs" "$opts"
+    mkParseTree "$infile" "$tmpdir/res.txt" "p2x" "$opts -w --output-mode y"
+    mkParseTree "$infile" "$tmpdir/res2.txt" "p2xjs" "$opts --output-mode y"
     
     xmlstarlet c14n $tmpdir/res.xml > $tmpdir/cres.xml
     xmlstarlet c14n $tmpdir/res2.xml > $tmpdir/cres2.xml
