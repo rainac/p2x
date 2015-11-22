@@ -907,12 +907,25 @@ describe('P2X.UniConfig', function(){
 })
 
 describe('P2X.TokenList', function(){
-  describe('#construct()', function(){
-    // it('should contain values in list given to it', function(){
-    //     assert.equal([1, 2, 3], Array.apply({},P2X.ScannerConfig([1,2,3])));
-    // })
-  })
-  describe('#loadXML()', function(){
+    describe('#construct()', function(){
+        var tl = new P2X.TokenList()
+        it('should contain values in list given to it', function(){
+//             assert.equal([1, 2, 3], Array.apply({},P2X.ScannerConfig([1,2,3])));
+        }),
+        it('should have field caTextName', function(){
+            assert.equal(typeof tl.caTextName, 'string')
+            console.dir(tl)
+        })
+    }),
+    describe('#charasxml()', function(){
+        var tl = new P2X.TokenList()
+        var s = 'bopen'
+        it('charasxml by default for s=' + s + ' prints this', function(){
+            assert.equal(tl.charasxml(s), '<ca:text>bopen</ca:text>')
+            console.dir(tl)
+        })
+    }),
+    describe('#loadXML()', function(){
       it('should return XML rule list', function(){
           xmlRes = "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
               + '<token line="1" col="0" index="0" type="IDENTIFIER"><ca:text>a</ca:text></token>\n'
