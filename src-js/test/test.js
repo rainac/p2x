@@ -2006,3 +2006,169 @@ describe('P2X.CLI', function(){
 
   })
 })
+
+
+describe('P2X.HashMap', function(){
+  P2X.HashMap = require('../hashmap.js')
+  describe('#construct()', function(){
+    it('empty array should have length 0', function(){
+        assert.equal(P2X.HashMap.HashMap().length(), 0);
+    })
+  })
+  describe('#insert()', function(){
+      it('array maps are created', function(){
+          var x = P2X.HashMap.HashMap()
+          var nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          nums.map(function(k) {
+              x.insert(k*10, k)
+          })
+          nums.map(function(k) {
+              assert.equal(x.get(k*10), k)
+          })
+      })
+  })
+  describe('#insert().error', function(){
+      it('checks index is not too large', function(){
+          var x = P2X.HashMap.HashMap()
+          var ok = false
+          try {
+              x.insert(1000, 23)
+          } catch (e) {
+              ok = true
+          }
+          assert.equal(ok, true)
+      })
+      it('checks index has type number', function(){
+          var x = P2X.HashMap.HashMap()
+          var ok = false
+          try {
+              x.insert('10', 23)
+          } catch (e) {
+              ok = true
+          }
+          assert.equal(ok, true)
+      })
+      it('checks index is Integer', function(){
+          var x = P2X.HashMap.HashMap()
+          var ok = false
+          try {
+              x.insert(10.23, 23)
+          } catch (e) {
+              ok = true
+          }
+          assert.equal(ok, true)
+      })
+      it('checks index is not undefined', function(){
+          var x = P2X.HashMap.HashMap()
+          var ok = false
+          try {
+              x.insert(zzz, 23)
+          } catch (e) {
+              ok = true
+          }
+          assert.equal(ok, true)
+      })
+  })
+  describe('#insert().order', function(){
+      it('Indices are ordered', function(){
+          var x = P2X.HashMap.HashMap(1021)
+          x.insert(1000, 23)
+          x.insert(1020, 23)
+          x.insert(1010, 23)
+          assert.equal(x.first(x.begin()), 1000)
+          assert.equal(x.first(x.begin()+1), 1010)
+          assert.equal(x.first(x.begin()+2), 1020)
+      })
+  })
+  describe('#construct().paramMaxIndex', function(){
+      it('max index can be increased', function(){
+          var x = P2X.HashMap.HashMap(1001)
+          var ok = true
+          x.insert(1000, 23)
+      })
+  })
+  describe('#iterators()', function(){
+      it('map iterators', function(){
+          var x = P2X.HashMap.HashMap()
+          var nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          nums.map(function(k) {
+              x.insert(k*10, k)
+          })
+          assert.equal(x.begin(), 0)
+          assert.equal(x.end(), 10)
+          assert.equal(x.first(x.begin()), 10)
+          assert.equal(x.second(x.begin()), 1)
+          assert.equal(x.first(x.begin()+1), 20)
+          assert.equal(x.second(x.begin()+1), 2)
+    })
+  })
+  describe('#find()', function(){
+      it('array maps are created', function(){
+          var x = P2X.HashMap.HashMap()
+          var nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          nums.map(function(k) {
+              x.insert(k*10, k)
+          })
+          assert.equal(x.find(30), 3)
+          assert.equal(x.find(20), 2)
+          assert.equal(x.find(32), x.end())
+    })
+  })
+  describe('#lower_bound()', function(){
+      var x = P2X.HashMap.HashMap()
+      var nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      nums.map(function(k) {
+          x.insert(k*10, k)
+      })
+      it('array maps are created', function(){
+          assert.equal(x.lower_bound(30), 3)
+      })
+      it('array maps are created', function(){
+          assert.equal(x.lower_bound(29), 3)
+      })
+      it('array maps are created', function(){
+          assert.equal(x.lower_bound(21), 3)
+      })
+      it('array maps are created', function(){
+          assert.equal(x.lower_bound(20), 2)
+      })
+  })
+  describe('#erase()', function(){
+      var x = P2X.HashMap.HashMap()
+      var nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      nums.map(function(k) {
+          x.insert(k*10, k)
+      })
+      var xg = x
+      it('array maps erase func', function(){
+          var x = xg.clone()
+          var t = x.erase(x.lower_bound(60), x.end())
+          for (var i = 0;  i< 6; ++i) {
+              assert.equal(x.lower_bound(nums[i]*10) < x.end(), true)
+          }
+          for (var i = 0;  i< 5; ++i) {
+              assert.equal(x.lower_bound(nums[i+6]*10), x.end())
+          }
+      })
+      it('array maps erase func', function(){
+          var x = xg.clone()
+          var t = x.erase(x.lower_bound(59), x.end())
+          for (var i = 0;  i< 6; ++i) {
+              assert.equal(x.lower_bound(nums[i]*10) < x.end(), true)
+          }
+          for (var i = 0;  i< 5; ++i) {
+              assert.equal(x.lower_bound(nums[i+6]*10), x.end())
+          }
+      })
+      it('array maps erase func', function(){
+          var x = xg.clone()
+          var t = x.erase(x.lower_bound(61), x.end())
+          for (var i = 0;  i< 7; ++i) {
+              assert.equal(x.lower_bound(nums[i]*10) < x.end(), true)
+          }
+          for (var i = 0;  i< 4; ++i) {
+              assert.equal(x.lower_bound(nums[i+7]*10), x.end())
+          }
+      })
+  })
+})
