@@ -157,11 +157,15 @@ P2X.Token = function(tk, text, index, line, col, rule) {
 }
 
 P2X.TokenList = function(list, producer) {
-    // console.log('TokenList created')
-    this.name = 'test'
-    this.list = list
-    this.index = 0
-    this.scanner = producer
+    console.log('TokenList created')
+    var obj = this
+    obj.name = 'test'
+    obj.list = list
+    obj.index = 0
+    obj.scanner = producer
+    obj.caNSPref = 'ca:'
+    obj.caTextName = obj.caNSPref + 'text'
+    return obj
 }
 
 P2X.TokenList.prototype.next = function() {
@@ -184,11 +188,11 @@ P2X.TokenList.prototype.mkroot = function() {
 }
 P2X.TokenList.prototype.charasxml = function(s) {
     if (s == "\n") {
-        return "<ca:br/>"
+        return "<" + this.caNSPref + "br/>"
     } else if (s == "\r") {
-        return "<ca:cr/>"
+        return "<" + this.caNSPref + "cr/>"
     } else {
-        return '<ca:text>' + escapeXML(s) + '</ca:text>'
+        return '<' + this.caTextName + '>' + escapeXML(s) + '</' + this.caTextName + '>'
     }
 }
 P2X.TokenList.prototype.asxml = function(indent) {
@@ -1251,6 +1255,10 @@ P2X.TreePrinterOptions = function(obj) {
         newlineAsBr: true,
         merged: false,
         strict: 1,
+        outputMode: 'x',
+        caTextName: 'ca:text',
+        ciNSPref: 'ca:',
+        caNSPref: 'ca:',
         encoding: 'utf-8'
     }
     if (typeof obj == "object") {
@@ -1258,6 +1266,11 @@ P2X.TreePrinterOptions = function(obj) {
             if (k in obj)
                 res[k] = obj[k]
         })
+    }
+    if (res.outputMode == 'y') {
+        res.caTextName = 'c:t'
+        res.ciNSPref = 'ci:'
+        res.caNSPref = 'c:'
     }
     return res
  }
@@ -1273,11 +1286,44 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         name: 'testTreePrinter',
         tokenInfo: tokenInfo,
         options: tpOptions,
+        opName1: function(t) {
+            var tagname = 'op'
+            if (this.tokenInfo.tagName(t))
+                tagname = this.tokenInfo.tagName(t)
+            else if (this.tokenInfo.isParen(t))
+                tagname = 'paren'
+            else if (t.token == TOKEN_FLOAT)
+                tagname = 'float'
+            else if (t.token == TOKEN_INTEGER)
+                tagname = 'integer'
+            else if (t.token == TOKEN_STRING)
+                tagname = 'string'
+            else if (t.token == TOKEN_IDENTIFIER && !this.tokenInfo.isOp(t))
+                tagname = 'id'
+            else if (t.token == TOKEN_ROOT)
+                tagname = 'root'
+            return tagname
+        },
+        opName2: function(t) {
+            var tagname = 'op'
+            if (this.tokenInfo.tagName(t))
+                tagname = this.tokenInfo.tagName(t)
+            else if (t.token == TOKEN_INTEGER)
+                tagname = 'INT'
+            else if (t.token == TOKEN_IDENTIFIER)
+                tagname = 'ID'
+            else
+                tagname = ENUM.ParserToken.names_index[t.token]
+            return tagname
+        },
         asxml: function(t, indent, metainfo) {
             var res = '';
             if (!indent) indent = ' '
             if (metainfo && typeof metainfo != 'boolean') {
-                res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
+                if (this.options.outputMode == 'x')
+                    res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
+                else
+                    res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>\n"
                 if (this.options.caSteps) {
                     res += indent + "<ca:steps/>\n"
                 }
@@ -1299,21 +1345,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 }
             }
             if (t) {
-                var tagname = 'op'
-                if (this.tokenInfo.tagName(t))
-                    tagname = this.tokenInfo.tagName(t)
-                else if (this.tokenInfo.isParen(t))
-                    tagname = 'paren'
-                else if (t.token == TOKEN_FLOAT)
-                    tagname = 'float'
-                else if (t.token == TOKEN_INTEGER)
-                    tagname = 'integer'
-                else if (t.token == TOKEN_STRING)
-                    tagname = 'string'
-                else if (t.token == TOKEN_IDENTIFIER && !this.tokenInfo.isOp(t))
-                    tagname = 'id'
-                else if (t.token == TOKEN_ROOT)
-                    tagname = 'root'
+                var tagname = this.options.outputMode == 'x' ? this.opName1(t) : this.opName2(t)
                 res += indent + '<' + tagname
                 res += this.writeXMLLocAttrs(t)
                 res += this.writeXMLTypeAttrs(t)
@@ -1360,10 +1392,10 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         },
         writeXMLTypeAttrs: function(t) {
             var res = ''
-            if (t.text && t.token == TOKEN_IDENTIFIER)
+            if (t.text && t.token == TOKEN_IDENTIFIER && this.options.outputMode == 'x')
                 res += ' repr="' + t.text + '"'
             var ttext
-            if (this.options.type) {
+            if (this.options.type && this.options.outputMode == 'x') {
                 if (t.token) {
                     if (t.token in ENUM.ParserToken.names_index) {
                         ttext = ENUM.ParserToken.names_index[t.token]
@@ -1386,7 +1418,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 ttext = ttext.text
             assert(typeof ttext == "string")
             if (ttext) {
-                res = indent + P2X.TokenList.prototype.charasxml.apply({}, [ttext])
+                res = indent + P2X.TokenList.prototype.charasxml.apply(this.options, [ttext])
                 if (indent)
                     res += '\n'
             }
@@ -1397,13 +1429,17 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
             if (t.ignore) {
                 res += this.writeIgnoreXML(t.ignore, indent)
             }
-            res += indent + "<ca:ignore";
+            var tagname = this.options.ciNSPref + (this.options.outputMode == 'x' ? "ignore" : ENUM.ParserToken.names_index[t.token])
+            res += indent + "<" + tagname;
             if (this.options.id)
                 res += " id='" << t.id << "'";
             res += this.writeXMLLocAttrs(t);
             res += this.writeXMLTypeAttrs(t) + '>';
-            res += this.writeXMLTextElem(t, '')
-            res += "</ca:ignore>\n";
+            if (this.options.outputMode == 'x')
+                res += this.writeXMLTextElem(t, '')
+            else
+                res += t.text
+            res += "</" + tagname + ">\n";
             return res
         }
     }
