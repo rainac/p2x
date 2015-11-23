@@ -101,14 +101,10 @@ function interpretParserConfigText(pconf, callback) {
         tmp.file(function _tempFileCreated(err, cnfFileName, fd, cleanupCallback) {
             if (err) throw err;
 
-            console.log("File: ", cnfFileName);
-            console.log("Filedescriptor: ", fd);
-
             fs.writeFile(cnfFileName, pconf, function(err) {
                 if (err) throw(err)
 
                 var cmd = 'p2x -T -p ' + cnfFileName
-                console.log('run ' + cmd)
                 var cnfXML
                 // system(cmd)
                 var child = child_process.exec(cmd, { stdio: 'inherit' },
