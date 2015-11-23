@@ -593,12 +593,12 @@ describe('P2X.ParserConfig', function(){
         it('undefined prec of item defaults to infinity', function(){
             var tt = P2X.TokenInfo()
             tt.insert(P2X.TokenProto(TOKEN_MULT, '*', MODE_ITEM, undefined, undefined, undefined, false))
-            assert.equal(tt.prec(TOKEN_MULT), 1e9)
+            assert.equal(tt.prec(TOKEN_MULT), P2X.maxPrec)
         })
         it('undefined prec of item defaults to infinity', function(){
             var tt = P2X.TokenInfo()
             tt.insert(P2X.TokenProto(TOKEN_L_PAREN, '*', MODE_ITEM, undefined, undefined, undefined, true))
-            assert.equal(tt.prec(TOKEN_L_PAREN), 1e9)
+            assert.equal(tt.prec(TOKEN_L_PAREN), P2X.maxPrec)
         })
         it('for plain token, opcode == type', function(){
             var tt = P2X.TokenInfo()
@@ -670,7 +670,7 @@ describe('P2X.ParserConfig', function(){
             assert.equal(parser.tokenInfo.mode(tokenp), MODE_BINARY)
             assert.equal(parser.tokenInfo.mode(token), MODE_ITEM)
             assert.equal(parser.tokenInfo.isParen(token), true)
-            assert.equal(parser.tokenInfo.precedence(token), 1e9)
+            assert.equal(parser.tokenInfo.precedence(token), P2X.maxPrec)
         })
         it('it should be possible to change the prec, assoc of JUXTA', function() {
             var tt = P2X.TokenInfo()
@@ -1280,9 +1280,9 @@ describe('P2X.Parser', function(){
     })
   })
   describe('#parse()', function(){
-      var xmlres = fs.readFileSync('../examples/out/1p2ep3.xml')+''
+      var xmlres = fs.readFileSync('../examples/xml/1p2ep3.xml')+''
       // console.log(xmlres)
-    var xmlres2 = fs.readFileSync('../examples/out/l1p2r.xml')+''
+    var xmlres2 = fs.readFileSync('../examples/xml/l1p2r.xml')+''
 
     it('it should return an expression tree', function() {
         var scanner = P2X.JScanner()
@@ -1444,7 +1444,7 @@ describe('P2X.Parser', function(){
     })
 
     it('testing postfix op', function() {
-        var xmlres = fs.readFileSync('../examples/out/ftp2.xml')+''
+        var xmlres = fs.readFileSync('../examples/xml/ftp2.xml')+''
         var scConf = [
             { re: '\'',     action: TOKEN_QUOTE },
             { re: '\\+',    action: TOKEN_PLUS },
@@ -1493,7 +1493,7 @@ describe('P2X.Parser', function(){
     })
 
     it('testing postfix op (missing prec)', function() {
-        var xmlres = fs.readFileSync('../examples/out/ftp2.xml')+''
+        var xmlres = fs.readFileSync('../examples/xml/ftp2.xml')+''
         var scConf = [
             { re: '\'',     action: TOKEN_QUOTE },
             { re: '\\+',    action: TOKEN_PLUS },
@@ -1568,7 +1568,7 @@ describe('P2X.Parser', function(){
     })
 
       it('testing binary parenthesis', function() {
-        var xmlres = fs.readFileSync('../examples/out/fl1rg.xml')+''
+        var xmlres = fs.readFileSync('../examples/xml/fl1rg.xml')+''
         var scConf = [
             { re: '\\(',    action: TOKEN_L_PAREN },
             { re: '\\)',    action: TOKEN_R_PAREN },
@@ -1597,7 +1597,7 @@ describe('P2X.Parser', function(){
     })
 
     it('testing postfix parenthesis', function() {
-        var xmlres = fs.readFileSync('../examples/out/f1.xml')+''
+        var xmlres = fs.readFileSync('../examples/xml/f1.xml')+''
         var scConf = [
             { re: '\\(',    action: TOKEN_L_PAREN },
             { re: '\\)',    action: TOKEN_R_PAREN },
@@ -1648,15 +1648,15 @@ describe('P2X.TreePrinter', function(){
         tree.left = P2X.Token(TOKEN_PLUS, '+')
         tree.left.left = P2X.Token(TOKEN_INTEGER, '1')
         tree.left.right = P2X.Token(TOKEN_INTEGER, '2')
-        tree.scanner = P2X.JScanner()
-        tree.parser = P2X.Parser()
         
         var tree2 = P2X.Token(TOKEN_ROOT)
         tree2.left = P2X.Token(1100, '+')
         tree2.left.left = P2X.Token(1101, '1')
         tree2.left.right = P2X.Token(1101, '2')
-        tree2.scanner = P2X.JScanner()
-        tree2.parser = P2X.Parser()
+
+        var result = {}
+        result.scanner = P2X.JScanner()
+        result.parser = P2X.Parser()
 
         var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\''
             + ' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
@@ -1750,7 +1750,7 @@ describe('P2X.TreePrinter', function(){
             var opts = P2X.TreePrinterOptions()
             opts.scanConf = true
             var tp = P2X.TreePrinter(undefined, opts)
-            var res = tp.asxml(tree)
+            var res = tp.asxml(tree, ' ', result)
             assert(res.indexOf('<ca:scanner>') > -1)
             assert(res.indexOf('</ca:scanner>') > -1)
         })
@@ -1758,7 +1758,7 @@ describe('P2X.TreePrinter', function(){
             var opts = P2X.TreePrinterOptions()
             opts.scanConf = false
             var tp = P2X.TreePrinter(undefined, opts)
-            var res = tp.asxml(tree)
+            var res = tp.asxml(tree, ' ', result)
             assert(res.indexOf('<ca:scanner>') == -1)
             assert(res.indexOf('</ca:scanner>') == -1)
         })
@@ -1766,7 +1766,7 @@ describe('P2X.TreePrinter', function(){
             var opts = P2X.TreePrinterOptions()
             opts.parseConf = true
             var tp = P2X.TreePrinter(undefined, opts)
-            var res = tp.asxml(tree)
+            var res = tp.asxml(tree, ' ', result)
             assert(res.indexOf('<ca:parser>') > -1)
             assert(res.indexOf('</ca:parser>') > -1)
         })
@@ -1880,8 +1880,8 @@ describe('P2X.parseOptions', function(){
 
 describe('P2X.CLI', function(){
   describe('#p2xjs()', function(){
-    var xmlres = fs.readFileSync('../examples/out/1p2ep3.xml')+''
-    var xmlres2 = fs.readFileSync('../examples/out/l1p2r.xml')+''
+    var xmlres = fs.readFileSync('../examples/xml/1p2ep3.xml')+''
+    var xmlres2 = fs.readFileSync('../examples/xml/l1p2r.xml')+''
 
     var pres1, pres2, pres3
     var mode = '';
