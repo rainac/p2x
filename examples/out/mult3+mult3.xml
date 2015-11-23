@@ -1,34 +1,22 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="5" code="47" type="PLUS">
-   <op line="1" col="3" code="49" type="MULT">
-    <op line="1" col="1" code="49" type="MULT">
-     <integer line="1" col="0" code="28" type="INTEGER">
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text>
-     </integer>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="5" type="PLUS">
+   <op line="1" col="3" type="MULT">
+    <op line="1" col="1" type="MULT">
+     <integer line="1" col="0" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text></integer>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
-     <integer line="1" col="2" code="28" type="INTEGER">
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text>
-     </integer>
+     <integer line="1" col="2" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text></integer>
     </op>
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
-    <integer line="1" col="4" code="28" type="INTEGER">
-     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text>
-    </integer>
+    <integer line="1" col="4" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text></integer>
    </op>
    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
-   <op line="1" col="9" code="49" type="MULT">
-    <op line="1" col="7" code="49" type="MULT">
-     <integer line="1" col="6" code="28" type="INTEGER">
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text>
-     </integer>
+   <op line="1" col="9" type="MULT">
+    <op line="1" col="7" type="MULT">
+     <integer line="1" col="6" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text></integer>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
-     <integer line="1" col="8" code="28" type="INTEGER">
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text>
-     </integer>
+     <integer line="1" col="8" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text></integer>
     </op>
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
-    <integer line="1" col="10" code="28" type="INTEGER">
-     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text>
-    </integer>
+    <integer line="1" col="10" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text></integer>
    </op>
   </op>

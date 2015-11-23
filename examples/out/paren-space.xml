@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<paren xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="0" type="L_PAREN">
+   <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">(</ca:text>
+   <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="1" type="SPACE"><ca:text> </ca:text></ca:ignore>
+   <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="2" type="R_PAREN"><ca:text>)</ca:text></ca:ignore>
+  </paren>

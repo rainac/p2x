@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="16" type="NEWLINE">
+   <paren line="1" col="2" repr="bopen" type="IDENTIFIER">
+    <integer line="1" col="0" type="INTEGER">
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text>
+     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="1" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    </integer>
+    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">bopen</ca:text>
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="7" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="8" repr="bclose" type="IDENTIFIER"><ca:text>bclose</ca:text></ca:ignore>
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="14" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    <integer line="1" col="15" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text></integer>
+   </paren>
+   <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+  </op>
