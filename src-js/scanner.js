@@ -1318,6 +1318,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         asxml: function(t, indent, metainfo) {
             var res = '';
             if (!indent) indent = ' '
+            if (!metainfo) metainfo = {}
             if (metainfo && typeof metainfo != 'boolean') {
                 if (this.options.outputMode == 'x')
                     res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
@@ -1326,12 +1327,12 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 if (this.options.caSteps) {
                     res += indent + "<ca:steps/>\n"
                 }
-                if (this.options.scanConf) {
+                if (this.options.scanConf && metainfo.scanner) {
                     // console.log('Scanner conf')
                     // console.dir(t.scanner.get())
                     res += metainfo.scanner.get().asxml()
                 }
-                if (this.options.parseConf) {
+                if (this.options.parseConf && metainfo.parser) {
                     var pcwr = P2X.ParserConfigRW();
                     res += pcwr.asxml(metainfo.parser.getconfig(), indent)
                 }
@@ -1633,6 +1634,7 @@ if (typeof window == 'undefined') {
     exports.escapeBS = P2X.escapeBS;
     exports.escapeBSQLines = P2X.escapeBSQLines;
     exports.UniConfParser = P2X.UniConfParser;
+    exports.maxPrec = P2X.maxPrec;
     exports.debug = P2X.debug;
     //exports.P2X = P2X
 }
