@@ -157,7 +157,6 @@ P2X.Token = function(tk, text, index, line, col, rule) {
 }
 
 P2X.TokenList = function(list, producer) {
-    console.log('TokenList created')
     var obj = this
     obj.name = 'test'
     obj.list = list
