@@ -101,7 +101,7 @@ scripts = [
     p2x_baseurl + 'token.ncd.js',
     p2x_baseurl + 'assoc.ncd.js',
     p2x_baseurl + 'parse-xml.js',
-    p2x_baseurl + 'hashmap.js'
+    p2x_baseurl + 'hashmap.js',
     p2x_baseurl + 'scanner.js'
 ]
 
