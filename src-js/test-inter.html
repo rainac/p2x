@@ -2,73 +2,41 @@
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <script type="text/javascript" src="p2x.js"></script>
-    <script type="text/javascript">
-      function runP2X() {
-        var p2xConf = P2X.parseJSON(document.forms.p2x.uniconf.value)
-        p2xConf.treewriter = P2X.parseJSON(document.forms.p2x.twconf.value)
-        p2xConf.debug = true
-
-        var res = {}
-        var input = document.forms.p2x.input.value
-        var output = P2X.p2xj(input, p2xConf, res)
-        
-        var fb = document.getElementById('input_feedback')
-        fb.innerHTML = '<kbd>' + input + '</kbd>'
-
-        var fb = document.getElementById('uniconf_feedback')
-        fb.innerHTML = '<kbd>' + res.uniConf.toSource() + '</kbd>'
-
-        var fb = document.getElementById('scanconf_feedback')
-        fb.innerHTML = '<kbd>' + res.scanner.get().toSource() + '</kbd>'
-        
-        var fb = document.getElementById('parseconf_feedback')
-        var pcrw = P2X.ParserConfigRW()
-        fb.innerHTML = '<kbd>' + pcrw.asJSON(res.parser.getconfig()) + '</kbd>'
-
-        var fb = document.getElementById('twconf_feedback')
-        var twcnf = res.treewriter.options.toSource()
-        fb.innerHTML = '<kbd>' + twcnf + '</kbd>'
-
-        var tl = res.tokenlist
-        var fb = document.getElementById('scan_feedback')
-        tl.scanner = null
-        fb.innerHTML = '<kbd>' + tl.asxml() + '</kbd>'
-        fb.children[0].scrollTop = fb.children[0].scrollHeight
-        
-        document.forms.p2x.output.value = output
-      }
-      function init() {
-         var tareas = document.getElementsByTagName('textarea')
-         for (var k=0; k<tareas.length;++k) {
-           var x = tareas[k]
-           var handler = function() {
-              runP2X();
-           }
-           x.onkeyup = x.onchange = handler
-         }
-      }
-    </script>
+    <script type="text/javascript" src="p2x-webapp.js"></script>
     <style type="text/css">
+      * {
+        font-size: 12pt;
+        font-weight: 300;
+        border: 0px;
+        padding: 0px;
+        margin: 0px;
+        overflow: none;
+        clip-path: fill-box;
+      }
+      textarea {
+        overflow-y: auto;
+      }
+      h1 { padding: 1em; }
       .output {
         font-size: 80%;
         font-weight: 300;
       }
+      .readonly, .interact {
+        margin: 0.2em;
+        padding: 0.2em;
+      }
       textarea {
         width: 100%;
-        height: 20em;
       }
       .hidden {
         display: none;
         visibility: hidden;
       }
-      fieldset:hover > .hidden {
-        display: block;
-        visibility: visible;
-        border: 0.5em inset lightgreen;
-        border-radius: 0.7em;
-        font-weight: 600;
-        position: relative;
-        height: 24em;
+      .readonly {
+        border: 2px solid brown;
+      }
+      .interact {
+        border: 2px solid green;
       }
       .messages {
         display: none;
@@ -87,17 +55,17 @@
           <td width="50%" valign="top">
             <fieldset>
               <legend>Transform input</legend>
-              <textarea name="input" cols="50" rows="10" class="hidden">
+              <textarea name="input" cols="50" rows="10" class="hidden interact">
 minus f(x, y)
               </textarea>
-              <div id="input_feedback" class="feedback">
+              <div id="input_feedback" class="feedback interact">
               </div>
             </fieldset>
           </td>
           <td valign="top">
             <fieldset>
               <legend>Transform output</legend>
-              <textarea name="output" cols="50" rows="10" readonly="readonly">
+              <textarea name="output" cols="50" rows="10" readonly="readonly" class="readonly">
               </textarea>
             </fieldset>
           </td>
@@ -106,7 +74,7 @@ minus f(x, y)
           <td valign="top">
             <fieldset>
               <legend>Parser rules</legend>
-              <textarea name="uniconf" cols="50" rows="8" class="hidden">
+              <textarea name="uniconf" cols="50" rows="8" class="hidden interact">
 {
  rules: [
   { re: '\\(', mode: MODE_POSTFIX, prec: 2000, isParen: 1,
@@ -127,7 +95,7 @@ minus f(x, y)
  ]
 }
               </textarea>
-              <div id="uniconf_feedback" class="feedback">
+              <div id="uniconf_feedback" class="feedback interact">
               </div>
             </fieldset>
           </td>
