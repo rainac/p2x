@@ -2,7 +2,10 @@
 
 var P2X = P2X || {};
 
-P2X.HashMap = require('./hashmap.js')
+if (typeof window == 'undefined') {
+    P2X._HashMap = require('./hashmap.js')
+    P2X.HashMap = P2X._HashMap.HashMap
+}
 
 P2X.maxPrec = 1e5
 
@@ -1185,7 +1188,7 @@ P2X.Parser = function(tokenInfo) {
             this.result.parser = this
             this.result.scanner = tlist.scanner
             this.input = tlist;
-            this.leastMap = P2X.HashMap.HashMap(P2X.maxPrec+1)
+            this.leastMap = P2X.HashMap(P2X.maxPrec+1)
             this.leastMap.insert(this.tokenInfo.prec(this.root), this.root)
 
             var first
