@@ -88,10 +88,10 @@ function map_cb(array, callback_item, callback_end, index) {
         callback_end(array)
         return
     }
-    callback_item(array[index], function(){ map_cb(array, callback_item, callback_end, index+1) })
+    callback_item(function(){ map_cb(array, callback_item, callback_end, index+1) }, array[index], index)
 }
 
-function cb_require(name, callback) {
+function cb_require(callback, name, index) {
     require.call(dummyThis, name, callback)
 }
 
