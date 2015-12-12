@@ -82,7 +82,7 @@ P2X.HashMap = function(maxind) {
         return this.themap[keys[it]].value
     }
     obj.find = function(key) {
-        var keys = Object.keys(this.themap);
+        var keys = this.keys()
         var res = P2X.binary_search_iterative(keys, this.mapKey(key))
         if (res == null) {
             res = this.end()
@@ -90,7 +90,7 @@ P2X.HashMap = function(maxind) {
         return res
     }
     obj.lower_bound = function(key) {
-        var keys = Object.keys(this.themap);
+        var keys = this.keys()
         return P2X.binary_search_iterative_lb(keys, this.mapKey(key))
     }
     obj.erase = function(from, to) {
@@ -112,7 +112,8 @@ P2X.HashMap = function(maxind) {
         return this.keys().length
     }
     obj.keys = function() {
-        return Object.keys(this.themap);
+        var cmp = function(a,b){return Number(a) > Number(b)}
+        return Object.keys(this.themap).sort(cmp)
     }
     obj.clone = function() {
         var res = P2X.HashMap()
