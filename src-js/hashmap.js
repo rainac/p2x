@@ -111,9 +111,13 @@ P2X.HashMap = function(maxind) {
     obj.length = function() {
         return this.keys().length
     }
+    obj.cmp = function(a,b){
+        a = Number(a)
+        b = Number(b)
+        return (a == b ? 0 : (a < b ? -1 : 1))
+    }
     obj.keys = function() {
-        var cmp = function(a,b){return Number(a) > Number(b)}
-        return Object.keys(this.themap).sort(cmp)
+        return Object.keys(this.themap).sort(this.cmp)
     }
     obj.clone = function() {
         var res = P2X.HashMap()
