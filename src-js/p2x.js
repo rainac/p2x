@@ -105,6 +105,10 @@ scripts = [
     p2x_baseurl + 'scanner.js'
 ]
 
-map_cb(scripts, cb_require, function() { console.log('loaded new')})
+map_cb(scripts, function(a,b,c) {
+    // console.log('load ' + b)
+    cb_require(a,b,c)
+},
+       function() { console.log('P2X loaded')})
 
 //console.dir(dummyThis)
