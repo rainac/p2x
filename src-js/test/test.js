@@ -2153,6 +2153,17 @@ describe('P2X.HashMap', function(){
           assert.equal(x.find(32), x.end())
     })
   })
+  describe('#keys()', function(){
+      var x = P2X.HashMap.HashMap(1e8)
+      var nums = [1000, 500, 100, 10]
+      nums.map(function(k) {
+          x.insert(k*10, k)
+      })
+      nums = nums.sort(x.cmp)
+      it('returns ordered keys', function(){
+          assert.equal(String(x.keys()), ''+nums.map(function(k){return String(k*10)}))
+      })
+  })
   describe('#lower_bound()', function(){
       var x = P2X.HashMap.HashMap()
       var nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
