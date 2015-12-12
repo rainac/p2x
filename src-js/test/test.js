@@ -1515,6 +1515,32 @@ describe('P2X.Parser', function(){
         assert.equal(res, xmlres)
     })
 
+    it('testing right associative binary', function() {
+        var xmlres = fs.readFileSync('../examples/xml/ftp2.xml')+''
+        var scConf = [
+            { re: '=',     action: TOKEN_EQUAL },
+            { re: '[0-9]+', action: TOKEN_INTEGER },
+            { re: '[a-zA-Z]+', action: TOKEN_IDENTIFIER },
+        ]
+        var input = 'f=g=2'
+        var parseConf = { rules: [
+            { type: TOKEN_QUOTE, mode: MODE_POSTFIX },
+            { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+            { type: TOKEN_PLUS, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+            { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+        ]}
+        var p2xConfig = {debug: 1, scanner: scConf, parser: parseConf, treewriter: P2X.TreePrinterOptions()}
+        var info = {}
+        res = P2X.p2xj(input, p2xConfig, info)
+        var root = info.parseres
+        assert.equal(root.token, TOKEN_ROOT)
+        assert.equal(root.right.token, TOKEN_EQUAL)
+        assert.equal(root.right.left.text, 'f')
+        assert.equal(root.right.right.token, TOKEN_EQUAL)
+        assert.equal(root.right.right.left.text, 'g')
+        assert.equal(root.right.right.right.text, '2')
+    })
+
       var xmlres_un = '<code-xml xmlns=\'http://johannes-willkomm.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm.de/xml/code-xml/attributes/\' ca:version=\'1.0\'>\n'
 +' <root type="ROOT">\n'
 +'  <null/>\n'
