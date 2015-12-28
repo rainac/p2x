@@ -7,7 +7,7 @@ instdir= $(instbasedir)/js
 
 dist_bin_SCRIPTS = p2xjs
 
-project_files = $(generated_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js
+project_files = $(generated_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js p2xa.js
 
 inst_DATA = $(project_files)
 
@@ -16,6 +16,9 @@ inst_DATA = $(project_files)
 
 %.json: $(top_srcdir)/src/xml/%.xml $(node_modules)
 	./p2xjs scanconf-xml2json -S $< > $@
+
+p2xa.js: modes.ncd.js token.ncd.js assoc.ncd.js parse-xml.js hashmap.js scanner.js
+	cat $^ > $@
 
 scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/scanner.xml
 	xsltproc -o $@ $^
