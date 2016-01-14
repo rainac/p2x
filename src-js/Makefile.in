@@ -277,7 +277,7 @@ generated_files = token.ncd.js modes.ncd.js assoc.ncd.js $(json_files)
 instbasedir = $(pkgdatadir)
 instdir = $(instbasedir)/js
 dist_bin_SCRIPTS = p2xjs
-project_files = $(generated_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js p2xa.js
+project_files = $(generated_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js p2xa.js gennc-common.js
 inst_DATA = $(project_files)
 apache_confd = $(sysconfdir)/apache2/conf.d
 node_module_names = most-xml tmp
@@ -528,13 +528,15 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-instDATA
 .PRECIOUS: Makefile
 
 
+gennc-common.js: token.ncd.js
+
 %.ncd.js: $(top_srcdir)/src/xml/%.ncd.xml
 	gennc -m JavaScript $^
 
 %.json: $(top_srcdir)/src/xml/%.xml $(node_modules)
 	./p2xjs scanconf-xml2json -S $< > $@
 
-p2xa.js: modes.ncd.js token.ncd.js assoc.ncd.js parse-xml.js hashmap.js scanner.js
+p2xa.js: gennc-common.js modes.ncd.js token.ncd.js assoc.ncd.js parse-xml.js hashmap.js scanner.js
 	cat $^ > $@
 
 scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/scanner.xml
