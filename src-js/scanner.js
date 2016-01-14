@@ -1,4 +1,3 @@
-// console.log('scanner script loading')
 
 var P2X = P2X || {};
 
@@ -91,7 +90,6 @@ if (typeof window == 'undefined') {
     P2X.importObject(ENUM.ParserToken, ENUM)
     ENUM.ParserAssoc = require('./assoc.ncd.js')
     P2X.importObject(ENUM.ParserAssoc, ENUM)
-
     var assert = function(cond, msg) {
         mod_assert(cond, msg)
     }
@@ -154,7 +152,7 @@ P2X.Token = function(tk, text, index, line, col, rule) {
         return P2X.Token(tk.token, tk.text, tk.index, tk.line, tk.col)
     } else if (typeof tk != 'number') {
         console.log('warning: str conversion')
-        tk = ENUM.getParserTokenValue(String(tk))
+        tk = ENUM.ParserToken.getValue(String(tk))
     }
     return { token: tk, tokenName: ENUM.ParserToken.names_index[tk], text: text, index: index, line: line, col: col }
 }
@@ -316,7 +314,7 @@ P2X.ScannerConfig = function(x) {
             var rule = this[k]
             var val = rule.action, actstr = ''
             if (val in ENUM.ParserToken.names_index) {
-                actstr = ENUM.getParserTokenName(val)
+                actstr = ENUM.ParserToken.getName(val)
             } else {
                 actstr = val
             }
@@ -350,7 +348,7 @@ P2X.ScannerConfig = function(x) {
             var rule = this[k]
             var val = rule.action, actstr = ''
             if (val in ENUM.ParserToken.names_index) {
-                actstr = ENUM.ParserToken.prefix + ENUM.getParserTokenName(val)
+                actstr = ENUM.ParserToken.prefix + ENUM.ParserToken.getName(val)
             } else {
                 actstr = escapeXML(val)
             }
@@ -460,7 +458,7 @@ P2X.JScanner = function(name) {
             snd_val = action
             snd_source = snd_val
             if (typeof snd_val != 'number')
-                snd_val = ENUM.getParserTokenValue(String(snd_val))
+                snd_val = ENUM.ParserToken.getValue(String(snd_val))
             entry = [fst_val, snd_val]
             entry.snd_source = snd_source
             entry.count = 0
@@ -646,9 +644,9 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
             assert(false)
         }
         if (typeof mode == 'string')
-            mode = ENUM.getParserModeValue(mode)
+            mode = ENUM.ParserMode.getValue(mode)
         if (typeof assoc == 'string')
-            assoc = ENUM.getParserAssocValue(assoc)
+            assoc = ENUM.ParserAssoc.getValue(assoc)
         if (tk != TOKEN_IDENTIFIER)
             repr = ''
         if (closingList) {
@@ -685,7 +683,7 @@ P2X.TokenProtoRW = function() {
         res += indent + '<ca:op'
         res += ' type="'
         if (obj.token in ENUM.ParserToken.names_index) {
-            res += ENUM.getParserTokenName(obj.token)
+            res += ENUM.ParserToken.getName(obj.token)
         } else {
             res += obj.token
         }
@@ -693,10 +691,10 @@ P2X.TokenProtoRW = function() {
         if (obj.token == TOKEN_IDENTIFIER && obj.repr)
             res += ' repr="' + obj.repr + '"'
         if (typeof obj.mode != 'undefined') {
-            res += ' mode="' + ENUM.getParserModeName(obj.mode) + '"'
+            res += ' mode="' + ENUM.ParserMode.getName(obj.mode) + '"'
         }
         if (obj.mode == MODE_UNARY_BINARY || obj.mode == MODE_BINARY)
-            res += ' associativity="' + ENUM.getParserAssocName(obj.assoc) + '"'
+            res += ' associativity="' + ENUM.ParserAssoc.getName(obj.assoc) + '"'
         if (obj.mode != MODE_ITEM && !obj.isParen)
             res += ' precedence="' + obj.prec + '"'
         if (obj.name)
@@ -725,17 +723,17 @@ P2X.TokenProtoRW = function() {
         res += '{'
         res += ' type: '
         if (obj.token in ENUM.ParserToken.names_index) {
-            res += 'TOKEN_' + ENUM.getParserTokenName(obj.token)
+            res += 'TOKEN_' + ENUM.ParserToken.getName(obj.token)
         } else {
             res += obj.token
         }
         if (obj.repr)
             res += ', repr: "' + obj.repr + '"'
         if (typeof obj.mode != 'undefined') {
-            res += ', mode: MODE_' + ENUM.getParserModeName(obj.mode) + ''
+            res += ', mode: MODE_' + ENUM.ParserMode.getName(obj.mode) + ''
         }
         if (obj.mode == MODE_UNARY_BINARY || obj.mode == MODE_BINARY)
-            res += ', assoc: ASSOC_' + ENUM.getParserAssocName(obj.assoc) + ''
+            res += ', assoc: ASSOC_' + ENUM.ParserAssoc.getName(obj.assoc) + ''
         if (typeof obj.prec != 'undefined')
             res += ', prec: ' + obj.prec + ''
         if (obj.mode == MODE_UNARY_BINARY)
