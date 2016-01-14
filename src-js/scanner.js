@@ -1,4 +1,3 @@
-// console.log('scanner script loading')
 
 var P2X = P2X || {};
 
@@ -91,7 +90,6 @@ if (typeof window == 'undefined') {
     P2X.importObject(ENUM.ParserToken, ENUM)
     ENUM.ParserAssoc = require('./assoc.ncd.js')
     P2X.importObject(ENUM.ParserAssoc, ENUM)
-
     var assert = function(cond, msg) {
         mod_assert(cond, msg)
     }
