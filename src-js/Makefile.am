@@ -1,13 +1,20 @@
 
 json_files = scanner-c.json
-generated_files = token.ncd.js modes.ncd.js assoc.ncd.js $(json_files)
 
 instbasedir=$(pkgdatadir)
 instdir= $(instbasedir)/js
 
 dist_bin_SCRIPTS = p2xjs
 
-project_files = $(generated_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js p2xa.js gennc-common.js
+ncd_files = token.ncd.js modes.ncd.js assoc.ncd.js
+
+unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js p2xa.js gennc-common.js p2x-tools.js
+
+min_files = $(addsuffix .min.js, $(basename $(unmin_files)))
+
+generated_files = $(min_files) $(json_files)
+
+project_files = $(min_files)
 
 inst_DATA = $(project_files)
 
@@ -18,6 +25,10 @@ gennc-common.js: token.ncd.js
 
 %.json: $(top_srcdir)/src/xml/%.xml $(node_modules)
 	./p2xjs scanconf-xml2json -S $< > $@
+
+%.min.js: %.js
+	./kill-comments-empty.sh $< > $@
+
 
 p2xa.js: gennc-common.js modes.ncd.js token.ncd.js assoc.ncd.js parse-xml.js hashmap.js scanner.js
 	cat $^ > $@

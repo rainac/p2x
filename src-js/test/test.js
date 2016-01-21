@@ -20,8 +20,8 @@ describe('Array', function(){
   })
 })
 
-var P2X = require("../scanner.js")
-var P2XTools = require("../p2x-tools.js")
+var P2X = require("../scanner.min.js")
+var P2XTools = require("../p2x-tools.min.js")
 
 P2X.importObject(P2XTools, P2X)
 
