@@ -17,62 +17,6 @@ P2X.importObject = function(obj, target) {
     }
 }
 
-P2X.getAttributeOrUndefined = function(elem, name) {
-    var res
-    if (elem.hasAttribute(name)) {
-        res = elem.getAttribute(name)
-    }
-    return res
-}
-
-P2X.evalOrValue = function(val, def) {
-    var res
-    try {
-        res = eval(val)
-    } catch (err) {
-        // res = val
-    }
-    // console.log('eval val: ' + typeof val + ' ' + val)
-    // console.log('eval res: ' + typeof res + ' ' + res)
-    if (typeof res == 'undefined') {
-        res = def
-    }
-    return res
-}
-
-var escapeRegExp = function(str){
-    return str
-        .replace(/[.*+\?^${}()|[\]\\]/g, "\\$&")
-        .replace(/\n/g, "\\n").replace(/\r/g, "\\r")
-        .replace(/\t/g, "\\t").replace(/\v/g, "\\v")
-}
-
-var unescapeRegExp = function(str){
-    return str
-        .replace(/\\n/g, "\n").replace(/\\r/g, "\r")
-        .replace(/\\t/g, "\t").replace(/\\v/g, "\v")
-        .replace(/\\([.*+?^${}()|[\]\\])/g, "$1")
-}
-
-P2X.escapeBS = function(str, forQuote){
-    var res = str
-        .replace(/[\\]/g, "\\$&")
-        .replace(/\n/g, "\\n").replace(/\r/g, "\\r")
-        .replace(/\t/g, "\\t").replace(/\v/g, "\\v")
-    if (forQuote != '\'') {
-        res = res.replace(/\"/g, '\\"')
-    }
-    if (forQuote != "\"") {
-        res = res.replace(/\'/g, '\\\'')
-    }
-    return res
-}
-
-P2X.escapeBSQLines = function(str){
-    var escbs = P2X.escapeBS(str, '\'')
-    return '\'' + escbs.replace(/\\n((\\n)+|.)/g, "\\n'\n+'$1") + '\''
-}
-
 var escapeXML = function(str){
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 }
@@ -675,171 +619,8 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
     return res
 }
 
-P2X.TokenProtoRW = function() {
-    var res = {}
-    res.asxml = function(obj, indent) {
-        if (!indent) indent = ' '
-        var res = ''
-        res += indent + '<ca:op'
-        res += ' type="'
-        if (obj.token in ENUM.ParserToken.names_index) {
-            res += ENUM.ParserToken.getName(obj.token)
-        } else {
-            res += obj.token
-        }
-        res += '"'
-        if (obj.token == TOKEN_IDENTIFIER && obj.repr)
-            res += ' repr="' + obj.repr + '"'
-        if (typeof obj.mode != 'undefined') {
-            res += ' mode="' + ENUM.ParserMode.getName(obj.mode) + '"'
-        }
-        if (obj.mode == MODE_UNARY_BINARY || obj.mode == MODE_BINARY)
-            res += ' associativity="' + ENUM.ParserAssoc.getName(obj.assoc) + '"'
-        if (obj.mode != MODE_ITEM && !obj.isParen)
-            res += ' precedence="' + obj.prec + '"'
-        if (obj.name)
-            res += ' name="' + obj.name + '"'
-        if (obj.mode == MODE_UNARY_BINARY)
-            res += ' unary-precedence="' + obj.precU + '"'
-        if (obj.isParen)
-            res += ' is-paren="1"'
-        if (obj.closingList && obj.closingList.length > 0) {
-            res += '>\n'
-            res += indent + ' <ca:closing-list>\n'
-            for (var k = 0; k < obj.closingList.length; ++k) {
-                res += this.asxml(obj.closingList[k], indent + '  ')
-            }
-            res += indent + ' </ca:closing-list>\n'
-            res += indent + '</ca:op>\n'
-        } else {
-            res += '/>\n'
-        }
-        return res
-    }
-
-    res.asJSON = function(obj, indent) {
-        if (!indent) indent = ' '
-        var res = ''
-        res += '{'
-        res += ' type: '
-        if (obj.token in ENUM.ParserToken.names_index) {
-            res += 'TOKEN_' + ENUM.ParserToken.getName(obj.token)
-        } else {
-            res += obj.token
-        }
-        if (obj.repr)
-            res += ', repr: "' + obj.repr + '"'
-        if (typeof obj.mode != 'undefined') {
-            res += ', mode: MODE_' + ENUM.ParserMode.getName(obj.mode) + ''
-        }
-        if (obj.mode == MODE_UNARY_BINARY || obj.mode == MODE_BINARY)
-            res += ', assoc: ASSOC_' + ENUM.ParserAssoc.getName(obj.assoc) + ''
-        if (typeof obj.prec != 'undefined')
-            res += ', prec: ' + obj.prec + ''
-        if (obj.mode == MODE_UNARY_BINARY)
-            res += ', precU: ' + obj.precU + ''
-        if (obj.isParen)
-            res += ', isParen: 1'
-        if (obj.closingList && obj.closingList.length > 0) {
-            res += ',\n' + indent + '  closingList: [\n'
-            for (var k = 0; k < obj.closingList.length; ++k) {
-                if (k > 0)
-                    res += ',\n'
-                res += indent + '  ' + this.asJSON(obj.closingList[k], indent + '   ')
-            }
-            res += indent + '  ]\n'
-            res += indent + '}'
-        } else {
-            res += ' }'
-        }
-        return res
-    }
-
-    res.loadXMLNode = function(tProtoNode) {
-        var closingList
-        var isParen = P2X.evalOrValue(P2X.getAttributeOrUndefined(tProtoNode, 'is-paren'), false)
-        if (isParen) {
-            closingList = []
-            ch = tProtoNode.getElementsByTagName('ca:op')
-            for (var k = 0; k < ch.length; ++k) {
-                closingList[k] = this.loadXMLNode(ch[k])
-                closingList[k] = P2X.TokenProto(closingList[k].token, closingList[k].repr)
-            }
-        }
-        var res = {
-            token: P2X.evalOrValue(ENUM.ParserToken.prefix + P2X.getAttributeOrUndefined(tProtoNode, 'type')),
-            repr: P2X.getAttributeOrUndefined(tProtoNode, 'repr'),
-            mode: P2X.evalOrValue(ENUM.ParserMode.prefix + P2X.getAttributeOrUndefined(tProtoNode, 'mode')),
-            assoc: P2X.evalOrValue(ENUM.ParserAssoc.prefix + P2X.getAttributeOrUndefined(tProtoNode, 'associativity')),
-            prec: P2X.evalOrValue(P2X.getAttributeOrUndefined(tProtoNode, 'precedence')),
-            precU: P2X.evalOrValue(P2X.getAttributeOrUndefined(tProtoNode, 'unary-precedence')),
-            isParen: isParen,
-            closingList: closingList,
-        }
-        // console.log('load TP XML: ')
-        // console.log(res)
-        return P2X.TokenProto(res)
-    }
-
-    return res
-}
-
 P2X.ParserConfig = function(x) {
     res = Array.apply({}, x)
-    return res
-}
-
-P2X.ParserConfigRW = function(x) {
-    res = {}
-    res.asxml = function(obj, indent) {
-        if (!indent) indent = ' '
-        var res = ''
-        var tprw = P2X.TokenProtoRW()
-        res += indent + '<ca:parser>\n'
-        for (var k = 0; k < obj.length; ++k) {
-            res += tprw.asxml(obj[k], indent + ' ')
-        }
-        res += indent + '</ca:parser>\n'
-        return res
-    }
-    res.asJSON = function(obj, indent) {
-        if (typeof indent == 'undefined') indent = ' '
-        var res = ''
-        var tprw = P2X.TokenProtoRW()
-        res += indent + '[\n'
-        for (var k = 0; k < obj.length; ++k) {
-            if (k > 0)
-                res += ',\n'
-            res += indent + ' ' + tprw.asJSON(obj[k], indent + ' ')
-        }
-        res += indent + ']\n'
-        return res
-    }
-    res.loadXML = function(scConfXML) {
-        var scanDoc = parseXml(scConfXML)
-        return this.loadXMLDoc(scanDoc)
-    }
-    res.loadXMLDoc = function(scanList) {
-        chead = scanList.getElementsByTagName('ca:parser')
-        if (chead.length) {
-            return this.loadXMLNode(chead[0])
-        } else {
-            console.error('cannot find ca:parser in document, doc element name: ' + scanList.documentElement.nodeName)
-            console.error('unexpected doc element contains: ' + scanList.documentElement.firstChild.nodeValue)
-        }
-    }
-    res.loadXMLNode = function(scanList) {
-        var rlist = [], ctoken, eres_re, eres_action
-        var tprw = P2X.TokenProtoRW()
-        for (var k in scanList.childNodes) {
-            ctoken = scanList.childNodes[k], eres_re, eres_action
-            if (ctoken.nodeType == 1 && ctoken.nodeName == "ca:op") {
-                tProto = tprw.loadXMLNode(ctoken)
-                rlist.push(tProto)
-            }
-        }
-        return new P2X.ParserConfig(rlist)
-    }
     return res
 }
 
@@ -980,14 +761,6 @@ P2X.TokenInfo = function() {
             }
             return this
         },
-        asJSON: function() {
-            var pcrw = P2X.ParserConfigRW()
-            return pcrw.asJSON(this.getconfig())
-        },
-        asxml: function() {
-            var pcrw = P2X.ParserConfigRW()
-            return pcrw.asxml(this.getconfig())
-        },
         insert: function (tokenProto) {
             if (tokenProto.token == TOKEN_IDENTIFIER && tokenProto.repr) {
                 // this creates the new op code
@@ -1022,12 +795,6 @@ P2X.Parser = function(tokenInfo) {
         endList: undefined,
         options: {
             ignoreIgnore: false
-        },
-        asJSON: function () {
-            return this.tokenInfo.asJSON()  
-        },
-        asxml: function() {
-            return this.tokenInfo.asxml()  
         },
         getconfig: function () {
             return this.tokenInfo.getconfig()
@@ -1316,6 +1083,9 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 tagname = ENUM.ParserToken.names_index[t.token]
             return tagname
         },
+        printParserConfig: function(t, indent, metainfo) {
+            console.log('orig printParserConfig')
+        },
         asxml: function(t, indent, metainfo) {
             var res = '';
             if (!indent) indent = ' '
@@ -1334,8 +1104,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     res += metainfo.scanner.get().asxml()
                 }
                 if (this.options.parseConf && metainfo.parser) {
-                    var pcwr = P2X.ParserConfigRW();
-                    res += pcwr.asxml(metainfo.parser.getconfig(), indent)
+                    res += this.printParserConfig(t, indent, metainfo)
                 }
                 if (this.options.treewriterConf) {
                     res += indent + '<ca:tree-writer'
@@ -1510,7 +1279,6 @@ P2X.p2xj = function(input, p2xConf, result) {
     parser.setconfig(parseConf)
 
     if (p2xConf.debug) {
-        var pcrw = P2X.ParserConfigRW()
         result.parseconf = parseConf
 //        result.parseconf = parser.getconfig()
     }
@@ -1623,17 +1391,13 @@ if (typeof window == 'undefined') {
     exports.TokenList = P2X.TokenList
     exports.TokenInfo = P2X.TokenInfo
     exports.TokenProto = P2X.TokenProto
-    exports.TokenProtoRW = P2X.TokenProtoRW
     exports.ParserConfig = P2X.ParserConfig
-    exports.ParserConfigRW = P2X.ParserConfigRW
     exports.Parser = P2X.Parser
     exports.TreePrinterOptions = P2X.TreePrinterOptions
     exports.TreePrinter = P2X.TreePrinter
     exports.importObject = P2X.importObject
     exports.p2xj = P2X.p2xj;
     exports.parseJSON = P2X.parseJSON;
-    exports.escapeBS = P2X.escapeBS;
-    exports.escapeBSQLines = P2X.escapeBSQLines;
     exports.UniConfParser = P2X.UniConfParser;
     exports.maxPrec = P2X.maxPrec;
     exports.debug = P2X.debug;

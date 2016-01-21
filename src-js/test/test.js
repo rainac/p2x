@@ -21,6 +21,9 @@ describe('Array', function(){
 })
 
 var P2X = require("../scanner.js")
+var P2XTools = require("../p2x-tools.js")
+
+P2X.importObject(P2XTools, P2X)
 
 describe('P2X.ScannerConfig', function(){
   describe('#construct()', function(){
@@ -473,7 +476,7 @@ describe('P2X.ParserConfig', function(){
             tt.insert(P2X.TokenProto(1101, '*', MODE_BINARY, ASSOC_LEFT, 100, 0, false))
             tt.insert(P2X.TokenProto(1102, '=', MODE_IGNORE))
             confA = tt.getconfig()
-            tt.setconfig(P2X.parseJSON(tt.asJSON()))
+            tt.setconfig(P2X.parseJSON(P2X.tokenInfo2JSON(tt)))
             tt.normalize()
             confB = tt.getconfig()
             assert.deepEqual(confA, confB);
@@ -487,7 +490,7 @@ describe('P2X.ParserConfig', function(){
             var parser = P2X.Parser();
             parser.setconfig(tt.getconfig())
             confA = tt.getconfig()
-            tt.setconfig(P2X.parseJSON(parser.asJSON()))
+            tt.setconfig(P2X.parseJSON(P2X.parser2JSON(parser)))
             tt.normalize()
             confB = tt.getconfig()
             assert.deepEqual(confA, confB);
@@ -539,7 +542,7 @@ describe('P2X.ParserConfig', function(){
 +'  <ca:op type="IGNORE" mode="IGNORE" precedence="2"/>\n'
 +' </ca:parser>\n'
             // console.log(tt.asxml())
-            allLinesEqual(res, tt.asxml())
+            allLinesEqual(res, P2X.tokenInfo2XML(tt))
         })
         it('rules may be given as arbitrary objects', function() {
             var tt = P2X.TokenInfo()
@@ -550,9 +553,9 @@ describe('P2X.ParserConfig', function(){
             tt.setconfig(confSet);
             var confA = tt.getconfig()
             // console.log(tt.asxml())
-            assert(tt.asxml().indexOf('type="1100"') > -1)
-            assert(tt.asxml().indexOf('type="1200"') > -1)
-            assert(tt.asxml().indexOf('name="foo"') > -1)
+            assert(P2X.tokenInfo2XML(tt).indexOf('type="1100"') > -1)
+            assert(P2X.tokenInfo2XML(tt).indexOf('type="1200"') > -1)
+            assert(P2X.tokenInfo2XML(tt).indexOf('name="foo"') > -1)
         })
         it('fields may be missing (default binary assoc is left)', function() {
             var tt = P2X.TokenInfo()
@@ -565,9 +568,9 @@ describe('P2X.ParserConfig', function(){
             tt.setconfig(confSet);
             var confA = tt.getconfig()
             // console.log(tt.asxml())
-            assert(tt.asxml().match(/type="1100".*associativity="LEFT"/))
+            assert(P2X.tokenInfo2XML(tt).match(/type="1100".*associativity="LEFT"/))
 //            assert(tt.asxml().match(/type="1200".*associativity="NONE"/))
-            assert(tt.asxml().match(/type="1300".*associativity="LEFT"/))
+            assert(P2X.tokenInfo2XML(tt).match(/type="1300".*associativity="LEFT"/))
 //            assert(tt.asxml().match(/type="1400".*associativity="NONE"/))
         })
         it('fields may be missing (default mode is item)', function() {
@@ -578,7 +581,7 @@ describe('P2X.ParserConfig', function(){
             tt.setconfig(confSet);
             var confA = tt.getconfig()
             // console.log(tt.asxml())
-            assert(tt.asxml().indexOf('mode="ITEM"') > -1)
+            assert(P2X.tokenInfo2XML(tt).indexOf('mode="ITEM"') > -1)
         })
         it('undefined prec defaults to 2', function(){
             var tt = P2X.TokenInfo()
@@ -1791,7 +1794,7 @@ describe('P2X.TreePrinter', function(){
         it('With option parseConf, the element can be included', function(){
             var opts = P2X.TreePrinterOptions()
             opts.parseConf = true
-            var tp = P2X.TreePrinter(undefined, opts)
+            var tp = P2X.TreePrinterPlus(undefined, opts)
             var res = tp.asxml(tree, ' ', result)
             assert(res.indexOf('<ca:parser>') > -1)
             assert(res.indexOf('</ca:parser>') > -1)
