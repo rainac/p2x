@@ -2,7 +2,7 @@
 var P2X = P2X || {};
 
 if (typeof window == 'undefined') {
-    P2X._HashMap = require('./hashmap.js')
+    P2X._HashMap = require('./hashmap.min.js')
     P2X.HashMap = P2X._HashMap.HashMap
 }
 
@@ -25,14 +25,14 @@ if (typeof window == 'undefined') {
     
     var fs = require('fs')
     var mod_assert = require('assert')
-    var pXML = require('./parse-xml.js')
+    var pXML = require('./parse-xml.min.js')
 
     var ENUM = {}
-    ENUM.ParserMode = require('./modes.ncd.js')
+    ENUM.ParserMode = require('./modes.ncd.min.js')
     P2X.importObject(ENUM.ParserMode, ENUM)
-    ENUM.ParserToken = require('./token.ncd.js')
+    ENUM.ParserToken = require('./token.ncd.min.js')
     P2X.importObject(ENUM.ParserToken, ENUM)
-    ENUM.ParserAssoc = require('./assoc.ncd.js')
+    ENUM.ParserAssoc = require('./assoc.ncd.min.js')
     P2X.importObject(ENUM.ParserAssoc, ENUM)
     var assert = function(cond, msg) {
         mod_assert(cond, msg)

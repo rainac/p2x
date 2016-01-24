@@ -97,12 +97,12 @@ function cb_require(callback, name, index) {
 
 
 scripts = [
-    p2x_baseurl + 'modes.ncd.js',
-    p2x_baseurl + 'token.ncd.js',
-    p2x_baseurl + 'assoc.ncd.js',
-    p2x_baseurl + 'parse-xml.js',
-    p2x_baseurl + 'hashmap.js',
-    p2x_baseurl + 'scanner.js'
+    p2x_baseurl + 'modes.ncd.min.js',
+    p2x_baseurl + 'token.ncd.min.js',
+    p2x_baseurl + 'assoc.ncd.min.js',
+    p2x_baseurl + 'parse-xml.min.js',
+    p2x_baseurl + 'hashmap.min.js',
+    p2x_baseurl + 'scanner.min.js'
 ]
 
 map_cb(scripts, function(a,b,c) {
