@@ -8,13 +8,13 @@ dist_bin_SCRIPTS = p2xjs
 
 ncd_files = token.ncd.js modes.ncd.js assoc.ncd.js
 
-unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js p2xa.js gennc-common.js p2x-tools.js
+unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js gennc-common.js p2x-tools.js
 
 min_files = $(addsuffix .min.js, $(basename $(unmin_files)))
 
-generated_files = $(min_files) $(json_files)
+generated_files = $(min_files) $(json_files) p2xa.js
 
-project_files = $(min_files)
+project_files = $(generated_files)
 
 inst_DATA = $(project_files)
 
