@@ -631,6 +631,7 @@ EGREP
 GREP
 acond_BUILD_TESTS_FALSE
 acond_BUILD_TESTS_TRUE
+SHUNIT2
 acond_STATIC_BUILD_FALSE
 acond_STATIC_BUILD_TRUE
 acond_TRANG_AVAIL_FALSE
@@ -5563,6 +5564,51 @@ $as_echo_n "checking setting build_tests... " >&6; }
 $as_echo "build_tests=$build_tests" >&6; }
 if test "$build_tests" = "yes"; then
    defval_BUILD_TESTS=1
+   for ac_prog in shunit2
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_SHUNIT2+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$SHUNIT2"; then
+  ac_cv_prog_SHUNIT2="$SHUNIT2" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_SHUNIT2="$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+SHUNIT2=$ac_cv_prog_SHUNIT2
+if test -n "$SHUNIT2"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $SHUNIT2" >&5
+$as_echo "$SHUNIT2" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$SHUNIT2" && break
+done
+
+   if test "x$SHUNIT2" = "x"; then
+      as_fn_error $? "mandatory program shunit2 was not found" "$LINENO" 5
+   fi
 else
    defval_BUILD_TESTS=0
 fi
