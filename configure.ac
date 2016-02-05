@@ -75,6 +75,10 @@ AC_MSG_CHECKING([setting build_tests])
 AC_MSG_RESULT([build_tests=$build_tests])
 if test "$build_tests" = "yes"; then
    defval_BUILD_TESTS=1
+   AC_CHECK_PROGS([SHUNIT2], [shunit2])
+   if test "x$SHUNIT2" = "x"; then
+      AC_MSG_ERROR([mandatory program shunit2 was not found])
+   fi
 else
    defval_BUILD_TESTS=0
 fi

@@ -1514,9 +1514,13 @@ struct TreeXMLWriter {
     return res;
   }
     void setElemName(Token const *t) {
-      if (t->token == TOKEN_IDENTIFIER)
-        elemName = "ID";
-      else if (t->token == TOKEN_INTEGER)
+      if (t->token == TOKEN_IDENTIFIER) {
+        if (t->left || t->right || t->content) {
+          elemName = t->text;
+        } else {
+          elemName = "ID";
+        }
+      } else if (t->token == TOKEN_INTEGER)
         elemName = "INT";
       else if (t->token == TOKEN_FLOAT)
         elemName = "DBL";
