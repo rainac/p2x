@@ -1084,7 +1084,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
             return tagname
         },
         printParserConfig: function(t, indent, metainfo) {
-            console.log('orig printParserConfig')
+            return indent + '<!--'+' printing the parser config as is not supported, please use TreePrinterPlus instead -->\n'
         },
         asxml: function(t, indent, metainfo) {
             var res = '';
