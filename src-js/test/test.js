@@ -2039,7 +2039,8 @@ describe('P2X.CLI', function(){
         p2x_options = '-C'
         runP2XJSNew(p2xConfigFile, inputFile, function(res) {
             assert(res.indexOf('<ca:scanner') > -1)
-            assert(res.indexOf('<ca:parser') > -1)
+            assert(res.indexOf('<ca:parser') > -1
+                   || res.indexOf('<!-- printing the parser config as is not supported') > -1)
             assert(res.indexOf('<ca:tree-writer') > -1)
             assert(res.indexOf('<id line="1" col="21" type="1004"><ca:text>s</ca:text></id>') > -1)
             done()

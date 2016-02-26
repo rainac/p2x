@@ -3,6 +3,8 @@ if (typeof window == 'undefined') {
     var fs = require('fs')
     // console.log('load scanner script')
     var P2X = require('./scanner.js')
+    var P2XTools = require('./p2x-tools.js')
+    P2X.importObject(P2XTools, P2X)
     //var O3XML = require('o3-xml-fork')
     var child_process = require('child_process')
     var POpts = require('./parse-opts.js')
@@ -64,6 +66,9 @@ var parser = P2X.Parser()
 readParserConfigFile()
 
 function readParserConfigFile() {
+    if ('debug' in options) {
+        P2X.debug = true
+    }
     if ('prec-list' in options) {
         configFile = options['prec-list'][0]
         importParserConfig({file: configFile}, function(pc) {
@@ -104,7 +109,7 @@ function interpretParserConfigText(pconf, callback) {
             fs.writeFile(cnfFileName, pconf, function(err) {
                 if (err) throw(err)
 
-                var cmd = 'p2x -T -p ' + cnfFileName
+                var cmd = 'p2x' + ' ' + '-T' + ' ' + '-p ' + cnfFileName
                 var cnfXML
                 // system(cmd)
                 var child = child_process.exec(cmd, { stdio: 'inherit' },
@@ -202,7 +207,9 @@ function readInput(uniConf) {
 
 function parseInput(data, uniConf) {
     if (P2X.debug) {
+        console.log('Debug scanner conf dump:')
         console.dir(scanner.get())
+        console.log('Debug parser conf dump:')
         console.dir(parser.getconfig())
     }
     scanner.str(data)
@@ -212,11 +219,12 @@ function parseInput(data, uniConf) {
     // console.log(tl.asxml())
     var res = parser.parse(tl)
     tpOptions = P2X.TreePrinterOptions(uniConf ? uniConf.treewriter : undefined);
-    if (P2X.debug) {
-        console.dir(tpOptions)
-    }
     if ('include-config' in options) {
         tpOptions.scanConf = tpOptions.parseConf = tpOptions.treewriterConf = true
+    }
+    if (P2X.debug) {
+        console.log('Debug treewriter conf dump:')
+        console.dir(tpOptions)
     }
     if ('output-mode' in options) {
         tpOptions.outputMode = 'y'

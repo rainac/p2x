@@ -2,7 +2,7 @@
 var P2X = P2X || {};
 
 if (typeof window == 'undefined') {
-    P2X._HashMap = require('./hashmap.min.js')
+    P2X._HashMap = require('./hashmap.js')
     P2X.HashMap = P2X._HashMap.HashMap
 }
 
@@ -27,11 +27,11 @@ if (typeof window == 'undefined') {
     var mod_assert = require('assert')
 
     var ENUM = {}
-    ENUM.ParserMode = require('./modes.ncd.min.js')
+    ENUM.ParserMode = require('./modes.ncd.js')
     P2X.importObject(ENUM.ParserMode, ENUM)
-    ENUM.ParserToken = require('./token.ncd.min.js')
+    ENUM.ParserToken = require('./token.ncd.js')
     P2X.importObject(ENUM.ParserToken, ENUM)
-    ENUM.ParserAssoc = require('./assoc.ncd.min.js')
+    ENUM.ParserAssoc = require('./assoc.ncd.js')
     P2X.importObject(ENUM.ParserAssoc, ENUM)
     var assert = function(cond, msg) {
         mod_assert(cond, msg)
@@ -1082,7 +1082,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
             return tagname
         },
         printParserConfig: function(t, indent, metainfo) {
-            console.log('orig printParserConfig')
+            return indent + '<!--'+' printing the parser config as is not supported, please use TreePrinterPlus instead -->\n'
         },
         asxml: function(t, indent, metainfo) {
             var res = '';

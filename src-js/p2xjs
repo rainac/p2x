@@ -30,7 +30,7 @@ esac
 
 srcdir=$(dirname $BASH_SOURCE)
 
-main_src=$mode.js
+main_src=$mode.min.js
 
 if test -r $srcdir/$main_src; then
     file=$srcdir/$main_src
