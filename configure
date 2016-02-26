@@ -5590,7 +5590,7 @@ else
 fi
 
 cat >>confdefs.h <<_ACEOF
-#define ADIMAT_STATIC_BUILD $defval_STATIC_BUILD
+#define P2X_STATIC_BUILD $defval_STATIC_BUILD
 _ACEOF
 
  if test "x$static_build" = "xyes"; then
@@ -5670,7 +5670,7 @@ else
 fi
 
 cat >>confdefs.h <<_ACEOF
-#define ADIMAT_BUILD_TESTS $defval_BUILD_TESTS
+#define P2X_BUILD_TESTS $defval_BUILD_TESTS
 _ACEOF
 
  if test "x$build_tests" = "xyes"; then
