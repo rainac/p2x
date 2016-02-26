@@ -1,11 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* 1: static build */
-#undef ADIMAT_BUILD_TESTS
-
-/* 1: static build */
-#undef ADIMAT_STATIC_BUILD
-
 /* Define to 1 if you have the `atexit' function. */
 #undef HAVE_ATEXIT
 
@@ -125,6 +119,12 @@
 
 /* Long version string */
 #undef LONG_VERSION
+
+/* 1: static build */
+#undef P2X_BUILD_TESTS
+
+/* 1: static build */
+#undef P2X_STATIC_BUILD
 
 /* A string describing the current version as a floating point number. */
 #undef P2X_VERSION_NUMBER

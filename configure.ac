@@ -48,7 +48,7 @@ if test "$static_build" = "yes"; then
 else
    defval_STATIC_BUILD=0
 fi
-AC_DEFINE_UNQUOTED([ADIMAT_STATIC_BUILD], [$defval_STATIC_BUILD], [1: static build])
+AC_DEFINE_UNQUOTED([P2X_STATIC_BUILD], [$defval_STATIC_BUILD], [1: static build])
 AM_CONDITIONAL(acond_STATIC_BUILD, [test "x$static_build" = "xyes"])
 
 
@@ -68,7 +68,7 @@ if test "$build_tests" = "yes"; then
 else
    defval_BUILD_TESTS=0
 fi
-AC_DEFINE_UNQUOTED([ADIMAT_BUILD_TESTS], [$defval_BUILD_TESTS], [1: static build])
+AC_DEFINE_UNQUOTED([P2X_BUILD_TESTS], [$defval_BUILD_TESTS], [1: static build])
 AM_CONDITIONAL(acond_BUILD_TESTS, [test "x$build_tests" = "xyes"])
 
 
