@@ -351,6 +351,7 @@ P2X.JScanner = function(name) {
             var matches = []
             var scanner = this
             var sinp = scanner.input.substr(this.yyindex)
+            this.yyignored = {}
             if (!sinp) return null
             var starts = []
 
@@ -397,8 +398,6 @@ P2X.JScanner = function(name) {
             var tt = ENUM.ParserToken
             tt.act = this.actions[first][1];
 
-            this.yyignored = {}
-            
             if (min[0] > 0) {
                 var skipped = sinp.substring(0, min[0])
                 this.yyignored = P2X.Token(TOKEN_IGNORE, skipped, self.yyindex, self.yyline, self.yycol, first)
