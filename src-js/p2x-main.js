@@ -3,6 +3,8 @@ if (typeof window == 'undefined') {
     var fs = require('fs')
     // console.log('load scanner script')
     var P2X = require('./scanner.js')
+    var P2XTools = require('./p2x-tools.js')
+    P2X.importObject(P2XTools, P2X)
     //var O3XML = require('o3-xml-fork')
     var child_process = require('child_process')
     var POpts = require('./parse-opts.js')
@@ -104,7 +106,7 @@ function interpretParserConfigText(pconf, callback) {
             fs.writeFile(cnfFileName, pconf, function(err) {
                 if (err) throw(err)
 
-                var cmd = 'p2x -T -p ' + cnfFileName
+                var cmd = 'p2x' + ' ' + '-T' + ' ' + '-p ' + cnfFileName
                 var cnfXML
                 // system(cmd)
                 var child = child_process.exec(cmd, { stdio: 'inherit' },
