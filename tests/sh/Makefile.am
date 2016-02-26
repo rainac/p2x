@@ -3,7 +3,7 @@ generated_files = test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh test_reproduce_
 
 good = val_tests test_reproduce_strict test_reproduce test_reparse	\
 parse_tests merge_tests p2x_tests test_cmp_js p2xjs_mocha_tests		\
-test_output_stability indent_tests
+test_output_stability indent_tests reproduce_ign
 
 bad = false_test
 
