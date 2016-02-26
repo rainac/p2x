@@ -66,6 +66,9 @@ var parser = P2X.Parser()
 readParserConfigFile()
 
 function readParserConfigFile() {
+    if ('debug' in options) {
+        P2X.debug = true
+    }
     if ('prec-list' in options) {
         configFile = options['prec-list'][0]
         importParserConfig({file: configFile}, function(pc) {
