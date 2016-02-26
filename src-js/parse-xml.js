@@ -12,17 +12,9 @@ pXML.parseXml = null
 
 pXML.setup = function() {
 
-    if (typeof window.DOMParser != "undefined") {
+    if (typeof window.ActiveXObject != "undefined" &&
+        new window.ActiveXObject("Microsoft.XMLDOM")) {
         pXML.parseXml = function(xmlStr) {
-            if (typeof xmlStr != 'string') {
-                xmlStr = String(xmlStr)
-            }
-            
-            return ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
-        };
-    } else if (typeof window.ActiveXObject != "undefined" &&
-               new window.ActiveXObject("Microsoft.XMLDOM")) {
-        var parseXml = function(xmlStr) {
             if (typeof xmlStr != 'string') {
                 xmlStr = String(xmlStr)
             }
@@ -31,9 +23,14 @@ pXML.setup = function() {
             xmlDoc.loadXML(xmlStr);
             return xmlDoc;
         }
+    } else if (typeof window.DOMParser != "undefined") {
+        pXML.parseXml = function(xmlStr) {
+            if (typeof xmlStr != 'string') {
+                xmlStr = String(xmlStr)
+            }
+            return ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
+        }
     } else if (MostXML.loadXML) {
-        // console.log('Hier')
-        
         pXML.parseXml = function(xmlStr) {
             if (typeof xmlStr != 'string') {
                 xmlStr = String(xmlStr)
@@ -41,7 +38,6 @@ pXML.setup = function() {
             var xmlDoc = MostXML.loadXML(xmlStr)
             return xmlDoc
         }
-        // console.log('Hier')
     } else {
         throw new Error("No XML parser found")
     }

@@ -25,7 +25,6 @@ if (typeof window == 'undefined') {
     
     var fs = require('fs')
     var mod_assert = require('assert')
-    var pXML = require('./parse-xml.min.js')
 
     var ENUM = {}
     ENUM.ParserMode = require('./modes.ncd.min.js')
@@ -44,7 +43,6 @@ if (typeof window == 'undefined') {
     global = window
 }
 
-var parseXml = pXML.parseXml
 var not = function(x) { return !x; }
 var exit = function(x) { assert(false, x); }
 

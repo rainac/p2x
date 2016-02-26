@@ -30,7 +30,7 @@ gennc-common.js: token.ncd.js
 	./kill-comments-empty.sh $< > $@
 
 
-p2xa.js: gennc-common.min.js modes.ncd.min.js token.ncd.min.js assoc.ncd.min.js parse-xml.min.js hashmap.min.js scanner.min.js
+p2xa.js: gennc-common.min.js modes.ncd.min.js token.ncd.min.js assoc.ncd.min.js hashmap.min.js scanner.min.js
 	cat $^ > $@
 
 scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/scanner.xml
