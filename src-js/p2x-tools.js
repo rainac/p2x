@@ -78,6 +78,116 @@ P2X.escapeBSQLines = function(str){
     return '\'' + escbs.replace(/\\n((\\n)+|.)/g, "\\n'\n+'$1") + '\''
 }
 
+P2X.TokenList.prototype.loadXML = function(scanListXML) {
+    var scanDoc = parseXml(scanListXML)
+    switch (scanDoc.documentElement.nodeName) {
+    case 'scan-xml':
+        return this.loadXMLNode(scanDoc.documentElement)
+        break
+    default:
+        console.error('unexpected doc element name: ' + scanDoc.documentElement)
+        console.error('unexpected doc element contains: ' + scanDoc.documentElement.firstChild.nodeValue)
+        return null
+        break
+    }
+}
+P2X.TokenList.prototype.loadXMLNode = function(scanList) {
+    var rlist = [], ctoken
+    for (var k in scanList.childNodes) {
+        ctoken = scanList.childNodes[k]
+        if (ctoken.nodeType == 1 && ctoken.nodeName == "token") {
+            catext = null
+            for (j in ctoken.childNodes) {
+                cctoken = ctoken.childNodes[j]
+                text = ''
+                if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:text") {
+                    catext = cctoken
+                    if (catext.childNodes.length > 0
+                        && catext.childNodes[0].nodeType == 3) {
+                        text = catext.childNodes[0].nodeValue
+                    }
+                    break
+                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:br") {
+                    catext = cctoken
+                    text = '\n'
+                    break
+                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:cr") {
+                    catext = cctoken
+                    text = '\r'
+                    break
+                }
+            }
+            rlist.push(P2X.Token(ctoken.getAttribute('type'),
+                                 text,
+                                 ctoken.getAttribute('index'),
+                                 ctoken.getAttribute('line'),
+                                 ctoken.getAttribute('col')))
+        }
+    }
+    return new P2X.TokenList(rlist)
+}
+
+P2X.ScannerConfigOrig = P2X.ScannerConfig
+
+P2X.ScannerConfigPlus = function(x) {
+
+    res = P2X.ScannerConfigOrig(x)
+
+    res.loadXML = function(scConfXML) {
+        var scanDoc = parseXml(scConfXML)
+        switch (scanDoc.documentElement.nodeName) {
+        case 'ca:scanner':
+            return this.loadXMLDoc(scanDoc.documentElement)
+            break
+        default:
+            console.error('p2x: unexpected doc element name: ' + scanDoc.documentElement.nodeName)
+            console.error('p2x: unexpected doc element contains: ' + scanDoc.documentElement.firstChild.nodeValue)
+            return null
+            break
+        }
+    }
+    res.loadXMLDoc = function(scConfTT) {
+        // chead = scanList.getElementsByTagName('parser')
+        // return this.loadXMLNode(chead[0])
+        return this.loadXMLNode(scConfTT)
+    }
+    res.loadXMLNode = function(scanList) {
+        var rlist = [], ctoken, eres_re, eres_action
+        function getChildText(node, childName) {
+            var res
+            for (var k in node.childNodes) {
+                var childN = node.childNodes[k]
+                if (childN.nodeType == 1 && childN.nodeName == childName) {
+                    for (var j in childN.childNodes) {
+                        var childT = childN.childNodes[j]
+                        if (childT.nodeType == 3) {
+                            res = childT.nodeValue
+                            break
+                        }
+                    }
+                    break
+                }
+            }
+            return res
+        }
+        for (var k in scanList.childNodes) {
+            ctoken = scanList.childNodes[k], eres_re, eres_action
+            if (ctoken.nodeType == 1 && ctoken.nodeName == "ca:lexem") {
+                eres_re = ctoken.getAttribute('re') || getChildText(ctoken, 'ca:re')
+                eres_action = ctoken.getAttribute('action') || getChildText(ctoken, 'ca:action')
+                if (eres_re != 'undefined' && eres_re != '' && typeof eres_action != 'undefined') {
+                    rlist.push({ re: eres_re, action: eres_action })
+                }
+            }
+        }
+        return new P2X.ScannerConfig(rlist)
+    }
+
+    return res
+}
+
+P2X.ScannerConfig = P2X.ScannerConfigPlus
+
 P2X.TokenProtoRW = function() {
     var res = {}
     res.asxml = function(obj, indent) {
@@ -277,4 +387,5 @@ if (typeof window == 'undefined') {
     exports.tokenInfo2XML = P2X.tokenInfo2XML
     exports.parser2JSON = P2X.parser2JSON
     exports.TreePrinterPlus = P2X.TreePrinterPlus
+    exports.ScannerConfig = P2X.ScannerConfig
 }
