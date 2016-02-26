@@ -83,6 +83,10 @@ if test "$build_tests" = "yes"; then
    if test "x$XMLSTARLET" = "x"; then
       AC_MSG_ERROR([mandatory program xmlstarlet was not found])
    fi
+   AC_CHECK_PROGS([MOCHA], [mocha])
+   if test "x$MOCHA" = "x"; then
+      AC_MSG_ERROR([mandatory program mocha was not found])
+   fi
 else
    defval_BUILD_TESTS=0
 fi
