@@ -1274,6 +1274,9 @@ describe('P2X.Parser', function(){
                            }
                        }
                       }
+
+        parser.leastMap.insert(20, parser.root.right)
+        parser.leastMap.insert(30, parser.root.right.right)
         
         var rm = parser.getRMOp()
         assert.equal(parser.tokenInfo.isOp(parser.root.right), true)
