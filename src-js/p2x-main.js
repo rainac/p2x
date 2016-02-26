@@ -207,7 +207,9 @@ function readInput(uniConf) {
 
 function parseInput(data, uniConf) {
     if (P2X.debug) {
+        console.log('Debug scanner conf dump:')
         console.dir(scanner.get())
+        console.log('Debug parser conf dump:')
         console.dir(parser.getconfig())
     }
     scanner.str(data)
@@ -217,11 +219,12 @@ function parseInput(data, uniConf) {
     // console.log(tl.asxml())
     var res = parser.parse(tl)
     tpOptions = P2X.TreePrinterOptions(uniConf ? uniConf.treewriter : undefined);
-    if (P2X.debug) {
-        console.dir(tpOptions)
-    }
     if ('include-config' in options) {
         tpOptions.scanConf = tpOptions.parseConf = tpOptions.treewriterConf = true
+    }
+    if (P2X.debug) {
+        console.log('Debug treewriter conf dump:')
+        console.dir(tpOptions)
     }
     if ('output-mode' in options) {
         tpOptions.outputMode = 'y'
