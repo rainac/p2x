@@ -53,4 +53,8 @@ test_p2x_suite2() {
     run_suite p2x_tests2.sh
 }
 
+test_reproduce_ign() {
+    run_suite reproduce_ign.sh
+}
+
 . shunit2
