@@ -660,11 +660,20 @@ P2X.TokenInfo = function() {
             return this
         },
         insert: function (tokenProto) {
+            var tpNormalized = P2X.TokenProto(tokenProto) // normalizes
+            if (tpNormalized.closingList) {
+                var this_ = this
+                tpNormalized.closingList.map(function(k) {
+                    if (k.token == TOKEN_IDENTIFIER && k.repr) {
+                        this_.getOpCode(k.repr)
+                    }
+                })
+            }
             if (tokenProto.token == TOKEN_IDENTIFIER && tokenProto.repr) {
                 // this creates the new op code
                 // console.log('inserting token proto for named ID ' + tokenProto.repr + ': ' + this.getOpCode(tokenProto.repr))
                 // console.log(' prec ' + tokenProto.prec)
-                this.tokenClasses[this.getOpCode(tokenProto.repr)] = P2X.TokenProto(tokenProto)
+                this.tokenClasses[this.getOpCode(tokenProto.repr)] = tpNormalized
             } else if (typeof tokenProto.token == "undefined") {
             } else {
                 if (tokenProto.token == TOKEN_JUXTA) {
@@ -676,7 +685,7 @@ P2X.TokenInfo = function() {
                     assert(tokenProto.mode == MODE_UNARY)
                     assert(tokenProto.prec == 1)
                 }
-                this.tokenClasses[this.getOpCode(tokenProto.token)] = P2X.TokenProto(tokenProto) // normalizes
+                this.tokenClasses[this.getOpCode(tokenProto.token)] = tpNormalized
             }
             return this
         },
@@ -686,7 +695,7 @@ P2X.TokenInfo = function() {
 P2X.Parser = function(tokenInfo) {
     if (typeof tokenInfo == "undefined")
         tokenInfo = P2X.TokenInfo()
-    return {
+    var res = {
         root: undefined,
         input: undefined,
         tokenInfo: tokenInfo,
@@ -694,6 +703,7 @@ P2X.Parser = function(tokenInfo) {
         options: {
             ignoreIgnore: false
         },
+        leastMap: P2X.HashMap(P2X.maxPrec+1),
         getconfig: function () {
             return this.tokenInfo.getconfig()
         },
@@ -718,11 +728,11 @@ P2X.Parser = function(tokenInfo) {
             return t;
         },
         getRMOp: function() {
-            t = this.root
-            while (t.right && this.tokenInfo.isOp(t.right)) {
-                t = t.right
-            }
-            return t
+            var it = this.leastMap.end()
+            --it
+            if (this.tokenInfo.mode(this.leastMap.second(it)) == MODE_ITEM)
+                --it
+            return this.leastMap.second(it)
         },
         updateLeastMap: function(t, prec) {
             this.leastMap.insert(prec, t)
@@ -846,13 +856,10 @@ P2X.Parser = function(tokenInfo) {
         parse: function(tlist) {
             if (typeof (this.endList) == "undefined") 
                 this.endList = [this.tokenInfo.getOpCode(TOKEN_EOF)]
-            this.root = this.mkroot()
             this.result = {}
             this.result.parser = this
             this.result.scanner = tlist.scanner
             this.input = tlist;
-            this.leastMap = P2X.HashMap(P2X.maxPrec+1)
-            this.leastMap.insert(this.tokenInfo.prec(this.root), this.root)
 
             var first
 
@@ -861,8 +868,8 @@ P2X.Parser = function(tokenInfo) {
                 first = this.input.next()
                 // console.log("Parser: next, text='" + first.text
                 //             + "' code: " + this.tokenInfo.getOpCode(first)
-                //             + ', mode: ' + ENUM.getParserModeName(this.tokenInfo.mode(first)) + ', prec: ' + this.tokenInfo.prec(first))
-                // console.dir(first)
+                //             + ', mode: ' + this.tokenInfo.mode(first) + ', prec: ' + this.tokenInfo.prec(first))
+                // console.dir(this.endList)
                 if (typeof first == "undefined") {
                     console.error("Parser: unexpected end found, exiting")
                     // console.dir(first)
@@ -878,9 +885,11 @@ P2X.Parser = function(tokenInfo) {
                     endFound = true
                 } else if (this.tokenInfo.isParen(first)) {
                     var parser = P2X.Parser(this.tokenInfo)
-
+                    var parent = this
                     parser.options = this.options
-                    parser.endList = this.tokenInfo.endList(first).map(function(x){return x.token})
+                    parser.endList = this.tokenInfo.endList(first).map(function(k) {
+                        return parent.tokenInfo.getOpCode(k.token, k.repr)
+                    })
 
                     var last = parser.parse(this.input)
                     if (last && last.token != TOKEN_EOF)
@@ -900,7 +909,12 @@ P2X.Parser = function(tokenInfo) {
             } while (! endFound && first)
             return first
         }
-    }        
+    }
+
+    res.root = res.mkroot()
+    res.leastMap.insert(res.tokenInfo.prec(res.root), res.root)
+
+    return res
 }
 
 P2X.TreePrinterOptions = function(obj) {
