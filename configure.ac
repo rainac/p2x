@@ -65,6 +65,10 @@ if test "$build_tests" = "yes"; then
    if test "x$SHUNIT2" = "x"; then
       AC_MSG_ERROR([mandatory program shunit2 was not found])
    fi
+   AC_CHECK_PROGS([XMLSTARLET], [xmlstarlet])
+   if test "x$XMLSTARLET" = "x"; then
+      AC_MSG_ERROR([mandatory program xmlstarlet was not found])
+   fi
 else
    defval_BUILD_TESTS=0
 fi
