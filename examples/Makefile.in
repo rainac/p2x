@@ -190,6 +190,7 @@ TRANG = @TRANG@
 VCS_REVISION = @VCS_REVISION@
 VERSION = @VERSION@
 VERSION_NUMBER = @VERSION_NUMBER@
+XMLSTARLET = @XMLSTARLET@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
