@@ -5,7 +5,7 @@ cont=$1
 WD=/home/devel/
 BRANCH=${2:-master}
 
-docker cp scripts $cont:$WD/scripts
+docker cp scripts $cont:$WD
 
 dopts=-i
 if test -t 0; then
