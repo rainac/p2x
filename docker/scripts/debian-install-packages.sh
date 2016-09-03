@@ -6,4 +6,4 @@ npm -g mocha
 npm -g tmp
 npm -g most-xml
 
-sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+sudo ln -sf /usr/bin/nodejs /usr/local/bin/node
