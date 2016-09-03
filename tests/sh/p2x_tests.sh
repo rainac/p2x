@@ -60,7 +60,7 @@ testP2X6() {
     if ! test -t 0; then
         return 0
     fi
-    p2x -i ../../examples/in/mult3.exp
+    p2x -i ../../examples/in/mult3.exp 2> /dev/null
     assertNotEquals "P2X should fail in this case" $? 0
 }
 
