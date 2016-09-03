@@ -5,3 +5,5 @@ apt-get -y install git g++ gcc make automake shunit2 xmlstarlet xsltproc flex li
 npm -g mocha
 npm -g tmp
 npm -g most-xml
+
+sudo ln -s /usr/bin/nodejs /usr/local/bin/node
