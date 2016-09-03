@@ -1,18 +1,6 @@
-#! /bin/bash
+#! /bin/zsh
 
-#set -x
-
-checkParseTreeEqual() {
-    infile=$1
-    exp=$2
-    opts="$3"
-    p2x $opts -p ../../examples/configs/default ../../examples/in/$infile > res.xml
-    xsltproc -o res.txt ../../src/xsl/parens.xsl res.xml
-    res=$(cat res.txt)
-    echo "$infile: $(cat ../../examples/in/$infile)  =>  $res"
-    assertEquals "Parse tree is not in expected form: '$exp' != '$res'" "$exp" "$res"
-    rm res.txt res.xml
-}
+. ./setup_sh.sh
 
 testParseTreeEqual1() {
     checkParseTreeEqual postfix-test.exp "[NEWLINE]([a]([P](2), 3))"
@@ -224,4 +212,4 @@ testParseTreeEqual_question_mark() {
     checkParseTreeEqual question.exp "[EQUAL]([JUXTA](Is, [MULT]([MULT](2, 2), 2)), [QUESTION](7))"
 }
 
-. shunit2
+. ./myshunit2
