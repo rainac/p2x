@@ -16,7 +16,11 @@ yes | dd of=$infile ibs=16c cbs=2c count=$((64*$IN_KB)) obs=1c conv=block,sync
 ls -lh $infile
 wc $infile
 
-time $P2X $P2XOPTS -p ../../examples/configs/default -S c $infile > $outfile
+P2XFLAGS=(${(s: :)P2XFLAGS})
+time $P2X $P2XFLAGS $P2XOPTS -p ../../examples/configs/default -S c $infile > $outfile
+res=$?
 
 ls -lh $outfile
 wc $outfile
+
+exit $res

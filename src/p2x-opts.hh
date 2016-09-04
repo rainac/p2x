@@ -125,14 +125,14 @@ struct gengetopt_args_info
   const char *write_xml_declaration_help; /**< @brief Emit XML declaration (with encoding) help description.  */
   int write_bom_flag;	/**< @brief Emit byte order mark (BOM) character (default=off).  */
   const char *write_bom_help; /**< @brief Emit byte order mark (BOM) character help description.  */
-  char * output_mode_arg;	/**< @brief Write output as XML/JSON/MATLAB.  */
-  char * output_mode_orig;	/**< @brief Write output as XML/JSON/MATLAB original value given at command line.  */
-  const char *output_mode_help; /**< @brief Write output as XML/JSON/MATLAB help description.  */
+  char * output_mode_arg;	/**< @brief Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code (default='y').  */
+  char * output_mode_orig;	/**< @brief Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code original value given at command line.  */
+  const char *output_mode_help; /**< @brief Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code help description.  */
   int write_recursive_flag;	/**< @brief Recursive output writing (default=off).  */
   const char *write_recursive_help; /**< @brief Recursive output writing help description.  */
-  int attribute_line_flag;	/**< @brief Emit attribute line with source line (default=on).  */
+  int attribute_line_flag;	/**< @brief Emit attribute line with source line (default=off).  */
   const char *attribute_line_help; /**< @brief Emit attribute line with source line help description.  */
-  int attribute_column_flag;	/**< @brief Emit attribute column with source column (default=on).  */
+  int attribute_column_flag;	/**< @brief Emit attribute column with source column (default=off).  */
   const char *attribute_column_help; /**< @brief Emit attribute column with source column help description.  */
   int attribute_char_flag;	/**< @brief Emit attribute column with source char (default=off).  */
   const char *attribute_char_help; /**< @brief Emit attribute column with source char help description.  */

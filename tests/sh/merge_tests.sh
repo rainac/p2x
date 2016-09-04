@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 export SHUNIT_PARENT=$0
-. ./setup_sh.sh
+. ./setup_zsh.sh
 
 checkParseTreeEqualLocal() {
     checkParseTreeEqual "$1" "$2" "--merged $3"

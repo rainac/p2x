@@ -12,7 +12,7 @@ mkParseTree() {
         _opts="$_opts -S  ../../examples/configs/scanner-c.json"
     fi
     _opts="$_opts -o $xmltmp"
-    cmd="$p2x $_opts -p ../../examples/configs/default ../../examples/in/$infile"
+    cmd="$p2x $P2XFLAGS $_opts -p ../../examples/configs/default ../../examples/in/$infile"
     echo "$cmd"
     $cmd
     xsltproc -o $outfile ../../src/xsl/parens.xsl $xmltmp

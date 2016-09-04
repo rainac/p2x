@@ -2989,7 +2989,7 @@ int main(int argc, char *argv[]) {
     if (infile and *infile) {
       inStream = infile;
     } else {
-      ls(LS::ERROR) << "Failed to open input file: " << fileList[0] << ": " << strerror(errno) << std::endl;
+      ls(LS::ERROR) << "Failed to open input file: \"" << fileList[0] << "\": " << strerror(errno) << std::endl;
       return EXIT_FAILURE;
     }
   } else {
@@ -3030,7 +3030,7 @@ int main(int argc, char *argv[]) {
   Timer tXML;
   std::ostream &lout = ls(LS::TIMES) << "Writing tree to XML... ";
 
-  std::string outputMode = "x";
+  std::string outputMode = "y";
   if (args.output_mode_given) {
     outputMode = args.output_mode_arg[0];
   }

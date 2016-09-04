@@ -43,11 +43,11 @@ option "strict" -  "Strict output mode: paren children always indicated by null 
 option "sparse" w  "Safe some non-essential attributes, newlines and indents" flag off
 option "write-xml-declaration" -  "Emit XML declaration (with encoding)" flag off hidden
 option "write-bom" -  "Emit byte order mark (BOM) character" flag off hidden
-option "output-mode" - "Write output as XML/JSON/MATLAB" string typestr="Mode" optional
+option "output-mode" M "Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code" string typestr="Mode" optional default="y"
 
 option "write-recursive" -  "Recursive output writing" flag hidden off 
-option "attribute-line" -  "Emit attribute line with source line" flag on hidden
-option "attribute-column" -  "Emit attribute column with source column" flag on hidden
+option "attribute-line" -  "Emit attribute line with source line" flag off hidden
+option "attribute-column" -  "Emit attribute column with source column" flag off hidden
 option "attribute-char" -  "Emit attribute column with source char" flag off hidden
 option "attribute-precedence" -  "Emit attribute precedence with token precedence" flag off hidden
 option "attribute-code" -  "Emit attribute code with internal token code" flag off hidden

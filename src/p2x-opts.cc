@@ -63,10 +63,10 @@ const char *gengetopt_args_info_full_help[] = {
   "  -w, --sparse                  Safe some non-essential attributes, newlines\n                                  and indents  (default=off)",
   "      --write-xml-declaration   Emit XML declaration (with encoding)\n                                  (default=off)",
   "      --write-bom               Emit byte order mark (BOM) character\n                                  (default=off)",
-  "      --output-mode=Mode        Write output as XML/JSON/MATLAB",
+  "  -M, --output-mode=Mode        Write output as normal (x) or alternative (y)\n                                  XML, or (J)SON or (M)ATLAB code\n                                  (default=`y')",
   "      --write-recursive         Recursive output writing  (default=off)",
-  "      --attribute-line          Emit attribute line with source line\n                                  (default=on)",
-  "      --attribute-column        Emit attribute column with source column\n                                  (default=on)",
+  "      --attribute-line          Emit attribute line with source line\n                                  (default=off)",
+  "      --attribute-column        Emit attribute column with source column\n                                  (default=off)",
   "      --attribute-char          Emit attribute column with source char\n                                  (default=off)",
   "      --attribute-precedence    Emit attribute precedence with token precedence\n                                  (default=off)",
   "      --attribute-code          Emit attribute code with internal token code\n                                  (default=off)",
@@ -255,11 +255,11 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->sparse_flag = 0;
   args_info->write_xml_declaration_flag = 0;
   args_info->write_bom_flag = 0;
-  args_info->output_mode_arg = NULL;
+  args_info->output_mode_arg = gengetopt_strdup ("y");
   args_info->output_mode_orig = NULL;
   args_info->write_recursive_flag = 0;
-  args_info->attribute_line_flag = 1;
-  args_info->attribute_column_flag = 1;
+  args_info->attribute_line_flag = 0;
+  args_info->attribute_column_flag = 0;
   args_info->attribute_char_flag = 0;
   args_info->attribute_precedence_flag = 0;
   args_info->attribute_code_flag = 0;
@@ -1191,7 +1191,7 @@ cmdline_parser_internal (
         { "sparse",	0, NULL, 'w' },
         { "write-xml-declaration",	0, NULL, 0 },
         { "write-bom",	0, NULL, 0 },
-        { "output-mode",	1, NULL, 0 },
+        { "output-mode",	1, NULL, 'M' },
         { "write-recursive",	0, NULL, 0 },
         { "attribute-line",	0, NULL, 0 },
         { "attribute-column",	0, NULL, 0 },
@@ -1209,7 +1209,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:mwc", long_options, &option_index);
+      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:mwM:c", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1384,6 +1384,18 @@ cmdline_parser_internal (
             goto failure;
         
           break;
+        case 'M':	/* Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code.  */
+        
+        
+          if (update_arg( (void *)&(args_info->output_mode_arg), 
+               &(args_info->output_mode_orig), &(args_info->output_mode_given),
+              &(local_args_info.output_mode_given), optarg, 0, "y", ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "output-mode", 'M',
+              additional_error))
+            goto failure;
+        
+          break;
         case 'c':	/* Add configuration info to the output XML.  */
         
         
@@ -1530,20 +1542,6 @@ cmdline_parser_internal (
             if (update_arg((void *)&(args_info->write_bom_flag), 0, &(args_info->write_bom_given),
                 &(local_args_info.write_bom_given), optarg, 0, 0, ARG_FLAG,
                 check_ambiguity, override, 1, 0, "write-bom", '-',
-                additional_error))
-              goto failure;
-          
-          }
-          /* Write output as XML/JSON/MATLAB.  */
-          else if (strcmp (long_options[option_index].name, "output-mode") == 0)
-          {
-          
-          
-            if (update_arg( (void *)&(args_info->output_mode_arg), 
-                 &(args_info->output_mode_orig), &(args_info->output_mode_given),
-                &(local_args_info.output_mode_given), optarg, 0, 0, ARG_STRING,
-                check_ambiguity, override, 0, 0,
-                "output-mode", '-',
                 additional_error))
               goto failure;
           
