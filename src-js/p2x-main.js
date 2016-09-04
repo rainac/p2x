@@ -228,7 +228,14 @@ function parseInput(data, uniConf) {
         console.dir(tpOptions)
     }
     if ('output-mode' in options) {
-        tpOptions.outputMode = 'y'
+        if (options['output-mode'] == 'x') {
+            tpOptions.outputMode = 'x'
+        } else if (options['output-mode'] == 'y') {
+            tpOptions.outputMode = 'y'
+        } else {
+            console.error('invalid output-mode: ' + options['output-mode'])
+            tpOptions.outputMode = 'y'
+        }
         tpOptions = P2X.TreePrinterOptions(tpOptions)
     }
     var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)
