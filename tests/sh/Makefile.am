@@ -16,6 +16,9 @@ result_suite_good_%: %.sh
 result_suite_bad_%: %.sh
 	! ./$< > log_$*.txt 2>&1
 
+run_%: test_%.sh
+	./$<
+
 forall_tests.sh: update_forall_tests.sh ../../examples/in
 	./update_forall_tests.sh
 
