@@ -32,7 +32,7 @@ Sie sollten eine Kopie der GNU Lesser General Public License zusammen
 mit diesem Programm erhalten haben. Wenn nicht, siehe
 <http://www.gnu.org/licenses/>.
 
-Copyright (C) 2013,2014 Johannes Willkomm 
+Copyright (C) 2011-2016 Johannes Willkomm
 
 */
 
@@ -2402,7 +2402,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
 bool debugInit = false;
 
 void printCopyright() {
-  printf("Copyright (C) 2010-2015 Johannes Willkomm <johannes@johannes-willkomm.de>\n");
+  printf("Copyright (C) 2011-2016 Johannes Willkomm <johannes@johannes-willkomm.de>\n");
 }
 
 void printBugreportInfo() {
