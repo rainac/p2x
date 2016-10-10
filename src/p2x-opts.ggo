@@ -38,6 +38,7 @@ option "input-encoding" e  "Input encoding" string typestr="Charset" multiple op
 option "indent" -  "Indent" flag on
 option "indent-unit" -  "Indentation unit" string default=" " multiple optional
 option "newline-as-br" -  "Emit newline text as ca:br element of ca:text" flag on
+option "newline-as-entity" -  "Emit newline text as &#xa; character entity" flag off
 option "merged" m  "Collect children of equal operator chains, output all binary nodes in MERGED mode" flag off
 option "strict" -  "Strict output mode: paren children always indicated by null elements" flag off
 option "output-mode" - "Write output as XML/JSON/MATLAB" string typestr="Mode" optional
