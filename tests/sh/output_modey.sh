@@ -13,7 +13,6 @@ testReproduce() {
             || [[ "$i" = "../../examples/in/letter.exp" ]] \
             || [[ "$i" = "../../examples/in/fliesst.exp" ]]
         then
-            continue
             opts="-e latin1"
             reprxsl=reproduce-latin1.xsl
         fi
@@ -24,7 +23,7 @@ testReproduce() {
 
         sz1=$(ls -l res.xml | cut -d " " -f 5)
 
-        p2x $alt_opts -p ../../examples/configs/default $i > res.xml
+        p2x $opts $alt_opts -p ../../examples/configs/default $i > res.xml
         xsltproc ../../src/xsl/$reprxsl res.xml > res.txt
         diff $i res.txt
         assertEquals "Alternate opts reproduce test $i did not return same result" 0 $?
