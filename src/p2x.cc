@@ -2105,7 +2105,7 @@ struct TreeXMLWriter {
     aus << " line='" << t.options.line << "'";
     aus << " mode='" << t.options.mode << "'";
     aus << " newlineAsBr='" << t.options.newlineAsBr << "'";
-    //    aus << " newlineAsEntity='" << t.options.newlineAsEntity << "'";
+    aus << " newlineAsEntity='" << t.options.newlineAsEntity << "'";
     aus << " prec='" << t.options.prec << "'";
     aus << " strict='" << t.options.strict << "'";
     aus << " type='" << t.options.type << "'";

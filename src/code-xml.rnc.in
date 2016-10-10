@@ -19,6 +19,7 @@ code-xml = element code-xml {
              attribute line { text },
              attribute mode { text },
              attribute newlineAsBr { text },
+             attribute newlineAsEntity { text },
              attribute prec { text },
              attribute strict{ text },
              attribute type { text }
