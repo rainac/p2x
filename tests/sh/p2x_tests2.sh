@@ -30,4 +30,23 @@ testP2X_fail_fortran2() {
     rm log err
 }
 
+testP2X_no_output_newline() {
+    p2x --indent -p  ../../examples/configs/default ../../examples/in/email.exp > res.xml 2> err
+    assertEquals "P2X should not fail in this case" "0" "$?"
+    numl=$(wc res.xml | awk '{print $1}')
+    test $numl = 2
+    assertEquals "P2X should print no newlines in XML by default" "0" "$?"
+    rm err res.xml
+}
+
+
+testP2X_output_newline_if_desired() {
+    p2x --indent --newline-as-br -p  ../../examples/configs/default ../../examples/in/email.exp > res.xml 2> err
+    assertEquals "P2X should not fail in this case" "0" "$?"
+    numl=$(wc res.xml | awk '{print $1}')
+    test $numl = 6
+    assertEquals "P2X should print newlines in XML if desired" "0" "$?"
+    rm err res.xml
+}
+
 . shunit2
