@@ -33,6 +33,9 @@ testReproduce() {
         echo "saved: $sz1 / $sz2 = $saving"
 
         rm res.xml res.txt
+
+        test $saving -gt 0
+        assertEquals "Alternate XML format should be smaller or of same size" 0 $?
     done
 
 }
