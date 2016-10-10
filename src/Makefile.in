@@ -100,6 +100,7 @@ bin_PROGRAMS = p2x$(EXEEXT) $(am__EXEEXT_1)
 @acond_BUILD_TESTS_TRUE@am__append_1 = p2xtests
 @acond_GENGETOPT_AVAIL_TRUE@am__append_2 = p2x-opts.hh p2x-opts.cc
 @acond_TRANG_AVAIL_TRUE@am__append_3 = code-xml.rng
+@acond_FLEX_AVAIL_TRUE@am__append_4 = $(patsubst %.ll,%.cc,$(p2x_FLEX_SRCS))
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -365,8 +366,7 @@ p2x_LDFLAGS =
 p2x_DEPENDENCIES = 
 p2xtests_LDADD = -lcppunit
 generated_files = namespaces.hh code-xml.rnc $(am__append_2) \
-	$(am__append_3)
-gen_files_flex = $(patsubst %.ll,%.cc,$(p2x_FLEX_SRCS))
+	$(am__append_3) $(am__append_4)
 flexPrefix = scan
 instbasedir = $(pkgdatadir)
 instdir = $(instbasedir)
@@ -837,7 +837,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-instDATA
 
 .PRECIOUS: Makefile
 
-#generated_files += $(patsubst %.ll,%.cc,$(p2x_FLEX_SRCS))
 
 p2x.cc: $(generated_files)
 
@@ -873,7 +872,6 @@ clean-local:
 	$(RM) -f $(generated_files)
 
 distclean-local:
-	$(RM) -f $(gen_files_flex)
 
 check:
 	./p2xtests
