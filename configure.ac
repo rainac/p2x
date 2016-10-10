@@ -48,6 +48,9 @@ done
 AC_CHECK_PROGS([TRANG], [trang])
 AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])
 
+AC_CHECK_PROGS([FLEX], [flex])
+AM_CONDITIONAL(acond_FLEX_AVAIL, [test "x$FLEX" != "x"])
+
 AC_ARG_ENABLE([static], [  --enable-static         Build statically linked executables.
   --disable-static        Build dynamically linked executables.], [
       static_build=$enableval

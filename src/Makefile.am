@@ -9,7 +9,8 @@ if acond_BUILD_TESTS
 bin_PROGRAMS += p2xtests
 endif
 
-p2x_SOURCES = p2x.cc scanner.xml scanner.ll scanner-no-strings.ll scanner-r.ll scanner-c.ll p2x-opts.cc token.cc logger.cc
+p2x_FLEX_SRCS = scanner.ll scanner-no-strings.ll scanner-r.ll scanner-c.ll
+p2x_SOURCES = p2x.cc scanner.xml $(p2x_FLEX_SRCS) p2x-opts.cc token.cc logger.cc
 p2xtests_SOURCES = p2xtests.cc scanner.ll scanner-no-strings.ll p2x-opts.cc token.cc logger.cc
 
 p2x_CXXFLAGS =
@@ -26,6 +27,9 @@ generated_files += p2x-opts.hh p2x-opts.cc
 endif
 if acond_TRANG_AVAIL
 generated_files += code-xml.rng
+endif
+if acond_FLEX_AVAIL
+generated_files += $(patsubst %.ll,%.cc,$(p2x_FLEX_SRCS))
 endif
 
 p2x.cc: $(generated_files)
@@ -76,6 +80,8 @@ inst_DATA = code-xml.rnc ../examples/configs/scanner-c.xml
 
 clean-local:
 	$(RM) -f $(generated_files)
+
+distclean-local:
 
 check:
 	./p2xtests
