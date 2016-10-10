@@ -115,6 +115,8 @@ struct gengetopt_args_info
   const char *indent_unit_help; /**< @brief Indentation unit help description.  */
   int newline_as_br_flag;	/**< @brief Emit newline text as ca:br element of ca:text (default=on).  */
   const char *newline_as_br_help; /**< @brief Emit newline text as ca:br element of ca:text help description.  */
+  int newline_as_entity_flag;	/**< @brief Emit newline text as &#xa; character entity (default=off).  */
+  const char *newline_as_entity_help; /**< @brief Emit newline text as &#xa; character entity help description.  */
   int merged_flag;	/**< @brief Collect children of equal operator chains, output all binary nodes in MERGED mode (default=off).  */
   const char *merged_help; /**< @brief Collect children of equal operator chains, output all binary nodes in MERGED mode help description.  */
   int strict_flag;	/**< @brief Strict output mode: paren children always indicated by null elements (default=off).  */
@@ -162,6 +164,7 @@ struct gengetopt_args_info
   unsigned int indent_given ;	/**< @brief Whether indent was given.  */
   unsigned int indent_unit_given ;	/**< @brief Whether indent-unit was given.  */
   unsigned int newline_as_br_given ;	/**< @brief Whether newline-as-br was given.  */
+  unsigned int newline_as_entity_given ;	/**< @brief Whether newline-as-entity was given.  */
   unsigned int merged_given ;	/**< @brief Whether merged was given.  */
   unsigned int strict_given ;	/**< @brief Whether strict was given.  */
   unsigned int output_mode_given ;	/**< @brief Whether output-mode was given.  */

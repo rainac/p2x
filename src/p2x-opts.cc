@@ -58,6 +58,7 @@ const char *gengetopt_args_info_full_help[] = {
   "      --indent                  Indent  (default=on)",
   "      --indent-unit=STRING      Indentation unit  (default=` ')",
   "      --newline-as-br           Emit newline text as ca:br element of ca:text\n                                  (default=on)",
+  "      --newline-as-entity       Emit newline text as &#xa; character entity\n                                  (default=off)",
   "  -m, --merged                  Collect children of equal operator chains,\n                                  output all binary nodes in MERGED mode\n                                  (default=off)",
   "      --strict                  Strict output mode: paren children always\n                                  indicated by null elements  (default=off)",
   "      --output-mode=Mode        Write output as XML/JSON/MATLAB",
@@ -102,11 +103,12 @@ init_help_array(void)
   gengetopt_args_info_help[24] = gengetopt_args_info_full_help[24];
   gengetopt_args_info_help[25] = gengetopt_args_info_full_help[25];
   gengetopt_args_info_help[26] = gengetopt_args_info_full_help[26];
-  gengetopt_args_info_help[27] = 0; 
+  gengetopt_args_info_help[27] = gengetopt_args_info_full_help[27];
+  gengetopt_args_info_help[28] = 0; 
   
 }
 
-const char *gengetopt_args_info_help[28];
+const char *gengetopt_args_info_help[29];
 
 typedef enum {ARG_NO
   , ARG_FLAG
@@ -178,6 +180,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->indent_given = 0 ;
   args_info->indent_unit_given = 0 ;
   args_info->newline_as_br_given = 0 ;
+  args_info->newline_as_entity_given = 0 ;
   args_info->merged_given = 0 ;
   args_info->strict_given = 0 ;
   args_info->output_mode_given = 0 ;
@@ -228,6 +231,7 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->indent_unit_arg = NULL;
   args_info->indent_unit_orig = NULL;
   args_info->newline_as_br_flag = 1;
+  args_info->newline_as_entity_flag = 0;
   args_info->merged_flag = 0;
   args_info->strict_flag = 0;
   args_info->output_mode_arg = NULL;
@@ -293,17 +297,18 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->indent_unit_min = 0;
   args_info->indent_unit_max = 0;
   args_info->newline_as_br_help = gengetopt_args_info_full_help[23] ;
-  args_info->merged_help = gengetopt_args_info_full_help[24] ;
-  args_info->strict_help = gengetopt_args_info_full_help[25] ;
-  args_info->output_mode_help = gengetopt_args_info_full_help[26] ;
-  args_info->write_recursive_help = gengetopt_args_info_full_help[27] ;
-  args_info->attribute_line_help = gengetopt_args_info_full_help[28] ;
-  args_info->attribute_column_help = gengetopt_args_info_full_help[29] ;
-  args_info->attribute_char_help = gengetopt_args_info_full_help[30] ;
-  args_info->attribute_precedence_help = gengetopt_args_info_full_help[31] ;
-  args_info->attribute_mode_help = gengetopt_args_info_full_help[32] ;
-  args_info->attribute_type_help = gengetopt_args_info_full_help[33] ;
-  args_info->attribute_id_help = gengetopt_args_info_full_help[34] ;
+  args_info->newline_as_entity_help = gengetopt_args_info_full_help[24] ;
+  args_info->merged_help = gengetopt_args_info_full_help[25] ;
+  args_info->strict_help = gengetopt_args_info_full_help[26] ;
+  args_info->output_mode_help = gengetopt_args_info_full_help[27] ;
+  args_info->write_recursive_help = gengetopt_args_info_full_help[28] ;
+  args_info->attribute_line_help = gengetopt_args_info_full_help[29] ;
+  args_info->attribute_column_help = gengetopt_args_info_full_help[30] ;
+  args_info->attribute_char_help = gengetopt_args_info_full_help[31] ;
+  args_info->attribute_precedence_help = gengetopt_args_info_full_help[32] ;
+  args_info->attribute_mode_help = gengetopt_args_info_full_help[33] ;
+  args_info->attribute_type_help = gengetopt_args_info_full_help[34] ;
+  args_info->attribute_id_help = gengetopt_args_info_full_help[35] ;
   
 }
 
@@ -538,6 +543,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
   write_multiple_into_file(outfile, args_info->indent_unit_given, "indent-unit", args_info->indent_unit_orig, 0);
   if (args_info->newline_as_br_given)
     write_into_file(outfile, "newline-as-br", 0, 0 );
+  if (args_info->newline_as_entity_given)
+    write_into_file(outfile, "newline-as-entity", 0, 0 );
   if (args_info->merged_given)
     write_into_file(outfile, "merged", 0, 0 );
   if (args_info->strict_given)
@@ -1128,6 +1135,7 @@ cmdline_parser_internal (
         { "indent",	0, NULL, 0 },
         { "indent-unit",	1, NULL, 0 },
         { "newline-as-br",	0, NULL, 0 },
+        { "newline-as-entity",	0, NULL, 0 },
         { "merged",	0, NULL, 'm' },
         { "strict",	0, NULL, 0 },
         { "output-mode",	1, NULL, 0 },
@@ -1407,6 +1415,18 @@ cmdline_parser_internal (
             if (update_arg((void *)&(args_info->newline_as_br_flag), 0, &(args_info->newline_as_br_given),
                 &(local_args_info.newline_as_br_given), optarg, 0, 0, ARG_FLAG,
                 check_ambiguity, override, 1, 0, "newline-as-br", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Emit newline text as &#xa; character entity.  */
+          else if (strcmp (long_options[option_index].name, "newline-as-entity") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->newline_as_entity_flag), 0, &(args_info->newline_as_entity_given),
+                &(local_args_info.newline_as_entity_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "newline-as-entity", '-',
                 additional_error))
               goto failure;
           
