@@ -27,8 +27,9 @@ endif
 if acond_TRANG_AVAIL
 generated_files += code-xml.rng
 endif
-gen_files_flex = $(patsubst %.ll,%.cc,$(p2x_FLEX_SRCS))
-#generated_files += $(patsubst %.ll,%.cc,$(p2x_FLEX_SRCS))
+if acond_FLEX_AVAIL
+generated_files += $(patsubst %.ll,%.cc,$(p2x_FLEX_SRCS))
+endif
 
 p2x.cc: $(generated_files)
 
@@ -74,7 +75,6 @@ clean-local:
 	$(RM) -f $(generated_files)
 
 distclean-local:
-	$(RM) -f $(gen_files_flex)
 
 check:
 	./p2xtests
