@@ -1184,13 +1184,14 @@ struct TreeXMLWriter {
       id(true), line(), col(), _char(),
       prec(), mode(), type(true),
       indent(true), indentLogarithmic(true), newlineAsBr(true),
+      newlineAsEntity(false),
       merged(),
       strict(),
       writeRec(true),
       minStraightIndentLevel(135),
       encoding("default is in .ggo")
     {}
-    bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, merged, strict, writeRec;
+    bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, writeRec;
     unsigned minStraightIndentLevel;
     std::string encoding;
   };
@@ -1247,10 +1248,16 @@ struct TreeXMLWriter {
   bool writeXMLTextElem(Token const *t, std::ostream &aus, std::string const &indent = "") const {
     bool res = 0;
     if (t->token == TOKEN_NEWLINE) {
-      if (options.newlineAsBr) {
+      if (options.newlineAsBr and not options.newlineAsEntity) {
         aus << indent << "<ca:br/>";
       } else {
-        aus << indent << "<ca:text>\n</ca:text>";
+        aus << indent << "<ca:text>";
+        if (options.newlineAsEntity) {
+          aus << "&#xa;";
+        } else {
+          aus << "\n";
+        }
+        aus << "</ca:text>";
       }
       res = 1;
     } else if (t->token == TOKEN_CRETURN) {
@@ -1446,7 +1453,13 @@ struct TreeXMLWriter {
       if (m_xmlWriter.options.newlineAsBr) {
         aus << indent << "<c:br/>";
       } else {
-        aus << indent << "<c:t>\n</c:t>";
+        aus << indent << "<c:t>";
+        if (m_xmlWriter.options.newlineAsEntity) {
+          aus << "&#xa;";
+        } else {
+          aus << "\n";
+        }
+        aus << indent << "</c:t>";
       }
       res = 1;
     } else if (t->token == TOKEN_CRETURN) {
@@ -2092,6 +2105,7 @@ struct TreeXMLWriter {
     aus << " line='" << t.options.line << "'";
     aus << " mode='" << t.options.mode << "'";
     aus << " newlineAsBr='" << t.options.newlineAsBr << "'";
+    //    aus << " newlineAsEntity='" << t.options.newlineAsEntity << "'";
     aus << " prec='" << t.options.prec << "'";
     aus << " strict='" << t.options.strict << "'";
     aus << " type='" << t.options.type << "'";
@@ -2592,6 +2606,7 @@ int main(int argc, char *argv[]) {
   options.id = args.attribute_id_flag;
 
   options.newlineAsBr = args.newline_as_br_flag;
+  options.newlineAsEntity = args.newline_as_entity_flag;
   options.indent = args.indent_flag;
   options.merged = args.merged_flag;
   options.strict = args.strict_flag;
