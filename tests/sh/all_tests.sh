@@ -40,4 +40,8 @@ test_p2x_suite2() {
     run_suite p2x_tests2.sh
 }
 
+test_output_modey() {
+    run_suite output_modey.sh
+}
+
 . shunit2
