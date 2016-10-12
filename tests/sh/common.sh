@@ -1,5 +1,9 @@
 #
 
+zmodload zsh/mathfunc
+set -o shwordsplit
+export LANG=C # for grep used in shunit2, depends on english output
+
 ReproduceTest() {
 
     arg1_infile=$1

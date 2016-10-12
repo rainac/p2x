@@ -3,13 +3,9 @@
 # This suite runs some tests running p2x with different option
 # controlling the reproducibility of the XML output.
 
-zmodload zsh/mathfunc
-set -o shwordsplit
+source common.sh
 echo $0
 export SHUNIT_PARENT=$0
-export LANG=C # for grep used in shunit2, depends on english output
-
-source common.sh
 
 alt_opts="--output-mode=y"
 common_opts=""
