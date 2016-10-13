@@ -8,25 +8,27 @@
      </op>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">=</ca:text>
      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="3" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
-     <paren line="1" col="4" code="39" type="L_BRACKET">
-      <null/>
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">[</ca:text>
-      <op line="1" col="13" code="71" type="JUXTA">
-       <op line="1" col="9" code="71" type="JUXTA">
-        <string line="1" col="5" code="30" type="STRING">
-         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">'*'</ca:text>
-         <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="8" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
-        </string>
-        <string line="1" col="9" code="30" type="STRING">
-         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">';'</ca:text>
-         <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="12" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+     <paren line="1" col="16" code="40" type="R_BRACKET">
+      <paren line="1" col="4" code="39" type="L_BRACKET">
+       <null/>
+       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">[</ca:text>
+       <op line="1" col="13" code="71" type="JUXTA">
+        <op line="1" col="9" code="71" type="JUXTA">
+         <string line="1" col="5" code="30" type="STRING">
+          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">'*'</ca:text>
+          <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="8" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+         </string>
+         <string line="1" col="9" code="30" type="STRING">
+          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">';'</ca:text>
+          <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="12" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+         </string>
+        </op>
+        <string line="1" col="13" code="30" type="STRING">
+         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">'^'</ca:text>
         </string>
        </op>
-       <string line="1" col="13" code="30" type="STRING">
-        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">'^'</ca:text>
-        <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="16" code="40" type="R_BRACKET"><ca:text>]</ca:text></ca:ignore>
-       </string>
-      </op>
+      </paren>
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">]</ca:text>
      </paren>
     </op>
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">;</ca:text>
