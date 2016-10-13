@@ -1121,15 +1121,13 @@ struct TreeTraverser {
 
   void (HandlerClass::*enterFcn)(Token const *, Token const *);
   void (HandlerClass::*leaveFcn)(Token const *, Token const *);
-  void (HandlerClass::*contentFcn1)(Token const *, Token const *);
-  void (HandlerClass::*contentFcn2)(Token const *, Token const *);
+  void (HandlerClass::*contentFcn)(Token const *, Token const *);
 
   TreeTraverser(HandlerClass *obj) :
     m_obj(obj),
     enterFcn(),
     leaveFcn(),
-    contentFcn1(),
-    contentFcn2()
+    contentFcn()
   {}
 
   void handleNode(StackItem const t) {
@@ -1145,8 +1143,8 @@ struct TreeTraverser {
       }
       break;
     case ST_BETWEEN:
-      if (contentFcn1) {
-        (m_obj->*contentFcn1)(t.second, m_stack.sTop().second);
+      if (contentFcn) {
+        (m_obj->*contentFcn)(t.second, m_stack.sTop().second);
       }
       m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
       if (t.second->right) {
@@ -1653,7 +1651,7 @@ struct TreeXMLWriter {
       }
 
     }
-    void onContent1(Token const *t, Token const * /* parent */) {
+    void onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
 #endif
@@ -1670,13 +1668,6 @@ struct TreeXMLWriter {
       } else if (not t->text.empty()) {
         aus << ",'value',";
         aus << "'" << t->text << "'" << "";
-      }
-    }
-    void onContent2(Token const *t, Token const * /* parent */) {
-      if (t->right or m_xmlWriter.options.strict)
-        aus << ",'right',";
-      if (not t->right and m_xmlWriter.options.strict) {
-        aus << "''";
       }
     }
     void onLeave(Token const *t, Token const *parent) {
@@ -1805,7 +1796,7 @@ struct TreeXMLWriter {
       }
 
     }
-    void onContent1(Token const *t, Token const * /* parent */) {
+    void onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
 #endif
@@ -1865,7 +1856,7 @@ struct TreeXMLWriter {
     TreeTraverser<XMLTreePrintHelper2> traverser(&printer);
 
     traverser.enterFcn = &XMLTreePrintHelper2::onEnter;
-    traverser.contentFcn1 = &XMLTreePrintHelper2::onContent;
+    traverser.contentFcn = &XMLTreePrintHelper2::onContent;
     traverser.leaveFcn = &XMLTreePrintHelper2::onLeave;
 
     traverser.traverseTree(t);
@@ -1881,7 +1872,7 @@ struct TreeXMLWriter {
     TreeTraverser<TreePrintHelper> traverser(&printer);
 
     traverser.enterFcn = &TreePrintHelper::onEnter;
-    traverser.contentFcn1 = &TreePrintHelper::onContent;
+    traverser.contentFcn = &TreePrintHelper::onContent;
     traverser.leaveFcn = &TreePrintHelper::onLeave;
 
     traverser.traverseTree(t);
@@ -1897,8 +1888,7 @@ struct TreeXMLWriter {
     TreeTraverser<TreePrintHelperMATLAB> traverser(&printer);
 
     traverser.enterFcn = &TreePrintHelperMATLAB::onEnter;
-    traverser.contentFcn1 = &TreePrintHelperMATLAB::onContent1;
-    traverser.contentFcn2 = &TreePrintHelperMATLAB::onContent2;
+    traverser.contentFcn = &TreePrintHelperMATLAB::onContent;
     traverser.leaveFcn = &TreePrintHelperMATLAB::onLeave;
 
     traverser.traverseTree(t);
@@ -1915,7 +1905,7 @@ struct TreeXMLWriter {
     TreeTraverser<TreePrintHelperJSON> traverser(&printer);
 
     traverser.enterFcn = &TreePrintHelperJSON::onEnter;
-    traverser.contentFcn1 = &TreePrintHelperJSON::onContent1;
+    traverser.contentFcn = &TreePrintHelperJSON::onContent;
     traverser.leaveFcn = &TreePrintHelperJSON::onLeave;
 
     traverser.traverseTree(t);
