@@ -1985,20 +1985,13 @@ struct TreeXMLWriter {
         passParent = t;
       }
       writeXML_Rec(t->left, aus, subindent, passParent, level+1);
-    } else if (t->right != 0 or t->content != 0) {
+    } else if (t->right != 0) {
       aus << indent << indentUnit << "<null/>" << linebreak;
     }
     bool const wrt = writeXMLTextElem(t, aus, subindent);
     if (wrt) aus << linebreak;
     if (t->ignore) {
       writeIgnoreXML(t->ignore, aus, subindent);
-    }
-    if (t->content) {
-      writeXML_Rec(t->content, aus, subindent, 0, level+1);
-    } else if (tokenInfo.isParen(t) and t->right != 0) {
-      if (options.strict) {
-        aus << indent << indentUnit << "<null/>" << linebreak;
-      }
     }
     if (t->right != 0) {
       Token const *passParent = 0;
