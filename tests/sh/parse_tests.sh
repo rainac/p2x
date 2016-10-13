@@ -136,58 +136,58 @@ testParseTreeEqual_p_2() {
 
 testParseTreeEqual_word_par_1() {
     # test words as paren delimiters
-    checkParseTreeEqual word-paren.exp "[MULT](1, [open](., [PLUS](2, 3)))"
+    checkParseTreeEqual word-paren.exp "[MULT](1, [close]([open](., [PLUS](2, 3))))"
 }
 testParseTreeEqual_word_par_2() {
     # test words as paren delimiters, with alternative endings
-    checkParseTreeEqual word-paren2.exp "[MULT](1, [begin](., [PLUS](2, 3)))"
+    checkParseTreeEqual word-paren2.exp "[MULT](1, [finish]([begin](., [PLUS](2, 3))))"
 }
 testParseTreeEqual_word_par_3() {
     # test words as paren delimiters, with alternative endings
-    checkParseTreeEqual word-paren3.exp "[MULT](1, [begin](., [PLUS](2, 3)))"
+    checkParseTreeEqual word-paren3.exp "[MULT](1, [endblock]([begin](., [PLUS](2, 3))))"
 }
 testParseTreeEqual_word_par_4() {
     # test empty word paren
-    checkParseTreeEqual word-paren-empty.exp "[JUXTA]([MULT](1, ftest), [open]())"
+    checkParseTreeEqual word-paren-empty.exp "[JUXTA]([MULT](1, ftest), [close]([open]()))"
 }
 
 testParseTreeEqual_bin_par_1() {
-    checkParseTreeEqual bin-paren.exp "[bopen](1, [PLUS](2, 3), 4)" "-i NEWLINE"
+    checkParseTreeEqual bin-paren.exp "[bclose]([bopen](1, [PLUS](2, 3)), 4)" "-i NEWLINE"
 }
 
 testParseTreeEqual_bin_par_2() {
-    checkParseTreeEqual bin-paren-empty.exp "[bopen](1, 2)" "-i NEWLINE"
-    checkParseTreeEqual bin-paren-empty.exp "[bopen](1, ., 2)" "-i NEWLINE --strict"
+    checkParseTreeEqual bin-paren-empty.exp "[bclose]([bopen](1), 2)" "-i NEWLINE"
+    checkParseTreeEqual bin-paren-empty.exp "[bclose]([bopen](1), 2)" "-i NEWLINE --strict"
 }
 
 testParseTreeEqual_un_par_1() {
-    checkParseTreeEqual un-paren.exp "[MULT](1, [uopen](., [PLUS](2, 3), 4))" "-i NEWLINE"
+    checkParseTreeEqual un-paren.exp "[MULT](1, [uclose]([uopen](., [PLUS](2, 3)), 4))" "-i NEWLINE"
 }
 
 testParseTreeEqual_un_par_2() {
-    checkParseTreeEqual un-paren-empty.exp "[MULT](1, [uopen](., 2))" "-i NEWLINE"
-    checkParseTreeEqual un-paren-empty.exp "[MULT](1, [uopen](., ., 2))" "-i NEWLINE --strict"
+    checkParseTreeEqual un-paren-empty.exp "[MULT](1, [uclose]([uopen](), 2))" "-i NEWLINE"
+    checkParseTreeEqual un-paren-empty.exp "[MULT](1, [uclose]([uopen](), 2))" "-i NEWLINE --strict"
 }
 
 testParseTreeEqual_post_par_1() {
-    checkParseTreeEqual post-paren.exp "[MULT]([popen](1, [PLUS](2, 3)), 4)" "-i NEWLINE"
+    checkParseTreeEqual post-paren.exp "[MULT]([pclose]([popen](1, [PLUS](2, 3))), 4)" "-i NEWLINE"
 }
 
 testParseTreeEqual_post_par_2() {
-    checkParseTreeEqual post-paren-empty.exp "[MULT]([popen](1), 2)" "-i NEWLINE"
-    checkParseTreeEqual post-paren-empty.exp "[MULT]([popen](1), 2)" "-i NEWLINE --strict"
+    checkParseTreeEqual post-paren-empty.exp "[MULT]([pclose]([popen](1)), 2)" "-i NEWLINE"
+    checkParseTreeEqual post-paren-empty.exp "[MULT]([pclose]([popen](1)), 2)" "-i NEWLINE --strict"
 }
 
 testParseTreeEqual_post_par_3() {
-    checkParseTreeEqual post-paren2.exp "[popen](xx, [PLUS](2, 3))" "-i NEWLINE"
+    checkParseTreeEqual post-paren2.exp "[pclose]([popen](xx, [PLUS](2, 3)))" "-i NEWLINE"
 }
 
 testParseTreeEqual_post_par_4() {
-    checkParseTreeEqual post-paren3.exp "[PLUS]([popen](xx, [PLUS](2, 3)), 4)" "-i NEWLINE"
+    checkParseTreeEqual post-paren3.exp "[PLUS]([pclose]([popen](xx, [PLUS](2, 3))), 4)" "-i NEWLINE"
 }
 
 testParseTreeEqual_post_par_4() {
-    checkParseTreeEqual post-paren4.exp "[PLUS]([popen](xx, [PLUS](2, 3)), 4)" "-i NEWLINE"
+    checkParseTreeEqual post-paren4.exp "[PLUS]([pclose]([popen](xx, [PLUS](2, 3))), 4)" "-i NEWLINE"
 }
 
 testParseTreeEqual_binary_incrp() {
