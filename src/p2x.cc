@@ -500,6 +500,11 @@ struct TokenInfo {
   }
 
   TokenProto const *getProto(Token const * const t) const {
+    if (t->flags & Token::FLAG_CLOSING) {
+      assert(t->left);
+      if (t->left)
+        return getProto(t->left);
+    }
     TokenProto const *res = 0;
     Prototypes::const_iterator it = prototypes.find(t->token);
     if (it != prototypes.end()) {
@@ -903,8 +908,15 @@ struct Parser {
     tmp = parent->right; // !!!
 
     parent->right = t;
-    if (tmp)
-      t->left = tmp;
+    if (tmp) {
+      if ((t->flags & Token::FLAG_CLOSING) and t->left) {
+        assert(t->left->left == 0);
+        t->left->left = tmp;
+      } else {
+        assert(t->left == 0);
+        t->left = tmp;
+      }
+    }
 
     leastMap[prec] = t;
     leastMap.erase((++leastMap.find(prec)), leastMap.end());
@@ -941,9 +953,6 @@ struct Parser {
   void pushIgnoreAsBefore(Token *t) {
     if (not options.ignoreIgnore) {
       Token *rm = getRM();
-      while (rm->content) {
-        rm = rm->content->rmt;
-      }
       t->ignore = rm->ignore;
       rm->ignore = t;
     }
@@ -1010,18 +1019,16 @@ struct Parser {
         parser.endList = tokenInfo.endList(first);
         Token *last = parser.parse();
 
+
+        first->right = parser.root->right;
         if (last->token == TOKEN_EOF) {
           endFound = true;
+          insertToken(first);
         } else {
-          parser.pushIgnoreAsBefore(last);
+          last->left = first;
+          last->flags |= Token::FLAG_CLOSING;
+          insertToken(last);
         }
-
-        first->content = parser.root->right;
-
-        assert(first->left == 0);
-        assert(first->right == 0);
-
-        insertToken(first);
 
         if (parser.root->ignore) {
           // pushIgnore(parser.root->ignore);
@@ -1029,8 +1036,7 @@ struct Parser {
           first->ignore = parser.root->ignore;
         }
 
-        // assert(first->left == 0); not any more ...
-        // assert(first->right == 0); not any more ...
+        assert(last->right == 0);
 
         first = last;
 
