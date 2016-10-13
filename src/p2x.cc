@@ -1349,8 +1349,7 @@ struct TreeXMLWriter {
         aus << ">" << m_xmlWriter.linebreak;
         ++m_level;
       }
-      if (t->left != 0) {
-      } else if (t->right != 0 or t->content != 0) {
+      if (t->left == 0 and t->right != 0) {
         aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
       }
 
@@ -1367,11 +1366,6 @@ struct TreeXMLWriter {
       if (wrt) aus << m_xmlWriter.linebreak;
       if (t->ignore) {
         m_xmlWriter.writeIgnoreXML(t->ignore, aus, indent);
-      }
-      if (not t->content and m_xmlWriter.tokenInfo.isParen(t) and t->right != 0) {
-        if (m_xmlWriter.options.strict) {
-          aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
-        }
       }
     }
     void onLeave(Token const *t, Token const *parent) {
@@ -1471,7 +1465,7 @@ struct TreeXMLWriter {
   }
     void setElemName(Token const *t) {
       if (t->token == TOKEN_IDENTIFIER) {
-        if (t->left || t->right || t->content) {
+        if (t->left || t->right) {
           elemName = t->text;
         } else {
           elemName = "ID";
@@ -1505,13 +1499,10 @@ struct TreeXMLWriter {
         if (m_xmlWriter.options.id)
           aus << " id='" << t->id << "'";
         m_xmlWriter.writeXMLLocAttrs(t, aus);
-        // m_xmlWriter.writeXMLTypeAttrs(t, aus);
-        // m_xmlWriter.writeXMLPrecAttrs(t, aus);
         aus << ">" << m_xmlWriter.linebreak;
         ++m_level;
       }
-      if (t->left != 0) {
-      } else if (t->right != 0 or t->content != 0) {
+      if (t->left == 0 and t->right != 0) {
         aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
       }
 
@@ -1528,11 +1519,6 @@ struct TreeXMLWriter {
       if (wrt) aus << m_xmlWriter.linebreak;
       if (t->ignore) {
         writeIgnoreXML(t->ignore, aus, indent);
-      }
-      if (not t->content and m_xmlWriter.tokenInfo.isParen(t) and t->right != 0) {
-        if (m_xmlWriter.options.strict) {
-          aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
-        }
       }
     }
     void onLeave(Token const *t, Token const *parent) {
