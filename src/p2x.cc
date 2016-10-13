@@ -1665,11 +1665,6 @@ struct TreeXMLWriter {
         aus << ",'value',";
         aus << "'" << t->text << "'" << "";
       }
-      if (t->content or m_xmlWriter.options.strict)
-        aus << ",'content',";
-      if (not t->content and m_xmlWriter.options.strict) {
-        aus << "''";
-      }
     }
     void onContent2(Token const *t, Token const * /* parent */) {
       if (t->right or m_xmlWriter.options.strict)
@@ -1825,15 +1820,6 @@ struct TreeXMLWriter {
       } else {
         aus << ",\"\"";
       }
-      if (t->content or m_xmlWriter.options.strict)
-        aus << ",{\"content\":\"" << t->text << "\",\"child\":[0";
-    }
-    void onContent2(Token const *t, Token const * /* parent */) {
-      if (t->content or m_xmlWriter.options.strict)
-        aus << "]}";
-      if (not t->right and m_xmlWriter.options.strict) {
-        aus << "\"\"";
-      }
     }
     void onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
@@ -1924,7 +1910,6 @@ struct TreeXMLWriter {
 
     traverser.enterFcn = &TreePrintHelperJSON::onEnter;
     traverser.contentFcn1 = &TreePrintHelperJSON::onContent1;
-    traverser.contentFcn2 = &TreePrintHelperJSON::onContent2;
     traverser.leaveFcn = &TreePrintHelperJSON::onLeave;
 
     traverser.traverseTree(t);
