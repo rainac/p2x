@@ -1107,7 +1107,7 @@ struct FPParser {
 
 template <class HandlerClass>
 struct TreeTraverser {
-  enum State { ST_ENTER, ST_BETWEEN1, ST_BETWEEN2, ST_LEAVE };
+  enum State { ST_ENTER, ST_BETWEEN, ST_LEAVE };
   typedef std::pair<State, Token const*> StackItem;
   HandlerClass *m_obj;
   std::stackCont<StackItem> m_stack;
@@ -1133,23 +1133,14 @@ struct TreeTraverser {
       if (enterFcn) {
         (m_obj->*enterFcn)(t.second, m_stack.sTop().second);
       }
-      m_stack.sPush(std::make_pair(ST_BETWEEN1, t.second));
+      m_stack.sPush(std::make_pair(ST_BETWEEN, t.second));
       if (t.second->left) {
         handleNode(std::make_pair(ST_ENTER, t.second->left));
       }
       break;
-    case ST_BETWEEN1:
+    case ST_BETWEEN:
       if (contentFcn1) {
         (m_obj->*contentFcn1)(t.second, m_stack.sTop().second);
-      }
-      m_stack.sPush(std::make_pair(ST_BETWEEN2, t.second));
-      if (t.second->content) {
-        handleNode(std::make_pair(ST_ENTER, t.second->content));
-      }
-      break;
-    case ST_BETWEEN2:
-      if (contentFcn2) {
-        (m_obj->*contentFcn2)(t.second, m_stack.sTop().second);
       }
       m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
       if (t.second->right) {
