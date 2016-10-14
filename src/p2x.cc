@@ -1724,7 +1724,11 @@ struct TreeXMLWriter {
       }
 
       if (t->left) {
-        aus << ",...\n" << indent << "'l',";
+        aus << ",";
+        if (m_xmlWriter.options.indent) {
+          aus << "...\n" << indent;
+        }
+        aus << "'l',";
       } else if (t->right and m_xmlWriter.options.strict) {
         aus << ",'l',''";
       }
@@ -1738,7 +1742,11 @@ struct TreeXMLWriter {
       setIndent();
 
       if (t->right) {
-        aus << ",...\n" << indent << "'r',";
+        aus << ",";
+        if (m_xmlWriter.options.indent) {
+          aus << "...\n" << indent;
+        }
+        aus << "'r',";
       }
     }
     void onLeave(Token const *t, Token const *parent) {
