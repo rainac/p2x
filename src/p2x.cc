@@ -2580,8 +2580,8 @@ int main(int argc, char *argv[]) {
 
   TreeXMLWriter::Options options;
 
-  options.line = args.attribute_line_flag;
-  options.col = args.attribute_column_flag;
+  options.line = args.attribute_line_flag or args.src_info_flag;
+  options.col = args.attribute_column_flag or args.src_info_flag;
   options._char = args.attribute_char_flag;
 
   options.mode = args.attribute_mode_flag;
