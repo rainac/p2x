@@ -48,3 +48,65 @@ ReproduceTest() {
     #        rm res.xml res.txt
 
 }
+
+
+ReproduceMatlab() {
+
+    arg1_infile=$1
+    arg1_alt_opts=$2
+    arg1_opts=$3
+    octfd=$4
+    eopts=""
+
+    p2xopts="--output-mode=matlab"
+
+    infile=$arg1_infile
+
+    opts="$eopts $arg1_opts"
+    echo -n "Parse file $infile with '$opts'\r"
+    p2x $p2xopts $opts -p ../../examples/configs/default $infile > res.m
+    cat > runscript.m <<EOF
+run('res.m');
+fd = fopen('res.txt', 'w');
+fprintf(fd, '%s', reproduce(ans));
+fclose(fd);
+'done'
+EOF
+#    octave --eval runscript
+    cat runscript.m >&p
+    read -p FFF
+#    echo "oct>> $FFF"
+    assertEquals "Output should be valid MATLAB code" 0 $?
+    diff $infile res.txt
+    assertEquals "Plain reproduce test $infile did not return same result" 0 $?
+
+    sz1=$(ls -l res.xml | cut -d " " -f 5)
+
+    opts=($eopts $arg1_opts $arg1_alt_opts)
+    echo -n "Parse file $infile with '$opts'\r"
+    p2x $p2xopts $opts -p ../../examples/configs/default $infile > res.m
+    cat > runscript.m <<EOF
+run('res.m');
+fd = fopen('res.txt', 'w');
+fprintf(fd, '%s', reproduce(ans));
+fclose(fd);
+'done'
+EOF
+#    octave --eval runscript
+    cat runscript.m >&p
+    read -p FFF
+#    echo "oct>> $FFF"
+    assertEquals "Output should be valid MATLAB code" 0 $?
+    diff $infile res.txt
+    assertEquals "Alternate opts reproduce test $infile did not return same result" 0 $?
+
+    sz2=$(ls -l res.xml | cut -d " " -f 5)
+    saving=$(( 1.0 * $sz1 / $sz2 ))
+#    echo "saved: $sz1 / $sz2 = $saving"
+
+#    [[ $saving -gt 1 ]]
+#    assertEquals "Alternate XML format should be smaller or of same size: ($sz1 > $sz2)" 0 $?
+
+    #        rm res.xml res.txt
+
+}
