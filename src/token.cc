@@ -34,5 +34,3 @@ Token::~Token() {
 
 
 int Token::count = 0;
-
-// $Id$
