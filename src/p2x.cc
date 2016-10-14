@@ -1684,6 +1684,9 @@ struct TreeXMLWriter {
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
 #endif
+      if (t->left or t->right) {
+        ++m_level;
+      }
       setupNode(t);
       setElemName(t);
       setIndent();
@@ -1695,7 +1698,6 @@ struct TreeXMLWriter {
         aus << "struct('n','" << elemName << "'";
         if (m_xmlWriter.options.id)
           aus << ",'id'," << t->id << "";
-        ++m_level;
       }
 
       if (t->token == TOKEN_NEWLINE) {
@@ -1726,7 +1728,6 @@ struct TreeXMLWriter {
       } else if (t->right and m_xmlWriter.options.strict) {
         aus << ",'l',''";
       }
-
     }
     void onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
@@ -1752,12 +1753,14 @@ struct TreeXMLWriter {
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
       if (tags) {
-        --m_level;
         setIndent();
         aus << ")";
       }
       if (t->token == TOKEN_ROOT) {
         aus << ";";
+      }
+      if (t->left or t->right) {
+        --m_level;
       }
     }
   };
