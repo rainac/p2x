@@ -181,6 +181,7 @@ struct TokenProto : public Token {
   int precedence, unaryPrecedence;
   ParserMode mode;
   bool isParen;
+  bool isRParen;
   ParserAssoc associativity;
   OutputMode outputMode;
   typedef std::map<unsigned, TokenProto> EndList;
@@ -190,6 +191,7 @@ struct TokenProto : public Token {
     unaryPrecedence(),
     mode(),
     isParen(),
+    isRParen(),
     associativity(),
     outputMode()
   {}
@@ -201,6 +203,7 @@ struct TokenProto : public Token {
     unaryPrecedence(unaryPrecedence),
     mode(mode),
     isParen(),
+    isRParen(),
     associativity(associativity),
     outputMode(),
     endList(endList)
@@ -278,6 +281,14 @@ struct TokenInfo {
       ls(LS::INFO) << "Generating new opcode for named operator: " << s << " -> " << newCode << "\n";
       opCodes[s] = newCode;
       return newCode;
+    }
+  }
+
+  unsigned mkOpCode(TokenProto const &tp) {
+    if (tp.token == TOKEN_IDENTIFIER) {
+      return mkOpCode(tp.text);
+    } else {
+      return tp.token;
     }
   }
 
@@ -409,6 +420,27 @@ struct TokenInfo {
     return true;
   }
 
+  bool addRBrace(TokenProto &tp) {
+    tp.isRParen = 1;
+    tp.mode = MODE_PAREN;
+    unsigned code = mkOpCode(tp);
+    OpPrototypes::iterator it = opPrototypes.find(code);
+    if (it != opPrototypes.end()) {
+      ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp
+                               << " with mode " << MODE_PAREN << "\n";
+      exit(EXIT_FAILURE);
+    } else {
+      opPrototypes[code] = tp;
+    }
+    return true;
+  }
+
+  void addRBraces(TokenProto &tp) {
+    for (auto it = tp.endList.begin(); it != tp.endList.end(); ++it) {
+      addRBrace(it->second);
+    }
+  }
+
   bool addBrace(std::string const &name, TokenProto &tp) {
     tp.isParen = 1;
     tp.mode = MODE_ITEM;
@@ -422,9 +454,11 @@ struct TokenInfo {
         //        opPrototypes[code] = tp;
       } else {
         it->second.endList.insert(tp.endList.begin(), tp.endList.end());
+        addRBraces(tp);
       }
     } else {
       opPrototypes[code] = tp;
+      addRBraces(tp);
     }
     return true;
   }
@@ -440,9 +474,11 @@ struct TokenInfo {
         //        prototypes[t] = tp;
       } else {
         it->second.endList.insert(tp.endList.begin(), tp.endList.end());
+        addRBraces(tp);
       }
     } else {
       prototypes[t] = tp;
+      addRBraces(tp);
     }
     return true;
   }
@@ -500,11 +536,6 @@ struct TokenInfo {
   }
 
   TokenProto const *getProto(Token const * const t) const {
-    if (t->flags & Token::FLAG_CLOSING) {
-      assert(t->left);
-      if (t->left)
-        return getProto(t->left);
-    }
     TokenProto const *res = 0;
     Prototypes::const_iterator it = prototypes.find(t->token);
     if (it != prototypes.end()) {
@@ -515,6 +546,9 @@ struct TokenInfo {
       if (it != opPrototypes.end()) {
         res = &it->second;
       }
+    }
+    if (((res and res->isRParen) or res == 0) and t->left) {
+      return getProto(t->left);
     }
     return res;
   }
@@ -645,7 +679,7 @@ struct TokenInfo {
     bool res = false;
     TokenProto const *proto = getProto(t);
     if (proto) {
-      res = proto->isParen;
+      res = proto->isParen || proto->isRParen;
     }
     return res;
   }
@@ -909,7 +943,7 @@ struct Parser {
 
     parent->right = t;
     if (tmp) {
-      if ((t->flags & Token::FLAG_CLOSING) and t->left) {
+      if (tokenInfo.isParen(t) and t->left) {
         assert(t->left->left == 0);
         t->left->left = tmp;
       } else {
@@ -1026,7 +1060,6 @@ struct Parser {
           insertToken(first);
         } else {
           last->left = first;
-          last->flags |= Token::FLAG_CLOSING;
           insertToken(last);
         }
 
