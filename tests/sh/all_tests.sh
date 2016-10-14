@@ -44,4 +44,8 @@ test_output_modey() {
     run_suite output_modey.sh
 }
 
+test_output_mode_matlab() {
+    run_suite output_mode_matlab.sh
+}
+
 . shunit2
