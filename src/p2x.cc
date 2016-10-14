@@ -1436,11 +1436,13 @@ struct TreeXMLWriter {
     std::string indent, subindent, elemName;
     bool merged, tags;
     std::ostream &aus;
+    XMLOstream xaus;
 
     XMLTreePrintHelper2(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
       m_xmlWriter(xmlWriter),
       m_level(),
-      aus(aus)
+      aus(aus),
+      xaus(aus)
     {}
 
     void setWhiteLen(std::string &str, size_t ilevel) const {
@@ -1463,9 +1465,9 @@ struct TreeXMLWriter {
       }
     }
 
-  void writeIgnoreXML(Token *t, std::ostream &aus, std::string const &indent = "") const {
+  void writeIgnoreXML(Token *t, std::string const &indent = "") {
     if (t->ignore) {
-      writeIgnoreXML(t->ignore, aus, indent);
+      writeIgnoreXML(t->ignore, indent);
     }
     aus << indent << "<ci:" << Token::getParserTokenName(t->token);
     if (m_xmlWriter.options.id)
@@ -1475,7 +1477,7 @@ struct TreeXMLWriter {
     aus << ">" << t->text << "</ci:" << Token::getParserTokenName(t->token) << ">" << m_xmlWriter.linebreak;
   }
 
-  bool writeXMLTextElem(Token const *t, std::ostream &aus, std::string const &indent = "") const {
+  bool writeXMLTextElem(Token const *t, std::string const &indent = "") {
     bool res = 0;
     if (t->text.size() and (t->left or t->right or t->ignore)) {
       aus << indent;
@@ -1508,8 +1510,7 @@ struct TreeXMLWriter {
       res = 1;
     } else if (t->text.size()) {
       aus << "<c:t>";
-      XMLOstream x(aus);
-      x << t->text;
+      xaus << t->text;
       aus << "</c:t>";
       res = 1;
     }
@@ -1570,10 +1571,10 @@ struct TreeXMLWriter {
       setupNode(t);
       setIndent();
 
-      bool const wrt = writeXMLTextElem(t, aus, indent);
+      bool const wrt = writeXMLTextElem(t, indent);
       if (wrt and (t->left or t->right or t->ignore)) aus << m_xmlWriter.linebreak;
       if (t->ignore) {
-        writeIgnoreXML(t->ignore, aus, indent);
+        writeIgnoreXML(t->ignore, indent);
       }
     }
     void onLeave(Token const *t, Token const *parent) {
