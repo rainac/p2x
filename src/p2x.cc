@@ -1692,7 +1692,7 @@ struct TreeXMLWriter {
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
       if (tags) {
-        aus << indent << "struct('name','" << elemName << "'";
+        aus << "struct('name','" << elemName << "'";
         if (m_xmlWriter.options.id)
           aus << ",'id'," << t->id << "";
         ++m_level;
