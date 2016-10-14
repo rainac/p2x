@@ -633,6 +633,8 @@ acond_BUILD_TESTS_FALSE
 acond_BUILD_TESTS_TRUE
 XMLSTARLET
 SHUNIT2
+acond_DEBUG_BUILD_FALSE
+acond_DEBUG_BUILD_TRUE
 acond_STATIC_BUILD_FALSE
 acond_STATIC_BUILD_TRUE
 acond_FLEX_AVAIL_FALSE
@@ -762,6 +764,7 @@ enable_option_checking
 enable_silent_rules
 enable_dependency_tracking
 enable_static
+enable_debug
 enable_tests
 '
       ac_precious_vars='build_alias
@@ -1414,6 +1417,8 @@ Optional Features:
                           speeds up one-time build
   --enable-static         Build statically linked executables.
   --disable-static        Build dynamically linked executables.
+  --enable-debug         Build debugally linked executables.
+  --disable-debug        Build dynamically linked executables.
   --enable-tests         Build test code.
 
 Some influential environment variables:
@@ -5601,6 +5606,41 @@ else
 fi
 
 
+# Check whether --enable-debug was given.
+if test "${enable_debug+set}" = set; then :
+  enableval=$enable_debug;
+      debug_build=$enableval
+
+else
+
+      debug_build=no
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking setting debug_build" >&5
+$as_echo_n "checking setting debug_build... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: debug_build=$debug_build" >&5
+$as_echo "debug_build=$debug_build" >&6; }
+if test "$debug_build" = "yes"; then
+   CFLAGS="$CFLAGS -g"
+   CXXFLAGS="$CXXFLAGS -g"
+   defval_DEBUG_BUILD=1
+else
+   defval_DEBUG_BUILD=0
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define P2X_DEBUG_BUILD $defval_DEBUG_BUILD
+_ACEOF
+
+ if test "x$debug_build" = "xyes"; then
+  acond_DEBUG_BUILD_TRUE=
+  acond_DEBUG_BUILD_FALSE='#'
+else
+  acond_DEBUG_BUILD_TRUE='#'
+  acond_DEBUG_BUILD_FALSE=
+fi
+
 
 # Check whether --enable-tests was given.
 if test "${enable_tests+set}" = set; then :
@@ -6551,6 +6591,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${acond_STATIC_BUILD_TRUE}" && test -z "${acond_STATIC_BUILD_FALSE}"; then
   as_fn_error $? "conditional \"acond_STATIC_BUILD\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${acond_DEBUG_BUILD_TRUE}" && test -z "${acond_DEBUG_BUILD_FALSE}"; then
+  as_fn_error $? "conditional \"acond_DEBUG_BUILD\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${acond_BUILD_TESTS_TRUE}" && test -z "${acond_BUILD_TESTS_FALSE}"; then
