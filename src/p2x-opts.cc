@@ -63,9 +63,10 @@ const char *gengetopt_args_info_full_help[] = {
   "      --strict                  Strict output mode: paren children always\n                                  indicated by null elements  (default=off)",
   "      --output-mode=Mode        Write output as XML/JSON/MATLAB",
   "      --write-recursive         Recursive output writing  (default=off)",
-  "      --attribute-line          Emit attribute line with source line\n                                  (default=on)",
-  "      --attribute-column        Emit attribute column with source column\n                                  (default=on)",
-  "      --attribute-char          Emit attribute column with source char\n                                  (default=off)",
+  "  -g, --src-info                Emit source location attributes line, column,\n                                  and character  (default=off)",
+  "      --attribute-line          Emit attribute line with source line\n                                  (default=off)",
+  "      --attribute-column        Emit attribute column with source column\n                                  (default=off)",
+  "      --attribute-char          Emit attribute character with source char\n                                  (default=off)",
   "      --attribute-precedence    Emit attribute precedence with token precedence\n                                  (default=off)",
   "      --attribute-mode          Emit attribute mode with token mode\n                                  (default=off)",
   "      --attribute-type          Emit attribute type with token type\n                                  (default=on)",
@@ -104,11 +105,12 @@ init_help_array(void)
   gengetopt_args_info_help[25] = gengetopt_args_info_full_help[25];
   gengetopt_args_info_help[26] = gengetopt_args_info_full_help[26];
   gengetopt_args_info_help[27] = gengetopt_args_info_full_help[27];
-  gengetopt_args_info_help[28] = 0; 
+  gengetopt_args_info_help[28] = gengetopt_args_info_full_help[29];
+  gengetopt_args_info_help[29] = 0; 
   
 }
 
-const char *gengetopt_args_info_help[29];
+const char *gengetopt_args_info_help[30];
 
 typedef enum {ARG_NO
   , ARG_FLAG
@@ -185,6 +187,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->strict_given = 0 ;
   args_info->output_mode_given = 0 ;
   args_info->write_recursive_given = 0 ;
+  args_info->src_info_given = 0 ;
   args_info->attribute_line_given = 0 ;
   args_info->attribute_column_given = 0 ;
   args_info->attribute_char_given = 0 ;
@@ -237,8 +240,9 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->output_mode_arg = NULL;
   args_info->output_mode_orig = NULL;
   args_info->write_recursive_flag = 0;
-  args_info->attribute_line_flag = 1;
-  args_info->attribute_column_flag = 1;
+  args_info->src_info_flag = 0;
+  args_info->attribute_line_flag = 0;
+  args_info->attribute_column_flag = 0;
   args_info->attribute_char_flag = 0;
   args_info->attribute_precedence_flag = 0;
   args_info->attribute_mode_flag = 0;
@@ -302,13 +306,14 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->strict_help = gengetopt_args_info_full_help[26] ;
   args_info->output_mode_help = gengetopt_args_info_full_help[27] ;
   args_info->write_recursive_help = gengetopt_args_info_full_help[28] ;
-  args_info->attribute_line_help = gengetopt_args_info_full_help[29] ;
-  args_info->attribute_column_help = gengetopt_args_info_full_help[30] ;
-  args_info->attribute_char_help = gengetopt_args_info_full_help[31] ;
-  args_info->attribute_precedence_help = gengetopt_args_info_full_help[32] ;
-  args_info->attribute_mode_help = gengetopt_args_info_full_help[33] ;
-  args_info->attribute_type_help = gengetopt_args_info_full_help[34] ;
-  args_info->attribute_id_help = gengetopt_args_info_full_help[35] ;
+  args_info->src_info_help = gengetopt_args_info_full_help[29] ;
+  args_info->attribute_line_help = gengetopt_args_info_full_help[30] ;
+  args_info->attribute_column_help = gengetopt_args_info_full_help[31] ;
+  args_info->attribute_char_help = gengetopt_args_info_full_help[32] ;
+  args_info->attribute_precedence_help = gengetopt_args_info_full_help[33] ;
+  args_info->attribute_mode_help = gengetopt_args_info_full_help[34] ;
+  args_info->attribute_type_help = gengetopt_args_info_full_help[35] ;
+  args_info->attribute_id_help = gengetopt_args_info_full_help[36] ;
   
 }
 
@@ -553,6 +558,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "output-mode", args_info->output_mode_orig, 0);
   if (args_info->write_recursive_given)
     write_into_file(outfile, "write-recursive", 0, 0 );
+  if (args_info->src_info_given)
+    write_into_file(outfile, "src-info", 0, 0 );
   if (args_info->attribute_line_given)
     write_into_file(outfile, "attribute-line", 0, 0 );
   if (args_info->attribute_column_given)
@@ -1140,6 +1147,7 @@ cmdline_parser_internal (
         { "strict",	0, NULL, 0 },
         { "output-mode",	1, NULL, 0 },
         { "write-recursive",	0, NULL, 0 },
+        { "src-info",	0, NULL, 'g' },
         { "attribute-line",	0, NULL, 0 },
         { "attribute-column",	0, NULL, 0 },
         { "attribute-char",	0, NULL, 0 },
@@ -1150,7 +1158,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:m", long_options, &option_index);
+      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:mg", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1311,6 +1319,16 @@ cmdline_parser_internal (
           if (update_arg((void *)&(args_info->merged_flag), 0, &(args_info->merged_given),
               &(local_args_info.merged_given), optarg, 0, 0, ARG_FLAG,
               check_ambiguity, override, 1, 0, "merged", 'm',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'g':	/* Emit source location attributes line, column, and character.  */
+        
+        
+          if (update_arg((void *)&(args_info->src_info_flag), 0, &(args_info->src_info_given),
+              &(local_args_info.src_info_given), optarg, 0, 0, ARG_FLAG,
+              check_ambiguity, override, 1, 0, "src-info", 'g',
               additional_error))
             goto failure;
         
@@ -1493,7 +1511,7 @@ cmdline_parser_internal (
               goto failure;
           
           }
-          /* Emit attribute column with source char.  */
+          /* Emit attribute character with source char.  */
           else if (strcmp (long_options[option_index].name, "attribute-char") == 0)
           {
           
