@@ -63,7 +63,7 @@ ReproduceMatlab() {
     infile=$arg1_infile
 
     opts="$eopts $arg1_opts"
-    echo -n "Parse file $infile with '$opts'\r"
+    echo -n "Parse with '$opts': file $infile\r"
     p2x $p2xopts $opts -p ../../examples/configs/default $infile > res.m
     cat > runscript.m <<EOF
 run('res.m');
@@ -83,7 +83,7 @@ EOF
     sz1=$(ls -l res.xml | cut -d " " -f 5)
 
     opts=($eopts $arg1_opts $arg1_alt_opts)
-    echo -n "Parse file $infile with '$opts'\r"
+    echo -n "Parse with '$opts': file $infile\r"
     p2x $p2xopts $opts -p ../../examples/configs/default $infile > res.m
     cat > runscript.m <<EOF
 run('res.m');
