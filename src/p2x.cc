@@ -90,6 +90,7 @@ Copyright (C) 2011-2016 Johannes Willkomm
 #include "logger.hh"
 #include "p2x-opts.hh"
 #include "namespaces.hh"
+#include "ostreams.hh"
 
 #ifdef __WIN32
 #include <windows.h>
@@ -1605,11 +1606,13 @@ struct TreeXMLWriter {
     std::string indent, subindent, elemName;
     bool merged, tags;
     std::ostream &aus;
+    OstreamMATLABEscape maus;
 
     TreePrintHelperMATLAB(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
       m_xmlWriter(xmlWriter),
       m_level(),
-      aus(aus)
+      aus(aus),
+      maus(aus)
     {}
 
     void setWhiteLen(std::string &str, size_t ilevel) const {
@@ -1637,10 +1640,8 @@ struct TreeXMLWriter {
         elemName = "paren";
       } else if (t->token == TOKEN_STRING) {
         elemName = "string";
-      } else if (t->token == TOKEN_FLOAT) {
-        elemName = "float";
-      } else if (t->token == TOKEN_INTEGER) {
-        elemName = "integer";
+      } else if (t->token == TOKEN_FLOAT or t->token == TOKEN_INTEGER) {
+        elemName = "number";
       } else if (t->token == TOKEN_IDENTIFIER) {
         if (m_xmlWriter.tokenInfo.mode(t) == MODE_ITEM) {
           elemName = "id";
@@ -1694,15 +1695,36 @@ struct TreeXMLWriter {
         aus << indent << "struct('name','" << elemName << "'";
         if (m_xmlWriter.options.id)
           aus << ",'id'," << t->id << "";
-        // m_xmlWriter.writeSFLocAttrs(t, aus);
-        // m_xmlWriter.writeSFTypeAttrs(t, aus);
-        // aus << ")\n";
         ++m_level;
       }
-      if (t->left or m_xmlWriter.options.strict)
-        aus << ",'left',";
-      if (not t->left and m_xmlWriter.options.strict) {
-        aus << "''";
+
+      if (t->token == TOKEN_NEWLINE) {
+        aus << ",'value',";
+        aus << "char(10)";
+      } else if (t->token == TOKEN_CRETURN) {
+        aus << ",'value',";
+        aus << "char(13)";
+      } else if (not t->text.empty()) {
+        aus << ",'value','";
+        maus << t->text;
+        aus << "'" << "";
+      }
+
+      if (t->ignore) {
+        aus << ",'ignore',";
+        aus << "'";
+        Token *ignore = t->ignore;
+        while (ignore) {
+          maus << ignore->text;
+          ignore = ignore->ignore;
+        }
+        aus << "'";
+      }
+
+      if (t->left) {
+        aus << ",...\n" << indent << "'left',";
+      } else if (t->right and m_xmlWriter.options.strict) {
+        aus << ",'left',''";
       }
 
     }
@@ -1714,15 +1736,8 @@ struct TreeXMLWriter {
       setupNode(t);
       setIndent();
 
-      if (t->token == TOKEN_INTEGER || t->token == TOKEN_FLOAT) {
-        aus << ",'value',";
-        aus << t->text << "";
-      } else if (t->token == TOKEN_NEWLINE) {
-        aus << ",'value',";
-        aus << "'\\n'...\n";
-      } else if (not t->text.empty()) {
-        aus << ",'value',";
-        aus << "'" << t->text << "'" << "";
+      if (t->right) {
+        aus << ",...\n" << indent << "'right',";
       }
     }
     void onLeave(Token const *t, Token const *parent) {
@@ -1739,7 +1754,10 @@ struct TreeXMLWriter {
       if (tags) {
         --m_level;
         setIndent();
-        aus << indent << ")...\n";
+        aus << ")";
+      }
+      if (t->token == TOKEN_ROOT) {
+        aus << ";";
       }
     }
   };
