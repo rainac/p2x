@@ -44,8 +44,9 @@ option "strict" -  "Strict output mode: paren children always indicated by null 
 option "output-mode" - "Write output as XML/JSON/MATLAB" string typestr="Mode" optional
 
 option "write-recursive" -  "Recursive output writing" flag hidden off 
-option "attribute-line" -  "Emit attribute line with source line" flag on hidden
-option "attribute-column" -  "Emit attribute column with source column" flag on hidden
+option "src-info" g         "Emit source location attributes line, column, and character" flag off
+option "attribute-line" -  "Emit attribute line with source line" flag off hidden
+option "attribute-column" -  "Emit attribute column with source column" flag off hidden
 option "attribute-char" -  "Emit attribute column with source char" flag off hidden
 option "attribute-precedence" -  "Emit attribute precedence with token precedence" flag off hidden
 option "attribute-mode" -  "Emit attribute mode with token mode" flag off hidden
