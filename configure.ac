@@ -54,6 +54,23 @@ fi
 AC_DEFINE_UNQUOTED([P2X_STATIC_BUILD], [$defval_STATIC_BUILD], [1: static build])
 AM_CONDITIONAL(acond_STATIC_BUILD, [test "x$static_build" = "xyes"])
 
+AC_ARG_ENABLE([debug], [  --enable-debug         Build debugally linked executables.
+  --disable-debug        Build dynamically linked executables.], [
+      debug_build=$enableval
+], [
+      debug_build=no
+])
+AC_MSG_CHECKING([setting debug_build])
+AC_MSG_RESULT([debug_build=$debug_build])
+if test "$debug_build" = "yes"; then
+   CFLAGS="$CFLAGS -g"
+   CXXFLAGS="$CXXFLAGS -g"
+   defval_DEBUG_BUILD=1
+else
+   defval_DEBUG_BUILD=0
+fi
+AC_DEFINE_UNQUOTED([P2X_DEBUG_BUILD], [$defval_DEBUG_BUILD], [1: debug build])
+AM_CONDITIONAL(acond_DEBUG_BUILD, [test "x$debug_build" = "xyes"])
 
 AC_ARG_ENABLE([tests], [  --enable-tests         Build test code.], [
       build_tests=$enableval
