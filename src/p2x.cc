@@ -1283,7 +1283,7 @@ struct TreeXMLWriter {
         if (options.newlineAsEntity) {
           aus << "&#xa;";
         } else {
-          aus << "\n";
+          aus << t->text;
         }
         aus << "</ca:text>";
       }
@@ -1292,7 +1292,13 @@ struct TreeXMLWriter {
       if (options.newlineAsBr) {
         aus << indent << "<ca:cr/>";
       } else {
-        aus << indent << "<ca:text>\r</ca:text>";
+        aus << indent << "<ca:text>";
+        if (options.newlineAsEntity) {
+          aus << "&#xd;";
+        } else {
+          aus << t->text;
+        }
+        aus << "</ca:text>";
       }
       res = 1;
     } else if (t->text.size()) {
