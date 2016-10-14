@@ -40,6 +40,36 @@ testReproduceIndented() {
 
 }
 
+testReproduceStrict() {
+
+    alt_opts_="$alt_opts --strict"
+
+    echo "1: Parse file $i with $common_opts"
+    echo "2: Parse file $i with $common_opts $alt_opts_"
+
+    for i in ../../examples/in/*.exp; do
+        #        echo "Parse test file $i"
+        ReproduceTest $i $alt_opts_ $common_opts
+    done
+    echo ""
+
+}
+
+testReproduceStrictIndented() {
+
+    alt_opts_="$alt_opts --strict --indent"
+
+    echo "1: Parse file $i with $common_opts"
+    echo "2: Parse file $i with $common_opts $alt_opts_"
+
+    for i in ../../examples/in/*.exp; do
+#        echo "Parse test file $i"
+        ReproduceTest $i $alt_opts_ $common_opts
+    done
+    echo ""
+
+}
+
 testReproduceMerged() {
 
     alt_opts_="$alt_opts --merged"
