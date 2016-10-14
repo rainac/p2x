@@ -1471,28 +1471,37 @@ struct TreeXMLWriter {
 
   bool writeXMLTextElem(Token const *t, std::ostream &aus, std::string const &indent = "") const {
     bool res = 0;
+    if (t->text.size() and (t->left or t->right or t->ignore)) {
+      aus << indent;
+    }
     if (t->token == TOKEN_NEWLINE) {
       if (m_xmlWriter.options.newlineAsBr) {
-        aus << indent << "<c:br/>";
+        aus << "<c:br/>";
       } else {
-        aus << indent << "<c:t>";
+        aus << "<c:t>";
         if (m_xmlWriter.options.newlineAsEntity) {
           aus << "&#xa;";
         } else {
-          aus << "\n";
+          aus << t->text;
         }
-        aus << indent << "</c:t>";
+        aus << "</c:t>";
       }
       res = 1;
     } else if (t->token == TOKEN_CRETURN) {
       if (m_xmlWriter.options.newlineAsBr) {
-        aus << indent << "<c:cr/>";
+        aus << "<c:cr/>";
       } else {
-        aus << indent << "<c:t>\r</c:t>";
+        aus << "<c:t>";
+        if (m_xmlWriter.options.newlineAsEntity) {
+          aus << "&#xd;";
+        } else {
+          aus << t->text;
+        }
+        aus << "</c:t>";
       }
       res = 1;
     } else if (t->text.size()) {
-      aus << indent << "<c:t>";
+      aus << "<c:t>";
       XMLOstream x(aus);
       x << t->text;
       aus << "</c:t>";
@@ -1536,8 +1545,11 @@ struct TreeXMLWriter {
         if (m_xmlWriter.options.id)
           aus << " id='" << t->id << "'";
         m_xmlWriter.writeXMLLocAttrs(t, aus);
-        aus << ">" << m_xmlWriter.linebreak;
-        ++m_level;
+        aus << ">";
+        if (t->left or t->right or t->ignore) {
+          aus << m_xmlWriter.linebreak;
+          ++m_level;
+        }
       }
       if (t->left == 0 and t->right != 0) {
         aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
@@ -1553,7 +1565,7 @@ struct TreeXMLWriter {
       setIndent();
 
       bool const wrt = writeXMLTextElem(t, aus, indent);
-      if (wrt) aus << m_xmlWriter.linebreak;
+      if (wrt and (t->left or t->right or t->ignore)) aus << m_xmlWriter.linebreak;
       if (t->ignore) {
         writeIgnoreXML(t->ignore, aus, indent);
       }
@@ -1570,9 +1582,12 @@ struct TreeXMLWriter {
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
       if (tags) {
-        --m_level;
-        setIndent();
-        aus << indent << "</" << elemName << ">" << m_xmlWriter.linebreak;
+        if (t->left or t->right or t->ignore) {
+          --m_level;
+          setIndent();
+          aus << indent;
+        }
+        aus << "</" << elemName << ">" << m_xmlWriter.linebreak;
       }
     }
   };
