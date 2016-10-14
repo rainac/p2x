@@ -32,7 +32,6 @@ struct TokenTests  : public CppUnit::TestFixture {
     CPPUNIT_ASSERT(t.line == 0);
     CPPUNIT_ASSERT(t.column == 0);
     CPPUNIT_ASSERT(t.character == 0);
-    CPPUNIT_ASSERT(t.flags == 0);
     CPPUNIT_ASSERT(t.text == "");
   }
   
