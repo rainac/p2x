@@ -1637,11 +1637,11 @@ struct TreeXMLWriter {
 
     void setElemName(Token const *t) {
       if (m_xmlWriter.tokenInfo.isParen(t)) {
-        elemName = "paren";
+        elemName = "par";
       } else if (t->token == TOKEN_STRING) {
-        elemName = "string";
+        elemName = "str";
       } else if (t->token == TOKEN_FLOAT or t->token == TOKEN_INTEGER) {
-        elemName = "number";
+        elemName = "num";
       } else if (t->token == TOKEN_IDENTIFIER) {
         if (m_xmlWriter.tokenInfo.mode(t) == MODE_ITEM) {
           elemName = "id";
@@ -1649,7 +1649,7 @@ struct TreeXMLWriter {
           elemName = "op";
         }
       } else if (t->token == TOKEN_ROOT) {
-        elemName = "root";
+        elemName = "rt";
       } else {
         elemName = "op";
       }
@@ -1692,26 +1692,26 @@ struct TreeXMLWriter {
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
       if (tags) {
-        aus << "struct('name','" << elemName << "'";
+        aus << "struct('n','" << elemName << "'";
         if (m_xmlWriter.options.id)
           aus << ",'id'," << t->id << "";
         ++m_level;
       }
 
       if (t->token == TOKEN_NEWLINE) {
-        aus << ",'value',";
+        aus << ",'t',";
         aus << "char(10)";
       } else if (t->token == TOKEN_CRETURN) {
-        aus << ",'value',";
+        aus << ",'t',";
         aus << "char(13)";
       } else if (not t->text.empty()) {
-        aus << ",'value','";
+        aus << ",'t','";
         maus << t->text;
         aus << "'" << "";
       }
 
       if (t->ignore) {
-        aus << ",'ignore',";
+        aus << ",'i',";
         aus << "'";
         Token *ignore = t->ignore;
         while (ignore) {
@@ -1722,9 +1722,9 @@ struct TreeXMLWriter {
       }
 
       if (t->left) {
-        aus << ",...\n" << indent << "'left',";
+        aus << ",...\n" << indent << "'l',";
       } else if (t->right and m_xmlWriter.options.strict) {
-        aus << ",'left',''";
+        aus << ",'l',''";
       }
 
     }
@@ -1737,7 +1737,7 @@ struct TreeXMLWriter {
       setIndent();
 
       if (t->right) {
-        aus << ",...\n" << indent << "'right',";
+        aus << ",...\n" << indent << "'r',";
       }
     }
     void onLeave(Token const *t, Token const *parent) {
