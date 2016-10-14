@@ -18,12 +18,11 @@ Token::Token() :
   line(), 
   column(),
   character(), 
-  flags(),
   token(TOKEN_EOF)
 { }
 
 Token::Token(ParserToken token, std::string text, int line, int column, int character) : 
-  text(text), left(), right(), ignore(), id(++count), line(line), column(column), character(character), flags(), token(token)
+  text(text), left(), right(), ignore(), id(++count), line(line), column(column), character(character), token(token)
 {}
 
 Token::~Token() {

@@ -15,9 +15,7 @@ struct Token {
 
   Token *left, *right, *ignore, *rmt;
 
-  int id, line, column, character, flags;
-
-  enum Flags { FLAG_NONE, FLAG_CLOSING };
+  int id, line, column, character;
 
   ParserToken token;
 
