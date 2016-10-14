@@ -31,7 +31,7 @@ test_Reproduce() {
 
 }
 
-_test_ReproduceStrict() {
+test_ReproduceStrict() {
 
     alt_opts_="$alt_opts --strict"
 
