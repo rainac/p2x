@@ -14,8 +14,8 @@ testReproduce() {
 
     alt_opts_="$alt_opts"
 
-    echo "1: Parse file $i with $common_opts"
-    echo "2: Parse file $i with $common_opts $alt_opts_"
+    echo "1: Parse files with $common_opts"
+    echo "2: Parse files with $common_opts $alt_opts_"
 
     for i in ../../examples/in/*.exp; do
         #        echo "Parse test file $i"
@@ -29,8 +29,8 @@ testReproduceIndented() {
 
     alt_opts_="$alt_opts --indent"
 
-    echo "1: Parse file $i with $common_opts"
-    echo "2: Parse file $i with $common_opts $alt_opts_"
+    echo "1: Parse files with $common_opts"
+    echo "2: Parse files with $common_opts $alt_opts_"
 
     for i in ../../examples/in/*.exp; do
 #        echo "Parse test file $i"
@@ -44,8 +44,8 @@ testReproduceStrict() {
 
     alt_opts_="$alt_opts --strict"
 
-    echo "1: Parse file $i with $common_opts"
-    echo "2: Parse file $i with $common_opts $alt_opts_"
+    echo "1: Parse files with $common_opts"
+    echo "2: Parse files with $common_opts $alt_opts_"
 
     for i in ../../examples/in/*.exp; do
         #        echo "Parse test file $i"
@@ -59,8 +59,8 @@ testReproduceStrictIndented() {
 
     alt_opts_="$alt_opts --strict --indent"
 
-    echo "1: Parse file $i with $common_opts"
-    echo "2: Parse file $i with $common_opts $alt_opts_"
+    echo "1: Parse files with $common_opts"
+    echo "2: Parse files with $common_opts $alt_opts_"
 
     for i in ../../examples/in/*.exp; do
 #        echo "Parse test file $i"
@@ -74,8 +74,8 @@ testReproduceMerged() {
 
     alt_opts_="$alt_opts --merged"
 
-    echo "1: Parse file $i with $common_opts"
-    echo "2: Parse file $i with $common_opts $alt_opts_"
+    echo "1: Parse files with $common_opts"
+    echo "2: Parse files with $common_opts $alt_opts_"
 
     for i in ../../examples/in/*.exp; do
         #        echo "Parse test file $i"
@@ -89,8 +89,8 @@ testReproduceIndentedMerged() {
 
     alt_opts_="$alt_opts --indent --merged"
 
-    echo "1: Parse file $i with $common_opts"
-    echo "2: Parse file $i with $common_opts $alt_opts_"
+    echo "1: Parse files with $common_opts"
+    echo "2: Parse files with $common_opts $alt_opts_"
 
     for i in ../../examples/in/*.exp; do
 #        echo "Parse test file $i"
