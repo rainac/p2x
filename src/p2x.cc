@@ -1698,6 +1698,12 @@ struct TreeXMLWriter {
         aus << "struct('n','" << elemName << "'";
         if (m_xmlWriter.options.id)
           aus << ",'id'," << t->id << "";
+        if (m_xmlWriter.options.line)
+          aus << ",'ln'," << t->line << "";
+        if (m_xmlWriter.options.col)
+          aus << ",'cl'," << t->column << "";
+        if (m_xmlWriter.options._char)
+          aus << ",'ch'," << t->character << "";
       }
 
       if (t->token == TOKEN_NEWLINE) {
