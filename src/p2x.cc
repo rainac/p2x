@@ -1660,16 +1660,16 @@ struct TreeXMLWriter {
         or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
     }
 
-    void writeSFLocAttrs(Token const *t, std::ostream &aus) const {
+    void writeSFLocAttrs(Token const *t) const {
       if (m_xmlWriter.options.line)
-        aus << ",'line'," << t->line << "";
+        aus << ",'ln'," << t->line << "";
       if (m_xmlWriter.options.col)
-        aus << ",'col'," << t->column << "";
+        aus << ",'cl'," << t->column << "";
       if (m_xmlWriter.options._char)
-        aus << ",'char','" << t->character << "'";
+        aus << ",'ch'," << t->character << "";
     }
 
-    void writeSFTypeAttrs(Token const *t, std::ostream &aus) const {
+    void writeSFTypeAttrs(Token const *t) const {
       if (t->token == TOKEN_IDENTIFIER) {
         aus << ",'code'," << m_xmlWriter.tokenInfo.getOpCode(t) << "";
         aus << ",'repr','" << t->text << "'";
@@ -1698,12 +1698,7 @@ struct TreeXMLWriter {
         aus << "struct('n','" << elemName << "'";
         if (m_xmlWriter.options.id)
           aus << ",'id'," << t->id << "";
-        if (m_xmlWriter.options.line)
-          aus << ",'ln'," << t->line << "";
-        if (m_xmlWriter.options.col)
-          aus << ",'cl'," << t->column << "";
-        if (m_xmlWriter.options._char)
-          aus << ",'ch'," << t->character << "";
+        writeSFLocAttrs(t);
       }
 
       if (t->token == TOKEN_NEWLINE) {
