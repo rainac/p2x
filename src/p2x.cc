@@ -1765,7 +1765,7 @@ struct TreeXMLWriter {
         aus << ")";
       }
       if (t->token == TOKEN_ROOT) {
-        aus << ";";
+        aus << ";\n";
       }
       if (t->left or t->right) {
         --m_level;
