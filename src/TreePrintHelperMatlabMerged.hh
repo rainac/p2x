@@ -39,24 +39,24 @@ struct TreePrintHelperMATLABMerged : public TreePrintHelperMATLAB {
       aus << "'" << "";
     }
 
+    aus << ",'i',";
+    aus << "'";
     if (t->ignore) {
-      aus << ",'i',";
-      aus << "'";
       Token *ignore = t->ignore;
       while (ignore) {
         maus << ignore->text;
         ignore = ignore->ignore;
       }
-      aus << "'";
     }
+    aus << "'";
 
+    aus << ",";
     if (t->left or t->right) {
-      aus << ",";
       if (m_xmlWriter.options.indent) {
         aus << "...\n" << indent;
       }
-      aus << "'c',[";
     }
+    aus << "'c',[";
   }
   virtual void onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
@@ -68,6 +68,8 @@ struct TreePrintHelperMATLABMerged : public TreePrintHelperMATLAB {
 
     if (t->left and t->right) {
       aus << ",";
+    } else if (t->left == 0 and t->right) {
+      aus << "struct('n','','t','','i','','c',[]),";
     }
   }
   virtual void onLeave(Token const *t, Token const *parent) {
@@ -83,9 +85,7 @@ struct TreePrintHelperMATLABMerged : public TreePrintHelperMATLAB {
                        and merged);
     if (tags) {
       setIndent();
-      if (t->left or t->right) {
-        aus << "]";
-      }
+      aus << "]";
       aus << ")";
     }
     if (t->token == TOKEN_ROOT) {

@@ -1,5 +1,8 @@
 function r = reproduce(s)
   r = '';
+  if isfield(s, 'c') && numel(s.c) > 0
+    r = [r reproduce(s.c(1))];
+  end
   if isfield(s, 'l')
     r = [r reproduce(s.l)];
   end
@@ -12,6 +15,9 @@ function r = reproduce(s)
   end
   if isfield(s, 'i')
     r = [r s.i];
+  end
+  if isfield(s, 'c') && numel(s.c) > 1
+    r = [r reproduce(s.c(2))];
   end
   if isfield(s, 'r')
     r = [r reproduce(s.r)];
