@@ -23,22 +23,50 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     }
   }
 
+  bool findAny(Token const *t, std::function<bool (Token const *t)> fcn) {
+    if (t == 0) return false;
+    if (fcn(t)) return true;
+    if (findAny(t->left, fcn)) return true;
+    if (findAny(t->right, fcn)) return true;
+    return false;
+  }
+
+  template<class IT>
+  bool findAny(IT start, IT const &end, std::function<bool (typename IT::value_type)> fcn) {
+    if (start == end) return false;
+    if (fcn(*start)) return true;
+    return findAny(++start, end, fcn);
+  }
+
+  template<class ValueType>
+  bool check(ValueType const &) { return true; }
+
+  bool check(std::string const &t) { return t.find_first_of("\n\r") != std::string::npos; }
+
   template<class ValueType>
   void collectTerms(Token const *t, std::string const &name, std::function<ValueType (Token const *t)> fcn, bool quote = false) {
-    std::list<ValueType> sterms;
-    collectTerms_(t, [&](Token const *t) -> void { sterms.push_back(fcn(t)); });
+    std::list<Token const *> sterms;
+    collectTerms_(t, [&](Token const *t) -> void { sterms.push_back(t); });
     aus << "'" << name << "',{";
     for (auto it = sterms.begin(); it != sterms.end(); ++it) {
+      ValueType val = fcn(*it);
       if (it != sterms.begin())
         aus << ",";
-      if (quote)
+      if (quote) {
+        bool const anySpecial = check(val);
+        if (anySpecial) {
+          aus << "[";
+        }
         aus << "'";
-      if (quote)
-        maus << *it;
-      else
-        aus << *it;
-      if (quote)
+        if (*it) {
+          maus << val;
+        }
         aus << "'";
+        if (anySpecial) {
+          aus << "]";
+        }
+      } else
+        aus << val;
     }
     aus << "}, ";
   }
@@ -56,11 +84,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
   }
 
   virtual std::string getText(Token const *t) {
-    if (t->token == TOKEN_NEWLINE) {
-      return "char(10)";
-    } else {
-      return "'" + t->text + "'";
-    }
+    return t->text;
   }
 
   virtual void onEnter(Token const *t, Token const *parent) {
@@ -117,7 +141,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 
       aus << "struct(";
       collectTerms<std::string>(t, "n", [&](Token const *t) -> std::string { return t ? elemName(t) : ""; }, true);
-      collectTerms<std::string>(t, "t", [&](Token const *t) -> std::string { return t ? getText(t) : "''"; }, false);
+      collectTerms<std::string>(t, "t", [&](Token const *t) -> std::string { return t ? getText(t) : "''"; }, true);
       collectTerms<std::string>(t, "i", [&](Token const *t) -> std::string { return t ? getIgnore(t) : ""; }, true);
       collectTerms<int>(t, "ln", [&](Token const *t) -> int { return (t ? t->line : 0); });
       collectTerms<int>(t, "cl", [&](Token const *t) -> int { return (t ? t->column : 0); });

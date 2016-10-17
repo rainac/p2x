@@ -29,6 +29,16 @@ struct StreamBufferMATLABEscape : public std::streambuf {
       m_sb1->sputc('\'');
       r1 = m_sb1->sputc('\'');
       break;
+    case '\n':
+      m_sb1->sputc('\'');
+      xsputn(", char(10), ", 12);
+      m_sb1->sputc('\'');
+      break;
+    case '\r':
+      m_sb1->sputc('\'');
+      xsputn(", char(13), ", 12);
+      m_sb1->sputc('\'');
+      break;
     default:
       r1 = m_sb1->sputc(c);
       break;
