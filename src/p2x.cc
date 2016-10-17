@@ -1814,11 +1814,13 @@ struct TreeXMLWriter {
                 std::string const &s = "", Token const *v = 0,
                 int level = 0) const {
 
-    if (options.merged) {
-      TwriteMATLAB_Stack<TreePrintHelperMATLABChildren>(t, aus, s, v, level);
-    } else {
-      TwriteMATLAB_Stack<TreePrintHelperMATLABLR>(t, aus, s, v, level);
-    }
+    TwriteMATLAB_Stack<TreePrintHelperMATLABChildren>(t, aus, s, v, level);
+  }
+  void writeMATLAB_LR_Stack(Token const *t, std::ostream &aus,
+                std::string const &s = "", Token const *v = 0,
+                int level = 0) const {
+
+    TwriteMATLAB_Stack<TreePrintHelperMATLABLR>(t, aus, s, v, level);
   }
   void writeJSON_Stack(Token const *t, std::ostream &aus,
                 std::string const & = "", Token const * = 0,
@@ -2029,6 +2031,13 @@ void writeTreeMATLAB(Token *root, TokenInfo const &tokenInfo,
                      std::ostream &out, ScannerType ) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   treeXMLWriter.writeMATLAB_Stack(root, out, treeXMLWriter.indentUnit);
+}
+
+void writeTreeMATLAB_LR(Token *root, TokenInfo const &tokenInfo,
+                     TreeXMLWriter::Options const &options, std::string const &indentUnit,
+                     std::ostream &out, ScannerType ) {
+  TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
+  treeXMLWriter.writeMATLAB_LR_Stack(root, out, treeXMLWriter.indentUnit);
 }
 
 void writeTreeJSON(Token *root, TokenInfo const &tokenInfo,
@@ -2841,6 +2850,8 @@ int main(int argc, char *argv[]) {
     writeTreeJSON(root, tokenInfo, options, indentUnit, out, scannerType);
   else if (outputMode == "m")
     writeTreeMATLAB(root, tokenInfo, options, indentUnit, out, scannerType);
+  else if (outputMode == "n")
+    writeTreeMATLAB_LR(root, tokenInfo, options, indentUnit, out, scannerType);
 
   lout << "done in " << tXML << " s" << std::endl;
 
