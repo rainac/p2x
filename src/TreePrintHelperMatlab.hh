@@ -3,7 +3,7 @@
 struct TreePrintHelperMATLAB {
   TreeXMLWriter const &m_xmlWriter;
   size_t m_level;
-  std::string indent, subindent, elemName;
+  std::string indent, subindent;
   bool merged, tags;
   std::ostream &aus;
   OstreamMATLABEscape maus;
@@ -37,7 +37,8 @@ struct TreePrintHelperMATLAB {
     }
   }
 
-  virtual void setElemName(Token const *t) {
+  virtual std::string elemName(Token const *t) {
+    std::string elemName;
     if (m_xmlWriter.tokenInfo.isParen(t)) {
       elemName = "par";
     } else if (t->token == TOKEN_STRING) {
@@ -55,6 +56,7 @@ struct TreePrintHelperMATLAB {
     } else {
       elemName = "op";
     }
+    return elemName;
   }
 
   virtual void setupNode(Token const *t) {
@@ -90,14 +92,13 @@ struct TreePrintHelperMATLAB {
       ++m_level;
     }
     setupNode(t);
-    setElemName(t);
     setIndent();
 
     tags = true || not(parent
                        and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                        and merged);
     if (tags) {
-      aus << "struct('n','" << elemName << "'";
+      aus << "struct('n','" << elemName(t) << "'";
       if (m_xmlWriter.options.id)
         aus << ",'id'," << t->id << "";
       writeSFLocAttrs(t);
@@ -158,7 +159,6 @@ struct TreePrintHelperMATLAB {
 #endif
 
     setupNode(t);
-    setElemName(t);
 
     tags = true || not(parent
                        and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
