@@ -62,6 +62,8 @@ Copyright (C) 2011-2016 Johannes Willkomm
 #include <set>
 #include <stack>
 #include <limits>
+#include <functional>
+#include <list>
 #include <limits.h>
 #include <stdlib.h>
 #include <math.h>
