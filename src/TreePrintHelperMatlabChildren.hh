@@ -1,9 +1,9 @@
 #pragma once
 
-struct TreePrintHelperMATLABMerged : public TreePrintHelperMATLAB {
+struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 
-  TreePrintHelperMATLABMerged(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
-    TreePrintHelperMATLAB(xmlWriter, aus)
+  TreePrintHelperMATLABChildren(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
+    TreePrintHelperMATLABLR(xmlWriter, aus)
   {}
 
   virtual void collectTerms_(Token const *t, std::function<void(Token const *t)> fcn) {

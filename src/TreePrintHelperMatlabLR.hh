@@ -1,6 +1,6 @@
 #pragma once
 
-struct TreePrintHelperMATLAB {
+struct TreePrintHelperMATLABLR {
   TreeXMLWriter const &m_xmlWriter;
   size_t m_level;
   std::string indent, subindent;
@@ -8,14 +8,14 @@ struct TreePrintHelperMATLAB {
   std::ostream &aus;
   OstreamMATLABEscape maus;
 
-  TreePrintHelperMATLAB(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
+  TreePrintHelperMATLABLR(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
     m_xmlWriter(xmlWriter),
     m_level(),
     aus(aus),
     maus(aus)
   {}
 
-  virtual ~TreePrintHelperMATLAB() {}
+  virtual ~TreePrintHelperMATLABLR() {}
 
   virtual void setWhiteLen(std::string &str, size_t ilevel) const {
     if (str.size() < ilevel) {

@@ -1815,9 +1815,9 @@ struct TreeXMLWriter {
                 int level = 0) const {
 
     if (options.merged) {
-      TwriteMATLAB_Stack<TreePrintHelperMATLABMerged>(t, aus, s, v, level);
+      TwriteMATLAB_Stack<TreePrintHelperMATLABChildren>(t, aus, s, v, level);
     } else {
-      TwriteMATLAB_Stack<TreePrintHelperMATLAB>(t, aus, s, v, level);
+      TwriteMATLAB_Stack<TreePrintHelperMATLABLR>(t, aus, s, v, level);
     }
   }
   void writeJSON_Stack(Token const *t, std::ostream &aus,
