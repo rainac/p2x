@@ -63,7 +63,7 @@ ReproduceMatlab() {
     infile=$arg1_infile
 
     opts="$eopts $arg1_opts"
-    echo -n "Parse with '$opts': file $infile\r"
+    echo -n "Parse with '$opts': file $infile"
     p2x $p2xopts $opts -p ../../examples/configs/default $infile > res.m
     cat > runscript.m <<EOF
 run('res.m');
@@ -97,6 +97,7 @@ EOF
     read -p FFF
 #    echo "oct>> $FFF"
     assertEquals "Output should be valid MATLAB code" 0 $?
+    echo -n "\r"
     diff $infile res.txt
     assertEquals "Alternate opts reproduce test $infile did not return same result" 0 $?
 
