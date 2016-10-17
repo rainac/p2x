@@ -1602,8 +1602,8 @@ struct TreeXMLWriter {
     }
   };
 
-  #include "TreePrintHelperMatlab.hh"
-  #include "TreePrintHelperMatlabMerged.hh"
+  #include "TreePrintHelperMatlabLR.hh"
+  #include "TreePrintHelperMatlabChildren.hh"
 
   struct TreePrintHelperJSON {
     TreeXMLWriter const &m_xmlWriter;
