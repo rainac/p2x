@@ -9,18 +9,21 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
   virtual void collectTerms_(Token const *t, std::function<void(Token const *t)> fcn) {
     bool merged = m_xmlWriter.options.merged
       or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
-    fcn(t->left);
-    if (t->left) {
-      if (TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left) and merged) {
-        collectTerms_(t->left, fcn);
-      }
+
+    if (not t) return;
+
+    if (t->left and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left) and merged) {
+      collectTerms_(t->left, fcn);
+    } else {
+      fcn(t->left);
     }
-    fcn(t->right);
-    if (t->right) {
-      if (TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->right) and merged) {
-        collectTerms_(t->right, fcn);
-      }
+
+    if (t->right and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->right) and merged) {
+      collectTerms_(t->right, fcn);
+    } else {
+      fcn(t->right);
     }
+
   }
 
   bool findAny(Token const *t, std::function<bool (Token const *t)> fcn) {
@@ -134,7 +137,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 
     }
 
-    if (t->left or t->right) {
+    if (tags and (t->left or t->right)) {
       if (m_xmlWriter.options.indent) {
         aus << "...\n" << indent;
       }
@@ -143,8 +146,10 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
       collectTerms<std::string>(t, "n", [&](Token const *t) -> std::string { return t ? elemName(t) : ""; }, true);
       collectTerms<std::string>(t, "t", [&](Token const *t) -> std::string { return t ? getText(t) : "''"; }, true);
       collectTerms<std::string>(t, "i", [&](Token const *t) -> std::string { return t ? getIgnore(t) : ""; }, true);
-      collectTerms<int>(t, "ln", [&](Token const *t) -> int { return (t ? t->line : 0); });
-      collectTerms<int>(t, "cl", [&](Token const *t) -> int { return (t ? t->column : 0); });
+      if (m_xmlWriter.options.line)
+        collectTerms<int>(t, "ln", [&](Token const *t) -> int { return (t ? t->line : 0); });
+      if (m_xmlWriter.options.col)
+        collectTerms<int>(t, "cl", [&](Token const *t) -> int { return (t ? t->column : 0); });
 
       aus << "'c',{";
 
