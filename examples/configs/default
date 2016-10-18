@@ -42,6 +42,8 @@ JUXTA_POST binary 2
 "p" postfix 2011
 "P" postfix 2301
 
+"lowest" unary 2
+
 "ueqc" unary 2023
 
 "q" unary 2041
