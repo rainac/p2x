@@ -55,7 +55,7 @@ ReproduceMatlab() {
     arg1_infile=$1
     arg1_alt_opts=$2
     arg1_opts=$3
-    octfd=$4
+    diffopts=$4
     eopts=""
 
     p2xopts="--output-mode=matlab"
@@ -77,7 +77,7 @@ EOF
     read -p FFF
 #    echo "oct>> $FFF"
     assertEquals "Output should be valid MATLAB code" 0 $?
-    diff $infile res.txt
+    diff $diffopts $infile res.txt
     assertEquals "Plain reproduce test $infile did not return same result" 0 $?
 
     sz1=$(ls -l res.xml | cut -d " " -f 5)
@@ -98,7 +98,7 @@ EOF
 #    echo "oct>> $FFF"
     assertEquals "Output should be valid MATLAB code" 0 $?
     echo -n "\r"
-    diff $infile res.txt
+    diff $diffopts $infile res.txt
     assertEquals "Alternate opts reproduce test $infile did not return same result" 0 $?
 
     sz2=$(ls -l res.xml | cut -d " " -f 5)
