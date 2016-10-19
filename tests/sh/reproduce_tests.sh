@@ -15,6 +15,11 @@ testReproduce() {
             opts="-e latin1"
             reprxsl=reproduce-latin1.xsl
         fi
+        if [[ "$i" = "../../examples/in/cr.exp" ]]
+        then
+            reprxsl=reproduce.xsl
+            opts=""
+        fi
         p2x $opts -p ../../examples/configs/default $i > res.xml
         xsltproc ../../src/xsl/$reprxsl res.xml > res.txt
         diff $i res.txt > /dev/null

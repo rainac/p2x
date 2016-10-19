@@ -13,6 +13,11 @@ testReproduceStrict() {
             reprxsl=empty-latin1.xsl
             opts="$opts -e latin1"
         fi
+        if [[ "$i" = "../../examples/in/cr.exp" ]]
+        then
+            reprxsl=reproduce.xsl
+            opts=""
+        fi
         p2x $opts -p ../../examples/configs/default $i > res.xml
         xsltproc ../../src/xsl/$reprxsl res.xml > res.txt
         diff $i res.txt > /dev/null
