@@ -160,11 +160,14 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     }
 
   }
-  virtual void onContent(Token const * t, Token const * /* parent */) {
+  virtual void onContent(Token const * t, Token const * parent) {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
 #endif
-    if (t->left != 0 or t->right != 0) {
+    tags = not(parent
+               and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
+               and merged);
+    if (not tags or t->left != 0 or t->right != 0) {
         aus << ",";
     }
   }
@@ -175,13 +178,13 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 
     setupNode(t);
 
-    tags = true || not(parent
-                       and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
-                       and merged);
-    if (t->left or t->right) {
-      if (t->right == 0) {
-        aus << "[]";
-      }
+    tags = not(parent
+               and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
+               and merged);
+    if (not tags and t->right == 0) {
+      aus << "[]";
+    }
+    if (tags and (t->left or t->right)) {
       aus << "})";
     }
     if (t->token == TOKEN_ROOT) {
