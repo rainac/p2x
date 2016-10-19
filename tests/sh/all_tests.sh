@@ -48,4 +48,8 @@ test_output_mode_matlab() {
     run_suite output_mode_matlab.sh
 }
 
+test_output_mode_matlab_merged() {
+    run_suite output_mode_matlab_merged.sh
+}
+
 . shunit2

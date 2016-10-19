@@ -4,6 +4,47 @@ zmodload zsh/mathfunc
 set -o shwordsplit
 export LANG=C # for grep used in shunit2, depends on english output
 
+trapSCHLD() {
+    echo "SIGCHILD received"
+}
+
+trap trapSCHLD SIGCHLD
+
+startOctave() {
+    coproc octave --no-gui
+    octpid=$!
+    echo "computer" >&p
+    read -p FFF
+    echo "oct:$octpid>> $FFF"
+    echo "datestr(now)" >&p
+    read -p FFF
+    echo "oct:$octpid>> $FFF"
+}
+startOctave
+
+restartOctave() {
+    echo "SIGCHILD received, restart Octave"
+    startOctave
+}
+
+trap restartOctave SIGCHLD
+
+ftest_QuitOctave() {
+
+    trap "" SIGCHLD
+
+    echo "quit" >&p
+    read -p FFF
+    echo "oct:$octpid>> $FFF"
+
+    wait $octpid
+    octres=$?
+
+    assertEquals "Octave should exit with status 0" 0 $octres
+
+}
+
+
 ReproduceTest() {
 
     arg1_infile=$1
@@ -23,7 +64,7 @@ ReproduceTest() {
     fi
 
     opts="$eopts $arg1_opts"
-    echo -n "Parse file $infile with '$opts'\r"
+    echo -n "Parse file $infile with '$opts', "
     p2x $opts -p ../../examples/configs/default $infile > res.xml
     xsltproc ../../src/xsl/$reprxsl res.xml > res.txt
     diff $infile res.txt > /dev/null
@@ -83,10 +124,10 @@ EOF
     sz1=$(ls -l res.xml | cut -d " " -f 5)
 
     opts=($eopts $arg1_opts $arg1_alt_opts)
-    echo -n "Parse with '$opts': file $infile\r"
-    p2x $p2xopts $opts -p ../../examples/configs/default $infile > res.m
+    echo -n "Parse with '$opts': file $infile"
+    p2x $p2xopts $opts -p ../../examples/configs/default $infile > res2.m
     cat > runscript.m <<EOF
-run('res.m');
+run('res2.m');
 fd = fopen('res.txt', 'w');
 fprintf(fd, '%s', reproduce(ans));
 fclose(fd);
@@ -97,9 +138,9 @@ EOF
     read -p FFF
 #    echo "oct>> $FFF"
     assertEquals "Output should be valid MATLAB code" 0 $?
-    echo -n "\r"
     diff $diffopts $infile res.txt
     assertEquals "Alternate opts reproduce test $infile did not return same result" 0 $?
+    echo -n "\r"
 
     sz2=$(ls -l res.xml | cut -d " " -f 5)
     saving=$(( 1.0 * $sz1 / $sz2 ))
