@@ -94,9 +94,6 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
 #endif
-    if (t->left or t->right) {
-      ++m_level;
-    }
     setupNode(t);
     setIndent();
 
@@ -152,6 +149,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
         collectTerms<int>(t, "cl", [&](Token const *t) -> int { return (t ? t->column : 0); });
 
       aus << "'c',{";
+      ++m_level;
 
     }
 
@@ -186,12 +184,10 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     }
     if (tags and (t->left or t->right)) {
       aus << "})";
+      --m_level;
     }
     if (t->token == TOKEN_ROOT) {
       aus << ");\n";
-    }
-    if (t->left or t->right) {
-      --m_level;
     }
   }
 
