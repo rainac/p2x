@@ -181,7 +181,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     tags = not(parent
                and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                and merged);
-    if (not tags and t->right == 0) {
+    if ((not tags or t->left) and t->right == 0) {
       aus << "[]";
     }
     if (tags and (t->left or t->right)) {
