@@ -62,7 +62,7 @@ float = element float {
      attr-node, ca-itr, annot*
 }
 
-ca-itr = ca-text | ca-br
+ca-itr = ca-text | ca-br | ca-cr
 
 annot = ca-ignore
 
@@ -98,6 +98,10 @@ ca-text = element ca:text {
 }
 
 ca-br = element ca:br {
+        empty
+}
+
+ca-cr = element ca:cr {
         empty
 }
 
