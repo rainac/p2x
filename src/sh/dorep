@@ -1,0 +1,13 @@
+#! /bin/zsh
+
+inf=$1
+
+p2x -m -M -iSPACE -b NEWLINE -b COMMA -b PLUS -b MULT $inf > res.m
+octave --path $PWD/src/m --eval dorep < res.m | tee res.txt
+diff -w $inf res.txt
+st=$?
+
+if [[ "$st" != "0" ]]; then
+#    echo "output is not identical"
+    exit $st
+fi
