@@ -2837,6 +2837,12 @@ int main(int argc, char *argv[]) {
   std::ostream &lout = ls(LS::TIMES) << "Writing tree to XML... ";
 
   std::string outputMode = "x";
+  if (args.matlab_given) {
+    outputMode = "m";
+  }
+  if (args.json_given) {
+    outputMode = "j";
+  }
   if (args.output_mode_given) {
     outputMode = args.output_mode_arg[0];
   }
