@@ -121,7 +121,7 @@ EOF
     diff $diffopts $infile res.txt
     assertEquals "Plain reproduce test $infile did not return same result" 0 $?
 
-    sz1=$(ls -l res.xml | cut -d " " -f 5)
+    sz1=$(ls -l res.m | cut -d " " -f 5)
 
     opts=($eopts $arg1_opts $arg1_alt_opts)
     echo -n "Parse with '$opts': file $infile"
@@ -142,13 +142,13 @@ EOF
     assertEquals "Alternate opts reproduce test $infile did not return same result" 0 $?
     echo -n "\r"
 
-    sz2=$(ls -l res.xml | cut -d " " -f 5)
+    sz2=$(ls -l res2.m | cut -d " " -f 5)
     saving=$(( 1.0 * $sz1 / $sz2 ))
 #    echo "saved: $sz1 / $sz2 = $saving"
 
-#    [[ $saving -gt 1 ]]
+    [[ $saving -ge 1 ]]
 #    assertEquals "Alternate XML format should be smaller or of same size: ($sz1 > $sz2)" 0 $?
 
-    #        rm res.xml res.txt
+    rm res.txt res.m res2.m
 
 }
