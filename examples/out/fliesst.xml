@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="6" code="68" type="NEWLINE">
-   <op line="1" col="4" code="71" type="JUXTA">
-    <id line="1" col="0" code="31" repr="flie" type="IDENTIFIER">
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" code="68" type="NEWLINE">
+   <op code="71" type="JUXTA">
+    <id code="31" repr="flie" type="IDENTIFIER">
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">flie</ca:text>
     </id>
-    <op line="1" col="5" code="211" repr="t" type="IDENTIFIER">
-     <op line="1" col="4" code="73" type="ILLEGAL_CHAR">
+    <op code="211" repr="t" type="IDENTIFIER">
+     <op code="73" type="ILLEGAL_CHAR">
       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">ß</ca:text>
      </op>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">t</ca:text>
