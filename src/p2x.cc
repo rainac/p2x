@@ -1155,9 +1155,9 @@ struct TreeTraverser {
   std::stackCont<StackItem> m_stack;
   std::string m_indent;
 
-  void (HandlerClass::*enterFcn)(Token const *, Token const *);
-  void (HandlerClass::*leaveFcn)(Token const *, Token const *);
-  void (HandlerClass::*contentFcn)(Token const *, Token const *);
+  int (HandlerClass::*enterFcn)(Token const *, Token const *);
+  int (HandlerClass::*leaveFcn)(Token const *, Token const *);
+  int (HandlerClass::*contentFcn)(Token const *, Token const *);
 
   TreeTraverser(HandlerClass *obj) :
     m_obj(obj),
@@ -1168,29 +1168,29 @@ struct TreeTraverser {
   }
 
   void handleNode(StackItem const t) {
-
+    int res = 0;
     switch (t.first) {
     case ST_ENTER:
       if (enterFcn) {
-        (m_obj->*enterFcn)(t.second, m_stack.sTop().second);
+        res |= (m_obj->*enterFcn)(t.second, m_stack.sTop().second);
       }
       m_stack.sPush(std::make_pair(ST_BETWEEN, t.second));
-      if (t.second->left) {
+      if ((res & 1) && t.second->left) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->left));
       }
       break;
     case ST_BETWEEN:
       if (contentFcn) {
-        (m_obj->*contentFcn)(t.second, m_stack.sTop().second);
+        res |= (m_obj->*contentFcn)(t.second, m_stack.sTop().second);
       }
       m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
-      if (t.second->right) {
+      if ((res & 2) && t.second->right) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->right));
       }
       break;
     case ST_LEAVE:
       if (leaveFcn) {
-        (m_obj->*leaveFcn)(t.second, m_stack.sTop().second);
+        res |= (m_obj->*leaveFcn)(t.second, m_stack.sTop().second);
       }
       break;
     }
@@ -1381,7 +1381,7 @@ struct TreeXMLWriter {
         or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
     }
 
-    void onEnter(Token const *t, Token const *parent) {
+    int onEnter(Token const *t, Token const *parent) {
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
 #endif
@@ -1406,8 +1406,9 @@ struct TreeXMLWriter {
         aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
       }
 
+      return 3;
     }
-    void onContent(Token const *t, Token const * /* parent */) {
+    int onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
 #endif
@@ -1420,8 +1421,9 @@ struct TreeXMLWriter {
       if (t->ignore) {
         m_xmlWriter.writeIgnoreXML(t->ignore, aus, indent);
       }
+      return 3;
     }
-    void onLeave(Token const *t, Token const *parent) {
+    int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
 #endif
@@ -1437,6 +1439,7 @@ struct TreeXMLWriter {
         setIndent();
         aus << indent << "</" << elemName << ">" << m_xmlWriter.linebreak;
       }
+      return 3;
     }
   };
 
@@ -1546,7 +1549,7 @@ struct TreeXMLWriter {
         or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
     }
 
-    void onEnter(Token const *t, Token const *parent) {
+    int onEnter(Token const *t, Token const *parent) {
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
 #endif
@@ -1572,8 +1575,9 @@ struct TreeXMLWriter {
         aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
       }
 
+      return 3;
     }
-    void onContent(Token const *t, Token const * /* parent */) {
+    int onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
 #endif
@@ -1586,8 +1590,9 @@ struct TreeXMLWriter {
       if (t->ignore) {
         writeIgnoreXML(t->ignore, indent);
       }
+      return 3;
     }
-    void onLeave(Token const *t, Token const *parent) {
+    int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
 #endif
@@ -1606,6 +1611,7 @@ struct TreeXMLWriter {
         }
         aus << "</" << elemName << ">" << m_xmlWriter.linebreak;
       }
+      return 3;
     }
   };
 

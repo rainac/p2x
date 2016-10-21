@@ -44,6 +44,56 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 
   }
 
+  struct TermCollector {
+
+    TreePrintHelperMATLABChildren const &m_cont;
+    std::function<void(Token const *t)> m_fcn;
+
+    TermCollector(TreePrintHelperMATLABChildren const &m_cont, std::function<void(Token const *t)> fcn) :
+      m_cont(m_cont),
+      m_fcn(fcn)
+    {
+    }
+
+    int onEnter(Token const *t, Token const *) {
+      bool merged = m_cont.m_xmlWriter.options.merged
+        or m_cont.m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
+
+      int res = 0;
+      if (not t) return res;
+
+      if (t->left and TokenTypeEqual(m_cont.m_xmlWriter.tokenInfo)(t, t->left) and merged) {
+        res |= (1 << 0);
+      } else {
+        m_fcn(t->left);
+      }
+
+      return res;
+    }
+    int onContent(Token const *t, Token const *) {
+      bool merged = m_cont.m_xmlWriter.options.merged
+        or m_cont.m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
+
+      int res = 0;
+      if (not t) return res;
+
+      if (t->right and TokenTypeEqual(m_cont.m_xmlWriter.tokenInfo)(t, t->right) and merged) {
+        res |= (1 << 1);
+      } else {
+        m_fcn(t->right);
+      }
+
+      return res;
+    }
+    int onLeave(Token const *, Token const *) { return 0; }
+
+  };
+
+  virtual void collectTerms__(Token const *t, std::function<void(Token const *t)> fcn) {
+    TermCollector termCollector (*this, fcn);
+    traverseTree(termCollector, t);
+  }
+
   bool findAny(Token const *t, std::function<bool (Token const *t)> fcn) {
     if (t == 0) return false;
     if (fcn(t)) return true;
@@ -67,7 +117,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
   template<class ValueType>
   void collectTerms(Token const *t, std::string const &name, std::function<ValueType (Token const *t)> fcn, bool quote = false) {
     std::list<Token const *> sterms;
-    collectTerms_(t, [&](Token const *t) -> void { sterms.push_back(t); });
+    collectTerms__(t, [&](Token const *t) -> void { sterms.push_back(t); });
     aus << namequote << name << namequote << nvsep << childStart;
     for (auto it = sterms.begin(); it != sterms.end(); ++it) {
       ValueType val = fcn(*it);
@@ -108,7 +158,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     return t->text;
   }
 
-  virtual void onEnter(Token const *t, Token const *parent) {
+  virtual int onEnter(Token const *t, Token const *parent) {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
 #endif
@@ -162,8 +212,9 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
       aus << emptyList;
     }
 
+    return 3;
   }
-  virtual void onContent(Token const * t, Token const * parent) {
+  virtual int onContent(Token const * t, Token const * parent) {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
 #endif
@@ -173,8 +224,9 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     if (not tags or t->left != 0 or t->right != 0) {
         aus << ",";
     }
+    return 3;
   }
-  virtual void onLeave(Token const *t, Token const *parent) {
+  virtual int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
 #endif
@@ -194,6 +246,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     if (t->token == TOKEN_ROOT) {
       aus << childEnd << itemEnd << stmtSep << linebreak;
     }
+    return 3;
   }
 
 };

@@ -84,7 +84,7 @@ struct TreePrintHelperMATLABLR {
       aus << ",'type','" << Token::getParserTokenName(t->token) << "'";
   }
 
-  virtual void onEnter(Token const *t, Token const *parent) {
+  virtual int onEnter(Token const *t, Token const *parent) {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
 #endif
@@ -136,8 +136,9 @@ struct TreePrintHelperMATLABLR {
     } else if (t->right and m_xmlWriter.options.strict) {
       aus << ",'l',''";
     }
+    return 3;
   }
-  virtual void onContent(Token const *t, Token const * /* parent */) {
+  virtual int onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
 #endif
@@ -152,8 +153,9 @@ struct TreePrintHelperMATLABLR {
       }
       aus << "'r',";
     }
+    return 3;
   }
-  virtual void onLeave(Token const *t, Token const *parent) {
+  virtual int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
 #endif
@@ -173,6 +175,7 @@ struct TreePrintHelperMATLABLR {
     if (t->left or t->right) {
       --m_level;
     }
+    return 3;
   }
 };
 
