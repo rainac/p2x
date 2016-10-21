@@ -68,3 +68,69 @@ struct OstreamMATLABEscape : public std::ostream {
   }
 
 };
+
+struct StreamBufferJSONEscape : public std::streambuf {
+
+  std::streambuf *m_sb1;
+  bool escapeQuote;
+
+  StreamBufferJSONEscape(std::streambuf *sb1) :
+    m_sb1(sb1),
+    escapeQuote()
+  {}
+
+  int overflow(int c) {
+    if (c == EOF or not m_sb1) {
+      return 0;
+    }
+    int r1 = 0;
+    switch(c) {
+    case '\"':
+      m_sb1->sputc('\\');
+      r1 = m_sb1->sputc('\"');
+      break;
+    case '\\':
+      m_sb1->sputc('\\');
+      r1 = m_sb1->sputc('\\');
+      break;
+    case '\n':
+      m_sb1->sputc('\\');
+      r1 = m_sb1->sputc('n');
+      break;
+    case '\r':
+      m_sb1->sputc('\\');
+      r1 = m_sb1->sputc('r');
+      break;
+    case '\t':
+      m_sb1->sputc('\\');
+      r1 = m_sb1->sputc('t');
+      break;
+    default:
+      r1 = m_sb1->sputc(c);
+      break;
+    }
+    return r1 == EOF ? EOF : c;
+  }
+
+  int sync() {
+    int const r1 = m_sb1->pubsync();
+    return r1 == 0 ? 0 : -1;
+  }
+
+private:
+  StreamBufferJSONEscape(StreamBufferJSONEscape const &) : std::streambuf(), m_sb1() {}
+  StreamBufferJSONEscape &operator =(StreamBufferJSONEscape const &) {
+    return *this;
+  }
+};
+
+struct OstreamJSONEscape : public std::ostream {
+  StreamBufferJSONEscape tbuf;
+
+  OstreamJSONEscape(std::ostream &o1) :
+    tbuf(o1.rdbuf())
+  {
+    rdbuf(&tbuf);
+  }
+
+};

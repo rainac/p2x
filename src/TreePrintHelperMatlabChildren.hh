@@ -1,10 +1,28 @@
 #pragma once
 
 struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
+  std::string itemStart, itemEnd, childStart, childEnd, nvsep, comma, space1, stmtSep, linebreak, emptyList, codebreak, namequote;
+  std::ostream* textout;
+  bool stringconcat;
 
   TreePrintHelperMATLABChildren(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
     TreePrintHelperMATLABLR(xmlWriter, aus)
-  {}
+  {
+    itemStart = "struct(";
+    itemEnd = ")";
+    childStart = "{";
+    childEnd = "}";
+    nvsep = ",";
+    comma = ",";
+    space1 = " ";
+    stmtSep = ";";
+    linebreak = "\n";
+    emptyList = "[]";
+    codebreak = "...";
+    namequote = "\'";
+    textout = &maus;
+    stringconcat = true;
+  }
 
   virtual void collectTerms_(Token const *t, std::function<void(Token const *t)> fcn) {
     bool merged = m_xmlWriter.options.merged
@@ -50,28 +68,28 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
   void collectTerms(Token const *t, std::string const &name, std::function<ValueType (Token const *t)> fcn, bool quote = false) {
     std::list<Token const *> sterms;
     collectTerms_(t, [&](Token const *t) -> void { sterms.push_back(t); });
-    aus << "'" << name << "',{";
+    aus << namequote << name << namequote << nvsep << childStart;
     for (auto it = sterms.begin(); it != sterms.end(); ++it) {
       ValueType val = fcn(*it);
       if (it != sterms.begin())
-        aus << ",";
+        aus << comma;
       if (quote) {
         bool const anySpecial = check(val);
-        if (anySpecial) {
+        if (anySpecial and stringconcat) {
           aus << "[";
         }
-        aus << "'";
+        aus << namequote;
         if (*it) {
-          maus << val;
+          *textout << val;
         }
-        aus << "'";
-        if (anySpecial) {
+        aus << namequote;
+        if (anySpecial and stringconcat) {
           aus << "]";
         }
       } else
         aus << val;
     }
-    aus << "}, ";
+    aus << childEnd << comma << space1;
   }
 
   std::string getIgnore(Token const *t) {
@@ -101,60 +119,47 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
                and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                and merged);
     if (t->token == TOKEN_ROOT) {
-      aus << "struct('n','" << elemName(t) << "'";
+      aus << itemStart << namequote << "n" << namequote << nvsep << namequote << elemName(t) << namequote;
       if (m_xmlWriter.options.id)
-        aus << ",'id'," << t->id << "";
+        aus << comma << namequote << "id" << namequote << nvsep << t->id;
       writeSFLocAttrs(t);
 
-      if (t->token == TOKEN_NEWLINE) {
-        aus << ",'t',";
-        aus << "char(10)";
-      } else if (t->token == TOKEN_CRETURN) {
-        aus << ",'t',";
-        aus << "char(13)";
-      } else if (not t->text.empty()) {
-        aus << ",'t','";
-        maus << t->text;
-        aus << "'" << "";
-      }
-
-      aus << ",'i',";
-      aus << "'";
+      aus << comma << namequote << "i" << namequote << nvsep;
+      aus << namequote;
       if (t->ignore) {
         Token *ignore = t->ignore;
         while (ignore) {
-          maus << ignore->text;
+          *textout << ignore->text;
           ignore = ignore->ignore;
         }
       }
-      aus << "'";
+      aus << namequote;
 
-      aus << ",";
-      aus << "'c',";
+      aus << comma << namequote << "c" << namequote << nvsep << childStart;
 
     }
 
     if (tags and (t->left or t->right)) {
       if (m_xmlWriter.options.indent) {
-        aus << "...\n" << indent;
+        aus << codebreak << linebreak << indent;
       }
 
-      aus << "struct(";
+      aus << itemStart;
       collectTerms<std::string>(t, "n", [&](Token const *t) -> std::string { return t ? elemName(t) : ""; }, true);
-      collectTerms<std::string>(t, "t", [&](Token const *t) -> std::string { return t ? getText(t) : "''"; }, true);
+      collectTerms<std::string>(t, "t", [&](Token const *t) -> std::string { return t ? getText(t) : namequote+namequote; }, true);
       collectTerms<std::string>(t, "i", [&](Token const *t) -> std::string { return t ? getIgnore(t) : ""; }, true);
       if (m_xmlWriter.options.line)
         collectTerms<int>(t, "ln", [&](Token const *t) -> int { return (t ? t->line : 0); });
       if (m_xmlWriter.options.col)
         collectTerms<int>(t, "cl", [&](Token const *t) -> int { return (t ? t->column : 0); });
 
-      aus << "'c',{";
+      aus << namequote << "c" << namequote << nvsep << childStart;
       ++m_level;
 
     }
 
     if (t->left == 0) {
-      aus << "[]";
+      aus << emptyList;
     }
 
   }
@@ -180,14 +185,14 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
                and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                and merged);
     if ((not tags or t->left) and t->right == 0) {
-      aus << "[]";
+      aus << emptyList;
     }
     if (tags and (t->left or t->right)) {
-      aus << "})";
+      aus << childEnd << itemEnd;
       --m_level;
     }
     if (t->token == TOKEN_ROOT) {
-      aus << ");\n";
+      aus << childEnd << itemEnd << stmtSep << linebreak;
     }
   }
 
