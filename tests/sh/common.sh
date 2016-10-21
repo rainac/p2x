@@ -149,6 +149,6 @@ EOF
     [[ $saving -ge 1 ]]
 #    assertEquals "Alternate XML format should be smaller or of same size: ($sz1 > $sz2)" 0 $?
 
-    rm res.txt res.m res2.m
+    rm res.txt res.m res2.m runscript.m
 
 }
