@@ -1161,10 +1161,11 @@ struct TreeTraverser {
 
   TreeTraverser(HandlerClass *obj) :
     m_obj(obj),
-    enterFcn(),
-    leaveFcn(),
-    contentFcn()
-  {}
+    enterFcn(&HandlerClass::onEnter),
+    leaveFcn(&HandlerClass::onLeave),
+    contentFcn(&HandlerClass::onContent)
+  {
+  }
 
   void handleNode(StackItem const t) {
 
@@ -1208,6 +1209,12 @@ struct TreeTraverser {
   }
 
 };
+
+template<class HandlerClass>
+void traverseTree(HandlerClass &handler, Token const *t) {
+  TreeTraverser<HandlerClass> treeTraverser(&handler);
+  treeTraverser.traverseTree(t);
+}
 
 struct TreeXMLWriter {
   struct Options {
@@ -1622,14 +1629,7 @@ struct TreeXMLWriter {
     XMLTreePrintHelper2 printer(*this, aus);
     printer.m_level = level + 1;
 
-    TreeTraverser<XMLTreePrintHelper2> traverser(&printer);
-
-    traverser.enterFcn = &XMLTreePrintHelper2::onEnter;
-    traverser.contentFcn = &XMLTreePrintHelper2::onContent;
-    traverser.leaveFcn = &XMLTreePrintHelper2::onLeave;
-
-    traverser.traverseTree(t);
-
+    traverseTree(printer, t);
   }
   void writeXML_Stack(Token const *t, std::ostream &aus,
                 std::string const & = "", Token const * = 0,
@@ -1638,14 +1638,7 @@ struct TreeXMLWriter {
     TreePrintHelper printer(*this, aus);
     printer.m_level = level + 1;
 
-    TreeTraverser<TreePrintHelper> traverser(&printer);
-
-    traverser.enterFcn = &TreePrintHelper::onEnter;
-    traverser.contentFcn = &TreePrintHelper::onContent;
-    traverser.leaveFcn = &TreePrintHelper::onLeave;
-
-    traverser.traverseTree(t);
-
+    traverseTree(printer, t);
   }
   template<class TreePrintHelperMATLAB>
   void TwriteMATLAB_Stack(Token const *t, std::ostream &aus,
@@ -1655,13 +1648,7 @@ struct TreeXMLWriter {
     TreePrintHelperMATLAB printer(*this, aus);
     printer.m_level = level + 1;
 
-    TreeTraverser<TreePrintHelperMATLAB> traverser(&printer);
-
-    traverser.enterFcn = &TreePrintHelperMATLAB::onEnter;
-    traverser.contentFcn = &TreePrintHelperMATLAB::onContent;
-    traverser.leaveFcn = &TreePrintHelperMATLAB::onLeave;
-
-    traverser.traverseTree(t);
+    traverseTree(printer, t);
   }
   void writeMATLAB_Stack(Token const *t, std::ostream &aus,
                 std::string const &s = "", Token const *v = 0,
@@ -1682,13 +1669,7 @@ struct TreeXMLWriter {
     TreePrintHelperJSONChildren printer(*this, aus);
     printer.m_level = level + 1;
 
-    TreeTraverser<TreePrintHelperJSONChildren> traverser(&printer);
-
-    traverser.enterFcn = &TreePrintHelperJSONChildren::onEnter;
-    traverser.contentFcn = &TreePrintHelperJSONChildren::onContent;
-    traverser.leaveFcn = &TreePrintHelperJSONChildren::onLeave;
-
-    traverser.traverseTree(t);
+    traverseTree(printer, t);
   }
 
   void writeXML_Rec(Token const *t, std::ostream &aus,
