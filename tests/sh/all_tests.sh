@@ -60,4 +60,8 @@ test_output_mode_json_merged() {
     run_suite output_mode_json_merged.sh
 }
 
+test_large_scale() {
+    run_suite large_scale.sh
+}
+
 . shunit2
