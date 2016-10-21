@@ -152,3 +152,53 @@ EOF
     rm res.txt res.m res2.m runscript.m
 
 }
+
+
+ReproduceJSONPy() {
+
+    arg1_infile=$1
+    arg1_alt_opts=$2
+    arg1_opts=$3
+    diffopts=$4
+    eopts=""
+
+    p2xopts="--output-mode=json"
+
+    infile=$arg1_infile
+
+    if [[ "$infile" = "../../examples/in/german.exp" ]] \
+           || [[ "$infile" = "../../examples/in/letter.exp" ]] \
+           || [[ "$infile" = "../../examples/in/fliesst.exp" ]]
+    then
+        return
+    fi
+
+    opts="$eopts $arg1_opts"
+    echo -n "Parse with '$opts': file $infile"
+    p2x $p2xopts $opts -p ../../examples/configs/default $infile > res.json
+    python $PWD/../../src/py/reproduce.py < res.json > res.txt
+    assertEquals "Output should be valid MATLAB code" 0 $?
+    diff $diffopts $infile res.txt
+    assertEquals "Plain reproduce test $infile did not return same result" 0 $?
+
+    sz1=$(ls -l res.json | cut -d " " -f 5)
+
+    opts=($eopts $arg1_opts $arg1_alt_opts)
+    echo -n "Parse with '$opts': file $infile"
+    p2x $p2xopts $opts -p ../../examples/configs/default $infile > res2.json
+    python $PWD/../../src/py/reproduce.py < res2.json > res2.txt
+    assertEquals "Output should be valid MATLAB code" 0 $?
+    diff $diffopts $infile res2.txt
+    assertEquals "Alternate opts reproduce test $infile did not return same result" 0 $?
+    echo -n "\r"
+
+    sz2=$(ls -l res2.json | cut -d " " -f 5)
+    saving=$(( 1.0 * $sz1 / $sz2 ))
+#    echo "saved: $sz1 / $sz2 = $saving"
+
+    [[ $saving -ge 1 ]]
+#    assertEquals "Alternate XML format should be smaller or of same size: ($sz1 > $sz2)" 0 $?
+
+    rm res.txt res2.txt res.json res2.json
+
+}

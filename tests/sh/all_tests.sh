@@ -52,4 +52,12 @@ test_output_mode_matlab_merged() {
     run_suite output_mode_matlab_merged.sh
 }
 
+test_output_mode_json() {
+    run_suite output_mode_json.sh
+}
+
+test_output_mode_json_merged() {
+    run_suite output_mode_json_merged.sh
+}
+
 . shunit2
