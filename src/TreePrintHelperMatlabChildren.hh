@@ -24,26 +24,6 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     stringconcat = true;
   }
 
-  virtual void collectTerms_(Token const *t, std::function<void(Token const *t)> fcn) {
-    bool merged = m_xmlWriter.options.merged
-      or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
-
-    if (not t) return;
-
-    if (t->left and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left) and merged) {
-      collectTerms_(t->left, fcn);
-    } else {
-      fcn(t->left);
-    }
-
-    if (t->right and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->right) and merged) {
-      collectTerms_(t->right, fcn);
-    } else {
-      fcn(t->right);
-    }
-
-  }
-
   struct TermCollector {
 
     TreePrintHelperMATLABChildren const &m_cont;
