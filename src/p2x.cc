@@ -166,20 +166,6 @@ struct TokenList {
   }
 };
 
-// enum ParserMode {
-//   MODE_IGNORE,
-//   MODE_PAREN,
-//   MODE_ITEM,
-//   MODE_UNARY,
-//   MODE_BINARY
-// };
-
-// enum OutputMode {
-//   OUTPUT_MODE_NONE = 0,
-//   OUTPUT_MODE_NESTED,
-//   OUTPUT_MODE_COLLECT_DESCENDANTS
-// };
-
 struct TokenProto : public Token {
   int precedence, unaryPrecedence;
   ParserMode mode;
