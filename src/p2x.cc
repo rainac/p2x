@@ -1175,7 +1175,7 @@ struct TreeTraverser {
       }
       m_stack.sPush(std::make_pair(ST_BETWEEN, t.second));
       if (t.second->left) {
-        handleNode(std::make_pair(ST_ENTER, t.second->left));
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->left));
       }
       break;
     case ST_BETWEEN:
@@ -1184,7 +1184,7 @@ struct TreeTraverser {
       }
       m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
       if (t.second->right) {
-        handleNode(std::make_pair(ST_ENTER, t.second->right));
+        m_stack.sPush(std::make_pair(ST_ENTER, t.second->right));
       }
       break;
     case ST_LEAVE:
