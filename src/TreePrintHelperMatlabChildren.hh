@@ -82,29 +82,48 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 
   template<class ValueType>
   void printTerms(Token const *, std::list<Token const*> const &sterms,
-                    std::string const &name, std::function<ValueType (Token const *t)> fcn, bool quote = false) {
-    aus << namequote << name << namequote << nvsep << childStart;
+                  std::string const &name, std::function<ValueType (Token const *t)> fcn, bool quote = false) {
+    std::vector<ValueType> vterms;
     for (auto it = sterms.begin(); it != sterms.end(); ++it) {
       ValueType val = fcn(*it);
-      if (it != sterms.begin())
-        aus << comma;
+      vterms.push_back(val);
+    }
+    std::vector<ValueType> vterms2 = vterms;
+    auto nend = std::unique(vterms2.begin(), vterms2.end());
+    std::function<void(ValueType const &v)> fprint = [&](ValueType const &val) -> void {
       if (quote) {
         bool const anySpecial = check(val);
         if (anySpecial and stringconcat) {
           aus << "[";
         }
         aus << namequote;
-        if (*it) {
-          *textout << val;
-        }
+        *textout << val;
         aus << namequote;
         if (anySpecial and stringconcat) {
           aus << "]";
         }
       } else
         aus << val;
+    };
+    if (nend == vterms2.begin()+1) {
+      nend = vterms2.begin();
+      if (*nend == ValueType()) {
+      } else {
+        aus << namequote << name << namequote << nvsep;
+        ValueType const &val = *nend;
+        fprint(val);
+        aus << comma << space1;
+      }
+    } else {
+      aus << namequote << name << namequote << nvsep << childStart;
+      for (auto it = vterms.begin(); it != vterms.end(); ++it) {
+        ValueType const &val = *it;
+        if (it != vterms.begin())
+          aus << comma;
+        fprint(val);
+      }
+      aus << childEnd << comma << space1;
     }
-    aus << childEnd << comma << space1;
   }
 
   std::string getIgnore(Token const *t) {
@@ -164,7 +183,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 
       aus << itemStart;
       printTerms<std::string>(t, sterms, "n", [&](Token const *t) -> std::string { return t ? elemName(t) : ""; }, true);
-      printTerms<std::string>(t, sterms, "t", [&](Token const *t) -> std::string { return t ? getText(t) : namequote+namequote; }, true);
+      printTerms<std::string>(t, sterms, "t", [&](Token const *t) -> std::string { return t ? getText(t) : ""; }, true);
       printTerms<std::string>(t, sterms, "i", [&](Token const *t) -> std::string { return t ? getIgnore(t) : ""; }, true);
       if (m_xmlWriter.options.line)
         printTerms<int>(t, sterms, "ln", [&](Token const *t) -> int { return (t ? t->line : 0); });

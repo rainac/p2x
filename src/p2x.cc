@@ -63,6 +63,7 @@ Copyright (C) 2011-2016 Johannes Willkomm
 #include <stack>
 #include <limits>
 #include <functional>
+#include <algorithm>
 #include <list>
 #include <limits.h>
 #include <stdlib.h>
