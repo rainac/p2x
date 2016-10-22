@@ -14,7 +14,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     childEnd = "}";
     nvsep = ",";
     comma = ",";
-    space1 = " ";
+    space1 = xmlWriter.options.indent ? " " : "";
     stmtSep = ";";
     linebreak = "\n";
     emptyList = "[]";
