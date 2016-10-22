@@ -67,33 +67,17 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 
   };
 
-  virtual void collectTerms__(Token const *t, std::function<void(Token const *t)> fcn) {
+  virtual void collectTerms(Token const *t, std::function<void(Token const *t)> fcn) {
     TermCollector termCollector(*this, fcn);
     traverseTree(termCollector, t);
   }
 
   virtual void collectChildren(Token const *t, std::list<Token const *> &sterms) {
-    collectTerms__(t, [&](Token const *t) -> void { sterms.push_back(t); });
-  }
-
-  bool findAny(Token const *t, std::function<bool (Token const *t)> fcn) {
-    if (t == 0) return false;
-    if (fcn(t)) return true;
-    if (findAny(t->left, fcn)) return true;
-    if (findAny(t->right, fcn)) return true;
-    return false;
-  }
-
-  template<class IT>
-  bool findAny(IT start, IT const &end, std::function<bool (typename IT::value_type)> fcn) {
-    if (start == end) return false;
-    if (fcn(*start)) return true;
-    return findAny(++start, end, fcn);
+    collectTerms(t, [&](Token const *t) -> void { sterms.push_back(t); });
   }
 
   template<class ValueType>
-  bool check(ValueType const &) { return true; }
-
+  bool check(ValueType const &) { return false; }
   bool check(std::string const &t) { return t.find_first_of("\n\r") != std::string::npos; }
 
   template<class ValueType>
