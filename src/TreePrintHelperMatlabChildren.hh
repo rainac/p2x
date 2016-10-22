@@ -68,8 +68,12 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
   };
 
   virtual void collectTerms__(Token const *t, std::function<void(Token const *t)> fcn) {
-    TermCollector termCollector (*this, fcn);
+    TermCollector termCollector(*this, fcn);
     traverseTree(termCollector, t);
+  }
+
+  virtual void collectChildren(Token const *t, std::list<Token const *> &sterms) {
+    collectTerms__(t, [&](Token const *t) -> void { sterms.push_back(t); });
   }
 
   bool findAny(Token const *t, std::function<bool (Token const *t)> fcn) {
@@ -93,9 +97,8 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
   bool check(std::string const &t) { return t.find_first_of("\n\r") != std::string::npos; }
 
   template<class ValueType>
-  void collectTerms(Token const *t, std::string const &name, std::function<ValueType (Token const *t)> fcn, bool quote = false) {
-    std::list<Token const *> sterms;
-    collectTerms__(t, [&](Token const *t) -> void { sterms.push_back(t); });
+  void printTerms(Token const *, std::list<Token const*> const &sterms,
+                    std::string const &name, std::function<ValueType (Token const *t)> fcn, bool quote = false) {
     aus << namequote << name << namequote << nvsep << childStart;
     for (auto it = sterms.begin(); it != sterms.end(); ++it) {
       ValueType val = fcn(*it);
@@ -172,14 +175,17 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
         aus << codebreak << linebreak << indent;
       }
 
+      std::list<Token const *> sterms;
+      collectChildren(t, sterms);
+
       aus << itemStart;
-      collectTerms<std::string>(t, "n", [&](Token const *t) -> std::string { return t ? elemName(t) : ""; }, true);
-      collectTerms<std::string>(t, "t", [&](Token const *t) -> std::string { return t ? getText(t) : namequote+namequote; }, true);
-      collectTerms<std::string>(t, "i", [&](Token const *t) -> std::string { return t ? getIgnore(t) : ""; }, true);
+      printTerms<std::string>(t, sterms, "n", [&](Token const *t) -> std::string { return t ? elemName(t) : ""; }, true);
+      printTerms<std::string>(t, sterms, "t", [&](Token const *t) -> std::string { return t ? getText(t) : namequote+namequote; }, true);
+      printTerms<std::string>(t, sterms, "i", [&](Token const *t) -> std::string { return t ? getIgnore(t) : ""; }, true);
       if (m_xmlWriter.options.line)
-        collectTerms<int>(t, "ln", [&](Token const *t) -> int { return (t ? t->line : 0); });
+        printTerms<int>(t, sterms, "ln", [&](Token const *t) -> int { return (t ? t->line : 0); });
       if (m_xmlWriter.options.col)
-        collectTerms<int>(t, "cl", [&](Token const *t) -> int { return (t ? t->column : 0); });
+        printTerms<int>(t, sterms, "cl", [&](Token const *t) -> int { return (t ? t->column : 0); });
 
       aus << namequote << "c" << namequote << nvsep << childStart;
       ++m_level;
