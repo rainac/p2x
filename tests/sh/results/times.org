@@ -1,0 +1,41 @@
+c64fd3baf4a854ddaf9e2a98b8a796c1c704fcfb
+
+#+name: ein
+#+BEGIN_EXAMPLE
+./transformation_speed.sh
+test_LargeCVS1_create
+test_LargeCVS1_parse2XML_addcols_xslt
+  7.86s user 0.41s system 99% cpu 8.278 total
+Output size ratio: 17.500048437499998
+  11.90s user 1.20s system 99% cpu 13.121 total
+test_LargeCVS1_parse2XML_Y_addcols_xslt
+  5.67s user 0.33s system 99% cpu 6.013 total
+Output size ratio: 7.6875170625000004
+  7.20s user 0.64s system 98% cpu 7.981 total
+test_LargeCVS1_parse2JSON_addcols_py
+  7.82s user 0.36s system 99% cpu 8.183 total
+Output size ratio: 4.8125057499999997
+JSON parse time: 9.81959
+Transform time: 2.54932
+  13.33s user 0.70s system 99% cpu 14.091 total
+test_LargeCVS1_cleanup
+#+END_EXAMPLE
+
+#+BEGIN_SRC sh :results output :var in=ein
+echo $in | grep -o -E "[0-9][0-9.]+" | awk '{ if (cnt % 9 == 0 || cnt % 9 == 4) print $0; ++cnt; }'
+#+END_SRC
+
+#+RESULTS:
+: 7.86
+: 17.500048437499998
+: 5.67
+: 7.6875170625000004
+: 7.82
+: 4.8125057499999997
+: 99
+
+| Format    | Time (s) |    Size ratio (MB) |
+|-----------+----------+--------------------|
+| XML (old) |     7.86 | 17.500048437499998 |
+| XML (new) |     5.67 | 7.6875170625000004 |
+| JSON      |     7.82 | 4.8125057499999997 |
