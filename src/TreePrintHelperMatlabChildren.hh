@@ -42,9 +42,8 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
       int res = 0;
       if (not t) return res;
 
-      if (t->left and TokenTypeEqual(m_cont.m_xmlWriter.tokenInfo)(t, t->left) and merged) {
+      if (not (t->left and TokenTypeEqual(m_cont.m_xmlWriter.tokenInfo)(t, t->left) and merged)) {
         res |= (1 << 0);
-      } else {
         m_fcn(t->left);
       }
 
@@ -57,9 +56,8 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
       int res = 0;
       if (not t) return res;
 
-      if (t->right and TokenTypeEqual(m_cont.m_xmlWriter.tokenInfo)(t, t->right) and merged) {
+      if (not (t->right and TokenTypeEqual(m_cont.m_xmlWriter.tokenInfo)(t, t->right) and merged)) {
         res |= (1 << 1);
-      } else {
         m_fcn(t->right);
       }
 
@@ -192,7 +190,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
       aus << emptyList;
     }
 
-    return 3;
+    return 0;
   }
   virtual int onContent(Token const * t, Token const * parent) {
 #ifndef NDEBUG
@@ -204,7 +202,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     if (not tags or t->left != 0 or t->right != 0) {
         aus << ",";
     }
-    return 3;
+    return 0;
   }
   virtual int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
@@ -226,7 +224,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     if (t->token == TOKEN_ROOT) {
       aus << childEnd << itemEnd << stmtSep << linebreak;
     }
-    return 3;
+    return 0;
   }
 
 };

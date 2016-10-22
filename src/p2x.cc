@@ -1161,7 +1161,7 @@ struct TreeTraverser {
         res |= (m_obj->*enterFcn)(t.second, m_stack.sTop().second);
       }
       m_stack.sPush(std::make_pair(ST_BETWEEN, t.second));
-      if ((res & 1) && t.second->left) {
+      if (not(res & 1) && t.second->left) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->left));
       }
       break;
@@ -1170,7 +1170,7 @@ struct TreeTraverser {
         res |= (m_obj->*contentFcn)(t.second, m_stack.sTop().second);
       }
       m_stack.sPush(std::make_pair(ST_LEAVE, t.second));
-      if ((res & 2) && t.second->right) {
+      if (not(res & 2) && t.second->right) {
         m_stack.sPush(std::make_pair(ST_ENTER, t.second->right));
       }
       break;
@@ -1392,7 +1392,7 @@ struct TreeXMLWriter {
         aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
       }
 
-      return 3;
+      return 0;
     }
     int onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
@@ -1407,7 +1407,7 @@ struct TreeXMLWriter {
       if (t->ignore) {
         m_xmlWriter.writeIgnoreXML(t->ignore, aus, indent);
       }
-      return 3;
+      return 0;
     }
     int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
@@ -1425,7 +1425,7 @@ struct TreeXMLWriter {
         setIndent();
         aus << indent << "</" << elemName << ">" << m_xmlWriter.linebreak;
       }
-      return 3;
+      return 0;
     }
   };
 
@@ -1561,7 +1561,7 @@ struct TreeXMLWriter {
         aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
       }
 
-      return 3;
+      return 0;
     }
     int onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
@@ -1576,7 +1576,7 @@ struct TreeXMLWriter {
       if (t->ignore) {
         writeIgnoreXML(t->ignore, indent);
       }
-      return 3;
+      return 0;
     }
     int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
@@ -1597,7 +1597,7 @@ struct TreeXMLWriter {
         }
         aus << "</" << elemName << ">" << m_xmlWriter.linebreak;
       }
-      return 3;
+      return 0;
     }
   };
 

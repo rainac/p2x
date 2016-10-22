@@ -136,7 +136,7 @@ struct TreePrintHelperMATLABLR {
     } else if (t->right and m_xmlWriter.options.strict) {
       aus << ",'l',''";
     }
-    return 3;
+    return 0;
   }
   virtual int onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
@@ -153,7 +153,7 @@ struct TreePrintHelperMATLABLR {
       }
       aus << "'r',";
     }
-    return 3;
+    return 0;
   }
   virtual int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
@@ -175,7 +175,7 @@ struct TreePrintHelperMATLABLR {
     if (t->left or t->right) {
       --m_level;
     }
-    return 3;
+    return 0;
   }
 };
 
