@@ -2340,6 +2340,7 @@ int main(int argc, char *argv[]) {
 
   if (args.outfile_given) {
     _out = new std::ofstream(args.outfile_arg, std::ios::binary);
+    ls(LS::FILES) << "Open file " << args.outfile_arg << " for output\n";
   }
 
   std::ostream &out = *_out;
@@ -2399,7 +2400,7 @@ int main(int argc, char *argv[]) {
       configParser.options.ignoreIgnore = true;
       std::ifstream configFile(precPath.c_str());
       if (configFile) {
-        ls(LS::INFO|LS::DEBUG)  << "Parsing config file " << precPath << "\n";
+        ls(LS::FILES|LS::INFO|LS::DEBUG)  << "Parsing config file " << precPath << "\n";
         Token *croot = configParser.parseStream(configFile);
         TreeXMLWriter::Options options;
         options.line = options.col = options.prec /* = options.sparse */ = 1;
@@ -2409,6 +2410,7 @@ int main(int argc, char *argv[]) {
         treeXMLWriter.writeXML(croot, ls(LS::DEBUG|LS::CONFIG), "");
         Lexer lexer(scannerType);
         parseConfig(lexer, precPath, croot, tokenInfo);
+        ls(LS::IO)  << "Read " << configFile.tellg() << " B from config file '" << precPath << "'\n";
         // LS::mask &= ~LS::DEBUG;
       } else {
         ls(LS::ERROR)  << "Failed to read config file " << precPath << ": " << strerror(errno) << "\n";
@@ -2633,6 +2635,13 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  std::stringstream inStream_, *inStream = &inStream_;
+  *inStream << inFile->rdbuf();
+
+  ls(LS::IO) << "Read " << inStream->tellp() << " B from file "
+             << (fileList.size() ? fileList[0].c_str() : "input")
+             << "\n";
+
   if (args.scan_only_given) {
     Timer tScanner;
     std::ostream &lout = ls(LS::TIMES) << "Scanning input... ";
@@ -2685,6 +2694,7 @@ int main(int argc, char *argv[]) {
     writeTreeMATLAB_LR(root, tokenInfo, options, indentUnit, out, scannerType);
 
   lout << "done in " << tXML << " s" << std::endl;
+  ls(LS::IO)  << "Wrote " << out.tellp() << " B to file '" << args.outfile_arg << "'\n";
 
   if (infile) {
     delete infile;
