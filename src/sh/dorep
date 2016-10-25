@@ -1,9 +1,30 @@
 #! /bin/zsh
 
 inf=$1
+mode=$2
+merge=$3
 
-p2x -m -M -iSPACE -b NEWLINE -b COMMA -b PLUS -b MULT $inf > res.m
-octave --path $PWD/src/m --eval dorep < res.m | tee res.txt
+#TODO: use P2X options here
+p2xflags=(-m -iSPACE -b NEWLINE -b COMMA -b PLUS -b MULT)
+
+mydir=$(dirname $(readlink -f $0))
+
+if [[ "$mode" = "M" ]]; then
+    p2x -o res.m -M $p2xflags $inf
+    octave --path $mydir/../m --eval dorep < res.m | tee res.txt
+elif [[ "$mode" = "J" ]]; then
+    p2x -o res.json -J $p2xflags $inf
+    python $mydir/../py/reproduce.py < res.json | tee res.txt
+elif [[ "$mode" = "X" ]]; then
+    p2x -o res.xml -X $p2xflags $inf
+    xsltproc -o res.txt $mydir/../xsl/reproduce.xsl res.xml
+    cat res.txt
+elif [[ "$mode" = "x" ]]; then
+    p2x -o res.xml $p2xflags $inf
+    xsltproc -o res.txt $mydir/../xsl/reproduce.xsl res.xml
+    cat res.txt
+fi
+
 diff -w $inf res.txt
 st=$?
 
@@ -11,3 +32,5 @@ if [[ "$st" != "0" ]]; then
 #    echo "output is not identical"
     exit $st
 fi
+
+rm -rf res.xml res.m res.txt res.json
