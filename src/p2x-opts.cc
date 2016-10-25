@@ -64,6 +64,7 @@ const char *gengetopt_args_info_full_help[] = {
   "      --output-mode=Mode        Write output as XML/JSON/MATLAB",
   "  -M, --matlab                  Write output as MATLAB  (default=off)",
   "  -J, --json                    Write output as JSON  (default=off)",
+  "  -X, --xml                     Write output as XML  (default=off)",
   "      --write-recursive         Recursive output writing  (default=off)",
   "  -g, --src-info                Emit source location attributes line, column,\n                                  and character  (default=off)",
   "      --attribute-line          Emit attribute line with source line\n                                  (default=off)",
@@ -109,12 +110,13 @@ init_help_array(void)
   gengetopt_args_info_help[27] = gengetopt_args_info_full_help[27];
   gengetopt_args_info_help[28] = gengetopt_args_info_full_help[28];
   gengetopt_args_info_help[29] = gengetopt_args_info_full_help[29];
-  gengetopt_args_info_help[30] = gengetopt_args_info_full_help[31];
-  gengetopt_args_info_help[31] = 0; 
+  gengetopt_args_info_help[30] = gengetopt_args_info_full_help[30];
+  gengetopt_args_info_help[31] = gengetopt_args_info_full_help[32];
+  gengetopt_args_info_help[32] = 0; 
   
 }
 
-const char *gengetopt_args_info_help[32];
+const char *gengetopt_args_info_help[33];
 
 typedef enum {ARG_NO
   , ARG_FLAG
@@ -192,6 +194,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->output_mode_given = 0 ;
   args_info->matlab_given = 0 ;
   args_info->json_given = 0 ;
+  args_info->xml_given = 0 ;
   args_info->write_recursive_given = 0 ;
   args_info->src_info_given = 0 ;
   args_info->attribute_line_given = 0 ;
@@ -247,6 +250,7 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->output_mode_orig = NULL;
   args_info->matlab_flag = 0;
   args_info->json_flag = 0;
+  args_info->xml_flag = 0;
   args_info->write_recursive_flag = 0;
   args_info->src_info_flag = 0;
   args_info->attribute_line_flag = 0;
@@ -315,15 +319,16 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->output_mode_help = gengetopt_args_info_full_help[27] ;
   args_info->matlab_help = gengetopt_args_info_full_help[28] ;
   args_info->json_help = gengetopt_args_info_full_help[29] ;
-  args_info->write_recursive_help = gengetopt_args_info_full_help[30] ;
-  args_info->src_info_help = gengetopt_args_info_full_help[31] ;
-  args_info->attribute_line_help = gengetopt_args_info_full_help[32] ;
-  args_info->attribute_column_help = gengetopt_args_info_full_help[33] ;
-  args_info->attribute_char_help = gengetopt_args_info_full_help[34] ;
-  args_info->attribute_precedence_help = gengetopt_args_info_full_help[35] ;
-  args_info->attribute_mode_help = gengetopt_args_info_full_help[36] ;
-  args_info->attribute_type_help = gengetopt_args_info_full_help[37] ;
-  args_info->attribute_id_help = gengetopt_args_info_full_help[38] ;
+  args_info->xml_help = gengetopt_args_info_full_help[30] ;
+  args_info->write_recursive_help = gengetopt_args_info_full_help[31] ;
+  args_info->src_info_help = gengetopt_args_info_full_help[32] ;
+  args_info->attribute_line_help = gengetopt_args_info_full_help[33] ;
+  args_info->attribute_column_help = gengetopt_args_info_full_help[34] ;
+  args_info->attribute_char_help = gengetopt_args_info_full_help[35] ;
+  args_info->attribute_precedence_help = gengetopt_args_info_full_help[36] ;
+  args_info->attribute_mode_help = gengetopt_args_info_full_help[37] ;
+  args_info->attribute_type_help = gengetopt_args_info_full_help[38] ;
+  args_info->attribute_id_help = gengetopt_args_info_full_help[39] ;
   
 }
 
@@ -570,6 +575,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "matlab", 0, 0 );
   if (args_info->json_given)
     write_into_file(outfile, "json", 0, 0 );
+  if (args_info->xml_given)
+    write_into_file(outfile, "xml", 0, 0 );
   if (args_info->write_recursive_given)
     write_into_file(outfile, "write-recursive", 0, 0 );
   if (args_info->src_info_given)
@@ -1162,6 +1169,7 @@ cmdline_parser_internal (
         { "output-mode",	1, NULL, 0 },
         { "matlab",	0, NULL, 'M' },
         { "json",	0, NULL, 'J' },
+        { "xml",	0, NULL, 'X' },
         { "write-recursive",	0, NULL, 0 },
         { "src-info",	0, NULL, 'g' },
         { "attribute-line",	0, NULL, 0 },
@@ -1174,7 +1182,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:mMJg", long_options, &option_index);
+      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:mMJXg", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1355,6 +1363,16 @@ cmdline_parser_internal (
           if (update_arg((void *)&(args_info->json_flag), 0, &(args_info->json_given),
               &(local_args_info.json_given), optarg, 0, 0, ARG_FLAG,
               check_ambiguity, override, 1, 0, "json", 'J',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'X':	/* Write output as XML.  */
+        
+        
+          if (update_arg((void *)&(args_info->xml_flag), 0, &(args_info->xml_given),
+              &(local_args_info.xml_given), optarg, 0, 0, ARG_FLAG,
+              check_ambiguity, override, 1, 0, "xml", 'X',
               additional_error))
             goto failure;
         
