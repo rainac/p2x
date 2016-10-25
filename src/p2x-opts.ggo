@@ -11,7 +11,7 @@ purpose "Universal parser with XML output"
 usage "p2x {option} file"
 description "Text is parsed into a binary tree using precedence and associativity."
 
-option "verbose" V "Control messages by bit mask" string typestr="<number>|error|warning|info|debug|scan|parse|config" default="error|warning" argoptional multiple optional
+option "verbose" V "Control messages by bit mask" string typestr="<number>|error|warning|info|debug|scan|parse|config|files|io" default="error|warning" argoptional multiple optional
 
 option "debug" - "Enable debugging" flag off
 
