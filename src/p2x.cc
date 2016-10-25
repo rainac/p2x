@@ -2625,11 +2625,12 @@ int main(int argc, char *argv[]) {
 
 
   // Start processing input
-  std::istream *inStream = &std::cin, *infile = 0;
+  std::istream *inFile = &std::cin, *infile = 0;
   if (not fileList.empty()) {
     infile = new std::ifstream(fileList[0].c_str());
     if (infile and *infile) {
-      inStream = infile;
+      ls(LS::FILES) << "Open file " << fileList[0] << "\n";
+      inFile = infile;
     } else {
       ls(LS::ERROR) << "Failed to open input file: " << fileList[0] << ": " << strerror(errno) << std::endl;
       return EXIT_FAILURE;
