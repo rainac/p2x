@@ -2684,6 +2684,9 @@ int main(int argc, char *argv[]) {
   if (args.json_given) {
     outputMode = "j";
   }
+  if (args.xml_given) {
+    outputMode = "y";
+  }
   if (args.output_mode_given) {
     outputMode = args.output_mode_arg[0];
   }
