@@ -2137,10 +2137,11 @@ void printBugreportInfo() {
   printf("Report bugs to %s\n", PACKAGE_BUGREPORT);
 }
 
-char const *vcs_version = LONG_VERSION;
+char const *vcs_version = VCS_REVISION;
 
 void printVersion() {
   cmdline_parser_print_version();
+  printf("Version tag: %s\n", std::string(vcs_version).substr(0,8).c_str());
   printCopyright();
 }
 
