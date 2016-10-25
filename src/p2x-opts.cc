@@ -37,7 +37,7 @@ const char *gengetopt_args_info_full_help[] = {
   "  -h, --help                    Print help and exit",
   "      --full-help               Print help, including hidden options, and exit",
   "      --version                 Print version and exit",
-  "  -V, --verbose[=<number>|error|warning|info|debug|scan|parse|config]\n                                Control messages by bit mask\n                                  (default=`error|warning')",
+  "  -V, --verbose[=<number>|error|warning|info|debug|scan|parse|config|files|io]\n                                Control messages by bit mask\n                                  (default=`error|warning')",
   "      --debug                   Enable debugging  (default=off)",
   "  -p, --prec-list=filename      Precedence file list",
   "  -i, --ignore=TokenList        Add an item to ignore",
