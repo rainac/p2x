@@ -2155,6 +2155,12 @@ void printFullHelp() {
   cmdline_parser_print_full_help();
   printf("\n");
   printBugreportInfo();
+  // TODO: add help...
+  // gennc_parsertoken_full_help_string();
+  // gennc_logger_full_help_string();
+  // gennc_scanner_full_help_string();
+  // gennc_assoc_full_help_string();
+  // gennc_modes_full_help_string();
 }
 
 #ifndef P2X_NO_MAIN
