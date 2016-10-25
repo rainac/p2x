@@ -114,6 +114,7 @@ VCS_REVISION=`./vcs-version.sh`
 AC_MSG_CHECKING([value for VCS_REVISION])
 AC_MSG_RESULT([$VCS_REVISION])
 AC_SUBST([VCS_REVISION])
+AC_DEFINE_UNQUOTED(VCS_REVISION, "$VCS_REVISION", [VCS revision identifier])
 
 echo "creating version.txt"
 echo "$VERSION" > version.txt
