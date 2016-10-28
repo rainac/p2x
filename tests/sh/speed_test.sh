@@ -4,7 +4,7 @@
 
 TMP=${TMP:-/tmp}
 
-P2XOPTS=(-X -m -Vtimes,io)
+P2XOPTS=($P2XOPTS -X -m -Vtimes,io)
 
 infile=$TMP/p2x-speed-in
 outfile=$TMP/p2x-out.xml
