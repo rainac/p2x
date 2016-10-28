@@ -1390,7 +1390,7 @@ struct TreeXMLWriter {
         ++m_level;
       }
       if (t->left == 0 and t->right != 0) {
-        aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
+        aus << subindent << "<null/>" << m_xmlWriter.linebreak;
       }
 
       return 0;
@@ -1559,7 +1559,7 @@ struct TreeXMLWriter {
         }
       }
       if (t->left == 0 and t->right != 0) {
-        aus << indent << m_xmlWriter.indentUnit << "<null/>" << m_xmlWriter.linebreak;
+        aus << subindent << "<null/>" << m_xmlWriter.linebreak;
       }
 
       return 0;
