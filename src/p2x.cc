@@ -1203,6 +1203,30 @@ void traverseTree(HandlerClass &handler, Token const *t) {
   treeTraverser.traverseTree(t);
 }
 
+struct Indent {
+  std::string m_unit;
+  std::string m_str;
+  size_t      m_level;
+  size_t      m_outlen;
+  Indent(std::string const &unit = " ") : m_unit(unit), m_level(), m_outlen() {}
+  ~Indent() {}
+  void setLevel(size_t lev) {
+    for (size_t k = m_str.size() / m_unit.size(); k < lev; ++k) {
+      m_str += m_unit;
+    }
+    m_level = lev;
+    m_outlen = lev * m_unit.size();
+  }
+  void print(std::ostream &aus) const {
+    aus.write(m_str.c_str(), m_outlen);
+  }
+};
+
+inline std::ostream &operator << (std::ostream &aus, Indent const &i) {
+  i.print(aus);
+  return aus;
+}
+
 struct TreeXMLWriter {
   struct Options {
     Options() :
@@ -1270,13 +1294,13 @@ struct TreeXMLWriter {
       aus << " mode='" << tokenInfo.mode(t) << "'";
   }
 
-  bool writeXMLTextElem(Token const *t, std::ostream &aus, std::string const &indent = "") const {
+  bool writeXMLTextElem(Token const *t, std::ostream &aus) const {
     bool res = 0;
     if (t->token == TOKEN_NEWLINE) {
       if (options.newlineAsBr and not options.newlineAsEntity) {
-        aus << indent << "<ca:br/>";
+        aus << "<ca:br/>";
       } else {
-        aus << indent << "<ca:text>";
+        aus << "<ca:text>";
         if (options.newlineAsEntity) {
           aus << "&#xa;";
         } else {
@@ -1286,10 +1310,10 @@ struct TreeXMLWriter {
       }
       res = 1;
     } else if (t->token == TOKEN_CRETURN) {
-      if (options.newlineAsBr) {
-        aus << indent << "<ca:cr/>";
+      if (options.newlineAsBr and not options.newlineAsEntity) {
+        aus << "<ca:cr/>";
       } else {
-        aus << indent << "<ca:text>";
+        aus << "<ca:text>";
         if (options.newlineAsEntity) {
           aus << "&#xd;";
         } else {
@@ -1299,7 +1323,7 @@ struct TreeXMLWriter {
       }
       res = 1;
     } else if (t->text.size()) {
-      aus << indent << "<ca:text>";
+      aus << "<ca:text>";
       XMLOstream x(aus);
       x << t->text;
       aus << "</ca:text>";
@@ -1311,24 +1335,18 @@ struct TreeXMLWriter {
   struct TreePrintHelper {
     TreeXMLWriter const &m_xmlWriter;
     size_t m_level;
-    std::string indent, subindent, elemName;
+    Indent indent, subindent;
+    std::string elemName;
     bool merged, tags;
     std::ostream &aus;
 
     TreePrintHelper(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
       m_xmlWriter(xmlWriter),
       m_level(),
+      indent(m_xmlWriter.indentUnit),
+      subindent(m_xmlWriter.indentUnit),
       aus(aus)
     {}
-
-    void setWhiteLen(std::string &str, size_t ilevel) const {
-      if (str.size() < ilevel) {
-        str.insert(str.end(), ilevel-str.size(), m_xmlWriter.indentUnit[0]);
-      }
-      if (str.size() > ilevel) {
-        str.resize(ilevel);
-      }
-    }
 
     void setIndent() {
       if (m_xmlWriter.options.indent) {
@@ -1336,8 +1354,8 @@ struct TreeXMLWriter {
 #ifndef NDEBUG
         ls(LS::DEBUG|LS::PARSE) << "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n";
 #endif
-        setWhiteLen(indent, ilevel);
-        setWhiteLen(subindent, ilevel+1);
+        indent.setLevel(ilevel);
+        subindent.setLevel(ilevel+1);
       }
     }
 
@@ -1403,8 +1421,11 @@ struct TreeXMLWriter {
       setupNode(t);
       setIndent();
 
-      bool const wrt = m_xmlWriter.writeXMLTextElem(t, aus, indent);
-      if (wrt) aus << m_xmlWriter.linebreak;
+      if (not t->text.empty()) {
+        aus << indent;
+        m_xmlWriter.writeXMLTextElem(t, aus);
+        aus << m_xmlWriter.linebreak;
+      }
       if (t->ignore) {
         m_xmlWriter.writeIgnoreXML(t->ignore, aus, indent);
       }
@@ -1433,7 +1454,8 @@ struct TreeXMLWriter {
   struct XMLTreePrintHelper2 {
     TreeXMLWriter const &m_xmlWriter;
     size_t m_level;
-    std::string indent, subindent, elemName;
+    Indent indent, subindent;
+    std::string elemName;
     bool merged, tags;
     std::ostream &aus;
     XMLOstream xaus;
@@ -1441,18 +1463,11 @@ struct TreeXMLWriter {
     XMLTreePrintHelper2(TreeXMLWriter const &xmlWriter, std::ostream &aus) :
       m_xmlWriter(xmlWriter),
       m_level(),
+      indent(m_xmlWriter.indentUnit),
+      subindent(m_xmlWriter.indentUnit),
       aus(aus),
       xaus(aus)
     {}
-
-    void setWhiteLen(std::string &str, size_t ilevel) const {
-      if (str.size() < ilevel) {
-        str.insert(str.end(), ilevel-str.size(), m_xmlWriter.indentUnit[0]);
-      }
-      if (str.size() > ilevel) {
-        str.resize(ilevel);
-      }
-    }
 
     void setIndent() {
       if (m_xmlWriter.options.indent) {
@@ -1460,12 +1475,12 @@ struct TreeXMLWriter {
 #ifndef NDEBUG
         ls(LS::DEBUG|LS::PARSE) << "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n";
 #endif
-        setWhiteLen(indent, ilevel);
-        setWhiteLen(subindent, ilevel+1);
+        indent.setLevel(ilevel);
+        subindent.setLevel(ilevel+1);
       }
     }
 
-  void writeIgnoreXML(Token *t, std::string const &indent = "") {
+  void writeIgnoreXML(Token *t, Indent const &indent) {
     if (t->ignore) {
       writeIgnoreXML(t->ignore, indent);
     }
@@ -1477,7 +1492,7 @@ struct TreeXMLWriter {
     aus << ">" << t->text << "</ci:" << Token::getParserTokenName(t->token) << ">" << m_xmlWriter.linebreak;
   }
 
-  bool writeXMLTextElem(Token const *t, std::string const &indent = "") {
+  bool writeXMLTextElem(Token const *t, Indent const &indent) {
     bool res = 0;
     if (t->text.size() and (t->left or t->right or t->ignore)) {
       aus << indent;
@@ -1722,8 +1737,11 @@ struct TreeXMLWriter {
     } else if (t->right != 0) {
       aus << indent << indentUnit << "<null/>" << linebreak;
     }
-    bool const wrt = writeXMLTextElem(t, aus, subindent);
-    if (wrt) aus << linebreak;
+    if (not t->text.empty()) {
+      aus << subindent;
+      writeXMLTextElem(t, aus);
+      aus << linebreak;
+    }
     if (t->ignore) {
       writeIgnoreXML(t->ignore, aus, subindent);
     }
@@ -1739,7 +1757,7 @@ struct TreeXMLWriter {
     }
   }
 
-  void writeIgnoreXML(Token *t, std::ostream &aus, std::string const &indent = "") const {
+  void writeIgnoreXML(Token *t, std::ostream &aus, Indent const &indent) const {
     if (t->ignore) {
       writeIgnoreXML(t->ignore, aus, indent);
     }
