@@ -2215,6 +2215,10 @@ static int readConfigFile(std::string const &fname) {
   return res != 0;
 }
 
+void cleanup_cmdline_parser() {
+  cmdline_parser_free(&args);
+}
+
 int main(int argc, char *argv[]) {
 
   char const *dbInitVal = getenv("P2X_DEBUG_INIT");
@@ -2241,6 +2245,7 @@ int main(int argc, char *argv[]) {
     std::cerr << PACKAGE_NAME " user config directory: " << upUserDir << "\n";
   }
 
+  atexit(cleanup_cmdline_parser);
   cmdline_parser_init(&args);
 
   std::string configFileName = upUserDir + "/" PACKAGE_NAME "-options";
@@ -2652,11 +2657,13 @@ int main(int argc, char *argv[]) {
     } else {
       ls(LS::ERROR) << "Failed to open input file: " << fileList[0] << ": " << strerror(errno) << std::endl;
       delete infile;
+      if (_out != &std::cout) delete _out;
       return EXIT_FAILURE;
     }
   } else {
     if (isatty(0) and not args.stdin_tty_given) {
       ls(LS::ERROR) << "Refusing to read from the keyboard, use --stdin-tty to overrule" << std::endl;
+      if (_out != &std::cout) delete _out;
       return EXIT_FAILURE;
     }
   }
@@ -2734,6 +2741,5 @@ int main(int argc, char *argv[]) {
     _out = 0;
   }
 
-  cmdline_parser_free(&args);
 }
 #endif
