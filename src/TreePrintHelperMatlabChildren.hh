@@ -17,7 +17,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     comma = ",";
     space1 = xmlWriter.options.indent ? " " : "";
     stmtSep = ";";
-    linebreak = "\n";
+    linebreak = xmlWriter.options.indent ? "\n" : "";
     emptyList = "[]";
     codebreak = "...";
     namequote = "\'";
