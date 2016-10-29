@@ -64,7 +64,7 @@ check_xml_output_no_added_whitespace_if_indent_off() {
     p2x $P2XFLAGS --indent -p  ../../examples/configs/default -o res.xml ../../examples/in/csv.exp
     assertEquals "P2X should not fail in this case" "0" "$?"
     xsltproc ../../src/xsl/empty.xsl res.xml > res.txt
-    grep " " res.txt > /dev/null
+    tr '[:space:]' 'X' < res.txt | grep 'X' > /dev/null
     assertEquals "P2X should not print any added whitespace if indent is off" "1" "$?"
     rm res.xml res.txt
 }
@@ -72,7 +72,7 @@ check_xml_output_no_added_whitespace_if_indent_off() {
 check_output_no_added_whitespace_if_indent_off() {
     p2x $P2XFLAGS --indent -p  ../../examples/configs/default -o res.xml ../../examples/in/csv.exp
     assertEquals "P2X should not fail in this case" "0" "$?"
-    grep " " res.xml > /dev/null
+    tr '[:space:]' 'X' < res.xml | grep 'X' > /dev/null
     assertEquals "P2X should not print any added whitespace if indent is off" "1" "$?"
     rm res.xml
 }
