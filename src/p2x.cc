@@ -1863,7 +1863,7 @@ void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
                      std::ostream &out, ScannerType ) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:c='" NAMESPACE_CA "' xmlns:ci='" NAMESPACE_CX "ignore' >" << treeXMLWriter.linebreak;
+  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:c='" NAMESPACE_CA "' xmlns:ci='" NAMESPACE_CX "ignore'>" << treeXMLWriter.linebreak;
   treeXMLWriter.writeXML2_Stack(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
 }
