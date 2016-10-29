@@ -31,12 +31,12 @@ struct StreamBufferMATLABEscape : public std::streambuf {
       break;
     case '\n':
       m_sb1->sputc('\'');
-      xsputn(", char(10), ", 12);
+      xsputn(",char(10),", 10);
       m_sb1->sputc('\'');
       break;
     case '\r':
       m_sb1->sputc('\'');
-      xsputn(", char(13), ", 12);
+      xsputn(",char(13),", 10);
       m_sb1->sputc('\'');
       break;
     default:
