@@ -39,7 +39,7 @@ mydir=$(dirname $BASH_SOURCE)
 
 testOutputValid() {
 
-    for i in $mydir/../../examples/in/cr.exp; do
+    for i in $mydir/../../examples/in/*.exp; do
         echo "Validate file $i"
         opts=""
         if [[ "$i" = "$mydir/../../examples/in/german.exp" ]] \
