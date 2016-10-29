@@ -54,5 +54,9 @@ test_valgrind_no_errors_noin() {
     runvalgrind
 }
 
+test_valgrind_cleanup() {
+    rm -f in.txt
+}
+
 . shunit2
 
