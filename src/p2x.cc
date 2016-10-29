@@ -2651,6 +2651,7 @@ int main(int argc, char *argv[]) {
       inFile = infile;
     } else {
       ls(LS::ERROR) << "Failed to open input file: " << fileList[0] << ": " << strerror(errno) << std::endl;
+      delete infile;
       return EXIT_FAILURE;
     }
   } else {
