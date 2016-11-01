@@ -52,10 +52,37 @@ TokenInfo has function outputMode
 
 Reading XML: should be doable with expat parser
 
-*** TODO Option --output, -o
+*** DONE Option --output, -o
+    CLOSED: [2016-11-01 Di 13:46]
 
 Write output to file instead of stdout
+
+*** DONE MATLAB struct output
+    CLOSED: [2016-11-01 Di 13:47]
+
+*** DONE JSON output
+    CLOSED: [2016-11-01 Di 13:47]
+
+Structurally same as MATLAB -> needs postprocessing
+
 
 ** TODO Source code cleanup
 
 *** TODO Remove method TreeXMLWriter::writeXMLTypeElem
+
+* TODO Refactoring
+
+** DONE Back to pure binary tree
+   CLOSED: [2016-11-01 Di 13:48]
+
+Just left and right pointers
+
+Exception: ignore pointer
+
+** TODO Switch parenthesis handling
+
+: ("[", left-child, ("]", content, right-child))
+
+instead of
+
+: ("]", ("[", left-child, content), right-child)
