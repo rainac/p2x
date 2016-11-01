@@ -963,7 +963,7 @@ struct Parser {
   // Class Ignore
   // here we have to look "inside" the parens to find the ignore
   // insert position. this is the old behaviour
-  void pushIgnoreAsBefore(Token *t) {
+  void pushIgnore(Token *t) {
     if (not options.ignoreIgnore) {
       Token *rm = getRM();
       t->ignore = rm->ignore;
@@ -987,7 +987,7 @@ struct Parser {
       pushItem(first);
       break;
     case MODE_IGNORE:
-      pushIgnoreAsBefore(first);
+      pushIgnore(first);
       break;
     case MODE_UNARY:
       pushUnary(first);
