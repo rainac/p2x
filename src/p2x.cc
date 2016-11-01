@@ -961,17 +961,6 @@ struct Parser {
   }
 
   // Class Ignore
-  void pushIgnore(Token *t) {
-    if (not options.ignoreIgnore) {
-      Token *rm = getRM();
-      Token *tend = t;
-      while (tend->ignore) 
-        tend = tend->ignore;
-      tend->ignore = rm->ignore;
-      rm->ignore = t;
-    }
-  }
-
   // here we have to look "inside" the parens to find the ignore
   // insert position. this is the old behaviour
   void pushIgnoreAsBefore(Token *t) {
@@ -1054,7 +1043,6 @@ struct Parser {
         }
 
         if (parser.root->ignore) {
-          // pushIgnore(parser.root->ignore);
           assert(first->ignore == 0);
           first->ignore = parser.root->ignore;
         }
