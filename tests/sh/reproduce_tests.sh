@@ -21,7 +21,9 @@ testReproduce() {
             opts=""
         fi
         p2x $opts -p ../../examples/configs/default $i > res.xml
+        assertEquals "P2X exits without error" 0 $?
         xsltproc ../../src/xsl/$reprxsl res.xml > res.txt
+        assertEquals "xsltproc exits without error" 0 $?
         diff $i res.txt > /dev/null
         assertEquals "Reproduce test $i did not return same result" 0 $?
         rm res.xml res.txt
