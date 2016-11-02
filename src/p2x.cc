@@ -1056,8 +1056,6 @@ struct Parser {
       } 
     } while(not endFound);
 
-    if (root->right)
-      root->right->rmt = getRM();
     return first;
   }
 

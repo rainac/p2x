@@ -13,7 +13,7 @@ struct Token {
 
   std::string text;
 
-  Token *left, *right, *ignore, *rmt;
+  Token *left, *right, *ignore;
 
   int id, line, column, character;
 
