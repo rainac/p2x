@@ -23,7 +23,9 @@ struct Token {
 
   Token();
   Token(ParserToken token, std::string text, int line = 0, int column = 0, int character = 0);
+#ifdef DEBUG
   ~Token();
+#endif
 
   char const *name() const { return getParserTokenName(token); }
 
