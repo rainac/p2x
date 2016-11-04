@@ -4,7 +4,7 @@ inf=$1
 mode=$2
 merge=$3
 
-#TODO: use P2X options here
+#TODO: use P2X options from user here
 p2xflags=(-m -iSPACE -b NEWLINE -b COMMA -b PLUS -b MULT)
 
 DIFFFLAGS=
