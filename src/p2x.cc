@@ -1356,7 +1356,8 @@ struct TreeXMLWriter {
 
       if (not t->text.empty()) {
         bool const ownLine = t->left || t->right || t->ignore;
-        aus << indent;
+        if (ownLine)
+          aus << indent;
         m_xmlWriter.writeXMLTextElem(t, aus);
         if (ownLine) aus << m_xmlWriter.linebreak;
       }
