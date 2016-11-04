@@ -2,7 +2,7 @@
 
 run_suite() {
     echo "Run suite $1"
-    ./$1
+    ./$1 > log_$1.txt 2> err_$1.txt
     assertEquals "Test suite $1 has errors or failures" 0 $?
 }
 
