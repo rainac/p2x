@@ -412,15 +412,24 @@ struct TokenInfo {
 
   bool addRBrace(TokenProto &tp) {
     tp.isRParen = 1;
-    tp.mode = MODE_PAREN;
-    unsigned code = mkOpCode(tp);
-    OpPrototypes::iterator it = opPrototypes.find(code);
-    if (it != opPrototypes.end()) {
-      ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp
-                               << " with mode " << MODE_PAREN << "\n";
-      exit(EXIT_FAILURE);
+    tp.mode = MODE_ITEM;
+    if (tp.token != TOKEN_IDENTIFIER) {
+      Prototypes::iterator it = prototypes.find(tp.token);
+      if (it != prototypes.end()) {
+        ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp << "\n";
+        exit(EXIT_FAILURE);
+      } else {
+        prototypes[tp.token] = tp;
+      }
     } else {
-      opPrototypes[code] = tp;
+      unsigned const code = mkOpCode(tp);
+      OpPrototypes::iterator it = opPrototypes.find(code);
+      if (it != opPrototypes.end()) {
+        ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp << "\n";
+        exit(EXIT_FAILURE);
+      } else {
+        opPrototypes[code] = tp;
+      }
     }
     return true;
   }
