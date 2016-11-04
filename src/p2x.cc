@@ -546,9 +546,6 @@ struct TokenInfo {
         res = &it->second;
       }
     }
-    if (((res and res->isRParen) or res == 0) and t->left) {
-      return getProto(t->left);
-    }
     return res;
   }
   
@@ -942,13 +939,8 @@ struct Parser {
 
     parent->right = t;
     if (tmp) {
-      if (tokenInfo.isParen(t) and t->left) {
-        assert(t->left->left == 0);
-        t->left->left = tmp;
-      } else {
-        assert(t->left == 0);
-        t->left = tmp;
-      }
+      assert(t->left == 0);
+      t->left = tmp;
     }
 
     leastMap[prec] = t;
@@ -1039,15 +1031,17 @@ struct Parser {
         parser.endList = tokenInfo.endList(first);
         Token *last = parser.parse();
 
-
-        first->right = parser.root->right;
         if (last->token == TOKEN_EOF) {
           endFound = true;
-          insertToken(first);
+          first->right = parser.root->right;
         } else {
-          last->left = first;
-          insertToken(last);
+          first->right = last;
+          last->left = parser.root->right;
         }
+        insertToken(first);
+
+        assert(first->right);
+        leastMap[tokenInfo.prec(first)] = first->right;
 
         if (parser.root->ignore) {
           assert(first->ignore == 0);
@@ -2119,6 +2113,14 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
             tp->precedence = precedence;
             tp->outputMode = outputMode;
             tp->associativity = assoc;
+
+            for (auto it = tp->endList.begin(); it != tp->endList.end(); ++it) {
+              TokenProto *etp = tokenInfo.getProto(&it->second);
+              etp->mode = subMode;
+              etp->precedence = precedence;
+              etp->outputMode = outputMode;
+              etp->associativity = assoc;
+            }
 
           }
         }
