@@ -238,28 +238,10 @@ struct TokenInfo {
 
   void init() {
     initMandatory();
-    // initConvenient();
   }
 
   void initMandatory() {
     prototypes[TOKEN_JUXTA] = TokenProto(Token(TOKEN_JUXTA, "j"), 900, MODE_BINARY, ASSOC_LEFT);
-  }
-
-  void initConvenient() {
-    initBraces();
-    prototypes[TOKEN_SPACE] = TokenProto(Token(TOKEN_SPACE, "*"), 0, MODE_IGNORE);
-  }
-
-  void initBraces() {
-    EndList endListP;
-    endListP.insert(std::make_pair(unsigned(TOKEN_R_PAREN), Token(TOKEN_R_PAREN, ")")));
-    prototypes[TOKEN_L_PAREN] = TokenProto(Token(TOKEN_L_PAREN, "*"), 10000, MODE_PAREN, ASSOC_NONE, endListP);
-    EndList endListCB;
-    endListCB.insert(std::make_pair(unsigned(TOKEN_R_BRACE), Token(TOKEN_R_BRACE, "}")));
-    prototypes[TOKEN_L_BRACE] = TokenProto(Token(TOKEN_L_BRACE, "*"), 10000, MODE_PAREN, ASSOC_NONE, endListCB);
-    EndList endListB;
-    endListB.insert(std::make_pair(unsigned(TOKEN_R_BRACKET), Token(TOKEN_R_BRACKET, "]")));
-    prototypes[TOKEN_L_BRACKET] = TokenProto(Token(TOKEN_L_BRACKET, "*"), 10000, MODE_PAREN, ASSOC_NONE, endListB);
   }
 
   unsigned mkOpCode(std::string const &s) {
@@ -281,13 +263,6 @@ struct TokenInfo {
       return tp.token;
     }
   }
-
-  // unsigned mkOpCode(ParserToken t) {
-  //   return t;
-  // }
-  // unsigned mkOpCode(Token const * const t) {
-  //   return mkOpCode(t->text);
-  // }
 
   unsigned getOpCode(std::string const &s) const {
     OpCodes::const_iterator it = opCodes.find(s);
@@ -553,28 +528,6 @@ struct TokenInfo {
     return const_cast<TokenProto*>(const_cast<TokenInfo const *>(this)->getProto(t));
   }
   
-  /*
-  void setProto(TokenProto const &t) {
-    TokenProto const *exProto = getProto(&t);
-
-    if (t.token == TOKEN_IDENTIFIER) {
-      OpPrototypes::const_iterator it = opPrototypes.find(getOpCode(&t));
-      if (it != opPrototypes.end()) {
-        ls(LS::CONFIG|LS::ERROR) << "Token prototype for " << t.token << " already exists" << "\n";
-        exit(EXIT_FAILURE);
-      }
-      opPrototypes[getOpCode(&t)] = t;
-    } else {
-      Prototypes::const_iterator it = prototypes.find(t.token);
-      if (it != prototypes.end()) {
-        ls(LS::CONFIG|LS::ERROR) << "Token prototype for " << t.token << " already exists" << "\n";
-        exit(EXIT_FAILURE);
-      }
-      prototypes[t.token] = t;
-    }
-  }
-  */
-  
   int prec(Token const * const t) const {
     int res = INT_MAX;
     ParserMode m = mode(t);
@@ -818,7 +771,6 @@ struct Parser {
   }
 
   ~Parser() {
-    // delete root;
     root = 0;
   }
 
@@ -844,12 +796,6 @@ struct Parser {
     assert(tokenInfo.mode(it->second) != MODE_ITEM);
     return it->second;
   }
-  Token *old_getRMOp(Token *t) const {
-    while (t->right and isOp(t->right)) {
-      t = t->right;
-    }
-    return t;
-  }
   bool rightEdgeOpen() const {
     Token *rm = getRMOp();
     return rm->right == 0 and tokenInfo.mode(rm) != MODE_POSTFIX;
@@ -857,17 +803,13 @@ struct Parser {
 
   bool tokenTypeEqual(Token const *s, Token const *t) const { 
     return TokenTypeEqual(tokenInfo)(s, t);
-    // return s->token == t->token
-    //   and (not (tokenInfo.isNamedType(s) or tokenInfo.isNamedType(t)) or s->text == t->text);
   }
 
   Token *mkRoot() {
-    // return new Token(TOKEN_ROOT, "");
     tokenList.tokenList.push_back(new Token(TOKEN_ROOT, ""));
     return tokenList.tokenList.back();
   }
   Token *mkJuxta(Token const * const t, ParserToken token = TOKEN_JUXTA) {
-    // return new Token(TOKEN_JUXTA, "", t->line, t->column, t->character);
     tokenList.tokenList.push_back(new Token(token, "", t->line, t->column, t->character));
     return tokenList.tokenList.back();
   }
