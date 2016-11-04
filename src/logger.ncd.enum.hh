@@ -13,8 +13,11 @@ INFO = 4,
 DEBUG = 8, 
 CONFIG = 0x10, 
 PARSE = 0x20, 
-SCAN = 0x40,
-TIMES = 0x80
+SCAN = 0x40, 
+TIMES = 0x80, 
+FILES = 0x100, 
+IO = 0x200, 
+HELP = 0x400
     };
   #endif
 

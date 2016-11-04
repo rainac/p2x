@@ -13,8 +13,6 @@ Token::Token() :
   left(), 
   right(),
   ignore(), 
-  content(), 
-  rmt(),
   id(++count),
   line(), 
   column(),
@@ -23,17 +21,15 @@ Token::Token() :
 { }
 
 Token::Token(ParserToken token, std::string text, int line, int column, int character) : 
-  text(text), left(), right(), ignore(), content(), id(++count), line(line), column(column), character(character), token(token)
+  text(text), left(), right(), ignore(), id(++count), line(line), column(column), character(character), token(token)
 {}
 
+#ifdef DEBUG
 Token::~Token() {
   left = right = 0;
-  content = ignore = 0;
-  rmt = 0;
+  ignore = 0;
   token = TOKEN_EOF;
 }
+#endif
 
-
-int Token::count = 0;
-
-// $Id$
+int Token::count;

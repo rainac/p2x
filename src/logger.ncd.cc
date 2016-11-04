@@ -12,7 +12,10 @@ static char const *getLogLevelName(unsigned long c) {
        case CONFIG: return "CONFIG";
        case PARSE: return "PARSE";
        case SCAN: return "SCAN";
-       case TIMES: return "TIMES"; 
+       case TIMES: return "TIMES";
+       case FILES: return "FILES";
+       case IO: return "IO";
+       case HELP: return "HELP"; 
         default: break;
       }
       return "unknown value in enumeration LogLevel";
@@ -27,7 +30,10 @@ static char const *getLogLevelName(unsigned long c) {
        case CONFIG: return "";
        case PARSE: return "";
        case SCAN: return "";
-       case TIMES: return ""; 
+       case TIMES: return "";
+       case FILES: return "";
+       case IO: return "";
+       case HELP: return ""; 
         default: break;
       }
       return "unknown value in enumeration LogLevel";
@@ -52,7 +58,13 @@ static char const *getLogLevelName(unsigned long c) {
        } else if (strcasecmp("SCAN", name) == 0) {
           return SCAN; 
        } else if (strcasecmp("TIMES", name) == 0) {
-          return TIMES;  
+          return TIMES; 
+       } else if (strcasecmp("FILES", name) == 0) {
+          return FILES; 
+       } else if (strcasecmp("IO", name) == 0) {
+          return IO; 
+       } else if (strcasecmp("HELP", name) == 0) {
+          return HELP;  
        } else {
           if (! res) {
             fprintf(stderr, "error: unknown %s constant named `%s'\n",
@@ -64,7 +76,7 @@ static char const *getLogLevelName(unsigned long c) {
        }
     }
     static unsigned long getNumLogLevel() {
-      return 9;
+      return 12;
     }
     static LogLevel getLogLevel(int which) {
       switch(which) { 
@@ -76,7 +88,10 @@ static char const *getLogLevelName(unsigned long c) {
        case 5: return CONFIG;
        case 6: return PARSE;
        case 7: return SCAN;
-       case 8: return TIMES; 
+       case 8: return TIMES;
+       case 9: return FILES;
+       case 10: return IO;
+       case 11: return HELP; 
        default: break;
       }
       fprintf(stderr, "error: LogLevel constant index %d out of range\n",

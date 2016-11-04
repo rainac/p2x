@@ -57,4 +57,32 @@ test_reproduce_ign() {
     run_suite reproduce_ign.sh
 }
 
+test_output_modey() {
+    run_suite output_modey.sh
+}
+
+test_output_mode_matlab() {
+    run_suite output_mode_matlab.sh
+}
+
+test_output_mode_matlab_merged() {
+    run_suite output_mode_matlab_merged.sh
+}
+
+test_output_mode_json() {
+    run_suite output_mode_json.sh
+}
+
+test_output_mode_json_merged() {
+    run_suite output_mode_json_merged.sh
+}
+
+test_large_scale() {
+    run_suite large_scale.sh
+}
+
+test_valgrind() {
+    run_suite valgrind_tests.sh
+}
+
 . shunit2

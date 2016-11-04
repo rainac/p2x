@@ -16,6 +16,11 @@ testParseTwiceIdentical() {
             reprxsl=empty-latin1.xsl
             opts="$opts -e latin1"
         fi
+        if [[ "$i" = "../../examples/in/cr.exp" ]]
+        then
+            reprxsl=reproduce.xsl
+            opts=""
+        fi
         p2x $opts -p ../../examples/configs/default $i > $tmpdir/res.xml
         assertEquals "P2X should exit with status 0" 0 $?
         xsltproc ../../src/xsl/$reprxsl $tmpdir/res.xml > $tmpdir/res.txt

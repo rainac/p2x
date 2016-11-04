@@ -1,18 +1,24 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="3" col="1" type="NEWLINE">
-   <op line="2" col="1" type="NEWLINE">
-    <op line="1" col="5" type="NEWLINE">
-     <op line="1" col="0" repr="sin" type="IDENTIFIER">
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" code="68" type="NEWLINE">
+   <op code="68" type="NEWLINE">
+    <op code="68" type="NEWLINE">
+     <op code="217" repr="sin" type="IDENTIFIER">
       <null/>
       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">sin</ca:text>
-      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="3" type="SPACE"><ca:text> </ca:text></ca:ignore>
-      <integer line="1" col="4" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text></integer>
+      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+      <integer code="28" type="INTEGER">
+       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text>
+      </integer>
      </op>
      <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-     <integer line="2" col="0" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text></integer>
+     <integer code="28" type="INTEGER">
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text>
+     </integer>
     </op>
     <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-    <integer line="3" col="0" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text></integer>
+    <integer code="28" type="INTEGER">
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text>
+    </integer>
    </op>
    <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
   </op>

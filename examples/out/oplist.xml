@@ -1,20 +1,22 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="0" type="PLUS">
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" code="47" type="PLUS">
    <null/>
    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
-   <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="1" type="SPACE"><ca:text> </ca:text></ca:ignore>
-   <op line="1" col="4" type="MULT">
-    <op line="1" col="2" type="MINUS">
+   <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+   <op code="49" type="MULT">
+    <op code="48" type="MINUS">
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">-</ca:text>
-     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="3" type="SPACE"><ca:text> </ca:text></ca:ignore>
+     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
     </op>
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
-    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="5" type="SPACE"><ca:text> </ca:text></ca:ignore>
-    <op line="1" col="6" type="DIV">
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    <op code="50" type="DIV">
      <null/>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">/</ca:text>
-     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="7" type="SPACE"><ca:text> </ca:text></ca:ignore>
-     <op line="1" col="8" type="MOD"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">%</ca:text></op>
+     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+     <op code="52" type="MOD">
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">%</ca:text>
+     </op>
     </op>
    </op>
   </op>

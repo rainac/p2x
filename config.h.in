@@ -123,6 +123,9 @@
 /* 1: static build */
 #undef P2X_BUILD_TESTS
 
+/* 1: debug build */
+#undef P2X_DEBUG_BUILD
+
 /* 1: static build */
 #undef P2X_STATIC_BUILD
 
@@ -158,6 +161,9 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* VCS revision identifier */
+#undef VCS_REVISION
 
 /* Long version string */
 #undef VERSION
