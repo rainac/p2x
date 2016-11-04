@@ -30,10 +30,10 @@
         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">=</ca:text>
         <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
         <op code="66" type="APOS">
-         <paren code="40" type="R_BRACKET">
-          <paren code="39" type="L_BRACKET">
-           <null/>
-           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">[</ca:text>
+         <paren code="39" type="L_BRACKET">
+          <null/>
+          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">[</ca:text>
+          <paren code="40" type="R_BRACKET">
            <op code="71" type="JUXTA">
             <op code="71" type="JUXTA">
              <integer code="28" type="INTEGER">
@@ -49,8 +49,8 @@
              <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text>
             </integer>
            </op>
+           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">]</ca:text>
           </paren>
-          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">]</ca:text>
          </paren>
          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">'</ca:text>
         </op>

@@ -40,10 +40,10 @@
         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">main</ca:text>
        </id>
       </op>
-      <paren code="36" type="R_PAREN">
-       <paren code="35" type="L_PAREN">
-        <null/>
-        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">(</ca:text>
+      <paren code="35" type="L_PAREN">
+       <null/>
+       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">(</ca:text>
+       <paren code="36" type="R_PAREN">
         <op code="55" type="COMMA">
          <op code="71" type="JUXTA">
           <id code="31" repr="int" type="IDENTIFIER">
@@ -67,23 +67,24 @@
             <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">argv</ca:text>
            </id>
           </op>
-          <paren code="40" type="R_BRACKET">
-           <paren code="39" type="L_BRACKET">
-            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">[</ca:text>
+          <paren code="39" type="L_BRACKET">
+           <null/>
+           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">[</ca:text>
+           <paren code="40" type="R_BRACKET">
+            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">]</ca:text>
            </paren>
-           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">]</ca:text>
           </paren>
          </op>
         </op>
+        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text>
+        <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
        </paren>
-       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text>
-       <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
       </paren>
      </op>
-     <paren code="38" type="R_BRACE">
-      <paren code="37" type="L_BRACE">
-       <null/>
-       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">{</ca:text>
+     <paren code="37" type="L_BRACE">
+      <null/>
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">{</ca:text>
+      <paren code="38" type="R_BRACE">
        <op code="68" type="NEWLINE">
         <op code="68" type="NEWLINE">
          <op code="68" type="NEWLINE">
@@ -149,8 +150,8 @@
         </op>
         <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
        </op>
+       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">}</ca:text>
       </paren>
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">}</ca:text>
      </paren>
     </op>
    </op>

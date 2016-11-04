@@ -9,15 +9,15 @@
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">=</ca:text>
      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
      <op code="71" type="JUXTA">
-      <paren code="36" type="R_PAREN">
-       <paren code="35" type="L_PAREN">
-        <null/>
-        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">(</ca:text>
+      <paren code="35" type="L_PAREN">
+       <null/>
+       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">(</ca:text>
+       <paren code="36" type="R_PAREN">
         <string code="30" type="STRING">
          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">'ff'</ca:text>
         </string>
+        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text>
        </paren>
-       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text>
       </paren>
       <op code="202" repr="a" type="IDENTIFIER">
        <string code="30" type="STRING">
