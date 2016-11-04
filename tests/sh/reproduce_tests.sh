@@ -4,6 +4,8 @@
 
 testReproduce() {
 
+  for c in ../../examples/configs/*; do
+    echo "With config $c "
     for i in ../../examples/in/*.exp; do
         echo "Parse file $i"
         opts=""
@@ -20,7 +22,7 @@ testReproduce() {
             reprxsl=reproduce.xsl
             opts=""
         fi
-        p2x $opts -p ../../examples/configs/default $i > res.xml
+        p2x $opts -p $c $i > res.xml
         assertEquals "P2X exits without error" 0 $?
         xsltproc ../../src/xsl/$reprxsl res.xml > res.txt
         assertEquals "xsltproc exits without error" 0 $?
@@ -28,6 +30,7 @@ testReproduce() {
         assertEquals "Reproduce test $i did not return same result" 0 $?
         rm res.xml res.txt
     done
+  done
 
 }
 
