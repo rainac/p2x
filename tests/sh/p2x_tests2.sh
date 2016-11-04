@@ -97,4 +97,16 @@ testP2X_output_no_added_whitespace_if_indent_off_J() {
     check_output_no_added_whitespace_if_indent_off
 }
 
+testP2X_error_in_config_reported() {
+    for fc in ../../examples/configs-fail/*; do
+        p2x $P2XFLAGS --indent -p $fc -o res.xml ../../examples/in/csv.exp
+        assertNotEquals "P2X should exit with error" "0" "$?"
+    done
+}
+
+testP2X_error_when_config_is_dir() {
+    p2x $P2XFLAGS --indent -p ../../examples/configs -o res.xml ../../examples/in/csv.exp
+    assertNotEquals "P2X should exit with error" "0" "$?"
+}
+
 . shunit2
