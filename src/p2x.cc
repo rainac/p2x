@@ -961,8 +961,6 @@ struct Parser {
   }
 
   // Class Ignore
-  // here we have to look "inside" the parens to find the ignore
-  // insert position. this is the old behaviour
   void pushIgnore(Token *t) {
     if (not options.ignoreIgnore) {
       Token *rm = getRM();
