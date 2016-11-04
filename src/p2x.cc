@@ -225,8 +225,6 @@ void TokenProto::print(std::ostream &aus) const {
 }
 
 struct TokenInfo {
-  typedef std::map<ParserToken, TokenProto> Prototypes;
-  Prototypes prototypes;
   typedef std::map<std::string, unsigned> OpCodes;
   OpCodes opCodes;
   typedef std::map<unsigned, TokenProto> OpPrototypes;
@@ -241,7 +239,7 @@ struct TokenInfo {
   }
 
   void initMandatory() {
-    prototypes[TOKEN_JUXTA] = TokenProto(Token(TOKEN_JUXTA, "j"), 900, MODE_BINARY, ASSOC_LEFT);
+    opPrototypes[TOKEN_JUXTA] = TokenProto(Token(TOKEN_JUXTA, "j"), 900, MODE_BINARY, ASSOC_LEFT);
   }
 
   unsigned mkOpCode(std::string const &s) {
@@ -297,7 +295,7 @@ struct TokenInfo {
     }
     TokenProto p(Token(t, "unknown"), prec, MODE_BINARY, assoc);
     ls(LS::CONFIG|LS::INFO) << "Adding binary operator: " << p << "\n";
-    prototypes[t] = p;
+    opPrototypes[t] = p;
     return true;
   }
 
@@ -322,7 +320,7 @@ struct TokenInfo {
     if (t == TOKEN_JUXTA) {
       ls(LS::ERROR|LS::PARSE) << "error: Parser: cannot classify JUXTA as Unary\n";
     }
-    prototypes[t] = p;
+    opPrototypes[t] = p;
     return true;
   }
 
@@ -347,7 +345,7 @@ struct TokenInfo {
     if (t == TOKEN_JUXTA) {
       ls(LS::ERROR|LS::PARSE) << "error: Parser: cannot classify JUXTA as Postfix\n";
     }
-    prototypes[t] = p;
+    opPrototypes[t] = p;
     return true;
   }
 
@@ -364,7 +362,7 @@ struct TokenInfo {
     if (t == TOKEN_JUXTA) {
       ls(LS::ERROR|LS::PARSE) << "error: Parser: cannot classify JUXTA as Ignore\n";
     }
-    prototypes[t] = p;
+    opPrototypes[t] = p;
     return true;
   }
 
@@ -381,30 +379,20 @@ struct TokenInfo {
     if (t == TOKEN_JUXTA) {
       ls(LS::ERROR|LS::PARSE) << "error: Parser: cannot classify JUXTA as Item\n";
     }
-    prototypes[t] = p;
+    opPrototypes[t] = p;
     return true;
   }
 
   bool addRBrace(TokenProto &tp) {
     tp.isRParen = 1;
     tp.mode = MODE_ITEM;
-    if (tp.token != TOKEN_IDENTIFIER) {
-      Prototypes::iterator it = prototypes.find(tp.token);
-      if (it != prototypes.end()) {
-        ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp << "\n";
-        exit(EXIT_FAILURE);
-      } else {
-        prototypes[tp.token] = tp;
-      }
+    unsigned const code = mkOpCode(tp);
+    OpPrototypes::iterator it = opPrototypes.find(code);
+    if (it != opPrototypes.end()) {
+      ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp << "\n";
+      exit(EXIT_FAILURE);
     } else {
-      unsigned const code = mkOpCode(tp);
-      OpPrototypes::iterator it = opPrototypes.find(code);
-      if (it != opPrototypes.end()) {
-        ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp << "\n";
-        exit(EXIT_FAILURE);
-      } else {
-        opPrototypes[code] = tp;
-      }
+      opPrototypes[code] = tp;
     }
     return true;
   }
@@ -415,10 +403,9 @@ struct TokenInfo {
     }
   }
 
-  bool addBrace(std::string const &name, TokenProto &tp) {
+  bool addBrace(unsigned const code, std::string const &name, TokenProto &tp) {
     tp.isParen = 1;
     tp.mode = MODE_ITEM;
-    unsigned code = mkOpCode(name);
     OpPrototypes::iterator it = opPrototypes.find(code);
     if (it != opPrototypes.end()) {
       if (not it->second.isParen) {
@@ -436,25 +423,11 @@ struct TokenInfo {
     }
     return true;
   }
+  bool addBrace(std::string const &name, TokenProto &tp) {
+    return addBrace(mkOpCode(name), name, tp);
+  }
   bool addBrace(ParserToken t, TokenProto &tp) {
-    tp.isParen = 1;
-    tp.mode = MODE_ITEM;
-    Prototypes::iterator it = prototypes.find(t);
-    if (it != prototypes.end()) {
-      if (not it->second.isParen) {
-        ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of " << t << " as mode " << it->second.mode
-                                   << " with mode " << MODE_PAREN << "\n";
-        exit(EXIT_FAILURE);
-        //        prototypes[t] = tp;
-      } else {
-        it->second.endList.insert(tp.endList.begin(), tp.endList.end());
-        addRBraces(tp);
-      }
-    } else {
-      prototypes[t] = tp;
-      addRBraces(tp);
-    }
-    return true;
+    return addBrace(t, Token::getParserTokenName(t), tp);
   }
 
   bool addBrace(std::string const &s, std::string const &send) {
@@ -511,15 +484,9 @@ struct TokenInfo {
 
   TokenProto const *getProto(Token const * const t) const {
     TokenProto const *res = 0;
-    Prototypes::const_iterator it = prototypes.find(t->token);
-    if (it != prototypes.end()) {
+    OpPrototypes::const_iterator it = opPrototypes.find(getOpCode(t));
+    if (it != opPrototypes.end()) {
       res = &it->second;
-    }
-    if (t->token == TOKEN_IDENTIFIER) {
-      OpPrototypes::const_iterator it = opPrototypes.find(getOpCode(t));
-      if (it != opPrototypes.end()) {
-        res = &it->second;
-      }
     }
     return res;
   }
@@ -1733,16 +1700,10 @@ struct TreeXMLWriter {
 
   void writeXML(TokenInfo const &t, std::ostream &aus, std::string const &indent = "") const {
     aus << indent << "<ca:token-types>" << linebreak;
-    {
-    TokenInfo::Prototypes::const_iterator it = t.prototypes.begin();
-    for(; it != t.prototypes.end(); ++it) {
-      writeXML(it->second, aus, indent + indentUnit);
-    }}
-    {
     TokenInfo::OpPrototypes::const_iterator it = t.opPrototypes.begin();
     for(; it != t.opPrototypes.end(); ++it) {
       writeXML(it->second, aus, indent + indentUnit);
-    }}
+    }
     aus << indent << "</ca:token-types>" << linebreak;
   }
 
@@ -2009,11 +1970,11 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
           cnfls(LS::DEBUG|LS::CONFIG) << "config: token:  " << p << "\n";
 
           if (itemList[0]->token == TOKEN_IDENTIFIER) {
-            tokenInfo.prototypes[opCode] = p;
+            tokenInfo.opPrototypes[opCode] = p;
           } else if (opCode == TOKEN_IDENTIFIER) {
             tokenInfo.opPrototypes[tokenInfo.mkOpCode(opText)] = p;
           } else {
-            tokenInfo.prototypes[opCode] = p;
+            tokenInfo.opPrototypes[opCode] = p;
           }
 
         } else {
