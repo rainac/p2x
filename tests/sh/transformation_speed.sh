@@ -46,7 +46,7 @@ test_LargeCVS1_parse2JSON_addcols_py() {
 
 
 test_LargeCVS1_cleanup() {
-    rm -f $TMP/large.csv res.json res.m res.xml
+    rm -f $TMP/large.csv res.json res.m res.xml res.dat
 }
 
 . shunit2
