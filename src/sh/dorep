@@ -7,12 +7,17 @@ merge=$3
 #TODO: use P2X options here
 p2xflags=(-m -iSPACE -b NEWLINE -b COMMA -b PLUS -b MULT)
 
+DIFFFLAGS=
+
 mydir=$(dirname $(readlink -f $0))
 
+
 if [[ "$mode" = "M" ]]; then
+    DIFFFLAGS=-w
     p2x -o res.m -M $p2xflags $inf
     octave --path $mydir/../m --eval dorep < res.m | tee res.txt
 elif [[ "$mode" = "J" ]]; then
+    DIFFFLAGS=-w
     p2x -o res.json -J $p2xflags $inf
     python $mydir/../py/reproduce.py < res.json | tee res.txt
 elif [[ "$mode" = "X" ]]; then
@@ -25,7 +30,7 @@ elif [[ "$mode" = "x" ]]; then
     cat res.txt
 fi
 
-diff -w $inf res.txt
+diff $DIFFFLAGS $inf res.txt
 st=$?
 
 if [[ "$st" != "0" ]]; then
