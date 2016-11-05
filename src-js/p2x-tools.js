@@ -271,6 +271,7 @@ P2X.TokenProtoRW = function() {
     res.loadXMLNode = function(tProtoNode) {
         var closingList
         var isParen = P2X.evalOrValue(P2X.getAttributeOrUndefined(tProtoNode, 'is-paren'), false)
+        var isRParen = P2X.evalOrValue(P2X.getAttributeOrUndefined(tProtoNode, 'is-rparen'), false)
         if (isParen) {
             closingList = []
             ch = tProtoNode.getElementsByTagName('ca:op')
@@ -287,6 +288,7 @@ P2X.TokenProtoRW = function() {
             prec: P2X.evalOrValue(P2X.getAttributeOrUndefined(tProtoNode, 'precedence')),
             precU: P2X.evalOrValue(P2X.getAttributeOrUndefined(tProtoNode, 'unary-precedence')),
             isParen: isParen,
+            isRParen: isRParen,
             closingList: closingList,
         }
         // console.log('load TP XML: ')
