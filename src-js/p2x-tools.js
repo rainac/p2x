@@ -253,6 +253,8 @@ P2X.TokenProtoRW = function() {
             res += ', precU: ' + obj.precU + ''
         if (obj.isParen)
             res += ', isParen: 1'
+        if (obj.isRParen)
+            res += ', isRParen: 1'
         if (obj.closingList && obj.closingList.length > 0) {
             res += ',\n' + indent + '  closingList: [\n'
             for (var k = 0; k < obj.closingList.length; ++k) {
