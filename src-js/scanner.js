@@ -475,10 +475,10 @@ var isOp = function(mode) {
             || mode == MODE_POSTFIX)
 }
 
-P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingList, name) {
+P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen, closingList, name) {
     var res
     if (typeof tk == 'object')
-        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.closingList, tk.name) 
+        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.isRParen, tk.closingList, tk.name)
     else {
         if (!tk in ENUM.ParserToken.names_index) {
             console.error('Value token ' + tk + ' must be in the set of allowed token: ')
@@ -493,7 +493,13 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
             repr = ''
         if (closingList) {
             closingList = closingList.map(function(x) {
-                return P2X.TokenProto(x)
+                var cli = P2X.TokenProto(x)
+                cli.prec = prec
+                cli.mode = mode
+                cli.assoc = assoc
+                cli.isParen = false
+                cli.isRParen = true
+                return cli
             })
         }
         var defAssoc = (mode == MODE_BINARY || mode == MODE_UNARY_BINARY) ? ASSOC_LEFT : ASSOC_NONE
@@ -504,13 +510,14 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
             prec: prec || 2,
             precU: precU || 2,
             isParen: isParen || false,
+            isRParen: isRParen || false,
             closingList: closingList,
             name: name
         }
-        if (res.isParen || res.mode == MODE_ITEM) {
+        if (res.mode == MODE_ITEM) {
             res.prec = res.precU = P2X.maxPrec
         }
-        if (res.isParen) {
+        if (res.isParen || res.isRParen) {
             res.closingList = res.closingList || [ TOKEN_EOF ]
         }
     }
@@ -594,7 +601,7 @@ P2X.TokenInfo = function() {
                 return this.binary_prec(tl)
         },
         isParen: function (tl) {
-            return this.get(tl).isParen || false
+            return this.get(tl).isParen || this.get(tl).isRParen || false
         },
         getOpCode: function (tl, repr) {
             var res
@@ -667,6 +674,7 @@ P2X.TokenInfo = function() {
                     if (k.token == TOKEN_IDENTIFIER && k.repr) {
                         this_.getOpCode(k.repr)
                     }
+                    this_.tokenClasses[this_.getOpCode(k.token, k.repr)] = k
                 })
             }
             if (tokenProto.token == TOKEN_IDENTIFIER && tokenProto.repr) {
@@ -892,16 +900,21 @@ P2X.Parser = function(tokenInfo) {
                     })
 
                     var last = parser.parse(this.input)
-                    if (last && last.token != TOKEN_EOF)
-                        parser.pushIgnore(last);
-
+                    if (typeof last == "undefined" || last.token == TOKEN_EOF) {
+                        first.right = parser.root.right;
+                    } else {
+                        first.right = last;
+                        last.left = parser.root.right;
+                    }
                     this.insertToken(first)
 
+                    this.leastMap.insert(this.tokenInfo.prec(first), first.right);
+
                     if (parser.root.ignore) {
-                        this.pushIgnoreNew(parser.root.ignore);
+                        first.ignore = parser.root.ignore;
                     }
 
-                    first.content = parser.root.right
+                    first = last;
                     
                 } else {
                     this.insertToken(first)
