@@ -1,40 +1,36 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" code="68" type="NEWLINE">
-   <op code="56" type="SEMICOLON">
-    <op code="218" repr="print" type="IDENTIFIER">
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="NEWLINE">
+   <op type="SEMICOLON">
+    <op repr="print" type="IDENTIFIER">
      <null/>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">print</ca:text>
-     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
-     <op code="47" type="PLUS">
-      <string code="30" type="STRING">
+     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+     <op type="PLUS">
+      <string type="STRING">
        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">"Hello "</ca:text>
-       <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+       <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
       </string>
       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
-      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
-      <string code="30" type="STRING">
-       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">"World"</ca:text>
-      </string>
+      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+      <string type="STRING"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">"World"</ca:text></string>
      </op>
     </op>
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">;</ca:text>
    </op>
    <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-   <op code="56" type="SEMICOLON">
-    <op code="218" repr="print" type="IDENTIFIER">
+   <op type="SEMICOLON">
+    <op repr="print" type="IDENTIFIER">
      <null/>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">print</ca:text>
-     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
-     <op code="47" type="PLUS">
-      <string code="30" type="STRING">
+     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+     <op type="PLUS">
+      <string type="STRING">
        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">"How "</ca:text>
-       <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+       <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
       </string>
       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
-      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
-      <string code="30" type="STRING">
-       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">"are you"</ca:text>
-      </string>
+      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+      <string type="STRING"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">"are you"</ca:text></string>
      </op>
     </op>
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">;</ca:text>

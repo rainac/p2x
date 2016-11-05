@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="2" type="PLUS">
-   <op line="1" col="0" repr="f" type="IDENTIFIER">
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="PLUS">
+   <op repr="f" type="IDENTIFIER">
     <null/>
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">f</ca:text>
-    <op line="1" col="1" type="APOS"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">'</ca:text></op>
+    <op type="APOS"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">'</ca:text></op>
    </op>
    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
-   <integer line="1" col="3" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text></integer>
+   <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text></integer>
   </op>
