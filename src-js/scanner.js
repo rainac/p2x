@@ -485,6 +485,8 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen,
             console.dir(ENUM.ParserToken.names_index)
             assert(false)
         }
+        isParen = isParen ? true : false
+        isRParen = isRParen ? true : false
         if (typeof mode == 'string')
             mode = ENUM.ParserMode.getValue(mode)
         if (typeof assoc == 'string')
@@ -493,12 +495,16 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen,
             repr = ''
         if (closingList) {
             closingList = closingList.map(function(x) {
-                var cli = P2X.TokenProto(x)
-                cli.prec = prec
+                var cli = x
                 cli.mode = mode
-                cli.assoc = assoc
+                if (mode != MODE_ITEM) {
+                    cli.prec = prec
+                    cli.precU = precU
+                    cli.assoc = assoc
+                }
                 cli.isParen = false
                 cli.isRParen = true
+                cli = P2X.TokenProto(cli)
                 return cli
             })
         }
@@ -517,7 +523,10 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen,
         if (res.mode == MODE_ITEM) {
             res.prec = res.precU = P2X.maxPrec
         }
-        if (res.isParen || res.isRParen) {
+        if (res.isRParen) {
+            res.closingList = []
+        }
+        if (res.isParen) {
             res.closingList = res.closingList || [ TOKEN_EOF ]
         }
     }

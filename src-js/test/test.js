@@ -448,7 +448,7 @@ describe('P2X.ParserConfig', function(){
             tt.insert(P2X.TokenProto(TOKEN_MINUS, '-', MODE_BINARY, ASSOC_LEFT, 90, 0, false))
             tt.insert(P2X.TokenProto(TOKEN_EQUAL, '=', MODE_BINARY, ASSOC_RIGHT, 50, 0, false))
             tt.insert(P2X.TokenProto(TOKEN_MINUS, '=', MODE_UNARY_BINARY, ASSOC_RIGHT, 50, 110, false))
-            tt.insert(P2X.TokenProto(TOKEN_L_PAREN, '=', MODE_POSTFIX, ASSOC_NONE, 50, 0, true, [P2X.TokenProto(TOKEN_R_PAREN)]))
+            tt.insert(P2X.TokenProto(TOKEN_L_PAREN, '=', MODE_POSTFIX, ASSOC_NONE, 50, 0, true, false, [P2X.TokenProto(TOKEN_R_PAREN)]))
             tt.insert(P2X.TokenProto(TOKEN_SPACE, '=', MODE_IGNORE))
             tt.insert(P2X.TokenProto(TOKEN_NEWLINE, '=', MODE_IGNORE))
             tt.insert(P2X.TokenProto(TOKEN_CRETURN, '=', MODE_IGNORE))
@@ -459,8 +459,12 @@ describe('P2X.ParserConfig', function(){
             tt.setconfig(P2X.parseJSON(pcrw.asJSON(confA)))
             tt.normalize()
             confB = tt.getconfig()
-            
-            assert.deepEqual(confA, confB);
+
+            for (var k in confA) {
+                console.dir(confA[k])
+                console.dir(confB[k])
+                assert.deepEqual(confA[k], confB[k]);
+            }
       })
 
         it('ParserConfig can be serialized to JSON', function(){
