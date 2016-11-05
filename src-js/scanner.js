@@ -828,9 +828,6 @@ P2X.Parser = function(tokenInfo) {
                 // console.log('pushIgnore: ')
                 // console.dir(t)
                 var rm = this.getRM(this.root);
-                while (rm.content) {
-                    rm = this.getRM(rm.content);
-                }
                 // console.log('rm: ')
                 t.ignore = rm.ignore;
                 rm.ignore = t;
@@ -1054,26 +1051,20 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 res += this.writeXMLLocAttrs(t)
                 res += this.writeXMLTypeAttrs(t)
                 res += '>';
-                if (t.left || t.right || t.content|| t.ignore)
+                if (t.left || t.right || t.ignore)
                     res += '\n';
                 if (t.left) {
                     res += this.asxml(t.left, indent + ' ', true);
-                } else if (t.right || t.content) {
+                } else if (t.right) {
                     if (this.options.strict > 0)
                         res += indent + ' <null/>\n';
                 }
-                res += this.writeXMLTextElem(t, (t.left || t.right || t.content|| t.ignore) ? indent + ' ' : '')
+                res += this.writeXMLTextElem(t, (t.left || t.right || t.ignore) ? indent + ' ' : '')
                 if (t.ignore) {
                     res += this.writeIgnoreXML(t.ignore, indent + ' ');
                 }
-                if (t.content) {
-                    res += this.asxml(t.content, indent + ' ', true);
-                } else if (t.right) {
-                    if (this.options.strict > 1)
-                        res += indent + ' <null/>\n';
-                }
                 res += this.asxml(t.right, indent + ' ', true);
-                if (t.left || t.right || t.content|| t.ignore)
+                if (t.left || t.right || t.ignore)
                     res += indent
                 res += '</' + tagname + '>\n';
             }
