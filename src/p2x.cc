@@ -1742,6 +1742,9 @@ struct TreeXMLWriter {
     if (tp.mode == MODE_UNARY_BINARY) {
       aus << " unary-precedence='" << tp.unaryPrecedence << "'";
     }
+    if (tp.isRParen) {
+      aus << " is-rparen='1'";
+    }
     if (tp.isParen) {
       aus << " is-paren='1'";
       aus << ">" << linebreak;
