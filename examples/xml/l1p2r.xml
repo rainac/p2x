@@ -4,11 +4,14 @@
   <paren line="1" col="0" type="L_PAREN">
    <null/>
    <ca:text>(</ca:text>
-   <op line="1" col="2" type="PLUS">
-    <integer line="1" col="1" type="INTEGER"><ca:text>1</ca:text></integer>
-    <ca:text>+</ca:text>
-    <integer line="1" col="3" type="INTEGER"><ca:text>2</ca:text></integer>
-   </op>
+   <paren line="1" col="4" type="R_PAREN">
+    <op line="1" col="2" type="PLUS">
+     <integer line="1" col="1" type="INTEGER"><ca:text>1</ca:text></integer>
+     <ca:text>+</ca:text>
+     <integer line="1" col="3" type="INTEGER"><ca:text>2</ca:text></integer>
+    </op>
+    <ca:text>)</ca:text>
+   </paren>
   </paren>
  </root>
 </code-xml>
