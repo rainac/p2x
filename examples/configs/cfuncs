@@ -1,12 +1,23 @@
+#
+# Operator definitions
+#
+# Token  Class         Precedence  Unary Prec.  Associativity
+"="      binary        5                        right
 
-"=" binary 5
+"+"      unary_binary  10          110
+"-"      unary_binary  10          110
 
-"+" unary_binary 10 110
-"-" unary_binary 10 110
+"*"      binary        20
 
-"*" binary 20
+"/"      binary        30
+"%"      binary        30
 
-"/" binary 30
-"%" binary 30
+" "      ignore        1
+NEWLINE  ignore        1
+TAB      ignore        1
 
-"(" paren ")" postfix 101
+#
+# Parentheses definitions
+#
+# Start  "paren" End  Class    Precedence  Unary Prec.  Associativity
+"("      paren   ")"  postfix  101
