@@ -105,6 +105,49 @@ Such as int, float, string
 
 Structurally same as MATLAB -> needs postprocessing
 
+*** TODO Ignore parentheses
+
+Does it work?
+
+*** TODO Newline as literal in config file
+
+Does not work:
+#+BEGIN_EXAMPLE
+"
+" ignore 1
+#+END_EXAMPLE
+
+Does not work:
+#+BEGIN_EXAMPLE
+"\n" ignore 1
+#+END_EXAMPLE
+
+Does work:
+#+BEGIN_EXAMPLE
+NEWLINE ignore 1
+#+END_EXAMPLE
+
+*** TODO Use env USERPROFILE
+
+on windows, prefer USERPROFILE, then fall back to HOMEPATH etc.
+
+*** TODO Always use env HOME for home dir
+
+on windows, fall back to USERPROFILE, etc.
+
+*** TODO Load scanner as plugin (shared library)
+
+Load function "yylex" (default) from given shared library
+
+*** TODO Speed up flex scanner
+
+    - Generate C scanner?
+    - Options?
+
+*** TODO Scan with IFS
+
+Provide scanner using simple input field separator (IFS)
+
 ** TODO Source code cleanup
 
 *** TODO Remove method TreeXMLWriter::writeXMLTypeElem
