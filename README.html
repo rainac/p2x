@@ -1,0 +1,1017 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>P2X - Universal parser with XML output</title>
+<!-- 2016-11-07 Mo 23:31 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Johannes Willkomm" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">P2X - Universal parser with XML output</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Introduction</a></li>
+<li><a href="#sec-2">2. Usage</a>
+<ul>
+<li><a href="#sec-2-1">2.1. Program Configuration</a>
+<ul>
+<li><a href="#sec-2-1-1">2.1.1. Options</a></li>
+<li><a href="#sec-2-1-2">2.1.2. Configuration file</a></li>
+<li><a href="#sec-2-1-3">2.1.3. Environment variables</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-2">2.2. Language definition</a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1. Class Item</a></li>
+<li><a href="#sec-2-2-2">2.2.2. Class Binary</a></li>
+<li><a href="#sec-2-2-3">2.2.3. Class Unary</a></li>
+<li><a href="#sec-2-2-4">2.2.4. Class Unary_Binary</a></li>
+<li><a href="#sec-2-2-5">2.2.5. Class Ignore</a></li>
+<li><a href="#sec-2-2-6">2.2.6. Parentheses</a></li>
+<li><a href="#sec-2-2-7">2.2.7. Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-3">3. About this document</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+P2X is a parser, configurable by shortcut grammars, with XML
+output. The parser uses recursive descent parsing to read any kind of
+text such as program code, configuration files or even natural
+language. The input is structured as a tree according to grammar rules
+which can be specified in a very concise and simple form. The XML
+output is in a form that makes unparsing particularly simple. This
+makes P2X suitable for the integration of non-XML data into XML-based
+projects and/or for source transformation using XSLT.
+</p>
+
+<p>
+Consider the following example, were we define solely the binary
+operator PLUS and specify XML output in <i>merged mode</i>:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh"><span style="color: #483d8b;">echo</span> -n <span style="color: #8b2252;">"1+2+3"</span> &gt; in.txt
+p2x -m -X -b PLUS -o out.xml in.txt
+cat out.xml
+</pre>
+</div>
+
+<pre class="example">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'&gt;
+ &lt;ROOT&gt;
+  &lt;null/&gt;
+  &lt;PLUS&gt;
+   &lt;INT&gt;&lt;c:t&gt;1&lt;/c:t&gt;&lt;/INT&gt;
+   &lt;c:t&gt;+&lt;/c:t&gt;
+   &lt;INT&gt;&lt;c:t&gt;2&lt;/c:t&gt;&lt;/INT&gt;
+   &lt;c:t&gt;+&lt;/c:t&gt;
+   &lt;INT&gt;&lt;c:t&gt;3&lt;/c:t&gt;&lt;/INT&gt;
+  &lt;/PLUS&gt;
+ &lt;/ROOT&gt;
+&lt;/code-xml&gt;
+</pre>
+
+<p>
+The same output structure can also be represented in MATLAB:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">p2x -m -M -b PLUS in.txt
+</pre>
+</div>
+
+<pre class="example">
+struct('n','rt','i','','c',{...
+ struct('n',{'','op'}, 't',{'','+'}, 'c',{[],...
+  struct('n','num', 't',{'1','2','3'})})});
+</pre>
+
+<p>
+or JSON:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">p2x -m -J -b PLUS in.txt
+</pre>
+</div>
+
+<pre class="example">
+{"n":"rt","i":"","c":[
+ {"n":["","op"], "t":["","+"], "c":[{},
+  {"n":"num", "t":["1","2","3"]}]}]}
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Usage</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+P2X works as a stream filter, it reads from standard input and writes
+to standard output. For example, to read input from file <code>in.txt</code>
+and write the XML file <code>out.xml</code>, invoke P2X as follows
+</p>
+<pre class="example">
+p2x &lt; in.txt &gt; out.xml
+</pre>
+<p>
+P2X can also read from a file given as the first command line argument
+</p>
+<pre class="example">
+p2x in.txt &gt; out.xml
+</pre>
+<p>
+or write its output to a file given by command line option <code>-o</code>
+</p>
+<pre class="example">
+p2x in.txt -o out.xml
+</pre>
+</div>
+
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Program Configuration</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+P2X can be configured either by options on the command line or from a
+configuration file, usally <code>~/.p2x/p2x-options</code>.
+</p>
+</div>
+
+<div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> Options</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+<a id="option" name="option"></a>
+</p>
+
+<p>
+Each option has a long name and some also have a short name. The most
+important options are the following:
+</p>
+
+<dl class="org-dl">
+<dt> -o, &#x2013;output </dt><dd>specify name of output file
+</dd>
+<dt> -p, &#x2013;prec-list </dt><dd>specify name of language definition file
+</dd>
+<dt> -m, &#x2013;merged </dt><dd>set merged output mode
+</dd>
+<dt> -X, -M, or -J </dt><dd>set XML, MATLAB, or JSON output mode
+</dd>
+<dt> -S </dt><dd>specify scanner (lexer)
+</dd>
+<dt> -g </dt><dd>add debug information such as line numbers
+</dd>
+</dl>
+
+<p>
+The configuration options are listed in entirety in the following
+table:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">Short</th>
+<th scope="col" class="left">Long Option</th>
+<th scope="col" class="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">-h</td>
+<td class="left">&#x2013;help</td>
+<td class="left">Print help and exit</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;full-help</td>
+<td class="left">Print help, including hidden options, and exit</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;version</td>
+<td class="left">Print version and exit</td>
+</tr>
+
+<tr>
+<td class="left">-V</td>
+<td class="left">&#x2013;verbose=&lt;number&gt;</td>
+<td class="left">Control messages by bit mask (default=`error,warning')</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;debug</td>
+<td class="left">Enable debugging  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-p</td>
+<td class="left">&#x2013;prec-list=filename</td>
+<td class="left">Precedence file list</td>
+</tr>
+
+<tr>
+<td class="left">-i</td>
+<td class="left">&#x2013;ignore=TokenList</td>
+<td class="left">Add an item to ignore</td>
+</tr>
+
+<tr>
+<td class="left">-b</td>
+<td class="left">&#x2013;binary=TokenList</td>
+<td class="left">Add a binary operator</td>
+</tr>
+
+<tr>
+<td class="left">-r</td>
+<td class="left">&#x2013;right=TokenList</td>
+<td class="left">Add a right associative operator</td>
+</tr>
+
+<tr>
+<td class="left">-u</td>
+<td class="left">&#x2013;unary=TokenList</td>
+<td class="left">Add a unary operator</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;postfix=TokenList</td>
+<td class="left">Add a postfix operator</td>
+</tr>
+
+<tr>
+<td class="left">-I</td>
+<td class="left">&#x2013;item=TokenList</td>
+<td class="left">Add an item</td>
+</tr>
+
+<tr>
+<td class="left">-B</td>
+<td class="left">&#x2013;brace=TokenPair</td>
+<td class="left">Scope start and end token</td>
+</tr>
+
+<tr>
+<td class="left">-L</td>
+<td class="left">&#x2013;list-token</td>
+<td class="left">List token types  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-T</td>
+<td class="left">&#x2013;list-classes</td>
+<td class="left">List token classes  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-s</td>
+<td class="left">&#x2013;scan-only</td>
+<td class="left">Scan only, do not parse  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-S</td>
+<td class="left">&#x2013;scanner=name</td>
+<td class="left">Select scanner class  (default=`strings')</td>
+</tr>
+
+<tr>
+<td class="left">-e</td>
+<td class="left">&#x2013;input-encoding=Charset</td>
+<td class="left">Input encoding  (default=`utf-8')</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;stdin-tty</td>
+<td class="left">Read from stdin, even if it is a TTY (default=off)</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">-o</td>
+<td class="left">&#x2013;outfile=Filename</td>
+<td class="left">Write output to file <code>Filename</code></td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;indent</td>
+<td class="left">Indent  (default=on)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;indent-unit=String</td>
+<td class="left">Indentation unit  (default=` ')</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;newline-as-br</td>
+<td class="left">Emit newline text as ca:br element of ca:text (default=on)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;newline-as-entity</td>
+<td class="left">Emit newline text as &amp;#xa; character entity (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-m</td>
+<td class="left">&#x2013;merged</td>
+<td class="left">Merge same operator chains, tree will not be binary (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-w</td>
+<td class="left">&#x2013;sparse</td>
+<td class="left">Safe some non-essential attributes, newlines and indents  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;write-xml-declaration</td>
+<td class="left">Emit XML declaration (with encoding) (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;write-bom</td>
+<td class="left">Emit byte order mark (BOM) character (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-O</td>
+<td class="left">&#x2013;output-mode=Mode</td>
+<td class="left">Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code (default=`y')</td>
+</tr>
+
+<tr>
+<td class="left">-M</td>
+<td class="left">&#x2013;matlab</td>
+<td class="left">Write output as MATLAB  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-J</td>
+<td class="left">&#x2013;json</td>
+<td class="left">Write output as JSON  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-X</td>
+<td class="left">&#x2013;xml</td>
+<td class="left">Write output as XML  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;write-recursive</td>
+<td class="left">Recursive output writing  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-g</td>
+<td class="left">&#x2013;src-info</td>
+<td class="left">Emit source location attributes line, column, and character  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;attribute-line</td>
+<td class="left">Emit attribute line with source line (default=on)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;attribute-column</td>
+<td class="left">Emit attribute column with source column (default=on)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;attribute-char</td>
+<td class="left">Emit attribute column with source char (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;attribute-precedence</td>
+<td class="left">Emit attribute precedence with token precedence (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;attribute-mode</td>
+<td class="left">Emit attribute mode with token mode (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;attribute-type</td>
+<td class="left">Emit attribute type with token type (default=on)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#x2013;attribute-id</td>
+<td class="left">Emit attribute id with token id  (default=off)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> Configuration file</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+The same options (see previous Section <i>options</i>) as on the command line
+can also be given in a configuration file, which by default searched
+as <code>~/.p2x/p2x-options</code>. In that file there may be one option per
+line, short or long, but without the leading <code>-</code> or <code>--</code>. For example,
+the following three lines all enable the verbosity level <code>debug</code>:
+</p>
+
+<pre class="example">
+V debug
+verbose debug
+verbose=debug
+</pre>
+
+<p>
+See also environment variable P2X_USER_DIR in Section <a href="#P2X_USER_DIR">3</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3"><span class="section-number-4">2.1.3</span> Environment variables</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<ul class="org-ul">
+<li>HOME: Linux only: determine home directory of current user
+</li>
+
+<li>HOMEDRIVE, HOMEPATH, APPDATA: Windows only: determine home
+directory of current user
+</li>
+
+<li><a id="P2X_USER_DIR" name="P2X_USER_DIR"></a>P2X_USER_DIR: Set the directory where the
+configuration file <code>p2x-options</code> is found. Default is $HOME/.p2x
+</li>
+
+<li>P2X_CONFIG_DIR: If set, this directory is also searched for
+language definition files
+</li>
+
+<li>P2X_DEBUG_INIT: set to non-empty string to turn on debugging of
+the initialization of P2X
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Language definition</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+The equivalent of a grammar is called language definition in P2X. It
+consists of an assignment of <i>token</i> to <i>token classes</i>. Token are
+those listed by the option <code>--list-token</code> or <code>-L</code>. Identifiers play a
+special role, that is, while IDENTIFIER is listed as a single token
+type, each identifier such as <code>x</code>, <code>name</code> or <code>begin</code> may individually
+be assigned to a token class. For example <code>name</code> might be assigned to
+class Unary and <code>begin</code> might be assigned to class Parentheses.
+</p>
+
+<p>
+The token ROOT and JUXTA are special: ROOT is always in class Unary
+with precedence 0 and JUXTA is always in class Binary, and the
+precedence and associativity of this operator may be set by the
+user. Both ROOT and JUXTA do not represent any input.
+</p>
+
+<p>
+The available token classes are the following:
+</p>
+
+<ul class="org-ul">
+<li>Item
+</li>
+<li>Binary
+</li>
+<li>Unary
+</li>
+<li>Binary_unary
+</li>
+<li>Postfix
+</li>
+<li>Ignore
+</li>
+</ul>
+
+<p>
+Also, a pair of token may be declared as <i>parentheses</i>. This pair of
+token encapsulates some subexpression and will be inserted into the
+parse tree as a whole. The content of a parentheses is itself a parse
+tree.
+</p>
+
+<p>
+A parentheses element can also be assigned to a token class. For
+example, the parentheses <code>(</code> and <code>)</code> may be declared as a postfix
+operator.
+</p>
+
+<p>
+The effect of the configuration can be inspected by using the option
+<code>-T</code>.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">p2x -T -p examples/configs/cfuncs
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> Class Item</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+All token types, except JUXTA and ROOT, are by default in class
+Item. Items are represented as tree nodes without children, also
+called leafs. Two consecutive items are joined automatically by
+artificial binary JUXTA nodes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> Class Binary</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+Token types in class Binary represent binary operators, which become
+binary nodes in the tree, that is, they will usually have two
+children. A Binary token type has the associated fields <i>associativiy</i>
+and <i>precedence</i>.
+</p>
+
+<p>
+The class Binary is typically used for mathematical binary operators
+such as +, -, *, / etc. One might also declare identifiers such as
+<code>and</code> or <code>or</code> as Binary. Binary token play a crucial role in
+structuring the tree. For example, to parse a text file into the
+individual lines, put token NEWLINE in class Binary, presumably with a
+rather low precedence.
+</p>
+
+<p>
+A token from class Binary has a <i>precedence</i>, which is a positive
+integer, to order the binding strength of two adjacent operators. The
+typical case is plus + and multiply *, where * has the higher
+precedence. This way a+b*c is the same as a+(b*c) and a*b+c is the
+same as (a*b)+c.
+</p>
+
+<p>
+A token from class Binary also has an <i>associativity</i> which is either
+<i>left</i> or <i>right</i> to order two adjacent operators of the same
+precedence. Usually, arithmetic operators like + and * are
+left-associative, which means that a*b*c is the same as (a*b)*c. An
+example for a right-associative operator is the assignment = in C,
+where x=y=z is the same as x=(y=z).
+</p>
+
+<p>
+A token is added to class Binary by one of two ways: first, by using
+the option <code>-b</code> or <code>--binary</code>, where you can use token names or
+identifiers. The token will be given increasing precedences in the
+order they appear in the command line, from the left to the right,
+beginning with 1000:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">p2x -b NEWLINE -b PLUS -bMULT,DIV -btimes,divide
+</pre>
+</div>
+
+<p>
+The other way is by a <code>binary</code> declaration in the laguage definition
+file, which has the form <code>token</code> <code>binary</code> followed by one to four
+further fields: two integer precedences, an associativity (<code>left</code> or
+<code>right</code>) and an output mode (<code>nested</code> or <code>merged</code>).
+</p>
+<pre class="example">
+newline binary 1000 merged
+"="     binary 1001 right nested
+"*"     binary 1002 merged left
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> Class Unary</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+Token types in class Unary represent unary prefix operators, which
+become unary nodes in the tree, that is, they will at most have a
+single child. The child will always be the right child, that is, the
+left pointer is always null. A Unary token type has the associated
+field <i>precedence</i>.
+</p>
+
+<p>
+The class Unary is typically used for mathematical unary operators
+such as +, -. One might also declare identifiers such as <code>sin</code> or
+<code>cos</code> as Unary. Another use might be for a line comment delimiter such
+as <code>#</code>.
+</p>
+
+<p>
+A token is added to class Unary by one of two ways: first, by using
+the option <code>-u</code> or <code>--unary</code>, where you can use token names or
+identifiers. The token will be given increasing precedences in the
+order they appear in the command line, from the left to the right,
+beginning with 2000:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">p2x  -u <span style="color: #8b2252;">'sin,cos'</span>
+</pre>
+</div>
+
+<p>
+The other way is by a <code>unary</code> declaration in the laguage definition
+file, which has the form <code>token</code> <code>unary</code> followed by an integer
+precedence field.The command line
+settings above are equivalent to the following entries in the language
+definition file:
+</p>
+<pre class="example">
+"sin" unary 2000
+"cos" unary 2001
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-4" class="outline-4">
+<h4 id="sec-2-2-4"><span class="section-number-4">2.2.4</span> Class Unary_Binary</h4>
+<div class="outline-text-4" id="text-2-2-4">
+<p>
+Class Unary_Binary is for token which may either occur as unary
+operators or as binary operators. A typical example are plus <code>+</code> and
+minus <code>-</code> in mathematical notation. For that, token may be assigned to
+class Unary_Binary, which accepts two integer token, the first of
+which is the binary precedence and the second the unary precedence. An
+associativity may also be specified. For example, the following
+configuration
+</p>
+<pre class="example">
+"-" unary_binary 1000 2200 left
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-5" class="outline-4">
+<h4 id="sec-2-2-5"><span class="section-number-4">2.2.5</span> Class Ignore</h4>
+<div class="outline-text-4" id="text-2-2-5">
+<p>
+A token in class Ignore is not used in the construction of the parse
+tree. However it is not simply discarded. Instead, it is inserted into
+the tree at the next best convenient location. Thus the text that
+constituted it is not lost but may be found in the tree as a sort of
+side information.
+</p>
+
+<p>
+In the language definition file, a token is assigned to class Ignore
+with the keyword <code>ignore</code>, but a precedence is also required (it is
+ignored):
+</p>
+<pre class="example">
+NEWLINE ignore 1x
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-6" class="outline-4">
+<h4 id="sec-2-2-6"><span class="section-number-4">2.2.6</span> Parentheses</h4>
+<div class="outline-text-4" id="text-2-2-6">
+<p>
+A pair of token which is declared as Parentheses encapsulates a
+subexpression, such that on the outside it appears as a single item,
+and in fact it is handled by default in the same way as a token from
+class Item. A Parenthesis definition has a <i>closing list</i>, which is a
+list of token that may close the subexpression. For example, one could
+declare the left parenthesis token <code>(</code> and the right parenthesis <code>)</code>
+as being a Parenthesis. For each opening token, the Parenthesis
+declarations are merged together, merging the closing lists. For
+example, one might declare <code>while</code> and <code>end</code> and <code>while</code> and
+<code>endwhile</code> as Parentheses, then there will be internally just one
+Parenthesis definition for <code>while</code> with the closing list set to the
+tupel (<code>end</code>, <code>endwhile</code>). 
+</p>
+
+<p>
+A token may be added to class Parentheses using the command line
+option <code>-B</code> or <code>--brace</code>, which requires as an argument a pair of
+token separated by ~,~ or <code>:</code>., for example like this:
+</p>
+<pre class="example">
+p2x -B '(:)' -B 'while:end' -B 'while:endwhile' -
+</pre>
+<p>
+or using a <code>paren</code> declaration in the language definition file:
+</p>
+<pre class="example">
+"(" paren ")"
+"while" paren "end"
+"while" paren "endwhile"
+</pre>
+
+<p>
+A parenthesis expression is be default handled as being in token class
+Item. However, parentheses declarations may also place assign the
+declaration to any other class. For example, the parentheses <code>(</code> and
+<code>)</code> may be declared as being a postfix operator. This is done by
+adding the class keyword on the line together with an integer
+specifying the precedence:
+</p>
+<pre class="example">
+"(" paren ")" postfix 10000
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-7" class="outline-4">
+<h4 id="sec-2-2-7"><span class="section-number-4">2.2.7</span> Example</h4>
+<div class="outline-text-4" id="text-2-2-7">
+<p>
+As an example consider the configuration file
+<a href="examples/configs/cfuncs">examples/configs/cfuncs</a> and the input text file
+<a href="examples/in/cexpr.exp">examples/in/cexpr.exp</a>:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">cat examples/configs/cfuncs
+</pre>
+</div>
+
+<pre class="example">
+#
+# Operator definitions
+#
+# Token  Class         Precedence  Unary Prec.  Associativity
+"="      binary        5                        right
+
+"+"      unary_binary  10          110
+"-"      unary_binary  10          110
+
+"*"      binary        20
+
+"/"      binary        30
+"%"      binary        30
+
+" "      ignore        1
+NEWLINE  ignore        1
+TAB      ignore        1
+
+#
+# Parentheses definitions
+#
+# Start  "paren" End  Class    Precedence  Unary Prec.  Associativity
+"("      paren   ")"  postfix  101
+</pre>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">cat examples/in/cexpr.exp
+</pre>
+</div>
+
+<pre class="example">
+f( a +  1)*2
+</pre>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">p2x -mX -p examples/configs/cfuncs examples/in/cexpr.exp
+</pre>
+</div>
+
+<pre class="example">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'&gt;
+ &lt;ROOT&gt;
+  &lt;null/&gt;
+  &lt;MULT&gt;
+   &lt;L_PAREN&gt;
+    &lt;ID&gt;&lt;c:t&gt;f&lt;/c:t&gt;&lt;/ID&gt;
+    &lt;c:t&gt;(&lt;/c:t&gt;
+    &lt;ci:SPACE&gt; &lt;/ci:SPACE&gt;
+    &lt;R_PAREN&gt;
+     &lt;PLUS&gt;
+      &lt;ID&gt;
+       &lt;c:t&gt;a&lt;/c:t&gt;
+       &lt;ci:SPACE&gt; &lt;/ci:SPACE&gt;
+      &lt;/ID&gt;
+      &lt;c:t&gt;+&lt;/c:t&gt;
+      &lt;ci:TAB&gt;	&lt;/ci:TAB&gt;
+      &lt;INT&gt;&lt;c:t&gt;1&lt;/c:t&gt;&lt;/INT&gt;
+     &lt;/PLUS&gt;
+     &lt;c:t&gt;)&lt;/c:t&gt;
+    &lt;/R_PAREN&gt;
+   &lt;/L_PAREN&gt;
+   &lt;c:t&gt;*&lt;/c:t&gt;
+   &lt;INT&gt;&lt;c:t&gt;2&lt;/c:t&gt;&lt;/INT&gt;
+  &lt;/MULT&gt;
+ &lt;/ROOT&gt;
+&lt;/code-xml&gt;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> About this document</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+This file is part of P2X. See the file p2x.cc for copying conditions.  
+</p>
+
+<p>
+Copyright © 2014,2016 Johannes Willkomm
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Johannes Willkomm</p>
+<p class="date">Created: 2016-11-07 Mo 23:31</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
