@@ -55,5 +55,5 @@ if __name__ == "__main__":
     #d = eval(s)
     d = json.loads(s)
     d2 = dictOfLists2ListOfDicts(d)
-    r = reproduce(d)
+    r = reproduce(d2)
     sys.stdout.write(r.encode('utf8'))
