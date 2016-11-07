@@ -148,6 +148,8 @@ Load function "yylex" (default) from given shared library
 
 Provide scanner using simple input field separator (IFS)
 
+*** TODO C++ API
+
 ** TODO Source code cleanup
 
 *** TODO Remove method TreeXMLWriter::writeXMLTypeElem
