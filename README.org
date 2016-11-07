@@ -11,63 +11,132 @@ output is in a form that makes unparsing particularly simple. This
 makes P2X suitable for the integration of non-XML data into XML-based
 projects and/or for source transformation using XSLT.
 
+Consider the following example, were we define solely the binary
+operator PLUS and specify XML output in /merged mode/:
+#+BEGIN_SRC sh :results output :exports both
+echo -n "1+2+3" > in.txt
+p2x -m -X -b PLUS -o out.xml in.txt
+cat out.xml
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+<?xml version="1.0" encoding="utf-8"?>
+<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>
+ <ROOT>
+  <null/>
+  <PLUS>
+   <INT><c:t>1</c:t></INT>
+   <c:t>+</c:t>
+   <INT><c:t>2</c:t></INT>
+   <c:t>+</c:t>
+   <INT><c:t>3</c:t></INT>
+  </PLUS>
+ </ROOT>
+</code-xml>
+#+end_example
+
+The same output structure can also be represented in MATLAB:
+#+BEGIN_SRC sh :results output :exports both
+p2x -m -M -b PLUS in.txt
+#+END_SRC
+
+#+RESULTS:
+: struct('n','rt','i','','c',{...
+:  struct('n',{'','op'}, 't',{'','+'}, 'c',{[],...
+:   struct('n','num', 't',{'1','2','3'})})});
+
+or JSON:
+#+BEGIN_SRC sh :results output :exports both
+p2x -m -J -b PLUS in.txt
+#+END_SRC
+
+#+RESULTS:
+: {"n":"rt","i":"","c":[
+:  {"n":["","op"], "t":["","+"], "c":[{},
+:   {"n":"num", "t":["1","2","3"]}]}]}
+
 * Usage
 
 P2X works as a stream filter, it reads from standard input and writes
-to standard output. For example, to read input from file ~input.txt~
-and write the XML file ~result.xml~, invoke P2X as follows
-: p2x < input.txt > result.xml
-P2X can also read from a given file
-: p2x input.txt > result.xml
-And P2X can also write its output to a given file
-: p2x -o result.xml input.txt
+to standard output. For example, to read input from file ~in.txt~
+and write the XML file ~out.xml~, invoke P2X as follows
+: p2x < in.txt > out.xml
+P2X can also read from a file given as the first command line argument
+: p2x in.txt > out.xml
+or write its output to a file given by command line option =-o=
+: p2x in.txt -o out.xml
 
-** Configuration
+** Program Configuration
 
-P2X can be configured either by command line options or by a
-configuration file, usally ~~/.p2x/p2x-options~
+P2X can be configured either by options on the command line or from a
+configuration file, usally ~~/.p2x/p2x-options~.
 
 *** Options
 <<option>>
-The configuration options are listed in the following table. Each
-option has a long name and some also have a short name.
 
-| Short | Long Option              | Description                                                       |
-|-------+--------------------------+-------------------------------------------------------------------|
-| -h    | --help                   | Print help and exit                                               |
-|       | --full-help              | Print help, including hidden options, and exit                    |
-|       | --version                | Print version and exit                                            |
-| -V    | --verbose=<number>       | Control messages by bit mask (default=`error,warning')            |
-|       | --debug                  | Enable debugging  (default=off)                                   |
-| -p    | --prec-list=filename     | Precedence file list                                              |
-| -i    | --ignore=TokenList       | Add an item to ignore                                             |
-| -b    | --binary=TokenList       | Add a binary operator                                             |
-| -r    | --right=TokenList        | Add a right associative operator                                  |
-| -u    | --unary=TokenList        | Add a unary operator                                              |
-|       | --postfix=TokenList      | Add a postfix operator                                            |
-| -I    | --item=TokenList         | Add an item                                                       |
-| -B    | --brace=TokenPair        | Scope start and end token                                         |
-| -L    | --list-token             | List token types  (default=off)                                   |
-| -T    | --list-classes           | List token classes  (default=off)                                 |
-| -s    | --scan-only              | Scan only, do not parse  (default=off)                            |
-| -S    | --scanner=name           | Select scanner class  (default=`strings')                         |
-| -e    | --input-encoding=Charset | Input encoding  (default=`utf-8')                                 |
-|       | --indent                 | Indent  (default=on)                                              |
-|       | --indent-unit=String     | Indentation unit  (default=` ')                                   |
-|       | --newline-as-br          | Emit newline text as ca:br element of ca:text (default=on)        |
-| -m    | --merged                 | Merge same operator chains, tree will not be binary (default=off) |
-|       | --attribute-line         | Emit attribute line with source line (default=on)                 |
-|       | --attribute-column       | Emit attribute column with source column (default=on)             |
-|       | --attribute-char         | Emit attribute column with source char (default=off)              |
-|       | --attribute-precedence   | Emit attribute precedence with token precedence (default=off)     |
-|       | --attribute-mode         | Emit attribute mode with token mode (default=off)                 |
-|       | --attribute-type         | Emit attribute type with token type (default=on)                  |
-|       | --attribute-id           | Emit attribute id with token id  (default=off)                    |
+Each option has a long name and some also have a short name. The most
+important options are the following:
+
+    - -o, --output :: specify name of output file
+    - -p, --prec-list :: specify name of language definition file
+    - -m, --merged :: set merged output mode
+    - -X, -M, or -J :: set XML, MATLAB, or JSON output mode
+    - -S :: specify scanner (lexer)
+    - -g :: add debug information such as line numbers
+
+The configuration options are listed in entirety in the following
+table:
+
+| Short | Long Option              | Description                                                                                 |
+|-------+--------------------------+---------------------------------------------------------------------------------------------|
+| -h    | --help                   | Print help and exit                                                                         |
+|       | --full-help              | Print help, including hidden options, and exit                                              |
+|       | --version                | Print version and exit                                                                      |
+| -V    | --verbose=<number>       | Control messages by bit mask (default=`error,warning')                                      |
+|       | --debug                  | Enable debugging  (default=off)                                                             |
+| -p    | --prec-list=filename     | Precedence file list                                                                        |
+| -i    | --ignore=TokenList       | Add an item to ignore                                                                       |
+| -b    | --binary=TokenList       | Add a binary operator                                                                       |
+| -r    | --right=TokenList        | Add a right associative operator                                                            |
+| -u    | --unary=TokenList        | Add a unary operator                                                                        |
+|       | --postfix=TokenList      | Add a postfix operator                                                                      |
+| -I    | --item=TokenList         | Add an item                                                                                 |
+| -B    | --brace=TokenPair        | Scope start and end token                                                                   |
+| -L    | --list-token             | List token types  (default=off)                                                             |
+| -T    | --list-classes           | List token classes  (default=off)                                                           |
+| -s    | --scan-only              | Scan only, do not parse  (default=off)                                                      |
+| -S    | --scanner=name           | Select scanner class  (default=`strings')                                                   |
+| -e    | --input-encoding=Charset | Input encoding  (default=`utf-8')                                                           |
+|       | --stdin-tty              | Read from stdin, even if it is a TTY (default=off)                                          |
+|-------+--------------------------+---------------------------------------------------------------------------------------------|
+| -o    | --outfile=Filename       | Write output to file ~Filename~                                                             |
+|       | --indent                 | Indent  (default=on)                                                                        |
+|       | --indent-unit=String     | Indentation unit  (default=` ')                                                             |
+|       | --newline-as-br          | Emit newline text as ca:br element of ca:text (default=on)                                  |
+|       | --newline-as-entity      | Emit newline text as &#xa; character entity (default=off)                                   |
+| -m    | --merged                 | Merge same operator chains, tree will not be binary (default=off)                           |
+| -w    | --sparse                 | Safe some non-essential attributes, newlines and indents  (default=off)                     |
+|       | --write-xml-declaration  | Emit XML declaration (with encoding) (default=off)                                          |
+|       | --write-bom              | Emit byte order mark (BOM) character (default=off)                                          |
+| -O    | --output-mode=Mode       | Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code (default=`y') |
+| -M    | --matlab                 | Write output as MATLAB  (default=off)                                                       |
+| -J    | --json                   | Write output as JSON  (default=off)                                                         |
+| -X    | --xml                    | Write output as XML  (default=off)                                                          |
+|       | --write-recursive        | Recursive output writing  (default=off)                                                     |
+| -g    | --src-info               | Emit source location attributes line, column, and character  (default=off)                  |
+|       | --attribute-line         | Emit attribute line with source line (default=on)                                           |
+|       | --attribute-column       | Emit attribute column with source column (default=on)                                       |
+|       | --attribute-char         | Emit attribute column with source char (default=off)                                        |
+|       | --attribute-precedence   | Emit attribute precedence with token precedence (default=off)                               |
+|       | --attribute-mode         | Emit attribute mode with token mode (default=off)                                           |
+|       | --attribute-type         | Emit attribute type with token type (default=on)                                            |
+|       | --attribute-id           | Emit attribute id with token id  (default=off)                                              |
 
 
 *** Configuration file
 
-The same options as on the command line (see previous Section [[options]])
+The same options (see previous Section [[options]]) as on the command line
 can also be given in a configuration file, which by default searched
 as ~~/.p2x/p2x-options~. In that file there may be one option per
 line, short or long, but without the leading ~-~ or ~--~. For example,
@@ -102,16 +171,17 @@ See also environment variable P2X_USER_DIR in Section [[P2X_USER_DIR]].
 ** Language definition
 
 The equivalent of a grammar is called language definition in P2X. It
-consists of an assignment of token to token classes. Token are those
-listed by the option ~--list-token~. Identifiers play a special role,
-that is, while IDENTIFIER is listed as a single token type, each
-identifier such as ~x~, ~name~ or ~begin~ may individually be assigned
-to a token class. For example ~name~ might be assigned to class Unary
-and ~begin~ might be assigned to class Parentheses.
+consists of an assignment of /token/ to /token classes/. Token are
+those listed by the option =--list-token= or =-L=. Identifiers play a
+special role, that is, while IDENTIFIER is listed as a single token
+type, each identifier such as ~x~, ~name~ or ~begin~ may individually
+be assigned to a token class. For example ~name~ might be assigned to
+class Unary and ~begin~ might be assigned to class Parentheses.
 
 The token ROOT and JUXTA are special: ROOT is always in class Unary
-with precedence 0 and JUXTA is always in class Binary, although the
-precedence and associativity of this operator may be set by the user.
+with precedence 0 and JUXTA is always in class Binary, and the
+precedence and associativity of this operator may be set by the
+user. Both ROOT and JUXTA do not represent any input.
 
 The available token classes are the following:
 
@@ -119,20 +189,30 @@ The available token classes are the following:
    - Binary
    - Unary
    - Binary_unary
+   - Postfix
    - Ignore
 
-Also, a pair of token may be declared as Parentheses. This pair of
+Also, a pair of token may be declared as /parentheses/. This pair of
 token encapsulates some subexpression and will be inserted into the
-tree as a whole. As such it can also be assigned to a token class. For
+parse tree as a whole. The content of a parentheses is itself a parse
+tree.
+
+A parentheses element can also be assigned to a token class. For
 example, the parentheses ~(~ and ~)~ may be declared as a postfix
 operator.
+
+The effect of the configuration can be inspected by using the option
+=-T=.
+#+BEGIN_SRC sh
+p2x -T -p examples/configs/cfuncs
+#+END_SRC
 
 *** Class Item
 
 All token types, except JUXTA and ROOT, are by default in class
-Item. Items are qrepresented as tree nodes without children, also
-called leafs. Two consecutive Items are joined by artificial JUXTA
-nodes.
+Item. Items are represented as tree nodes without children, also
+called leafs. Two consecutive items are joined automatically by
+artificial binary JUXTA nodes.
 
 *** Class Binary
 
@@ -143,7 +223,7 @@ and /precedence/.
 
 The class Binary is typically used for mathematical binary operators
 such as +, -, *, / etc. One might also declare identifiers such as
-~and~ or ~or~ as Binary. In P2X Binary token play a crucial role in
+~and~ or ~or~ as Binary. Binary token play a crucial role in
 structuring the tree. For example, to parse a text file into the
 individual lines, put token NEWLINE in class Binary, presumably with a
 rather low precedence.
@@ -219,25 +299,9 @@ the option ~-u~ or ~--unary~, where you can use token names or
 identifiers. The token will be given increasing precedences in the
 order they appear in the command line, from the left to the right,
 beginning with 2000:
-#+BEGIN_SRC sh :results output :export
-p2x -u 'sin,cos'
+#+BEGIN_SRC sh :results output
+p2x  -u 'sin,cos'
 #+END_SRC
-#+RESULTS:
-#+begin_example
-<?xml version="1.0" encoding="utf-8"?>
-<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>
- <ca:steps/>
- <ca:scanner>STRINGS</ca:scanner>
- <ca:tree-writer collect='1' col='1' encoding='utf-8' id='0' indent='1' newlineAsBr='1' prec='0' mode='0' type='1'/>
- <ca:token-types>
-  <ca:op code='71' type='JUXTA' mode='BINARY' precedence='900' associativity='LEFT' output-mode='NONE'/>
-  <ca:op code='100' repr='sin' type='IDENTIFIER' mode='UNARY' precedence='2000' associativity='NONE' output-mode='NONE'/>
-  <ca:op code='101' repr='cos' type='IDENTIFIER' mode='UNARY' precedence='2001' associativity='NONE' output-mode='NONE'/>
- </ca:token-types>
- <root line='0' col='0' code='27' type='ROOT'>
- </root>
-</code-xml>
-#+end_example
 
 The other way is by a ~unary~ declaration in the laguage definition
 file, which has the form ~token~ ~unary~ followed by an integer
@@ -254,11 +318,12 @@ definition file:
 Class Unary_Binary is for token which may either occur as unary
 operators or as binary operators. A typical example are plus ~+~ and
 minus ~-~ in mathematical notation. For that, token may be assigned to
-class Unary_Binary, which accepts two more integer token, the first of
-which is the binary precedence and the second the unary
-precedence. For example, as in the following configuration
+class Unary_Binary, which accepts two integer token, the first of
+which is the binary precedence and the second the unary precedence. An
+associativity may also be specified. For example, the following
+configuration
 #+BEGIN_EXAMPLE
-"-" unary_binary 1000 left 2200
+"-" unary_binary 1000 2200 left
 #+END_EXAMPLE
 
 *** Class Ignore
@@ -268,6 +333,13 @@ tree. However it is not simply discarded. Instead, it is inserted into
 the tree at the next best convenient location. Thus the text that
 constituted it is not lost but may be found in the tree as a sort of
 side information.
+
+In the language definition file, a token is assigned to class Ignore
+with the keyword =ignore=, but a precedence is also required (it is
+ignored):
+#+BEGIN_EXAMPLE
+NEWLINE ignore 1x
+#+end_example
 
 *** Parentheses
 
@@ -297,21 +369,99 @@ or using a ~paren~ declaration in the language definition file:
 "while" paren "endwhile"
 #+END_EXAMPLE
 
-A Parenthesis expression is be default handled as being in class
-Item. However, Parenthesis declarations may also place assign the
-declaration to any other class. For example, the Parenthesis ~(~ and
+A parenthesis expression is be default handled as being in token class
+Item. However, parentheses declarations may also place assign the
+declaration to any other class. For example, the parentheses ~(~ and
 ~)~ may be declared as being a postfix operator. This is done by
-adding the class keyword on the line together with an interger
+adding the class keyword on the line together with an integer
 specifying the precedence:
 #+BEGIN_EXAMPLE
 "(" paren ")" postfix 10000
 #+END_EXAMPLE
 
+*** Example
+
+As an example consider the configuration file
+[[file:examples/configs/cfuncs]] and the input text file
+[[file:examples/in/cexpr.exp]]:
+#+BEGIN_SRC sh :results output :exports both
+cat examples/configs/cfuncs
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+#
+# Operator definitions
+#
+# Token  Class         Precedence  Unary Prec.  Associativity
+"="      binary        5                        right
+
+"+"      unary_binary  10          110
+"-"      unary_binary  10          110
+
+"*"      binary        20
+
+"/"      binary        30
+"%"      binary        30
+
+" "      ignore        1
+NEWLINE  ignore        1
+TAB      ignore        1
+
+#
+# Parentheses definitions
+#
+# Start  "paren" End  Class    Precedence  Unary Prec.  Associativity
+"("      paren   ")"  postfix  101
+#+end_example
+
+#+BEGIN_SRC sh :results output :exports both
+cat examples/in/cexpr.exp
+#+END_SRC
+
+#+RESULTS:
+: f( a +	1)*2
+
+#+BEGIN_SRC sh :results output :exports both
+p2x -mX -p examples/configs/cfuncs examples/in/cexpr.exp
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+<?xml version="1.0" encoding="utf-8"?>
+<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>
+ <ROOT>
+  <null/>
+  <MULT>
+   <L_PAREN>
+    <ID><c:t>f</c:t></ID>
+    <c:t>(</c:t>
+    <ci:SPACE> </ci:SPACE>
+    <R_PAREN>
+     <PLUS>
+      <ID>
+       <c:t>a</c:t>
+       <ci:SPACE> </ci:SPACE>
+      </ID>
+      <c:t>+</c:t>
+      <ci:TAB>	</ci:TAB>
+      <INT><c:t>1</c:t></INT>
+     </PLUS>
+     <c:t>)</c:t>
+    </R_PAREN>
+   </L_PAREN>
+   <c:t>*</c:t>
+   <INT><c:t>2</c:t></INT>
+  </MULT>
+ </ROOT>
+</code-xml>
+#+end_example
+
 * About this document
 
 This file is part of P2X. See the file p2x.cc for copying conditions.  
 
-Copyright © 2014 Johannes Willkomm 
+Copyright © 2014,2016 Johannes Willkomm
 
 * Internal                                                         :noexport:
 
