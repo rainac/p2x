@@ -37,4 +37,16 @@ testParseTreeEqual_question_mark() {
     checkParseTreeEqual question.exp "[EQUAL]([JUXTA](Is, [MULT]([MULT](2, 2), 2)), [QUESTION](7))"
 }
 
+testParseTreeEqual_unary_binary_valid2() {
+    checkParseTreeEqual ub2.exp "[ub]([ub](1, 2), 3)"
+}
+
+testParseTreeEqual_binary_invalid() {
+    checkParseTreeEqual plus2.exp "[PLUS]([PLUS](1), 2)"
+}
+
+testParseTreeEqual_binary_invalid2() {
+    checkParseTreeEqual eq2.exp "[EQUAL](1, [EQUAL](., 2))"
+}
+
 . ./myshunit2

@@ -18,4 +18,9 @@ testParseTreeEqual3() {
   assertEquals "sub test should pass" "0" "$?"
 }
 
+testParseTreeEqual4() {
+  env -i               ./parse_tests_merged.sh
+  assertEquals "sub test should pass" "0" "$?"
+}
+
 . ./myshunit2

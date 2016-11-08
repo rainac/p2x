@@ -203,4 +203,8 @@ testParseTreeEqual_binary_incrp() {
     checkParseTreeEqual incrp.exp "[PLUS](1, [MULT](2, [POW](3, 4)))"
 }
 
+testParseTreeEqual_unary_binary_valid() {
+    checkParseTreeEqual ub.exp "[ub](1, [ub](., 2))"
+}
+
 . ./myshunit2

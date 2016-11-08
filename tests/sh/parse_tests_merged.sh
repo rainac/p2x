@@ -1,0 +1,31 @@
+#! /bin/zsh
+
+export SHUNIT_PARENT=$0
+. ./setup_zsh.sh
+
+testParseTreeEqual_unary_binary_valid() {
+    checkParseTreeEqual ub2.exp "[ub]([ub](1, 2), 3)"
+    checkParseTreeEqual ub2.exp "[ub](1, 2, 3)" "-m"
+}
+
+testParseTreeEqual_binary_invalid1() {
+    checkParseTreeEqual plus2.exp "[PLUS]([PLUS](1), 2)"
+    checkParseTreeEqual plus2.exp "[PLUS](1, ., 2)" "-m"
+}
+
+testParseTreeEqual_binary_invalid2() {
+    checkParseTreeEqual plus4.exp "[PLUS]([PLUS]([PLUS]([PLUS](1))), 2)"
+    checkParseTreeEqual plus4.exp "[PLUS](1, ., ., ., 2)" "-m"
+}
+
+testParseTreeEqual_binary_invalid3() {
+    checkParseTreeEqual eq2.exp "[EQUAL](1, [EQUAL](., 2))"
+    checkParseTreeEqual eq2.exp "[EQUAL](1, ., 2)" "-m"
+}
+
+testParseTreeEqual_binary_invalid4() {
+    checkParseTreeEqual eq4.exp "[EQUAL](1, [EQUAL](., [EQUAL](., [EQUAL](., 2))))"
+    checkParseTreeEqual eq4.exp "[EQUAL](1, ., ., ., 2)" "-m"
+}
+
+. ./myshunit2
