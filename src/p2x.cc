@@ -471,6 +471,11 @@ struct TokenInfo {
     return false;
   }
 
+  bool isAmbiguous(Token const * const t) const {
+    OpPrototypes::const_iterator it = opPrototypes.find(getOpCode(t));
+    return it != opPrototypes.end() && it->second.mode == MODE_UNARY_BINARY;
+  }
+
   static bool isOp(ParserMode mode) { 
     return (mode == MODE_BINARY
             or mode == MODE_UNARY_BINARY
@@ -661,6 +666,24 @@ struct Lexer {
   }
 };
 
+struct LiveArity {
+  Token const *m_s;
+  LiveArity(Token const *s) : m_s(s) {}
+  int operator()(Token const *s) const {
+    if (s->left == 0 and s->right == 0) return 0;
+    else if (s->left and s->right == 0) return 1;
+    else if (s->left and s->right) return 2;
+    else if (s->left == 0 and s->right) return 3;
+    return -1;
+  }
+  operator int() const {
+    return this->operator()(m_s);
+  }
+  bool operator ==(LiveArity const &o) const {
+    return this->operator()(m_s) == o;
+  }
+};
+
 struct TokenTypeEqual {
 
   TokenInfo const &tokenInfo;
@@ -669,7 +692,8 @@ struct TokenTypeEqual {
 
   bool operator()(Token const *s, Token const *t) const { 
     return s->token == t->token
-      and (not (tokenInfo.isNamedType(s) or tokenInfo.isNamedType(t)) or s->text == t->text);
+      and (not (tokenInfo.isNamedType(s) or tokenInfo.isNamedType(t)) or s->text == t->text)
+      and (!(tokenInfo.isAmbiguous(s) or tokenInfo.isAmbiguous(t)) or LiveArity(s) == LiveArity(t));
   }
 
 };
@@ -1338,6 +1362,9 @@ struct TreeXMLWriter {
       tags = not(parent
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
+      if (not tags and (t->left != 0 and t->right == 0)) {
+        aus << indent << "<null/>" << m_xmlWriter.linebreak;
+      }
       if (tags) {
         --m_level;
         setIndent();
@@ -1470,7 +1497,7 @@ struct TreeXMLWriter {
         }
       }
       if (t->left == 0 and t->right != 0) {
-        aus << subindent << "<null/>" << m_xmlWriter.linebreak;
+        aus << (tags ? subindent : indent) << "<null/>" << m_xmlWriter.linebreak;
       }
 
       return 0;
@@ -1501,6 +1528,9 @@ struct TreeXMLWriter {
       tags = not(parent
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
+      if (not tags and (t->left != 0 and t->right == 0)) {
+        aus << indent << "<null/>" << m_xmlWriter.linebreak;
+      }
       if (tags) {
         if (t->left or t->right or t->ignore) {
           --m_level;
