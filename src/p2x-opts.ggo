@@ -41,7 +41,10 @@ option "newline-as-br" -  "Emit newline text as ca:br element of ca:text" flag o
 option "newline-as-entity" -  "Emit newline text as &#xa; character entity" flag off
 option "merged" m  "Collect children of equal operator chains, output all binary nodes in MERGED mode" flag off
 option "strict" -  "Strict output mode: paren children always indicated by null elements" flag off
-option "output-mode" - "Write output as XML/JSON/MATLAB" string typestr="Mode" optional
+option "sparse" w  "Safe some non-essential attributes, newlines and indents" flag off
+option "write-xml-declaration" -  "Emit XML declaration (with encoding)" flag off hidden
+option "write-bom" -  "Emit byte order mark (BOM) character" flag off hidden
+option "output-mode" O "Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code" string typestr="Mode" optional default="y"
 option "matlab" M "Write output as MATLAB" flag off
 option "json" J "Write output as JSON" flag off
 option "xml" X "Write output as XML" flag off
@@ -50,8 +53,19 @@ option "write-recursive" -  "Recursive output writing" flag hidden off
 option "src-info" g         "Emit source location attributes line, column, and character" flag off
 option "attribute-line" -  "Emit attribute line with source line" flag off hidden
 option "attribute-column" -  "Emit attribute column with source column" flag off hidden
-option "attribute-char" -  "Emit attribute character with source char" flag off hidden
+option "attribute-char" -  "Emit attribute column with source char" flag off hidden
 option "attribute-precedence" -  "Emit attribute precedence with token precedence" flag off hidden
+option "attribute-code" -  "Emit attribute code with internal token code" flag off hidden
 option "attribute-mode" -  "Emit attribute mode with token mode" flag off hidden
 option "attribute-type" -  "Emit attribute type with token type" flag on hidden
 option "attribute-id" -  "Emit attribute id with token id" flag off hidden
+
+option "element-ca-steps" -  "Emit element ca:steps" flag off hidden
+option "element-scanner" - "Add scanner configuration info to the output XML" flag off hidden
+option "element-parser" - "Add parser configuration info to the output XML" flag off hidden
+option "element-treewriter" - "Add treewriter configuration info to the output XML" flag off hidden
+
+section "Config options"
+# option "dump-config" -  "Dump configuration to stdout and exit" flag off hidden
+# option "dump-config-XML" D  "Dump configuration in XML format to stdout and exit" flag off
+option "include-config" c  "Add configuration info to the output XML" flag off

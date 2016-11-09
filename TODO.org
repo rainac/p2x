@@ -57,6 +57,46 @@ Reading XML: should be doable with expat parser
 
 Write output to file instead of stdout
 
+*** TODO Javascript implementation
+
+**** TODO Javascript XML identical to C/C++
+
+First test: check examples for identical XML output to C/C++
+
+**** TODO Also for non-UTF-8 input???
+
+**** TODO Report parser errors in HTML page
+
+*** TODO Develop a unified config
+
+    - Basically, eliminate the TOKEN_ stuff
+    - In Parser config, specify the RE directly
+    - To support this in C/C++ we will have to dynamically generate
+      the flex scanner and compile it from the user input
+
+*** DONE Consolidate XML names
+    CLOSED: [2015-06-08 Mo 22:18]
+
+    - code-xml :: the root element, has optionally as
+      - ca:scanner :: scanner configuration
+      - ca:parser :: parser configuration
+      - ca:treewriter :: treewriter configuration, and must have elements
+      - root :: the parse tree
+
+*** DONE Add am attribute from ca namespace
+    CLOSED: [2015-06-08 Mo 22:24]
+
+Added code-xml/@ca:version
+
+*** TODO remove reduncancy from the XML
+
+**** TODO Skip type attr when there is a special element name
+
+Such as int, float, string
+
+**** DONE Skip ca:text when empty
+     CLOSED: [2015-06-08 Mo 22:22]
+
 *** DONE MATLAB struct output
     CLOSED: [2016-11-01 Di 13:47]
 
@@ -65,6 +105,50 @@ Write output to file instead of stdout
 
 Structurally same as MATLAB -> needs postprocessing
 
+*** TODO Ignore parentheses
+
+Does it work?
+
+*** TODO Newline as literal in config file
+
+Does not work:
+#+BEGIN_EXAMPLE
+"
+" ignore 1
+#+END_EXAMPLE
+
+Does not work:
+#+BEGIN_EXAMPLE
+"\n" ignore 1
+#+END_EXAMPLE
+
+Does work:
+#+BEGIN_EXAMPLE
+NEWLINE ignore 1
+#+END_EXAMPLE
+
+*** TODO Use env USERPROFILE
+
+on windows, prefer USERPROFILE, then fall back to HOMEPATH etc.
+
+*** TODO Always use env HOME for home dir
+
+on windows, fall back to USERPROFILE, etc.
+
+*** TODO Load scanner as plugin (shared library)
+
+Load function "yylex" (default) from given shared library
+
+*** TODO Speed up flex scanner
+
+    - Generate C scanner?
+    - Options?
+
+*** TODO Scan with IFS
+
+Provide scanner using simple input field separator (IFS)
+
+*** TODO C++ API
 
 ** TODO Source code cleanup
 

@@ -1,34 +1,22 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" code="41" type="EQUAL">
-   <id code="31" repr="x" type="IDENTIFIER">
-    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">x</ca:text>
-   </id>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="EQUAL">
+   <id repr="x" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">x</ca:text></id>
    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">=</ca:text>
-   <op code="47" type="PLUS">
-    <integer code="28" type="INTEGER">
-     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text>
-    </integer>
+   <op type="PLUS">
+    <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text></integer>
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
-    <op code="49" type="MULT">
-     <op code="49" type="MULT">
-      <integer code="28" type="INTEGER">
-       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text>
-      </integer>
+    <op type="MULT">
+     <op type="MULT">
+      <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text></integer>
       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
-      <op code="50" type="DIV">
-       <integer code="28" type="INTEGER">
-        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text>
-       </integer>
+      <op type="DIV">
+       <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text></integer>
        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">/</ca:text>
-       <id code="31" repr="y" type="IDENTIFIER">
-        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">y</ca:text>
-       </id>
+       <id repr="y" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">y</ca:text></id>
       </op>
      </op>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
-     <id code="31" repr="z" type="IDENTIFIER">
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">z</ca:text>
-     </id>
+     <id repr="z" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">z</ca:text></id>
     </op>
    </op>
   </op>

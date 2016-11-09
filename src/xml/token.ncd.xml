@@ -135,6 +135,8 @@
   <c name="DOUBLE_LESS_EQUAL"/>
   <c name="DOUBLE_GREATER_EQUAL"/>
 
+  <c name="IGNORE"/>
+
   <c name="LAST"/>
 
 </ncdef>

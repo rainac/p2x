@@ -1,0 +1,49 @@
+#! /bin/bash
+
+NODE=nodejs
+NODEFLAGS=
+
+if ! test -x $(which $NODE); then 
+   NODE=node
+fi
+
+mode=p2x-main
+
+case $1 in
+    (scanconf-xml2json)
+        mode=$1
+        shift
+    ;;
+    (parseconf-text2json)
+        mode=$1
+        shift
+    ;;
+    # (parse-text2xml)
+    #     mode=$1
+    #     shift
+    # ;;
+    # (parse-xml2json)
+    #     mode=$1
+    #     shift
+    # ;;
+esac
+
+srcdir=$(dirname $BASH_SOURCE)
+
+main_src=$mode.min.js
+
+if test -r $srcdir/$main_src; then
+    file=$srcdir/$main_src
+elif test -r $srcdir/../share/p2x/js/$main_src; then
+    file=$srcdir/../share/p2x/js/$main_src
+else
+    echo "error: JS main program $main_src not found"
+    exit 1
+fi
+
+if [[ "$@" == *"--debug"* ]]; then
+    NODEOPTS=--debug
+    set -x
+fi
+
+$NODE $NODEOPTS $file $*

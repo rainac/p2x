@@ -1,0 +1,4 @@
+# Use Aliasing to redirect requests to @server_base@ to where P2X is installed
+
+#Alias @server_base@doc @p2x_home@/share/doc/p2x
+Alias @server_base@ @p2x_home@/share/p2x/js/

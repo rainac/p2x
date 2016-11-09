@@ -61,7 +61,10 @@ const char *gengetopt_args_info_full_help[] = {
   "      --newline-as-entity       Emit newline text as &#xa; character entity\n                                  (default=off)",
   "  -m, --merged                  Collect children of equal operator chains,\n                                  output all binary nodes in MERGED mode\n                                  (default=off)",
   "      --strict                  Strict output mode: paren children always\n                                  indicated by null elements  (default=off)",
-  "      --output-mode=Mode        Write output as XML/JSON/MATLAB",
+  "  -w, --sparse                  Safe some non-essential attributes, newlines\n                                  and indents  (default=off)",
+  "      --write-xml-declaration   Emit XML declaration (with encoding)\n                                  (default=off)",
+  "      --write-bom               Emit byte order mark (BOM) character\n                                  (default=off)",
+  "  -O, --output-mode=Mode        Write output as normal (x) or alternative (y)\n                                  XML, or (J)SON or (M)ATLAB code\n                                  (default=`y')",
   "  -M, --matlab                  Write output as MATLAB  (default=off)",
   "  -J, --json                    Write output as JSON  (default=off)",
   "  -X, --xml                     Write output as XML  (default=off)",
@@ -69,11 +72,18 @@ const char *gengetopt_args_info_full_help[] = {
   "  -g, --src-info                Emit source location attributes line, column,\n                                  and character  (default=off)",
   "      --attribute-line          Emit attribute line with source line\n                                  (default=off)",
   "      --attribute-column        Emit attribute column with source column\n                                  (default=off)",
-  "      --attribute-char          Emit attribute character with source char\n                                  (default=off)",
+  "      --attribute-char          Emit attribute column with source char\n                                  (default=off)",
   "      --attribute-precedence    Emit attribute precedence with token precedence\n                                  (default=off)",
+  "      --attribute-code          Emit attribute code with internal token code\n                                  (default=off)",
   "      --attribute-mode          Emit attribute mode with token mode\n                                  (default=off)",
   "      --attribute-type          Emit attribute type with token type\n                                  (default=on)",
   "      --attribute-id            Emit attribute id with token id  (default=off)",
+  "      --element-ca-steps        Emit element ca:steps  (default=off)",
+  "      --element-scanner         Add scanner configuration info to the output\n                                  XML  (default=off)",
+  "      --element-parser          Add parser configuration info to the output XML\n                                  (default=off)",
+  "      --element-treewriter      Add treewriter configuration info to the output\n                                  XML  (default=off)",
+  "\nConfig options:",
+  "  -c, --include-config          Add configuration info to the output XML\n                                  (default=off)",
     0
 };
 
@@ -108,15 +118,18 @@ init_help_array(void)
   gengetopt_args_info_help[25] = gengetopt_args_info_full_help[25];
   gengetopt_args_info_help[26] = gengetopt_args_info_full_help[26];
   gengetopt_args_info_help[27] = gengetopt_args_info_full_help[27];
-  gengetopt_args_info_help[28] = gengetopt_args_info_full_help[28];
-  gengetopt_args_info_help[29] = gengetopt_args_info_full_help[29];
-  gengetopt_args_info_help[30] = gengetopt_args_info_full_help[30];
-  gengetopt_args_info_help[31] = gengetopt_args_info_full_help[32];
-  gengetopt_args_info_help[32] = 0; 
+  gengetopt_args_info_help[28] = gengetopt_args_info_full_help[30];
+  gengetopt_args_info_help[29] = gengetopt_args_info_full_help[31];
+  gengetopt_args_info_help[30] = gengetopt_args_info_full_help[32];
+  gengetopt_args_info_help[31] = gengetopt_args_info_full_help[33];
+  gengetopt_args_info_help[32] = gengetopt_args_info_full_help[35];
+  gengetopt_args_info_help[33] = gengetopt_args_info_full_help[48];
+  gengetopt_args_info_help[34] = gengetopt_args_info_full_help[49];
+  gengetopt_args_info_help[35] = 0; 
   
 }
 
-const char *gengetopt_args_info_help[33];
+const char *gengetopt_args_info_help[36];
 
 typedef enum {ARG_NO
   , ARG_FLAG
@@ -191,6 +204,9 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->newline_as_entity_given = 0 ;
   args_info->merged_given = 0 ;
   args_info->strict_given = 0 ;
+  args_info->sparse_given = 0 ;
+  args_info->write_xml_declaration_given = 0 ;
+  args_info->write_bom_given = 0 ;
   args_info->output_mode_given = 0 ;
   args_info->matlab_given = 0 ;
   args_info->json_given = 0 ;
@@ -201,9 +217,15 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->attribute_column_given = 0 ;
   args_info->attribute_char_given = 0 ;
   args_info->attribute_precedence_given = 0 ;
+  args_info->attribute_code_given = 0 ;
   args_info->attribute_mode_given = 0 ;
   args_info->attribute_type_given = 0 ;
   args_info->attribute_id_given = 0 ;
+  args_info->element_ca_steps_given = 0 ;
+  args_info->element_scanner_given = 0 ;
+  args_info->element_parser_given = 0 ;
+  args_info->element_treewriter_given = 0 ;
+  args_info->include_config_given = 0 ;
 }
 
 static
@@ -246,7 +268,10 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->newline_as_entity_flag = 0;
   args_info->merged_flag = 0;
   args_info->strict_flag = 0;
-  args_info->output_mode_arg = NULL;
+  args_info->sparse_flag = 0;
+  args_info->write_xml_declaration_flag = 0;
+  args_info->write_bom_flag = 0;
+  args_info->output_mode_arg = gengetopt_strdup ("y");
   args_info->output_mode_orig = NULL;
   args_info->matlab_flag = 0;
   args_info->json_flag = 0;
@@ -257,9 +282,15 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->attribute_column_flag = 0;
   args_info->attribute_char_flag = 0;
   args_info->attribute_precedence_flag = 0;
+  args_info->attribute_code_flag = 0;
   args_info->attribute_mode_flag = 0;
   args_info->attribute_type_flag = 1;
   args_info->attribute_id_flag = 0;
+  args_info->element_ca_steps_flag = 0;
+  args_info->element_scanner_flag = 0;
+  args_info->element_parser_flag = 0;
+  args_info->element_treewriter_flag = 0;
+  args_info->include_config_flag = 0;
   
 }
 
@@ -316,19 +347,28 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->newline_as_entity_help = gengetopt_args_info_full_help[24] ;
   args_info->merged_help = gengetopt_args_info_full_help[25] ;
   args_info->strict_help = gengetopt_args_info_full_help[26] ;
-  args_info->output_mode_help = gengetopt_args_info_full_help[27] ;
-  args_info->matlab_help = gengetopt_args_info_full_help[28] ;
-  args_info->json_help = gengetopt_args_info_full_help[29] ;
-  args_info->xml_help = gengetopt_args_info_full_help[30] ;
-  args_info->write_recursive_help = gengetopt_args_info_full_help[31] ;
-  args_info->src_info_help = gengetopt_args_info_full_help[32] ;
-  args_info->attribute_line_help = gengetopt_args_info_full_help[33] ;
-  args_info->attribute_column_help = gengetopt_args_info_full_help[34] ;
-  args_info->attribute_char_help = gengetopt_args_info_full_help[35] ;
-  args_info->attribute_precedence_help = gengetopt_args_info_full_help[36] ;
-  args_info->attribute_mode_help = gengetopt_args_info_full_help[37] ;
-  args_info->attribute_type_help = gengetopt_args_info_full_help[38] ;
-  args_info->attribute_id_help = gengetopt_args_info_full_help[39] ;
+  args_info->sparse_help = gengetopt_args_info_full_help[27] ;
+  args_info->write_xml_declaration_help = gengetopt_args_info_full_help[28] ;
+  args_info->write_bom_help = gengetopt_args_info_full_help[29] ;
+  args_info->output_mode_help = gengetopt_args_info_full_help[30] ;
+  args_info->matlab_help = gengetopt_args_info_full_help[31] ;
+  args_info->json_help = gengetopt_args_info_full_help[32] ;
+  args_info->xml_help = gengetopt_args_info_full_help[33] ;
+  args_info->write_recursive_help = gengetopt_args_info_full_help[34] ;
+  args_info->src_info_help = gengetopt_args_info_full_help[35] ;
+  args_info->attribute_line_help = gengetopt_args_info_full_help[36] ;
+  args_info->attribute_column_help = gengetopt_args_info_full_help[37] ;
+  args_info->attribute_char_help = gengetopt_args_info_full_help[38] ;
+  args_info->attribute_precedence_help = gengetopt_args_info_full_help[39] ;
+  args_info->attribute_code_help = gengetopt_args_info_full_help[40] ;
+  args_info->attribute_mode_help = gengetopt_args_info_full_help[41] ;
+  args_info->attribute_type_help = gengetopt_args_info_full_help[42] ;
+  args_info->attribute_id_help = gengetopt_args_info_full_help[43] ;
+  args_info->element_ca_steps_help = gengetopt_args_info_full_help[44] ;
+  args_info->element_scanner_help = gengetopt_args_info_full_help[45] ;
+  args_info->element_parser_help = gengetopt_args_info_full_help[46] ;
+  args_info->element_treewriter_help = gengetopt_args_info_full_help[47] ;
+  args_info->include_config_help = gengetopt_args_info_full_help[49] ;
   
 }
 
@@ -569,6 +609,12 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "merged", 0, 0 );
   if (args_info->strict_given)
     write_into_file(outfile, "strict", 0, 0 );
+  if (args_info->sparse_given)
+    write_into_file(outfile, "sparse", 0, 0 );
+  if (args_info->write_xml_declaration_given)
+    write_into_file(outfile, "write-xml-declaration", 0, 0 );
+  if (args_info->write_bom_given)
+    write_into_file(outfile, "write-bom", 0, 0 );
   if (args_info->output_mode_given)
     write_into_file(outfile, "output-mode", args_info->output_mode_orig, 0);
   if (args_info->matlab_given)
@@ -589,12 +635,24 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "attribute-char", 0, 0 );
   if (args_info->attribute_precedence_given)
     write_into_file(outfile, "attribute-precedence", 0, 0 );
+  if (args_info->attribute_code_given)
+    write_into_file(outfile, "attribute-code", 0, 0 );
   if (args_info->attribute_mode_given)
     write_into_file(outfile, "attribute-mode", 0, 0 );
   if (args_info->attribute_type_given)
     write_into_file(outfile, "attribute-type", 0, 0 );
   if (args_info->attribute_id_given)
     write_into_file(outfile, "attribute-id", 0, 0 );
+  if (args_info->element_ca_steps_given)
+    write_into_file(outfile, "element-ca-steps", 0, 0 );
+  if (args_info->element_scanner_given)
+    write_into_file(outfile, "element-scanner", 0, 0 );
+  if (args_info->element_parser_given)
+    write_into_file(outfile, "element-parser", 0, 0 );
+  if (args_info->element_treewriter_given)
+    write_into_file(outfile, "element-treewriter", 0, 0 );
+  if (args_info->include_config_given)
+    write_into_file(outfile, "include-config", 0, 0 );
   
 
   i = EXIT_SUCCESS;
@@ -1166,7 +1224,10 @@ cmdline_parser_internal (
         { "newline-as-entity",	0, NULL, 0 },
         { "merged",	0, NULL, 'm' },
         { "strict",	0, NULL, 0 },
-        { "output-mode",	1, NULL, 0 },
+        { "sparse",	0, NULL, 'w' },
+        { "write-xml-declaration",	0, NULL, 0 },
+        { "write-bom",	0, NULL, 0 },
+        { "output-mode",	1, NULL, 'O' },
         { "matlab",	0, NULL, 'M' },
         { "json",	0, NULL, 'J' },
         { "xml",	0, NULL, 'X' },
@@ -1176,13 +1237,19 @@ cmdline_parser_internal (
         { "attribute-column",	0, NULL, 0 },
         { "attribute-char",	0, NULL, 0 },
         { "attribute-precedence",	0, NULL, 0 },
+        { "attribute-code",	0, NULL, 0 },
         { "attribute-mode",	0, NULL, 0 },
         { "attribute-type",	0, NULL, 0 },
         { "attribute-id",	0, NULL, 0 },
+        { "element-ca-steps",	0, NULL, 0 },
+        { "element-scanner",	0, NULL, 0 },
+        { "element-parser",	0, NULL, 0 },
+        { "element-treewriter",	0, NULL, 0 },
+        { "include-config",	0, NULL, 'c' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:mMJXg", long_options, &option_index);
+      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:mwO:MJXgc", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1347,6 +1414,28 @@ cmdline_parser_internal (
             goto failure;
         
           break;
+        case 'w':	/* Safe some non-essential attributes, newlines and indents.  */
+        
+        
+          if (update_arg((void *)&(args_info->sparse_flag), 0, &(args_info->sparse_given),
+              &(local_args_info.sparse_given), optarg, 0, 0, ARG_FLAG,
+              check_ambiguity, override, 1, 0, "sparse", 'w',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'O':	/* Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code.  */
+        
+        
+          if (update_arg( (void *)&(args_info->output_mode_arg), 
+               &(args_info->output_mode_orig), &(args_info->output_mode_given),
+              &(local_args_info.output_mode_given), optarg, 0, "y", ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "output-mode", 'O',
+              additional_error))
+            goto failure;
+        
+          break;
         case 'M':	/* Write output as MATLAB.  */
         
         
@@ -1383,6 +1472,16 @@ cmdline_parser_internal (
           if (update_arg((void *)&(args_info->src_info_flag), 0, &(args_info->src_info_given),
               &(local_args_info.src_info_given), optarg, 0, 0, ARG_FLAG,
               check_ambiguity, override, 1, 0, "src-info", 'g',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'c':	/* Add configuration info to the output XML.  */
+        
+        
+          if (update_arg((void *)&(args_info->include_config_flag), 0, &(args_info->include_config_given),
+              &(local_args_info.include_config_given), optarg, 0, 0, ARG_FLAG,
+              check_ambiguity, override, 1, 0, "include-config", 'c',
               additional_error))
             goto failure;
         
@@ -1515,16 +1614,26 @@ cmdline_parser_internal (
               goto failure;
           
           }
-          /* Write output as XML/JSON/MATLAB.  */
-          else if (strcmp (long_options[option_index].name, "output-mode") == 0)
+          /* Emit XML declaration (with encoding).  */
+          else if (strcmp (long_options[option_index].name, "write-xml-declaration") == 0)
           {
           
           
-            if (update_arg( (void *)&(args_info->output_mode_arg), 
-                 &(args_info->output_mode_orig), &(args_info->output_mode_given),
-                &(local_args_info.output_mode_given), optarg, 0, 0, ARG_STRING,
-                check_ambiguity, override, 0, 0,
-                "output-mode", '-',
+            if (update_arg((void *)&(args_info->write_xml_declaration_flag), 0, &(args_info->write_xml_declaration_given),
+                &(local_args_info.write_xml_declaration_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "write-xml-declaration", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Emit byte order mark (BOM) character.  */
+          else if (strcmp (long_options[option_index].name, "write-bom") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->write_bom_flag), 0, &(args_info->write_bom_given),
+                &(local_args_info.write_bom_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "write-bom", '-',
                 additional_error))
               goto failure;
           
@@ -1565,7 +1674,7 @@ cmdline_parser_internal (
               goto failure;
           
           }
-          /* Emit attribute character with source char.  */
+          /* Emit attribute column with source char.  */
           else if (strcmp (long_options[option_index].name, "attribute-char") == 0)
           {
           
@@ -1585,6 +1694,18 @@ cmdline_parser_internal (
             if (update_arg((void *)&(args_info->attribute_precedence_flag), 0, &(args_info->attribute_precedence_given),
                 &(local_args_info.attribute_precedence_given), optarg, 0, 0, ARG_FLAG,
                 check_ambiguity, override, 1, 0, "attribute-precedence", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Emit attribute code with internal token code.  */
+          else if (strcmp (long_options[option_index].name, "attribute-code") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->attribute_code_flag), 0, &(args_info->attribute_code_given),
+                &(local_args_info.attribute_code_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "attribute-code", '-',
                 additional_error))
               goto failure;
           
@@ -1621,6 +1742,54 @@ cmdline_parser_internal (
             if (update_arg((void *)&(args_info->attribute_id_flag), 0, &(args_info->attribute_id_given),
                 &(local_args_info.attribute_id_given), optarg, 0, 0, ARG_FLAG,
                 check_ambiguity, override, 1, 0, "attribute-id", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Emit element ca:steps.  */
+          else if (strcmp (long_options[option_index].name, "element-ca-steps") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->element_ca_steps_flag), 0, &(args_info->element_ca_steps_given),
+                &(local_args_info.element_ca_steps_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "element-ca-steps", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Add scanner configuration info to the output XML.  */
+          else if (strcmp (long_options[option_index].name, "element-scanner") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->element_scanner_flag), 0, &(args_info->element_scanner_given),
+                &(local_args_info.element_scanner_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "element-scanner", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Add parser configuration info to the output XML.  */
+          else if (strcmp (long_options[option_index].name, "element-parser") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->element_parser_flag), 0, &(args_info->element_parser_given),
+                &(local_args_info.element_parser_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "element-parser", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Add treewriter configuration info to the output XML.  */
+          else if (strcmp (long_options[option_index].name, "element-treewriter") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->element_treewriter_flag), 0, &(args_info->element_treewriter_given),
+                &(local_args_info.element_treewriter_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "element-treewriter", '-',
                 additional_error))
               goto failure;
           

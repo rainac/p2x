@@ -1,0 +1,204 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="p2x.js"></script>
+    <script type="text/javascript" src="p2x-webapp.js"></script>
+    <style type="text/css">
+      * {
+        font-size: 12pt;
+        font-weight: 300;
+        border: 0px;
+        padding: 0px;
+        margin: 0px;
+        overflow: none;
+        clip-path: fill-box;
+      }
+      textarea {
+        overflow-y: auto;
+      }
+      h1 { padding: 1em; }
+      .output {
+        font-size: 80%;
+        font-weight: 300;
+      }
+      .readonly, .interact {
+        margin: 0.2em;
+        padding: 0.2em;
+      }
+      textarea {
+        width: 100%;
+      }
+      .hidden {
+        display: none;
+        visibility: hidden;
+      }
+      .readonly {
+        border: 2px solid brown;
+      }
+      .interact {
+        border: 2px solid green;
+      }
+      .messages {
+        display: none;
+        visibility: hidden;
+        position: absolute;
+        }
+    </style>
+    <title>P2X JS Test Page</title>
+  </head>
+  <body onload="init(); runP2X();">
+    <h1>P2X JS Test Page</h1>
+
+    <form name="p2x" action="javascript: runP2X()">
+      <table width="100%">
+        <tr>
+          <td width="50%" valign="top">
+            <fieldset>
+              <legend>Transform input</legend>
+              <textarea name="input" cols="50" rows="10" class="hidden interact">
+minus f(x, y)
+              </textarea>
+              <div id="input_feedback" class="feedback interact">
+              </div>
+            </fieldset>
+          </td>
+          <td valign="top">
+            <fieldset>
+              <legend>Transform output</legend>
+              <textarea name="output" cols="50" rows="10" readonly="readonly" class="readonly">
+              </textarea>
+            </fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <fieldset>
+              <legend>Parser rules</legend>
+              <textarea name="uniconf" cols="50" rows="8" class="hidden interact">
+{
+ rules: [
+  { re: '\\(', mode: MODE_POSTFIX, prec: 2000, isParen: 1,
+    closingList: [
+     { re: '\\)' }
+    ]
+  },
+  { re: '=|eq',      mode: MODE_BINARY,       assoc: ASSOC_RIGHT, prec: 500, name: 'eq' },
+  { re: ',',         mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 800, name: 'comma' },
+  { re: '\\+|plus',  mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200, name: 'plus' },
+  { re: '-|minus',   mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200, name: 'minus' },
+  { re: '\\*|times', mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1100, name: 'times' },
+  { re: '/|div',     mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1200, name: 'div' },
+  { re: '\\^|pow',   mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1300, name: 'pow' },
+  { re: '%|mod',     mode: MODE_BINARY,       assoc: ASSOC_LEFT, prec: 1400, name: 'mod' },
+  { re: '[0-9]+', name: 'int' },
+  { re: '[a-zA-Z_][a-zA-Z0-9_]*', name: 'id' },
+ ]
+}
+              </textarea>
+              <div id="uniconf_feedback" class="feedback interact">
+              </div>
+            </fieldset>
+          </td>
+          <td width="50%" valign="top">
+            <fieldset>
+              <legend>Treewriter settings</legend>
+              <textarea name="twconf" cols="50" rows="10" class="hidden">
+{ line: false, col: true,
+  strict: 0,
+  type: 0,
+  scanConf: 0,
+  parseConf: 0,
+  indent: 0
+}
+              </textarea>
+              <div id="twconf_feedback" class="feedback">
+              </div>
+            </fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <fieldset>
+              <legend>Scanner settings</legend>
+<!--              <textarea name="scanconf" cols="50" rows="3" class="hidden">
+{
+name: 'Test',
+rules: [
+  { re: '\\(', action: TOKEN_L_PAREN },
+  { re: '\\)', action: TOKEN_R_PAREN },
+  { re: '=', action: TOKEN_EQUAL },
+  { re: '\\+|plus', action: TOKEN_PLUS },
+  { re: '-|minus', action: TOKEN_MINUS },
+  { re: '\\*|times', action: TOKEN_MULT },
+  { re: '/|div', action: TOKEN_DIV },
+  { re: '%|mod', action: TOKEN_MOD },
+  { re: '\\^|pow', action: TOKEN_POW },
+  { re: ',', action: TOKEN_COMMA },
+  { re: '[0-9]+', action: TOKEN_INTEGER },
+  { re: '[a-zA-Z_][a-zA-Z0-9_]*', action: TOKEN_IDENTIFIER },
+]
+}
+              </textarea> -->
+              <div id="scanconf_feedback" class="feedback">
+              </div>
+            </fieldset>
+          </td>
+          <td width="50%" valign="top">
+            <fieldset>
+              <legend>Parser settings</legend>
+<!--              <textarea name="parseconf" cols="50" rows="3" class="hidden">
+{
+ rules: [                
+  { type: TOKEN_L_PAREN, mode: MODE_POSTFIX, prec: 2000, isParen: 1,
+    closingList: [
+     { type: TOKEN_R_PAREN }
+    ]
+  },
+  { type: TOKEN_EQUAL, mode: MODE_BINARY, assoc: ASSOC_RIGHT, prec: 500 },
+  { type: TOKEN_COMMA, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 800 },
+  { type: TOKEN_PLUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+  { type: TOKEN_MINUS, mode: MODE_UNARY_BINARY, assoc: ASSOC_LEFT, prec: 1000, precU: 2200 },
+  { type: TOKEN_MULT, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1100 },
+  { type: TOKEN_DIV, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1200 },
+  { type: TOKEN_MOD, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1300 },
+  { type: TOKEN_POW, mode: MODE_BINARY, assoc: ASSOC_LEFT, prec: 1400 },
+ ]
+}
+              </textarea> -->
+              <div id="parseconf_feedback" class="feedback">
+              </div>
+            </fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td width="50%" valign="top">
+            <fieldset>
+              <legend>Scanner output</legend>
+              <div id="scan_feedback" class="feedback">
+              </div>
+            </fieldset>
+          </td>
+          <td width="50%" valign="top">
+            <fieldset>
+              <legend>Parser output (Messages)</legend>
+              <div id="parse_feedback" class="feedback">
+              </div>
+            </fieldset>
+          </td>
+        </tr>
+<!--        <tr>
+          <td colspan="2">
+            <textarea name="console" cols="100" rows="10">
+            </textarea>
+          </td>
+        </tr> -->
+      </table>
+      <fieldset>
+        <legend>Actions</legend>
+        <input type="button" value="Click"/>
+        <input type="submit"/>
+      </fieldset>
+    </form>
+    
+  </body>
+</html>

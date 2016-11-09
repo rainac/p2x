@@ -631,6 +631,7 @@ EGREP
 GREP
 acond_BUILD_TESTS_FALSE
 acond_BUILD_TESTS_TRUE
+MOCHA
 XMLSTARLET
 SHUNIT2
 acond_DEBUG_BUILD_FALSE
@@ -643,6 +644,7 @@ FLEX
 acond_TRANG_AVAIL_FALSE
 acond_TRANG_AVAIL_TRUE
 TRANG
+NPM
 acond_GENGETOPT_AVAIL_FALSE
 acond_GENGETOPT_AVAIL_TRUE
 GENGETOPT
@@ -5469,6 +5471,61 @@ else
 fi
 
 
+for ac_prog in npm
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_NPM+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$NPM"; then
+  ac_cv_prog_NPM="$NPM" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_NPM="$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+NPM=$ac_cv_prog_NPM
+if test -n "$NPM"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $NPM" >&5
+$as_echo "$NPM" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$NPM" && break
+done
+
+if test "x$NPM" = "x"; then
+   as_fn_error $? "mandatory program npm was not found" "$LINENO" 5
+fi
+
+npm_packages="most-xml tmp"
+
+for pkg in $npm_packages; do
+    if ! $NPM list -g $pkg > /dev/null; then
+       as_fn_error $? "mandatory program node-js module \"$pkg\" is not installed
+                     please do \"$NPM install -g $pkg\"" "$LINENO" 5
+    fi
+done
+
 for ac_prog in trang
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -5748,6 +5805,51 @@ done
 
    if test "x$XMLSTARLET" = "x"; then
       as_fn_error $? "mandatory program xmlstarlet was not found" "$LINENO" 5
+   fi
+   for ac_prog in mocha
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_MOCHA+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$MOCHA"; then
+  ac_cv_prog_MOCHA="$MOCHA" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_MOCHA="$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+MOCHA=$ac_cv_prog_MOCHA
+if test -n "$MOCHA"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MOCHA" >&5
+$as_echo "$MOCHA" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$MOCHA" && break
+done
+
+   if test "x$MOCHA" = "x"; then
+      as_fn_error $? "mandatory program mocha was not found" "$LINENO" 5
    fi
 else
    defval_BUILD_TESTS=0
@@ -6156,6 +6258,11 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+cat >>confdefs.h <<_ACEOF
+#define VERSION "$av_LONG_VERSION"
+_ACEOF
+
+
 echo "creating VERSION_NUMBER"
 VERSION_NUMBER=`echo "$VERSION" | sed -e 's/\.//2'`
 
@@ -6443,7 +6550,7 @@ fi
 done
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile examples/Makefile tests/Makefile tests/sh/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src-js/Makefile examples/Makefile tests/Makefile tests/sh/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -7203,6 +7310,7 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "src-js/Makefile") CONFIG_FILES="$CONFIG_FILES src-js/Makefile" ;;
     "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
     "tests/sh/Makefile") CONFIG_FILES="$CONFIG_FILES tests/sh/Makefile" ;;

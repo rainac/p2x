@@ -16,14 +16,14 @@ Copyright © 2014 Johannes Willkomm
     <xsl:apply-templates/>
   </xsl:template>
 
-  <xsl:template match="cx:op[@type='NEWLINE']">
+  <xsl:template match="cx:op[@type='NEWLINE']|cx:NEWLINE">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates mode="strip-newline"/>
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="cx:op[@type='NEWLINE']" mode="strip-newline">
+  <xsl:template match="cx:op[@type='NEWLINE']|cx:NEWLINE" mode="strip-newline">
     <xsl:apply-templates mode="strip-newline"/>
   </xsl:template>
 

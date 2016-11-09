@@ -179,14 +179,14 @@ struct TokenProto : public Token {
   TokenProto() :
     precedence(),
     unaryPrecedence(),
-    mode(),
+    mode(MODE_ITEM),
     isParen(),
     isRParen(),
     associativity(),
     outputMode()
   {}
   TokenProto(Token const &t, int precedence = 0,
-             ParserMode mode = MODE_BINARY, ParserAssoc associativity = ASSOC_NONE,
+             ParserMode mode = MODE_ITEM, ParserAssoc associativity = ASSOC_NONE,
              EndList const &endList = EndList(), int unaryPrecedence = 0) :
     Token(t),
     precedence(precedence),
@@ -239,7 +239,9 @@ struct TokenInfo {
   }
 
   void initMandatory() {
-    opPrototypes[TOKEN_JUXTA] = TokenProto(Token(TOKEN_JUXTA, "j"), 900, MODE_BINARY, ASSOC_LEFT);
+    TokenProto tpj = TokenProto(Token(TOKEN_JUXTA, "j"), 900, MODE_BINARY, ASSOC_LEFT);
+    tpj.outputMode = OUTPUT_MODE_NESTED;
+    opPrototypes[TOKEN_JUXTA] = tpj;
   }
 
   unsigned mkOpCode(std::string const &s) {
@@ -948,6 +950,10 @@ struct Parser {
     do {
       // first = new Token(tokenList.next());
       first = tokenList.next();
+      if (not first) {
+        ls(LS::ERROR) << "error: unexpected end of input token list\n";
+        exit(4);
+      }
 #ifndef NDEBUG
       ls(LS::DEBUG|LS::PARSE) << "Parser: next: " << *first
            << ": mode: " << tokenInfo.mode(first)
@@ -957,8 +963,22 @@ struct Parser {
       if (endList.find(tokenInfo.getOpCode(first)) != endList.end()) {
         endFound = true;
       } else if (first->token == TOKEN_EOF) {
-        ls(LS::WARNING) << "unexpected end of input encountered" << std::endl;
+        std::ostream &os = ls(LS::ERROR);
+        os << "error: unexpected end of input, expecting";
+        if (endList.size() > 1) {
+          os << " one of";
+        }
+        for (std::map<unsigned,TokenProto>::iterator it = endList.begin(); it != endList.end(); ++it) {
+          if (it->second.token == TOKEN_IDENTIFIER && it->second.text.size()) {
+            os << " \"" << it->second.text << "\"";
+          } else {
+            os << " " << it->second.token;
+          }
+        }
+        os << ".\n";
         endFound = true;
+        --tokenList.offset;
+        break;
       } else if (tokenInfo.isParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
         parser.endList = tokenInfo.endList(first);
@@ -1152,15 +1172,25 @@ struct TreeXMLWriter {
     Options() :
       id(true), line(), col(), _char(),
       prec(), mode(), type(true),
-      indent(true), indentLogarithmic(true), newlineAsBr(true),
+      code(),
+      indent(true),
+      indentLogarithmic(true),
+      newlineAsBr(true),
       newlineAsEntity(false),
       merged(),
       strict(),
+      sparse(),
+      xmlDecl(),
+      bom(),
+      scanConf(),
+      parseConf(),
+      treewriterConf(),
+      caSteps(false),
       writeRec(true),
       minStraightIndentLevel(135),
       encoding("default is in .ggo")
     {}
-    bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, writeRec;
+    bool id, line, col, _char, prec, mode, type, code, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, sparse, xmlDecl, bom, scanConf, parseConf, treewriterConf, caSteps, writeRec;
     unsigned minStraightIndentLevel;
     std::string encoding;
   };
@@ -1183,10 +1213,12 @@ struct TreeXMLWriter {
   }
 
   void writeXMLLocAttrs(Token const *t, std::ostream &aus) const {
-    if (options.line)
-      aus << " line='" << t->line << "'";
-    if (options.col)
-      aus << " col='" << t->column << "'";
+    if (t->line) {
+      if (options.line)
+        aus << " line='" << t->line << "'";
+      if (options.col)
+        aus << " col='" << t->column << "'";
+    }
     if (options._char)
       aus << " char='" << t->character << "'";
   }
@@ -1198,10 +1230,12 @@ struct TreeXMLWriter {
 
   void writeXMLTypeAttrs(Token const *t, std::ostream &aus) const {
     if (t->token == TOKEN_IDENTIFIER) {
-      aus << " code='" << tokenInfo.getOpCode(t) << "'";
+      if (options.code)
+        aus << " code='" << tokenInfo.getOpCode(t) << "'";
       aus << " repr='" << t->text << "'";
     } else {
-      aus << " code='" << int(t->token) << "'";
+      if (options.code)
+        aus << " code='" << int(t->token) << "'";
     }
     if (options.type)
       aus << " type='" << Token::getParserTokenName(t->token) << "'";
@@ -1324,8 +1358,11 @@ struct TreeXMLWriter {
         m_xmlWriter.writeXMLLocAttrs(t, aus);
         m_xmlWriter.writeXMLTypeAttrs(t, aus);
         m_xmlWriter.writeXMLPrecAttrs(t, aus);
-        aus << ">" << m_xmlWriter.linebreak;
-        ++m_level;
+        aus << ">";
+        if (t->left || t->right || t->ignore) {
+          aus << m_xmlWriter.linebreak;
+          ++m_level;
+        }
       }
       if (t->left == 0 and t->right != 0) {
         aus << subindent << "<null/>" << m_xmlWriter.linebreak;
@@ -1342,9 +1379,11 @@ struct TreeXMLWriter {
       setIndent();
 
       if (not t->text.empty()) {
-        aus << indent;
+        bool const ownLine = t->left || t->right || t->ignore;
+        if (ownLine)
+          aus << indent;
         m_xmlWriter.writeXMLTextElem(t, aus);
-        aus << m_xmlWriter.linebreak;
+        if (ownLine) aus << m_xmlWriter.linebreak;
       }
       if (t->ignore) {
         m_xmlWriter.writeIgnoreXML(t->ignore, aus, indent);
@@ -1366,9 +1405,13 @@ struct TreeXMLWriter {
         aus << indent << "<null/>" << m_xmlWriter.linebreak;
       }
       if (tags) {
-        --m_level;
-        setIndent();
-        aus << indent << "</" << elemName << ">" << m_xmlWriter.linebreak;
+        bool const ownLine = t->left || t->right || t->ignore;
+        if (ownLine) {
+          --m_level;
+          setIndent();
+          aus << indent;
+        }
+        aus << "</" << elemName << ">" << m_xmlWriter.linebreak;
       }
       return 0;
     }
@@ -1652,7 +1695,11 @@ struct TreeXMLWriter {
       writeXMLLocAttrs(t, aus);
       writeXMLTypeAttrs(t, aus);
       writeXMLPrecAttrs(t, aus);
-      aus << ">" << linebreak;
+      aus << ">";
+    }
+    bool const caTextOnNewLine = !options.sparse || t->left || t->right || t->ignore;
+    if (caTextOnNewLine) {
+      aus << linebreak;
     }
     if (t->left != 0) {
       Token const *passParent = 0;
@@ -1664,9 +1711,13 @@ struct TreeXMLWriter {
       aus << indent << indentUnit << "<null/>" << linebreak;
     }
     if (not t->text.empty()) {
-      aus << subindent;
+      if (caTextOnNewLine) {
+        aus << subindent;
+      }
       writeXMLTextElem(t, aus);
-      aus << linebreak;
+      if (caTextOnNewLine) {
+        aus << linebreak;
+      }
     }
     if (t->ignore) {
       writeIgnoreXML(t->ignore, aus, subindent);
@@ -1679,7 +1730,10 @@ struct TreeXMLWriter {
       writeXML_Rec(t->right, aus, subindent, passParent, level+1);
     } 
     if (tags) {
-      aus << indent << "</" << elemName << ">" << linebreak;
+      if (caTextOnNewLine) {
+        aus << indent;
+      }
+      aus << "</" << elemName << ">" << linebreak;
     }
   }
 
@@ -1718,6 +1772,9 @@ struct TreeXMLWriter {
     if (tp.mode == MODE_UNARY_BINARY) {
       aus << " unary-precedence='" << tp.unaryPrecedence << "'";
     }
+    if (tp.isRParen) {
+      aus << " is-rparen='1'";
+    }
     if (tp.isParen) {
       aus << " is-paren='1'";
       aus << ">" << linebreak;
@@ -1729,12 +1786,12 @@ struct TreeXMLWriter {
   }
 
   void writeXML(TokenInfo const &t, std::ostream &aus, std::string const &indent = "") const {
-    aus << indent << "<ca:token-types>" << linebreak;
+    aus << indent << "<ca:parser>" << linebreak;
     TokenInfo::OpPrototypes::const_iterator it = t.opPrototypes.begin();
     for(; it != t.opPrototypes.end(); ++it) {
       writeXML(it->second, aus, indent + indentUnit);
     }
-    aus << indent << "</ca:token-types>" << linebreak;
+    aus << indent << "</ca:parser>" << linebreak;
   }
 
   void writeXML(TreeXMLWriter const &t, std::ostream &aus, std::string const &indent = "") const {
@@ -1750,6 +1807,7 @@ struct TreeXMLWriter {
     aus << " newlineAsEntity='" << t.options.newlineAsEntity << "'";
     aus << " prec='" << t.options.prec << "'";
     aus << " strict='" << t.options.strict << "'";
+    aus << " sparse='" << t.options.sparse << "'";
     aus << " type='" << t.options.type << "'";
     aus << "/>" << linebreak;
   }
@@ -1768,12 +1826,19 @@ void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
                   std::ostream &out, ScannerType scannerType) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>" << treeXMLWriter.linebreak;
-  out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
-  out << treeXMLWriter.indentUnit << "<ca:scanner type='"
-      << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
-  treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
-  treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
+  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "' ca:version='1.0'>" << treeXMLWriter.linebreak;
+  if (options.caSteps)
+    out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
+  if (options.scanConf) {
+    out << treeXMLWriter.indentUnit << "<ca:scanner type='"
+        << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
+  }
+  if (options.treewriterConf) {
+    treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
+  }
+  if (options.parseConf) {
+    treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
+  }
   treeXMLWriter.writeXML(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
 }
@@ -1982,7 +2047,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
           cnfls(LS::DEBUG|LS::CONFIG) << "config: token:  " << token << "\n";
 
           // parse precedence field
-          ParserAssoc assoc = mode == MODE_BINARY ? ASSOC_LEFT : ASSOC_NONE;
+          ParserAssoc assoc = mode == MODE_BINARY or mode == MODE_UNARY_BINARY ? ASSOC_LEFT : ASSOC_NONE;
           OutputMode outputMode = OUTPUT_MODE_NESTED;
           int precedence = 100;
           int unary_precedence = 100;
@@ -2274,11 +2339,14 @@ int main(int argc, char *argv[]) {
   options.type = args.attribute_type_flag;
   options.id = args.attribute_id_flag;
 
+  options.code = args.attribute_code_flag;
+
   options.newlineAsBr = args.newline_as_br_flag;
   options.newlineAsEntity = args.newline_as_entity_flag;
   options.indent = args.indent_flag;
   options.merged = args.merged_flag;
   options.strict = args.strict_flag;
+  options.sparse = args.sparse_flag;
   options.writeRec = args.write_recursive_flag;
 
   std::string indentUnit = args.indent_unit_arg[0];
@@ -2288,10 +2356,25 @@ int main(int argc, char *argv[]) {
 
   if (args.input_encoding_given>0) {
     options.encoding = args.input_encoding_arg[args.input_encoding_given -1];
+    options.xmlDecl = true;
   } else {
     options.encoding = args.input_encoding_arg[0];
+    options.xmlDecl = args.write_xml_declaration_flag;
   }
 
+  if (args.include_config_flag || args.element_scanner_flag) {
+    options.scanConf = true;
+  }
+  if (args.include_config_flag || args.element_parser_flag) {
+    options.parseConf = true;
+  }
+  if (args.include_config_flag || args.element_treewriter_flag) {
+    options.treewriterConf = true;
+  }
+  if (args.element_ca_steps_flag) {
+    options.caSteps = true;
+  }
+  options.bom = args.write_bom_flag;
 
   std::ostream *_out = &std::cout;
 
@@ -2370,7 +2453,7 @@ int main(int argc, char *argv[]) {
         ls(LS::IO)  << "Read " << configFile.tellg() << " B from config file '" << precPath << "'\n";
         // LS::mask &= ~LS::DEBUG;
       } else {
-        ls(LS::ERROR)  << "Failed to read config file " << precPath << ": " << strerror(errno) << "\n";
+        ls(LS::ERROR)  << "Failed to read precedence config file " << precPath << ": " << strerror(errno) << "\n";
         exit(3);
       }
     }
@@ -2525,7 +2608,7 @@ int main(int argc, char *argv[]) {
       std::string astr = args.brace_arg[i];
       size_t pc = astr.find_first_of(",;:");
       if (pc == std::string::npos) {
-        ls(LS::ERROR|LS::PARSE) << "Parser: error: command line brace definition must be of the form start,end\n";
+        ls(LS::ERROR|LS::PARSE) << "Parser: error: command line brace definition must be of the form start:end\n";
         exit(4);
       }
       std::string name1 = astr.substr(0, pc);
@@ -2567,10 +2650,13 @@ int main(int argc, char *argv[]) {
 
   if (args.list_classes_given) {
     TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
-    out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-    out << "<token-types xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
+    if (treeXMLWriter.options.bom)
+      out << char(0xff);
+    if (treeXMLWriter.options.xmlDecl)
+      out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+    out << "<parser xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
     treeXMLWriter.writeXML(tokenInfo, out, indentUnit);
-    out << "</token-types>\n";
+    out << "</parser>\n";
     return 0;
   }
 
@@ -2612,7 +2698,10 @@ int main(int argc, char *argv[]) {
     Timer tScanXML;
     std::ostream &lout2 = ls(LS::TIMES) << "Writing scan list to XML... ";
     TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
-    out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+    if (treeXMLWriter.options.bom)
+      out << char(0xff);
+    if (treeXMLWriter.options.xmlDecl)
+      out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
     out << "<scan-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
     treeXMLWriter.writeXML(scanner.tokenList, out, indentUnit);
     out << "</scan-xml>\n";

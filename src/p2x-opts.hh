@@ -121,9 +121,15 @@ struct gengetopt_args_info
   const char *merged_help; /**< @brief Collect children of equal operator chains, output all binary nodes in MERGED mode help description.  */
   int strict_flag;	/**< @brief Strict output mode: paren children always indicated by null elements (default=off).  */
   const char *strict_help; /**< @brief Strict output mode: paren children always indicated by null elements help description.  */
-  char * output_mode_arg;	/**< @brief Write output as XML/JSON/MATLAB.  */
-  char * output_mode_orig;	/**< @brief Write output as XML/JSON/MATLAB original value given at command line.  */
-  const char *output_mode_help; /**< @brief Write output as XML/JSON/MATLAB help description.  */
+  int sparse_flag;	/**< @brief Safe some non-essential attributes, newlines and indents (default=off).  */
+  const char *sparse_help; /**< @brief Safe some non-essential attributes, newlines and indents help description.  */
+  int write_xml_declaration_flag;	/**< @brief Emit XML declaration (with encoding) (default=off).  */
+  const char *write_xml_declaration_help; /**< @brief Emit XML declaration (with encoding) help description.  */
+  int write_bom_flag;	/**< @brief Emit byte order mark (BOM) character (default=off).  */
+  const char *write_bom_help; /**< @brief Emit byte order mark (BOM) character help description.  */
+  char * output_mode_arg;	/**< @brief Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code (default='y').  */
+  char * output_mode_orig;	/**< @brief Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code original value given at command line.  */
+  const char *output_mode_help; /**< @brief Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code help description.  */
   int matlab_flag;	/**< @brief Write output as MATLAB (default=off).  */
   const char *matlab_help; /**< @brief Write output as MATLAB help description.  */
   int json_flag;	/**< @brief Write output as JSON (default=off).  */
@@ -138,16 +144,28 @@ struct gengetopt_args_info
   const char *attribute_line_help; /**< @brief Emit attribute line with source line help description.  */
   int attribute_column_flag;	/**< @brief Emit attribute column with source column (default=off).  */
   const char *attribute_column_help; /**< @brief Emit attribute column with source column help description.  */
-  int attribute_char_flag;	/**< @brief Emit attribute character with source char (default=off).  */
-  const char *attribute_char_help; /**< @brief Emit attribute character with source char help description.  */
+  int attribute_char_flag;	/**< @brief Emit attribute column with source char (default=off).  */
+  const char *attribute_char_help; /**< @brief Emit attribute column with source char help description.  */
   int attribute_precedence_flag;	/**< @brief Emit attribute precedence with token precedence (default=off).  */
   const char *attribute_precedence_help; /**< @brief Emit attribute precedence with token precedence help description.  */
+  int attribute_code_flag;	/**< @brief Emit attribute code with internal token code (default=off).  */
+  const char *attribute_code_help; /**< @brief Emit attribute code with internal token code help description.  */
   int attribute_mode_flag;	/**< @brief Emit attribute mode with token mode (default=off).  */
   const char *attribute_mode_help; /**< @brief Emit attribute mode with token mode help description.  */
   int attribute_type_flag;	/**< @brief Emit attribute type with token type (default=on).  */
   const char *attribute_type_help; /**< @brief Emit attribute type with token type help description.  */
   int attribute_id_flag;	/**< @brief Emit attribute id with token id (default=off).  */
   const char *attribute_id_help; /**< @brief Emit attribute id with token id help description.  */
+  int element_ca_steps_flag;	/**< @brief Emit element ca:steps (default=off).  */
+  const char *element_ca_steps_help; /**< @brief Emit element ca:steps help description.  */
+  int element_scanner_flag;	/**< @brief Add scanner configuration info to the output XML (default=off).  */
+  const char *element_scanner_help; /**< @brief Add scanner configuration info to the output XML help description.  */
+  int element_parser_flag;	/**< @brief Add parser configuration info to the output XML (default=off).  */
+  const char *element_parser_help; /**< @brief Add parser configuration info to the output XML help description.  */
+  int element_treewriter_flag;	/**< @brief Add treewriter configuration info to the output XML (default=off).  */
+  const char *element_treewriter_help; /**< @brief Add treewriter configuration info to the output XML help description.  */
+  int include_config_flag;	/**< @brief Add configuration info to the output XML (default=off).  */
+  const char *include_config_help; /**< @brief Add configuration info to the output XML help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int full_help_given ;	/**< @brief Whether full-help was given.  */
@@ -175,6 +193,9 @@ struct gengetopt_args_info
   unsigned int newline_as_entity_given ;	/**< @brief Whether newline-as-entity was given.  */
   unsigned int merged_given ;	/**< @brief Whether merged was given.  */
   unsigned int strict_given ;	/**< @brief Whether strict was given.  */
+  unsigned int sparse_given ;	/**< @brief Whether sparse was given.  */
+  unsigned int write_xml_declaration_given ;	/**< @brief Whether write-xml-declaration was given.  */
+  unsigned int write_bom_given ;	/**< @brief Whether write-bom was given.  */
   unsigned int output_mode_given ;	/**< @brief Whether output-mode was given.  */
   unsigned int matlab_given ;	/**< @brief Whether matlab was given.  */
   unsigned int json_given ;	/**< @brief Whether json was given.  */
@@ -185,9 +206,15 @@ struct gengetopt_args_info
   unsigned int attribute_column_given ;	/**< @brief Whether attribute-column was given.  */
   unsigned int attribute_char_given ;	/**< @brief Whether attribute-char was given.  */
   unsigned int attribute_precedence_given ;	/**< @brief Whether attribute-precedence was given.  */
+  unsigned int attribute_code_given ;	/**< @brief Whether attribute-code was given.  */
   unsigned int attribute_mode_given ;	/**< @brief Whether attribute-mode was given.  */
   unsigned int attribute_type_given ;	/**< @brief Whether attribute-type was given.  */
   unsigned int attribute_id_given ;	/**< @brief Whether attribute-id was given.  */
+  unsigned int element_ca_steps_given ;	/**< @brief Whether element-ca-steps was given.  */
+  unsigned int element_scanner_given ;	/**< @brief Whether element-scanner was given.  */
+  unsigned int element_parser_given ;	/**< @brief Whether element-parser was given.  */
+  unsigned int element_treewriter_given ;	/**< @brief Whether element-treewriter was given.  */
+  unsigned int include_config_given ;	/**< @brief Whether include-config was given.  */
 
   char **inputs ; /**< @brief unamed options (options without names) */
   unsigned inputs_num ; /**< @brief unamed options number */

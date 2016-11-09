@@ -1,147 +1,119 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" code="68" type="NEWLINE">
-   <op code="68" type="NEWLINE">
-    <op code="68" type="NEWLINE">
-     <op code="68" type="NEWLINE">
-      <op code="68" type="NEWLINE">
-       <op code="68" type="NEWLINE">
-        <op code="43" type="GREATER">
-         <op code="42" type="LESS">
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="NEWLINE">
+   <op type="NEWLINE">
+    <op type="NEWLINE">
+     <op type="NEWLINE">
+      <op type="NEWLINE">
+       <op type="NEWLINE">
+        <op type="GREATER">
+         <op type="LESS">
           <null/>
           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-          <id code="31" repr="test" type="IDENTIFIER">
-           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">test</ca:text>
-          </id>
+          <id repr="test" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">test</ca:text></id>
          </op>
          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>
         </op>
         <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-        <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text>  </ca:text></ca:ignore>
-        <op code="43" type="GREATER">
-         <op code="42" type="LESS">
-          <op code="43" type="GREATER">
-           <op code="42" type="LESS">
+        <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text>  </ca:text></ca:ignore>
+        <op type="GREATER">
+         <op type="LESS">
+          <op type="GREATER">
+           <op type="LESS">
             <null/>
             <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-            <op code="202" repr="a" type="IDENTIFIER">
-             <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
-            </op>
+            <op repr="a" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text></op>
            </op>
            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>
-           <integer code="28" type="INTEGER">
-            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text>
-           </integer>
+           <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text></integer>
           </op>
           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-          <op code="50" type="DIV">
+          <op type="DIV">
            <null/>
            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">/</ca:text>
-           <op code="202" repr="a" type="IDENTIFIER">
-            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
-           </op>
+           <op repr="a" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text></op>
           </op>
          </op>
          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>
         </op>
        </op>
        <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-       <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text>  </ca:text></ca:ignore>
-       <op code="43" type="GREATER">
-        <op code="42" type="LESS">
-         <op code="43" type="GREATER">
-          <op code="42" type="LESS">
+       <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text>  </ca:text></ca:ignore>
+       <op type="GREATER">
+        <op type="LESS">
+         <op type="GREATER">
+          <op type="LESS">
            <null/>
            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-           <op code="202" repr="a" type="IDENTIFIER">
-            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
-           </op>
+           <op repr="a" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text></op>
           </op>
           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>
-          <integer code="28" type="INTEGER">
-           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text>
-          </integer>
+          <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text></integer>
          </op>
          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-         <op code="50" type="DIV">
+         <op type="DIV">
           <null/>
           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">/</ca:text>
-          <op code="202" repr="a" type="IDENTIFIER">
-           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
-          </op>
+          <op repr="a" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text></op>
          </op>
         </op>
         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>
        </op>
       </op>
       <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text>  </ca:text></ca:ignore>
-      <op code="43" type="GREATER">
-       <op code="42" type="LESS">
-        <op code="43" type="GREATER">
-         <op code="42" type="LESS">
+      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text>  </ca:text></ca:ignore>
+      <op type="GREATER">
+       <op type="LESS">
+        <op type="GREATER">
+         <op type="LESS">
           <null/>
           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-          <op code="202" repr="a" type="IDENTIFIER">
-           <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
-          </op>
+          <op repr="a" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text></op>
          </op>
          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>
-         <integer code="28" type="INTEGER">
-          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text>
-         </integer>
+         <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text></integer>
         </op>
         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-        <op code="50" type="DIV">
+        <op type="DIV">
          <null/>
          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">/</ca:text>
-         <op code="202" repr="a" type="IDENTIFIER">
-          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
-         </op>
+         <op repr="a" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text></op>
         </op>
        </op>
        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>
       </op>
      </op>
      <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text>  </ca:text></ca:ignore>
-     <op code="43" type="GREATER">
-      <op code="42" type="LESS">
-       <op code="43" type="GREATER">
-        <op code="42" type="LESS">
+     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text>  </ca:text></ca:ignore>
+     <op type="GREATER">
+      <op type="LESS">
+       <op type="GREATER">
+        <op type="LESS">
          <null/>
          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-         <op code="202" repr="a" type="IDENTIFIER">
-          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
-         </op>
+         <op repr="a" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text></op>
         </op>
         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>
-        <integer code="28" type="INTEGER">
-         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text>
-        </integer>
+        <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text></integer>
        </op>
        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-       <op code="50" type="DIV">
+       <op type="DIV">
         <null/>
         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">/</ca:text>
-        <op code="202" repr="a" type="IDENTIFIER">
-         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
-        </op>
+        <op repr="a" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text></op>
        </op>
       </op>
       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>
      </op>
     </op>
     <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-    <op code="43" type="GREATER">
-     <op code="42" type="LESS">
+    <op type="GREATER">
+     <op type="LESS">
       <null/>
       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&lt;</ca:text>
-      <op code="50" type="DIV">
+      <op type="DIV">
        <null/>
        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">/</ca:text>
-       <id code="31" repr="test" type="IDENTIFIER">
-        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">test</ca:text>
-       </id>
+       <id repr="test" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">test</ca:text></id>
       </op>
      </op>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">&gt;</ca:text>

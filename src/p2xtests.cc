@@ -119,7 +119,7 @@ struct ParseTests  : public CppUnit::TestFixture {
     CPPUNIT_ASSERT(0 == system(diffCommand.c_str()));
     CPPUNIT_ASSERT(0 == system(delCommand.c_str()));
   }
-  
+  /*
   void doParseTest1latin1(std::string exname) {
     doParseTest1(exname, "-e iso88591");
   }
@@ -439,7 +439,7 @@ struct ParseTests  : public CppUnit::TestFixture {
   void testParse104() {
     doParseTest1("unary-minus2");
   }
-
+  */
 
   void doParseMergedNewline(std::string exname, std::string flags = "") {
     // Test whether the "merged" output for a node yields identical
@@ -450,6 +450,9 @@ struct ParseTests  : public CppUnit::TestFixture {
     std::string ppCommand = "xsltproc -o /tmp/" + exname + "2.xml ../src/xsl/but-root.xsl /tmp/" + exname + ".xml";
     std::string ppCommand2 = "xsltproc -o /tmp/" + exname + "3.xml ../src/xsl/merge-newlines.xsl /tmp/" + exname + "2.xml";
 
+    std::cout << genCommand << "\n";
+    std::cout << ppCommand << "\n";
+    std::cout << ppCommand2 << "\n";
     CPPUNIT_ASSERT(0 == system(genCommand.c_str()));
     CPPUNIT_ASSERT(0 == system(ppCommand.c_str()));
     CPPUNIT_ASSERT(0 == system(ppCommand2.c_str()));
@@ -458,6 +461,8 @@ struct ParseTests  : public CppUnit::TestFixture {
       + exname + ".exp > /tmp/" + exname + ".xml";
     ppCommand = "xsltproc -o /tmp/" + exname + "2.xml ../src/xsl/but-root.xsl /tmp/" + exname + ".xml";
 
+    std::cout << genCommand << "\n";
+    std::cout << ppCommand << "\n";
     CPPUNIT_ASSERT(0 == system(genCommand.c_str()));
     CPPUNIT_ASSERT(0 == system(ppCommand.c_str()));
 
@@ -465,6 +470,8 @@ struct ParseTests  : public CppUnit::TestFixture {
 
     std::string delCommand = "rm /tmp/" + exname + ".xml /tmp/" + exname + "2.xml /tmp/" + exname + "3.xml";
 
+    std::cout << diffCommand << "\n";
+    std::cout << delCommand << "\n";
     CPPUNIT_ASSERT(0 == system(diffCommand.c_str()));
     CPPUNIT_ASSERT(0 == system(delCommand.c_str()));
   }
@@ -478,6 +485,7 @@ struct ParseTests  : public CppUnit::TestFixture {
   }
 
   CPPUNIT_TEST_SUITE( ParseTests );
+  /*
   CPPUNIT_TEST( testParse0 );
   CPPUNIT_TEST( testParse1 );
   CPPUNIT_TEST( testParse2 );
@@ -583,7 +591,8 @@ struct ParseTests  : public CppUnit::TestFixture {
   CPPUNIT_TEST( testParse102 );
   CPPUNIT_TEST( testParse103 );
   CPPUNIT_TEST( testParse104 );
-
+  */
+  
   CPPUNIT_TEST( testParse200 );
   CPPUNIT_TEST( testParse201 );
   CPPUNIT_TEST_SUITE_END();

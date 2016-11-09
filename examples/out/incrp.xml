@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="PLUS">
+   <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text></integer>
+   <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
+   <op type="MULT">
+    <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text></integer>
+    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
+    <op type="POW">
+     <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text></integer>
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">^</ca:text>
+     <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text></integer>
+    </op>
+   </op>
+  </op>

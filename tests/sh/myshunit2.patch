@@ -1,0 +1,7 @@
+54c54
+< shunit_constants_=`set |grep '^__SHUNIT_' |cut -d= -f1`
+---
+> shunit_constants_=`set |LANG=C grep '^__SHUNIT_' |cut -d= -f1`
+751a752,753
+> 
+>   if [[ -n "$SHUNIT_EXIT" ]]; then $SHUNIT_EXIT; fi

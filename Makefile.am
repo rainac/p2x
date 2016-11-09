@@ -4,7 +4,7 @@
 # See the file p2x.cc for copying conditions.  
 #
 
-SUBDIRS = src examples tests
+SUBDIRS = src src-js examples tests
 
 project_files= AUTHORS COPYING ChangeLog INSTALL README.txt TODO NEWS	\
 version.txt
@@ -28,5 +28,8 @@ version.txt:
 distclean-local:
 	$(RM) -f svn-version.txt version.txt
 	$(RM) -rf autom4te.cache
+
+git-clean:
+	git clean -d
 
 METASOURCES = AUTO

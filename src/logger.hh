@@ -10,6 +10,7 @@ See the file p2x.cc for copying conditions.
 #include <map>
 #include <iostream>
 #include <strings.h>
+#include <stdio.h>
 
 struct LS {
 #include "logger.ncd.enum.hh"

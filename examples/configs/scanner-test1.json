@@ -1,0 +1,13 @@
+[
+{re:'\\\(',action:'TOKEN_L_PAREN'},
+{re:'\\\)',action:'TOKEN_R_PAREN'},
+{re:'\{',action:'L_BRACE'},
+{re:'\}',action:'R_BRACE'},
+{re:'\\\[',action:'TOKEN_L_BRACKET'},
+{re:'\\\]',action:'TOKEN_R_BRACKET'},
+{re:'=',action:'TOKEN_EQUAL'},
+{re:'<',action:'TOKEN_LESS'},
+{re:'>',action:'TOKEN_GREATER'},
+{re:'~',action:'TOKEN_TILDE'},
+]
+

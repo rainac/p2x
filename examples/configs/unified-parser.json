@@ -1,0 +1,5 @@
+{ rules: 
+  [ { type: 1001, name: 'colon', mode: 5, assoc: 1, prec: 10 },
+    { type: 1002, name: 'colon', mode: 5, assoc: 1, prec: 15 },
+    { type: 1003, name: 'comma', mode: 'binary', prec: 20 },
+    { type: 1004, name: 'id' } ] }

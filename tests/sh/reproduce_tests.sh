@@ -6,6 +6,12 @@ testReproduce() {
 
   for c in ../../examples/configs/*; do
     echo "With config $c "
+    if [[ "$c" = *.json ]]; then
+        continue
+    fi
+    if [[ "$c" = *.xml ]]; then
+        continue
+    fi
     for i in ../../examples/in/*.exp; do
         echo "Parse file $i"
         opts=""

@@ -19,11 +19,13 @@ ls -lh $infile
 szin=$(ls -l $infile | cut -d " " -f 5)
 wc $infile
 
-echo $P2X $P2XOPTS -p ../../examples/configs/default -S c $infile
-time ($P2X $P2XOPTS -p ../../examples/configs/default -S c $infile > $outfile)
+P2XFLAGS=(${(s: :)P2XFLAGS})
+time ($P2X $P2XFLAGS $P2XOPTS -p ../../examples/configs/default -S c $infile > $outfile)
+res=$?
 
 ls -lh $outfile
 szout=$(ls -l $outfile | cut -d " " -f 5)
 wc $outfile
 
 echo "size ratio: $(( 1.0 * $szout / $szin))"
+exit $res
