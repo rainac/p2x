@@ -6,6 +6,8 @@ echo $0
 export SHUNIT_PARENT=$0
 export LANG=C # for grep used in shunit2, depends on english output
 
+. ./funcs.sh
+
 testP2X1() {
     p2x -p  ../../examples/configs/fort2.conf ../../examples/in/fortran1.exp > log 2> err
     assertEquals "P2X should not fail in this case" "0" "$?"
@@ -30,13 +32,40 @@ testP2X_fail_fortran2() {
     rm log err
 }
 
-testP2X_no_output_newline() {
-    p2x --indent -p  ../../examples/configs/default ../../examples/in/email.exp > res.xml 2> err
+do_check_no_output_newline() {
+    dcnn_flags="$2"
+    dcnn_conf=${1:-$P2XCONF}
+#    echo p2x $P2XFLAGS $dcnn_flags -p $dcnn_conf ../../examples/in/email.exp \> res.xml 2\> err
+    p2x $P2XFLAGS $dcnn_flags -p $dcnn_conf ../../examples/in/email.exp > res.xml # 2> err
     assertEquals "P2X should not fail in this case" "0" "$?"
     numl=$(wc res.xml | awk '{print $1}')
     test $numl = 2
     assertEquals "P2X should print no newlines in XML by default" "0" "$?"
-    rm err res.xml
+    rm -f err res.xml
+}
+
+check_no_output_newline() {
+    cnn_modefl="$1 --indent"
+    cnn_flags=("-m" "-Vparse")
+    #    echo "cnn_flags=${cnn_flags[*]}"
+    P2XFLAGS=${cnn_modefl}
+    checkXforFlags "checkXforAllConfs do_check_no_output_newline" "${cnn_flags[*]}"
+}
+
+testP2X_no_output_newline() {
+    check_no_output_newline ""
+}
+
+testP2X_no_output_newline2() {
+    check_no_output_newline "-X"
+}
+
+testP2X_no_output_newline3() {
+    check_no_output_newline "-M"
+}
+
+testP2X_no_output_newline4() {
+    check_no_output_newline "-J"
 }
 
 
