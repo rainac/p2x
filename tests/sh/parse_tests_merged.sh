@@ -38,9 +38,19 @@ testParseTreeEqual_double_prefix() {
     checkParseTreeEqual uu.exp "[q](., [q](., A))" "-m"
 }
 
+testParseTreeEqual_double_par_prefix() {
+    checkParseTreeEqual uparupar.exp "[uopen](., [uclose](1, [uopen](., [uclose](2, A))))"
+    checkParseTreeEqual uparupar.exp "[uopen](., [uclose](1, [uopen](., [uclose](2, A))))" "-m"
+}
+
 testParseTreeEqual_double_ub_prefix() {
     checkParseTreeEqual ubub.exp "[ub](., [ub](., A))"
     checkParseTreeEqual ubub.exp "[ub](., [ub](., A))" "-m"
+}
+
+testParseTreeEqual_double_ub_par_prefix() {
+    checkParseTreeEqual ubparubpar.exp "[ubopen](., [ubclose](1, [ubopen](., [ubclose](2, A))))"
+    checkParseTreeEqual ubparubpar.exp "[ubopen](., [ubclose](1, [ubopen](., [ubclose](2, A))))" "-m"
 }
 
 testParseTreeEqual_double_postfix() {
@@ -48,9 +58,19 @@ testParseTreeEqual_double_postfix() {
     checkParseTreeEqual pp.exp "[p]([p](A))" "-m"
 }
 
+testParseTreeEqual_double_par_postfix() {
+    checkParseTreeEqual pparppar.exp "[popen]([popen](A, [pclose](1)), [pclose](2))"
+    checkParseTreeEqual pparppar.exp "[popen]([popen](A, [pclose](1)), [pclose](2))" "-m"
+}
+
 testParseTreeEqual_ub_prefix_binary() {
     checkParseTreeEqual ubub2.exp "[ub](A, [ub](., B))"
     checkParseTreeEqual ubub2.exp "[ub](A, [ub](., B))" "-m"
+}
+
+testParseTreeEqual_ub_par_prefix_binary() {
+    checkParseTreeEqual ubparubpar2.exp "[ubopen](A, [ubclose](1, [ubopen](., [ubclose](2, B))))"
+    checkParseTreeEqual ubparubpar2.exp "[ubopen](A, [ubclose](1, [ubopen](., [ubclose](2, B))))" "-m"
 }
 
 . ./myshunit2
