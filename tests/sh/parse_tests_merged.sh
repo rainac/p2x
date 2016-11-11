@@ -28,4 +28,19 @@ testParseTreeEqual_binary_invalid4() {
     checkParseTreeEqual eq4.exp "[EQUAL](1, ., ., ., 2)" "-m"
 }
 
+testParseTreeEqual_binary_invalid4() {
+    checkParseTreeEqual eq4.exp "[EQUAL](1, [EQUAL](., [EQUAL](., [EQUAL](., 2))))"
+    checkParseTreeEqual eq4.exp "[EQUAL](1, ., ., ., 2)" "-m"
+}
+
+testParseTreeEqual_double_prefix() {
+    checkParseTreeEqual uu.exp "[q](., [q](., A))"
+    checkParseTreeEqual uu.exp "[q](., [q](., A))" "-m"
+}
+
+testParseTreeEqual_double_postfix() {
+    checkParseTreeEqual pp.exp "[p]([p](A))"
+    checkParseTreeEqual pp.exp "[p]([p](A))" "-m"
+}
+
 . ./myshunit2
