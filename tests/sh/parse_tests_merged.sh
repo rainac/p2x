@@ -38,9 +38,19 @@ testParseTreeEqual_double_prefix() {
     checkParseTreeEqual uu.exp "[q](., [q](., A))" "-m"
 }
 
+testParseTreeEqual_double_ub_prefix() {
+    checkParseTreeEqual ubub.exp "[ub](., [ub](., A))"
+    checkParseTreeEqual ubub.exp "[ub](., [ub](., A))" "-m"
+}
+
 testParseTreeEqual_double_postfix() {
     checkParseTreeEqual pp.exp "[p]([p](A))"
     checkParseTreeEqual pp.exp "[p]([p](A))" "-m"
+}
+
+testParseTreeEqual_ub_prefix_binary() {
+    checkParseTreeEqual ubub2.exp "[ub](A, [ub](., B))"
+    checkParseTreeEqual ubub2.exp "[ub](A, [ub](., B))" "-m"
 }
 
 . ./myshunit2
