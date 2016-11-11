@@ -39,8 +39,15 @@ do_check_no_output_newline() {
     p2x $P2XFLAGS $dcnn_flags -p $dcnn_conf ../../examples/in/email.exp > res.xml # 2> err
     assertEquals "P2X should not fail in this case" "0" "$?"
     numl=$(wc res.xml | awk '{print $1}')
-    test $numl = 2
-    assertEquals "P2X should print no newlines in XML by default" "0" "$?"
+    firstc=$(head -c 1 res.xml)
+    if [[ "$firstc" = "<" ]]; then
+        test $numl = 2
+        res=$?
+    else
+        test $numl = 0
+        res=$?
+    fi
+    assertEquals "P2X should print no newlines when indentation is off" "0" "$res"
     rm -f err res.xml
 }
 
