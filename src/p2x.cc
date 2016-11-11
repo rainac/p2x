@@ -1188,23 +1188,31 @@ struct TreeXMLWriter {
       caSteps(false),
       writeRec(true),
       minStraightIndentLevel(135),
-      encoding("default is in .ggo")
+      encoding("default is in .ggo"),
+      prefix_ca("ca"),
+      prefix_ci("ci"),
+      textTagName("text")
     {}
     bool id, line, col, _char, prec, mode, type, code, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, sparse, xmlDecl, bom, scanConf, parseConf, treewriterConf, caSteps, writeRec;
     unsigned minStraightIndentLevel;
     std::string encoding;
+    std::string prefix_ca;
+    std::string prefix_ci;
+    std::string textTagName;
   };
   TokenInfo const &tokenInfo;
   Options options;
   std::string indentUnit;
   std::string linebreak;
+  std::string textTag;
 
   TreeXMLWriter (TokenInfo const &tokenInfo,
                  Options const &options,
                  std::string const &_indentUnit = " ",
                  std::string const &_linebreak = "\n") :
     tokenInfo(tokenInfo),
-    options(options)
+    options(options),
+    textTag(options.prefix_ca + ":" + options.textTagName)
   {
     if (options.indent) {
       indentUnit = _indentUnit;
@@ -1248,39 +1256,47 @@ struct TreeXMLWriter {
       aus << " mode='" << tokenInfo.mode(t) << "'";
   }
 
+  void writeNEWLINE(Token const *t, std::ostream &aus, std::string const &tag="") const {
+    if (options.newlineAsBr and not options.newlineAsEntity) {
+      aus << "<" << options.prefix_ca << ":br/>";
+    } else {
+      if (tag.size()) aus << "<" << tag << ">";
+      if (options.newlineAsEntity) {
+        aus << "&#xa;";
+      } else {
+        aus << t->text;
+      }
+      if (tag.size()) aus << "</" << tag << ">";
+    }
+  }
+
+  void writeCRETURN(Token const *t, std::ostream &aus, std::string const &tag="") const {
+    if (options.newlineAsBr and not options.newlineAsEntity) {
+      aus << "<" << options.prefix_ca << ":cr/>";
+    } else {
+      if (tag.size()) aus << "<" << tag << ">";
+      if (options.newlineAsEntity) {
+        aus << "&#xd;";
+      } else {
+        aus << t->text;
+      }
+      if (tag.size()) aus << "</" << tag << ">";
+    }
+  }
+
   bool writeXMLTextElem(Token const *t, std::ostream &aus) const {
     bool res = 0;
     if (t->token == TOKEN_NEWLINE) {
-      if (options.newlineAsBr and not options.newlineAsEntity) {
-        aus << "<ca:br/>";
-      } else {
-        aus << "<ca:text>";
-        if (options.newlineAsEntity) {
-          aus << "&#xa;";
-        } else {
-          aus << t->text;
-        }
-        aus << "</ca:text>";
-      }
+      writeNEWLINE(t, aus, textTag);
       res = 1;
     } else if (t->token == TOKEN_CRETURN) {
-      if (options.newlineAsBr and not options.newlineAsEntity) {
-        aus << "<ca:cr/>";
-      } else {
-        aus << "<ca:text>";
-        if (options.newlineAsEntity) {
-          aus << "&#xd;";
-        } else {
-          aus << t->text;
-        }
-        aus << "</ca:text>";
-      }
+      writeCRETURN(t, aus, textTag);
       res = 1;
     } else if (t->text.size()) {
-      aus << "<ca:text>";
+      aus << "<" << textTag << ">";
       XMLOstream x(aus);
       x << t->text;
-      aus << "</ca:text>";
+      aus << "</" << textTag << ">";
       res = 1;
     }
     return res;
@@ -1450,12 +1466,20 @@ struct TreeXMLWriter {
     if (t->ignore) {
       writeIgnoreXML(t->ignore, indent);
     }
-    aus << indent << "<ci:" << Token::getParserTokenName(t->token);
+    aus << indent << "<" << m_xmlWriter.options.prefix_ci << ":" << Token::getParserTokenName(t->token);
     if (m_xmlWriter.options.id)
       aus << " id='" << t->id << "'";
     m_xmlWriter.writeXMLLocAttrs(t, aus);
     // writeXMLTypeAttrs(t, aus);
-    aus << ">" << t->text << "</ci:" << Token::getParserTokenName(t->token) << ">" << m_xmlWriter.linebreak;
+    aus << ">";
+    if (t->token == TOKEN_NEWLINE) {
+      m_xmlWriter.writeNEWLINE(t, aus);
+    } else if (t->token == TOKEN_CRETURN) {
+      m_xmlWriter.writeCRETURN(t, aus);
+    } else {
+      aus << t->text;
+    }
+    aus << "</" << m_xmlWriter.options.prefix_ci << ":" << Token::getParserTokenName(t->token) << ">" << m_xmlWriter.linebreak;
   }
 
   bool writeXMLTextElem(Token const *t, Indent const &indent) {
@@ -1464,35 +1488,15 @@ struct TreeXMLWriter {
       aus << indent;
     }
     if (t->token == TOKEN_NEWLINE) {
-      if (m_xmlWriter.options.newlineAsBr) {
-        aus << "<c:br/>";
-      } else {
-        aus << "<c:t>";
-        if (m_xmlWriter.options.newlineAsEntity) {
-          aus << "&#xa;";
-        } else {
-          aus << t->text;
-        }
-        aus << "</c:t>";
-      }
+      m_xmlWriter.writeNEWLINE(t, aus, m_xmlWriter.textTag);
       res = 1;
     } else if (t->token == TOKEN_CRETURN) {
-      if (m_xmlWriter.options.newlineAsBr) {
-        aus << "<c:cr/>";
-      } else {
-        aus << "<c:t>";
-        if (m_xmlWriter.options.newlineAsEntity) {
-          aus << "&#xd;";
-        } else {
-          aus << t->text;
-        }
-        aus << "</c:t>";
-      }
+      m_xmlWriter.writeCRETURN(t, aus, m_xmlWriter.textTag);
       res = 1;
     } else if (t->text.size()) {
-      aus << "<c:t>";
+      aus << "<" << m_xmlWriter.textTag << ">";
       xaus << t->text;
-      aus << "</c:t>";
+      aus << "</" << m_xmlWriter.textTag << ">";
       res = 1;
     }
     return res;
@@ -1848,7 +1852,8 @@ void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
                      std::ostream &out, ScannerType ) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:c='" NAMESPACE_CA "' xmlns:ci='" NAMESPACE_CX "ignore'>" << treeXMLWriter.linebreak;
+  out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:" << options.prefix_ca << "='" NAMESPACE_CA "'"
+    " xmlns:" << options.prefix_ci << "='" NAMESPACE_CX "ignore'>" << treeXMLWriter.linebreak;
   treeXMLWriter.writeXML2_Stack(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
 }
@@ -2738,6 +2743,9 @@ int main(int argc, char *argv[]) {
     writeTreeXML(root, tokenInfo, options, indentUnit, out, scannerType);
   else if (outputMode == "y") {
     options.type = true;
+    options.prefix_ca = "c";
+    options.prefix_ci = "i";
+    options.textTagName = "t";
     writeTreeXML2(root, tokenInfo, options, indentUnit, out, scannerType);
   } else if (outputMode == "j")
     writeTreeJSON(root, tokenInfo, options, indentUnit, out, scannerType);
