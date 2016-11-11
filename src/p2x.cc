@@ -1352,8 +1352,9 @@ struct TreeXMLWriter {
     }
 
     void setupNode(Token const *t) {
-      merged = m_xmlWriter.options.merged
-        or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
+      merged = (m_xmlWriter.options.merged
+                or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED)
+        and (m_xmlWriter.tokenInfo.mode(t) == MODE_BINARY or m_xmlWriter.tokenInfo.mode(t) == MODE_UNARY_BINARY);
     }
 
     int onEnter(Token const *t, Token const *parent) {
@@ -1517,8 +1518,9 @@ struct TreeXMLWriter {
     }
 
     void setupNode(Token const *t) {
-      merged = m_xmlWriter.options.merged
-        or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
+      merged = (m_xmlWriter.options.merged
+                or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED)
+        and (m_xmlWriter.tokenInfo.mode(t) == MODE_BINARY or m_xmlWriter.tokenInfo.mode(t) == MODE_UNARY_BINARY);
     }
 
     int onEnter(Token const *t, Token const *parent) {
