@@ -10,12 +10,12 @@
 "+"      unary_binary    10         110
 "-"      unary_binary    10         110
 
-"*"      unary_binary    20         110
+"*"      unary_binary    20         140
 
 "/"      binary          30
 "%"      binary          30
 
-JUXTA    binary         100
+JUXTA    binary         150
 
 " "      ignore           1
 NEWLINE  ignore           1
@@ -26,4 +26,5 @@ TAB      ignore           1
 #
 # Start  "paren" End  Class    Precedence  Unary Prec.  Associativity
 
-"("      paren   ")"  postfix  121
+"("      paren   ")"
+"["      paren   "]"  postfix  160
