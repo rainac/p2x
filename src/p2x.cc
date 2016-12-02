@@ -199,6 +199,12 @@ struct TokenProto : public Token {
     endList(endList)
   {}
   void print(std::ostream &aus) const;
+  bool operator == (TokenProto const &other) const {
+    return not(*this != other);
+  }
+  bool operator != (TokenProto const &other) const {
+    return mode != other.mode;
+  }
 };
 inline std::ostream &operator<<(std::ostream &aus, TokenProto const &t) {
   t.print(aus);
@@ -390,7 +396,7 @@ struct TokenInfo {
     tp.mode = MODE_ITEM;
     unsigned const code = mkOpCode(tp);
     OpPrototypes::iterator it = opPrototypes.find(code);
-    if (it != opPrototypes.end()) {
+    if (it != opPrototypes.end() && it->second != tp) {
       ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp << "\n";
       exit(EXIT_FAILURE);
     } else {
