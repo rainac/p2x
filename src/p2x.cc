@@ -1861,7 +1861,7 @@ void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:" << options.prefix_ca << "='" NAMESPACE_CA "'"
-    " xmlns:" << options.prefix_ci << "='" NAMESPACE_CX "ignore'>" << treeXMLWriter.linebreak;
+    " xmlns:" << options.prefix_ci << "='" NAMESPACE_CX "ignore/'>" << treeXMLWriter.linebreak;
   treeXMLWriter.writeXML2_Stack(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
 }
