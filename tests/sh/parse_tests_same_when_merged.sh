@@ -211,4 +211,8 @@ testParseTreeEqual_stray_parenclose_in_expr() {
     checkParseTreeEqual stray-paren-close.exp "[popen](f1, [pclose]([PLUS](1, [MULT]([R_PAREN](), 2))))"
 }
 
+testParseTreeEqual_stray_opparenclose_in_expr() {
+    checkParseTreeEqual stray-opparen-close.exp "[popen](f1, [pclose]([bclose](1, 2)))"
+}
+
 . ./myshunit2
