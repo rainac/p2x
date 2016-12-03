@@ -612,6 +612,12 @@ P2X.TokenInfo = function() {
         isParen: function (tl) {
             return this.get(tl).isParen || this.get(tl).isRParen || false
         },
+        isLParen: function (tl) {
+            return this.get(tl).isParen || false
+        },
+        isRParen: function (tl) {
+            return this.get(tl).isRParen || false
+        },
         getOpCode: function (tl, repr) {
             var res
             if (typeof tl == 'object' && 'token' in tl) {
@@ -897,7 +903,7 @@ P2X.Parser = function(tokenInfo) {
                         console.error("Parser: expecting " + this.endList[k])
                     }
                     endFound = true
-                } else if (this.tokenInfo.isParen(first)) {
+                } else if (this.tokenInfo.isLParen(first)) {
                     var parser = P2X.Parser(this.tokenInfo)
                     var parent = this
                     parser.options = this.options

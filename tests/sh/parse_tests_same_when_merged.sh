@@ -207,4 +207,8 @@ testParseTreeEqual_unary_binary_valid() {
     checkParseTreeEqual ub.exp "[ub](1, [ub](., 2))"
 }
 
+testParseTreeEqual_stray_parenclose_in_expr() {
+    checkParseTreeEqual stray-paren-close.exp "[popen](f1, [pclose]([PLUS](1, [MULT]([R_PAREN](), 2))))"
+}
+
 . ./myshunit2

@@ -612,6 +612,22 @@ struct TokenInfo {
     }
     return res;
   }
+  bool isLParen(Token const * const t) const {
+    bool res = false;
+    TokenProto const *proto = getProto(t);
+    if (proto) {
+      res = proto->isParen;
+    }
+    return res;
+  }
+  bool isRParen(Token const * const t) const {
+    bool res = false;
+    TokenProto const *proto = getProto(t);
+    if (proto) {
+      res = proto->isRParen;
+    }
+    return res;
+  }
   EndList endList(Token const * const t) const {
     EndList res;
     TokenProto const *proto = getProto(t);
@@ -985,7 +1001,7 @@ struct Parser {
         endFound = true;
         --tokenList.offset;
         break;
-      } else if (tokenInfo.isParen(first)) {
+      } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
         parser.endList = tokenInfo.endList(first);
         Token *last = parser.parse();
