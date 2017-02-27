@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
-<paren xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="0" type="L_PAREN">
+<paren xmlns="http://johannes-willkomm.de/xml/code-xml/" type="L_PAREN">
    <null/>
    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">(</ca:text>
-   <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="1" type="SPACE"><ca:text> </ca:text></ca:ignore>
-   <integer line="1" col="2" type="INTEGER">
-    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text>
-    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="3" type="SPACE"><ca:text> </ca:text></ca:ignore>
-    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="4" type="R_PAREN"><ca:text>)</ca:text></ca:ignore>
-    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="5" type="SPACE"><ca:text> </ca:text></ca:ignore>
-   </integer>
+   <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+   <paren type="R_PAREN">
+    <integer type="INTEGER">
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text>
+     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    </integer>
+    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text>
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+   </paren>
   </paren>

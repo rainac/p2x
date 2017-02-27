@@ -14,7 +14,12 @@ checkExpFile() {
         reprxsl=empty-latin1.xsl
         opts="$opts -e latin1"
     fi
-    p2x $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
+    if [[ "$i" = "cr.exp" ]]
+    then
+        reprxsl=reproduce.xsl
+        opts=""
+    fi
+    p2x $P2XFLAGS $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
     xsltproc ../../src/xsl/$reprxsl $tmpdir/res.xml > $tmpdir/res.txt
     diff ../../examples/in/$i $tmpdir/res.txt > /dev/null
     assertEquals "Reproduce test $i did not return same result" 0 $?

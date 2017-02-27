@@ -2,7 +2,7 @@
 
 run_suite() {
     echo "Run suite $1"
-    ./$1
+    ./$1 > log_$1.txt 2> err_$1.txt
     assertEquals "Test suite $1 has errors or failures" 0 $?
 }
 
@@ -55,6 +55,34 @@ test_p2x_suite2() {
 
 test_reproduce_ign() {
     run_suite reproduce_ign.sh
+}
+
+test_output_modey() {
+    run_suite output_modey.sh
+}
+
+test_output_mode_matlab() {
+    run_suite output_mode_matlab.sh
+}
+
+test_output_mode_matlab_merged() {
+    run_suite output_mode_matlab_merged.sh
+}
+
+test_output_mode_json() {
+    run_suite output_mode_json.sh
+}
+
+test_output_mode_json_merged() {
+    run_suite output_mode_json_merged.sh
+}
+
+test_large_scale() {
+    run_suite large_scale.sh
+}
+
+test_valgrind() {
+    run_suite valgrind_tests.sh
 }
 
 . shunit2

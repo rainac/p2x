@@ -47,6 +47,7 @@ code-xml = element code-xml {
              attribute line { text },
              attribute mode { text },
              attribute newlineAsBr { text },
+             attribute newlineAsEntity { text },
              attribute prec { text },
              attribute strict{ text },
              attribute parseConf { text }?,
@@ -98,7 +99,7 @@ float = element float {
      attr-node, ca-itr, annot*
 }
 
-ca-itr = ca-text | ca-br
+ca-itr = ca-text | ca-br | ca-cr
 
 annot = ca-ignore
 
@@ -126,7 +127,7 @@ closing-list = element ca:closing-list {
 
 ca-ignore = element ca:ignore {
       attr-node,
-      ca-text?
+      ca-itr
 }
 
 ca-text = element ca:text {
@@ -134,6 +135,10 @@ ca-text = element ca:text {
 }
 
 ca-br = element ca:br {
+        empty
+}
+
+ca-cr = element ca:cr {
         empty
 }
 

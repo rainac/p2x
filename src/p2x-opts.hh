@@ -115,6 +115,8 @@ struct gengetopt_args_info
   const char *indent_unit_help; /**< @brief Indentation unit help description.  */
   int newline_as_br_flag;	/**< @brief Emit newline text as ca:br element of ca:text (default=on).  */
   const char *newline_as_br_help; /**< @brief Emit newline text as ca:br element of ca:text help description.  */
+  int newline_as_entity_flag;	/**< @brief Emit newline text as &#xa; character entity (default=off).  */
+  const char *newline_as_entity_help; /**< @brief Emit newline text as &#xa; character entity help description.  */
   int merged_flag;	/**< @brief Collect children of equal operator chains, output all binary nodes in MERGED mode (default=off).  */
   const char *merged_help; /**< @brief Collect children of equal operator chains, output all binary nodes in MERGED mode help description.  */
   int strict_flag;	/**< @brief Strict output mode: paren children always indicated by null elements (default=off).  */
@@ -125,14 +127,22 @@ struct gengetopt_args_info
   const char *write_xml_declaration_help; /**< @brief Emit XML declaration (with encoding) help description.  */
   int write_bom_flag;	/**< @brief Emit byte order mark (BOM) character (default=off).  */
   const char *write_bom_help; /**< @brief Emit byte order mark (BOM) character help description.  */
-  char * output_mode_arg;	/**< @brief Write output as XML/JSON/MATLAB.  */
-  char * output_mode_orig;	/**< @brief Write output as XML/JSON/MATLAB original value given at command line.  */
-  const char *output_mode_help; /**< @brief Write output as XML/JSON/MATLAB help description.  */
+  char * output_mode_arg;	/**< @brief Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code (default='y').  */
+  char * output_mode_orig;	/**< @brief Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code original value given at command line.  */
+  const char *output_mode_help; /**< @brief Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code help description.  */
+  int matlab_flag;	/**< @brief Write output as MATLAB (default=off).  */
+  const char *matlab_help; /**< @brief Write output as MATLAB help description.  */
+  int json_flag;	/**< @brief Write output as JSON (default=off).  */
+  const char *json_help; /**< @brief Write output as JSON help description.  */
+  int xml_flag;	/**< @brief Write output as XML (default=off).  */
+  const char *xml_help; /**< @brief Write output as XML help description.  */
   int write_recursive_flag;	/**< @brief Recursive output writing (default=off).  */
   const char *write_recursive_help; /**< @brief Recursive output writing help description.  */
-  int attribute_line_flag;	/**< @brief Emit attribute line with source line (default=on).  */
+  int src_info_flag;	/**< @brief Emit source location attributes line, column, and character (default=off).  */
+  const char *src_info_help; /**< @brief Emit source location attributes line, column, and character help description.  */
+  int attribute_line_flag;	/**< @brief Emit attribute line with source line (default=off).  */
   const char *attribute_line_help; /**< @brief Emit attribute line with source line help description.  */
-  int attribute_column_flag;	/**< @brief Emit attribute column with source column (default=on).  */
+  int attribute_column_flag;	/**< @brief Emit attribute column with source column (default=off).  */
   const char *attribute_column_help; /**< @brief Emit attribute column with source column help description.  */
   int attribute_char_flag;	/**< @brief Emit attribute column with source char (default=off).  */
   const char *attribute_char_help; /**< @brief Emit attribute column with source char help description.  */
@@ -180,13 +190,18 @@ struct gengetopt_args_info
   unsigned int indent_given ;	/**< @brief Whether indent was given.  */
   unsigned int indent_unit_given ;	/**< @brief Whether indent-unit was given.  */
   unsigned int newline_as_br_given ;	/**< @brief Whether newline-as-br was given.  */
+  unsigned int newline_as_entity_given ;	/**< @brief Whether newline-as-entity was given.  */
   unsigned int merged_given ;	/**< @brief Whether merged was given.  */
   unsigned int strict_given ;	/**< @brief Whether strict was given.  */
   unsigned int sparse_given ;	/**< @brief Whether sparse was given.  */
   unsigned int write_xml_declaration_given ;	/**< @brief Whether write-xml-declaration was given.  */
   unsigned int write_bom_given ;	/**< @brief Whether write-bom was given.  */
   unsigned int output_mode_given ;	/**< @brief Whether output-mode was given.  */
+  unsigned int matlab_given ;	/**< @brief Whether matlab was given.  */
+  unsigned int json_given ;	/**< @brief Whether json was given.  */
+  unsigned int xml_given ;	/**< @brief Whether xml was given.  */
   unsigned int write_recursive_given ;	/**< @brief Whether write-recursive was given.  */
+  unsigned int src_info_given ;	/**< @brief Whether src-info was given.  */
   unsigned int attribute_line_given ;	/**< @brief Whether attribute-line was given.  */
   unsigned int attribute_column_given ;	/**< @brief Whether attribute-column was given.  */
   unsigned int attribute_char_given ;	/**< @brief Whether attribute-char was given.  */

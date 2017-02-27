@@ -13,4 +13,7 @@
   <c name="PARSE" val="0x20"/>
   <c name="SCAN" val="0x40"/>
   <c name="TIMES" val="0x80"/>
+  <c name="FILES" val="0x100"/>
+  <c name="IO" val="0x200"/>
+  <c name="HELP" val="0x400"/>
 </ncdef>

@@ -6,10 +6,9 @@
 # controlling indentation of the XML output.
 
 zmodload zsh/mathfunc
-set -o shwordsplit
-echo $0
+
 export SHUNIT_PARENT=$0
-export LANG=C # for grep used in shunit2, depends on english output
+. ./setup_zsh.sh
 
 # Test section indent
 testP2X_indentation() {

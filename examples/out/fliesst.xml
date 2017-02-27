@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="6" type="NEWLINE">
-   <op line="1" col="4" type="JUXTA">
-    <id line="1" col="0" repr="flie" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">flie</ca:text></id>
-    <op line="1" col="5" repr="t" type="IDENTIFIER">
-     <op line="1" col="4" type="ILLEGAL_CHAR"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">ß</ca:text></op>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="NEWLINE">
+   <op type="JUXTA">
+    <id repr="flie" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">flie</ca:text></id>
+    <op repr="t" type="IDENTIFIER">
+     <op type="ILLEGAL_CHAR"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">ß</ca:text></op>
      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">t</ca:text>
     </op>
    </op>

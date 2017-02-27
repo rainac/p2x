@@ -136,6 +136,7 @@ function readScannerConfig() {
     if ('scanner-config' in options) {
         var configFile = options['scanner-config'][0]
         var homePath = process.env.P2X_HOME
+        if (!homePath) throw('P2X_HOME must be set')
         fs.readFile(homePath + '/share/p2x/scanner-' + configFile + '.xml', function(err, data) {
             if (!err) {
                 loadScannerConfig('' + data)
@@ -227,7 +228,14 @@ function parseInput(data, uniConf) {
         console.dir(tpOptions)
     }
     if ('output-mode' in options) {
-        tpOptions.outputMode = 'y'
+        if (options['output-mode'] == 'x') {
+            tpOptions.outputMode = 'x'
+        } else if (options['output-mode'] == 'y') {
+            tpOptions.outputMode = 'y'
+        } else {
+            console.error('invalid output-mode: ' + options['output-mode'])
+            tpOptions.outputMode = 'y'
+        }
         tpOptions = P2X.TreePrinterOptions(tpOptions)
     }
     var tp = P2X.TreePrinter(parser.tokenInfo, tpOptions)

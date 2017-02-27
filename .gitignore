@@ -19,4 +19,5 @@ src-js/node_modules
 src-js/scanner-c.json
 tests/sh/forall_tests.sh
 tests/sh/log_*.txt
+tests/sh/err_*.txt
 *.min.js

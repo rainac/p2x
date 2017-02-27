@@ -12,7 +12,6 @@ P2X.debug = P2X.debug || 0
 
 P2X.importObject = function(obj, target) {
     for (var k in obj) {
-//        console.log('import: ' + k)
         target[k] = obj[k]
     }
 }
@@ -25,7 +24,6 @@ if (typeof window == 'undefined') {
     
     var fs = require('fs')
     var mod_assert = require('assert')
-    var pXML = require('./parse-xml.js')
 
     var ENUM = {}
     ENUM.ParserMode = require('./modes.ncd.js')
@@ -44,7 +42,6 @@ if (typeof window == 'undefined') {
     global = window
 }
 
-var parseXml = pXML.parseXml
 var not = function(x) { return !x; }
 var exit = function(x) { assert(false, x); }
 
@@ -174,54 +171,6 @@ P2X.TokenList.prototype.asxml = function(indent) {
     s += bindent + '</scan-xml>\n'
     return s
 }
-P2X.TokenList.prototype.loadXML = function(scanListXML) {
-    var scanDoc = parseXml(scanListXML)
-    switch (scanDoc.documentElement.nodeName) {
-    case 'scan-xml':
-        return this.loadXMLNode(scanDoc.documentElement)
-        break
-    default:
-        console.error('unexpected doc element name: ' + scanDoc.documentElement)
-        console.error('unexpected doc element contains: ' + scanDoc.documentElement.firstChild.nodeValue)
-        return null
-        break
-    }
-}
-P2X.TokenList.prototype.loadXMLNode = function(scanList) {
-    var rlist = [], ctoken
-    for (var k in scanList.childNodes) {
-        ctoken = scanList.childNodes[k]
-        if (ctoken.nodeType == 1 && ctoken.nodeName == "token") {
-            catext = null
-            for (j in ctoken.childNodes) {
-                cctoken = ctoken.childNodes[j]
-                text = ''
-                if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:text") {
-                    catext = cctoken
-                    if (catext.childNodes.length > 0
-                        && catext.childNodes[0].nodeType == 3) {
-                        text = catext.childNodes[0].nodeValue
-                    }
-                    break
-                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:br") {
-                    catext = cctoken
-                    text = '\n'
-                    break
-                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:cr") {
-                    catext = cctoken
-                    text = '\r'
-                    break
-                }
-            }
-            rlist.push(P2X.Token(ctoken.getAttribute('type'),
-                                 text,
-                                 ctoken.getAttribute('index'),
-                                 ctoken.getAttribute('line'),
-                                 ctoken.getAttribute('col')))
-        }
-    }
-    return new P2X.TokenList(rlist)
-}
 
 P2X.ScannerConfig = function(x) {
     if (typeof x == 'object' && 'rules' in x) {
@@ -312,56 +261,6 @@ P2X.ScannerConfig = function(x) {
             res[k] = this[k]
         }
         return res
-    }
-
-    res.loadXML = function(scConfXML) {
-        var scanDoc = parseXml(scConfXML)
-        switch (scanDoc.documentElement.nodeName) {
-        case 'ca:scanner':
-            return this.loadXMLDoc(scanDoc.documentElement)
-            break
-        default:
-            console.error('p2x: unexpected doc element name: ' + scanDoc.documentElement.nodeName)
-            console.error('p2x: unexpected doc element contains: ' + scanDoc.documentElement.firstChild.nodeValue)
-            return null
-            break
-        }
-    }
-    res.loadXMLDoc = function(scConfTT) {
-        // chead = scanList.getElementsByTagName('parser')
-        // return this.loadXMLNode(chead[0])
-        return this.loadXMLNode(scConfTT)
-    }
-    res.loadXMLNode = function(scanList) {
-        var rlist = [], ctoken, eres_re, eres_action
-        function getChildText(node, childName) {
-            var res
-            for (var k in node.childNodes) {
-                var childN = node.childNodes[k]
-                if (childN.nodeType == 1 && childN.nodeName == childName) {
-                    for (var j in childN.childNodes) {
-                        var childT = childN.childNodes[j]
-                        if (childT.nodeType == 3) {
-                            res = childT.nodeValue
-                            break
-                        }
-                    }
-                    break
-                }
-            }
-            return res
-        }
-        for (var k in scanList.childNodes) {
-            ctoken = scanList.childNodes[k], eres_re, eres_action
-            if (ctoken.nodeType == 1 && ctoken.nodeName == "ca:lexem") {
-                eres_re = ctoken.getAttribute('re') || getChildText(ctoken, 'ca:re')
-                eres_action = ctoken.getAttribute('action') || getChildText(ctoken, 'ca:action')
-                if (eres_re != 'undefined' && eres_re != '' && typeof eres_action != 'undefined') {
-                    rlist.push({ re: eres_re, action: eres_action })
-                }
-            }
-        }
-        return new P2X.ScannerConfig(rlist)
     }
 
     for (var k in res) {
@@ -576,16 +475,18 @@ var isOp = function(mode) {
             || mode == MODE_POSTFIX)
 }
 
-P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingList, name) {
+P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen, closingList, name) {
     var res
     if (typeof tk == 'object')
-        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.closingList, tk.name) 
+        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.isRParen, tk.closingList, tk.name)
     else {
         if (!tk in ENUM.ParserToken.names_index) {
             console.error('Value token ' + tk + ' must be in the set of allowed token: ')
             console.dir(ENUM.ParserToken.names_index)
             assert(false)
         }
+        isParen = isParen ? true : false
+        isRParen = isRParen ? true : false
         if (typeof mode == 'string')
             mode = ENUM.ParserMode.getValue(mode)
         if (typeof assoc == 'string')
@@ -594,7 +495,17 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
             repr = ''
         if (closingList) {
             closingList = closingList.map(function(x) {
-                return P2X.TokenProto(x)
+                var cli = x
+                cli.mode = mode
+                if (mode != MODE_ITEM) {
+                    cli.prec = prec
+                    cli.precU = precU
+                    cli.assoc = assoc
+                }
+                cli.isParen = false
+                cli.isRParen = true
+                cli = P2X.TokenProto(cli)
+                return cli
             })
         }
         var defAssoc = (mode == MODE_BINARY || mode == MODE_UNARY_BINARY) ? ASSOC_LEFT : ASSOC_NONE
@@ -605,11 +516,15 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, closingLi
             prec: prec || 2,
             precU: precU || 2,
             isParen: isParen || false,
+            isRParen: isRParen || false,
             closingList: closingList,
             name: name
         }
-        if (res.isParen || res.mode == MODE_ITEM) {
+        if (res.mode == MODE_ITEM) {
             res.prec = res.precU = P2X.maxPrec
+        }
+        if (res.isRParen) {
+            res.closingList = []
         }
         if (res.isParen) {
             res.closingList = res.closingList || [ TOKEN_EOF ]
@@ -695,7 +610,7 @@ P2X.TokenInfo = function() {
                 return this.binary_prec(tl)
         },
         isParen: function (tl) {
-            return this.get(tl).isParen || false
+            return this.get(tl).isParen || this.get(tl).isRParen || false
         },
         getOpCode: function (tl, repr) {
             var res
@@ -761,11 +676,21 @@ P2X.TokenInfo = function() {
             return this
         },
         insert: function (tokenProto) {
+            var tpNormalized = P2X.TokenProto(tokenProto) // normalizes
+            if (tpNormalized.closingList) {
+                var this_ = this
+                tpNormalized.closingList.map(function(k) {
+                    if (k.token == TOKEN_IDENTIFIER && k.repr) {
+                        this_.getOpCode(k.repr)
+                    }
+                    this_.tokenClasses[this_.getOpCode(k.token, k.repr)] = k
+                })
+            }
             if (tokenProto.token == TOKEN_IDENTIFIER && tokenProto.repr) {
                 // this creates the new op code
                 // console.log('inserting token proto for named ID ' + tokenProto.repr + ': ' + this.getOpCode(tokenProto.repr))
                 // console.log(' prec ' + tokenProto.prec)
-                this.tokenClasses[this.getOpCode(tokenProto.repr)] = P2X.TokenProto(tokenProto)
+                this.tokenClasses[this.getOpCode(tokenProto.repr)] = tpNormalized
             } else if (typeof tokenProto.token == "undefined") {
             } else {
                 if (tokenProto.token == TOKEN_JUXTA) {
@@ -777,7 +702,7 @@ P2X.TokenInfo = function() {
                     assert(tokenProto.mode == MODE_UNARY)
                     assert(tokenProto.prec == 1)
                 }
-                this.tokenClasses[this.getOpCode(tokenProto.token)] = P2X.TokenProto(tokenProto) // normalizes
+                this.tokenClasses[this.getOpCode(tokenProto.token)] = tpNormalized
             }
             return this
         },
@@ -787,7 +712,7 @@ P2X.TokenInfo = function() {
 P2X.Parser = function(tokenInfo) {
     if (typeof tokenInfo == "undefined")
         tokenInfo = P2X.TokenInfo()
-    return {
+    var res = {
         root: undefined,
         input: undefined,
         tokenInfo: tokenInfo,
@@ -795,6 +720,7 @@ P2X.Parser = function(tokenInfo) {
         options: {
             ignoreIgnore: false
         },
+        leastMap: P2X.HashMap(P2X.maxPrec+1),
         getconfig: function () {
             return this.tokenInfo.getconfig()
         },
@@ -819,11 +745,11 @@ P2X.Parser = function(tokenInfo) {
             return t;
         },
         getRMOp: function() {
-            t = this.root
-            while (t.right && this.tokenInfo.isOp(t.right)) {
-                t = t.right
-            }
-            return t
+            var it = this.leastMap.end()
+            --it
+            if (this.tokenInfo.mode(this.leastMap.second(it)) == MODE_ITEM)
+                --it
+            return this.leastMap.second(it)
         },
         updateLeastMap: function(t, prec) {
             this.leastMap.insert(prec, t)
@@ -902,9 +828,6 @@ P2X.Parser = function(tokenInfo) {
                 // console.log('pushIgnore: ')
                 // console.dir(t)
                 var rm = this.getRM(this.root);
-                while (rm.content) {
-                    rm = this.getRM(rm.content);
-                }
                 // console.log('rm: ')
                 t.ignore = rm.ignore;
                 rm.ignore = t;
@@ -947,13 +870,10 @@ P2X.Parser = function(tokenInfo) {
         parse: function(tlist) {
             if (typeof (this.endList) == "undefined") 
                 this.endList = [this.tokenInfo.getOpCode(TOKEN_EOF)]
-            this.root = this.mkroot()
             this.result = {}
             this.result.parser = this
             this.result.scanner = tlist.scanner
             this.input = tlist;
-            this.leastMap = P2X.HashMap(P2X.maxPrec+1)
-            this.leastMap.insert(this.tokenInfo.prec(this.root), this.root)
 
             var first
 
@@ -962,8 +882,8 @@ P2X.Parser = function(tokenInfo) {
                 first = this.input.next()
                 // console.log("Parser: next, text='" + first.text
                 //             + "' code: " + this.tokenInfo.getOpCode(first)
-                //             + ', mode: ' + ENUM.getParserModeName(this.tokenInfo.mode(first)) + ', prec: ' + this.tokenInfo.prec(first))
-                // console.dir(first)
+                //             + ', mode: ' + this.tokenInfo.mode(first) + ', prec: ' + this.tokenInfo.prec(first))
+                // console.dir(this.endList)
                 if (typeof first == "undefined") {
                     console.error("Parser: unexpected end found, exiting")
                     // console.dir(first)
@@ -979,21 +899,28 @@ P2X.Parser = function(tokenInfo) {
                     endFound = true
                 } else if (this.tokenInfo.isParen(first)) {
                     var parser = P2X.Parser(this.tokenInfo)
-
+                    var parent = this
                     parser.options = this.options
-                    parser.endList = this.tokenInfo.endList(first).map(function(x){return x.token})
+                    parser.endList = this.tokenInfo.endList(first).map(function(k) {
+                        return parent.tokenInfo.getOpCode(k.token, k.repr)
+                    })
 
                     var last = parser.parse(this.input)
-                    if (last && last.token != TOKEN_EOF)
-                        parser.pushIgnore(last);
-
+                    if (typeof last == "undefined" || last.token == TOKEN_EOF) {
+                        first.right = parser.root.right;
+                    } else {
+                        first.right = last;
+                        last.left = parser.root.right;
+                    }
                     this.insertToken(first)
 
+                    this.leastMap.insert(this.tokenInfo.prec(first), first.right);
+
                     if (parser.root.ignore) {
-                        this.pushIgnoreNew(parser.root.ignore);
+                        first.ignore = parser.root.ignore;
                     }
 
-                    first.content = parser.root.right
+                    first = last;
                     
                 } else {
                     this.insertToken(first)
@@ -1001,7 +928,12 @@ P2X.Parser = function(tokenInfo) {
             } while (! endFound && first)
             return first
         }
-    }        
+    }
+
+    res.root = res.mkroot()
+    res.leastMap.insert(res.tokenInfo.prec(res.root), res.root)
+
+    return res
 }
 
 P2X.TreePrinterOptions = function(obj) {
@@ -1011,8 +943,8 @@ P2X.TreePrinterOptions = function(obj) {
         treewriterConf: false,
         caSteps: false,
         id: false,
-        line: true,
-        col: true, 
+        line: false,
+        col: false,
         code: false,
         prec: true,
         mode: true,
@@ -1119,26 +1051,20 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                 res += this.writeXMLLocAttrs(t)
                 res += this.writeXMLTypeAttrs(t)
                 res += '>';
-                if (t.left || t.right || t.content|| t.ignore)
+                if (t.left || t.right || t.ignore)
                     res += '\n';
                 if (t.left) {
                     res += this.asxml(t.left, indent + ' ', true);
-                } else if (t.right || t.content) {
+                } else if (t.right) {
                     if (this.options.strict > 0)
                         res += indent + ' <null/>\n';
                 }
-                res += this.writeXMLTextElem(t, (t.left || t.right || t.content|| t.ignore) ? indent + ' ' : '')
+                res += this.writeXMLTextElem(t, (t.left || t.right || t.ignore) ? indent + ' ' : '')
                 if (t.ignore) {
                     res += this.writeIgnoreXML(t.ignore, indent + ' ');
                 }
-                if (t.content) {
-                    res += this.asxml(t.content, indent + ' ', true);
-                } else if (t.right) {
-                    if (this.options.strict > 1)
-                        res += indent + ' <null/>\n';
-                }
                 res += this.asxml(t.right, indent + ' ', true);
-                if (t.left || t.right || t.content|| t.ignore)
+                if (t.left || t.right || t.ignore)
                     res += indent
                 res += '</' + tagname + '>\n';
             }

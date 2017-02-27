@@ -11,7 +11,8 @@ export SHUNIT_PARENT=$0
 export LANG=C # for grep used in shunit2, depends on english output
 export TMP=${TMP:-/tmp}
 
-P2X_SOURCE=${P2X_SOURCE:-https://github.com/rainac/p2x.git}
+#P2X_SOURCE=${P2X_SOURCE:-https://github.com/rainac/p2x.git}
+P2X_SOURCE=${P2X_SOURCE:-$(readlink -f ../..)}
 
 runInstallation() {
     branch=$1
@@ -19,19 +20,22 @@ runInstallation() {
     rm -rf p2x-tmp
 
     git clone $P2X_SOURCE p2x-tmp
-    assertEquals "git clone of P2X must succeed" 0 $?
+    assertEquals "GIT clone of P2X must succeed" 0 $?
 
     cd p2x-tmp
-    assertEquals "P2X run must succeed" 0 $?
+    assertEquals "CD run must succeed" 0 $?
 
     git checkout $branch
-    assertEquals "P2X checkout of branch $branch must succeed" 0 $?
+    assertEquals "GIT checkout of branch $branch must succeed" 0 $?
 
     ./configure --quiet --prefix=$TMP/p2x-build-test
-    assertEquals "P2X configure run must succeed" 0 $?
+    assertEquals "CONFIGURE run must succeed" 0 $?
+
+    make -s -j8 clean
+    assertEquals "MAKE CLEAN run must succeed" 0 $?
 
     make -s -j8 install
-    assertEquals "P2X make run must succeed" 0 $?
+    assertEquals "MAKE run must succeed" 0 $?
 
     test -x $TMP/p2x-build-test/bin/p2x
     assertEquals "P2X executable must be installed" 0 $?

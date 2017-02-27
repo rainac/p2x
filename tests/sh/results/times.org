@@ -1,0 +1,85 @@
+
+
+* ee77ade680d71ee37c53402de93ebeb4e85b6953
+<2016-11-02 Mi>
+
+#+BEGIN_EXAMPLE
+./transformation_speed.sh
+test_LargeCVS1_create
+test_LargeCVS1_parse2XML_addcols_xslt
+p2x: Read 16000000 B from file /tmp/large.csv
+p2x: Scanning input...done in 3.04935 s
+p2x: Parsing input... done in 0.555413 s
+p2x: loaded in 3.60487 s
+p2x: Writing tree to XML... done in 4.71321 s
+p2x: Wrote 280000775 B to file 'res.xml'
+  8.06s user 0.42s system 99% cpu 8.494 total
+Output size ratio: 17.500048437499998
+  12.01s user 1.33s system 89% cpu 14.926 total
+test_LargeCVS1_parse2XML_Y_addcols_xslt
+p2x: Read 16000000 B from file /tmp/large.csv
+p2x: Scanning input...done in 3.01566 s
+p2x: Parsing input... done in 0.563351 s
+p2x: loaded in 3.57909 s
+p2x: Writing tree to XML... done in 2.26946 s
+p2x: Wrote 123000272 B to file 'res.xml'
+  5.77s user 0.32s system 99% cpu 6.146 total
+Output size ratio: 7.6875169999999997
+          7.44s user 0.62s system 99% cpu 8.134 total
+test_LargeCVS1_parse2JSON_addcols_py
+p2x: Read 16000000 B from file /tmp/large.csv
+p2x: Scanning input...done in 3.06995 s
+p2x: Parsing input... done in 0.603275 s
+p2x: loaded in 3.67331 s
+p2x: Writing tree to XML... done in 4.35052 s
+p2x: Wrote 62000091 B to file 'res.json'
+  7.89s user 0.31s system 99% cpu 8.209 total
+Output size ratio: 3.8750056874999999
+JSON parse time: 6.37437
+Transform time: 2.38457
+  9.33s user 0.47s system 99% cpu 9.847 total
+test_LargeCVS1_cleanup
+#+END_EXAMPLE
+
+* c64fd3baf4a854ddaf9e2a98b8a796c1c704fcfb
+<2016-10-28 Fr>
+
+#+name: ein
+#+BEGIN_EXAMPLE
+./transformation_speed.sh
+test_LargeCVS1_create
+test_LargeCVS1_parse2XML_addcols_xslt
+  7.86s user 0.41s system 99% cpu 8.278 total
+Output size ratio: 17.500048437499998
+  11.90s user 1.20s system 99% cpu 13.121 total
+test_LargeCVS1_parse2XML_Y_addcols_xslt
+  5.67s user 0.33s system 99% cpu 6.013 total
+Output size ratio: 7.6875170625000004
+  7.20s user 0.64s system 98% cpu 7.981 total
+test_LargeCVS1_parse2JSON_addcols_py
+  7.82s user 0.36s system 99% cpu 8.183 total
+Output size ratio: 4.8125057499999997
+JSON parse time: 9.81959
+Transform time: 2.54932
+  13.33s user 0.70s system 99% cpu 14.091 total
+test_LargeCVS1_cleanup
+#+END_EXAMPLE
+
+#+BEGIN_SRC sh :results output :var in=ein
+echo $in | grep -o -E "[0-9][0-9.]+" | awk '{ if (cnt % 9 == 0 || cnt % 9 == 4) print $0; ++cnt; }'
+#+END_SRC
+
+#+RESULTS:
+: 7.86
+: 17.500048437499998
+: 5.67
+: 7.6875170625000004
+: 7.82
+: 4.8125057499999997
+: 99
+
+| Format    | Time (s) |    Size ratio (MB) |
+|-----------+----------+--------------------|
+| XML (old) |     7.86 | 17.500048437499998 |
+| XML (new) |     5.67 | 7.6875170625000004 |
+| JSON      |      7.2 | 3.8750057500000001 |

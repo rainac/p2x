@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0"
     xmlns:cx='http://johannes-willkomm.de/xml/code-xml/'
     xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'
+    xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
   <xsl:output method="text"/>
@@ -12,15 +13,7 @@
 
   <xsl:template match="text()" mode="reproduce"/>
 
-  <xsl:template match="*" mode="reproduce">
-    <xsl:apply-templates mode="reproduce"/>
-  </xsl:template>
-
-  <xsl:template match="cx:*" mode="reproduce">
-    <xsl:apply-templates mode="reproduce"/>
-  </xsl:template>
-
-  <xsl:template match="ca:text" mode="reproduce">
+  <xsl:template match="ca:text|ca:t|ci:*" mode="reproduce">
     <xsl:value-of select="."/>
   </xsl:template>
 

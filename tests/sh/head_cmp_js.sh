@@ -1,6 +1,6 @@
 #! /bin/bash
 
-. setup_tmp.sh
+. setup_sh.sh
 
 mkParseTree() {
     infile="$1"
@@ -15,6 +15,7 @@ mkParseTree() {
     cmd="$p2x $_opts -p ../../examples/configs/default ../../examples/in/$infile"
     echo "$cmd"
     $cmd
+#    cat $xmltmp
     xsltproc -o $outfile ../../src/xsl/parens.xsl $xmltmp
 }
 
@@ -33,8 +34,10 @@ checkExpFile() {
         return
     fi
 
-    mkParseTree "$infile" "$tmpdir/res.txt" "p2x" "$opts -w"
-    mkParseTree "$infile" "$tmpdir/res2.txt" "p2xjs" "$opts"
+#    P2XFLAGS=--output-mode=y
+
+    mkParseTree "$infile" "$tmpdir/res.txt" "p2x" "$opts -w $P2XFLAGS"
+    mkParseTree "$infile" "$tmpdir/res2.txt" "p2xjs" "$opts $P2XFLAGS"
     
     xmlstarlet c14n $tmpdir/res.xml > $tmpdir/cres.xml
     xmlstarlet c14n $tmpdir/res2.xml > $tmpdir/cres2.xml

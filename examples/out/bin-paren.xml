@@ -1,24 +1,26 @@
 <?xml version="1.0"?>
-<paren xmlns="http://johannes-willkomm.de/xml/code-xml/" line="1" col="2" repr="bopen" type="IDENTIFIER">
-   <integer line="1" col="0" type="INTEGER">
+<paren xmlns="http://johannes-willkomm.de/xml/code-xml/" repr="bopen" type="IDENTIFIER">
+   <integer type="INTEGER">
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">1</ca:text>
-    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="1" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
    </integer>
    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">bopen</ca:text>
-   <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="7" type="SPACE"><ca:text> </ca:text></ca:ignore>
-   <op line="1" col="10" type="PLUS">
-    <integer line="1" col="8" type="INTEGER">
-     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text>
-     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="9" type="SPACE"><ca:text> </ca:text></ca:ignore>
-    </integer>
-    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
-    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="11" type="SPACE"><ca:text> </ca:text></ca:ignore>
-    <integer line="1" col="12" type="INTEGER">
-     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text>
-     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="13" type="SPACE"><ca:text> </ca:text></ca:ignore>
-     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="14" repr="bclose" type="IDENTIFIER"><ca:text>bclose</ca:text></ca:ignore>
-     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" line="1" col="20" type="SPACE"><ca:text> </ca:text></ca:ignore>
-    </integer>
-   </op>
-   <integer line="1" col="21" type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text></integer>
+   <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+   <paren repr="bclose" type="IDENTIFIER">
+    <op type="PLUS">
+     <integer type="INTEGER">
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">2</ca:text>
+      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+     </integer>
+     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
+     <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+     <integer type="INTEGER">
+      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text>
+      <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+     </integer>
+    </op>
+    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">bclose</ca:text>
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text></integer>
+   </paren>
   </paren>

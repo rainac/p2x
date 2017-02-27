@@ -3,7 +3,9 @@ generated_files = test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh test_reproduce_
 
 good = val_tests test_reproduce_strict test_reproduce test_reparse	\
 parse_tests merge_tests p2x_tests test_cmp_js p2xjs_mocha_tests		\
-test_output_stability indent_tests
+test_output_stability indent_tests reproduce_ign valgrind_tests		\
+output_mode_json_merged output_mode_json output_mode_matlab_merged	\
+output_mode_matlab
 
 bad = false_test
 
@@ -15,6 +17,9 @@ result_suite_good_%: %.sh
 
 result_suite_bad_%: %.sh
 	! ./$< > log_$*.txt 2>&1
+
+run_%: test_%.sh
+	./$<
 
 forall_tests.sh: update_forall_tests.sh ../../examples/in
 	./update_forall_tests.sh

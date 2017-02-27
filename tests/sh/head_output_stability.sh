@@ -1,7 +1,6 @@
 #! /bin/bash
-#set -x
 
-. setup_tmp.sh
+. setup_sh.sh
 
 checkExpFile() {
     i=$1
@@ -16,13 +15,18 @@ checkExpFile() {
         rm -f $tmpdir/res.xml $tmpdir/res2.xml
         touch $tmpdir/res2.xml
 
-        p2x $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
+        p2x $P2XFLAGS $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
+        assertEquals "P2X command must succeed" 0 $?
+
         xsltproc -o $tmpdir/res2.xml ../../src/xsl/but-root.xsl $tmpdir/res.xml
 
-        rm -f $tmpdir/check.xml
-        sed -e 's/ code="[^"]*"//' $stored_out  > $tmpdir/check.xml
+        sed -e 's/ code="[^"]*"//' $tmpdir/res2.xml  > $tmpdir/res3.xml
 
-        diff $tmpdir/check.xml $tmpdir/res2.xml
+        sed -e 's/ code="[^"]*"//' $stored_out | \
+            sed -e 's/ line="[^"]*"//'  | \
+            sed -e 's/ col="[^"]*"//'  > $tmpdir/check.xml
+
+        diff $tmpdir/check.xml $tmpdir/res3.xml
         assertEquals "Output has changed to the stored version" 0 $?
     else
         :

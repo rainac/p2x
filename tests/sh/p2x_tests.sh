@@ -1,12 +1,9 @@
 #! /bin/zsh
 
 zmodload zsh/mathfunc
-set -o shwordsplit
-echo $0
 export SHUNIT_PARENT=$0
-#export LANG=C # for grep used in shunit2, depends on english output
 
-. ./setup_tmp.sh
+. ./setup_zsh.sh
 
 testP2X1() {
     p2x notthere.txt > $tmpdir/log 2> $tmpdir/err
@@ -50,7 +47,7 @@ testP2X4() {
 }
 
 testP2X5() {
-    echo -n "a b c" | p2x -i SPACE | xsltproc ../../src/xsl/parens.xsl - > $tmpdir/tmp.txt
+    echo -n "a b c" | p2x $P2XFLAGS -i SPACE | xsltproc ../../src/xsl/parens.xsl - > $tmpdir/tmp.txt
     txt=$(cat $tmpdir/tmp.txt)
     assertEquals "P2X should read from stdin produce the correct XML" "$txt" "[JUXTA]([JUXTA](a, b), c)"
 }
@@ -63,14 +60,14 @@ testP2X6() {
 }
 
 testP2X7() {
-    p2x --stdin-tty -T -p ../../examples/configs/cfuncs > $tmpdir/tmp.out
+    p2x $P2XFLAGS --stdin-tty -T -p ../../examples/configs/cfuncs > $tmpdir/tmp.out
     assertEquals "P2X should not fail in this case" $? 0
     diff $tmpdir/tmp.out ../../examples/out/token-types.xml
     assertEquals "$?" 0
 }
 
 testP2X8() {
-    p2x -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose.exp 2> $tmpdir/err.txt
+    p2x $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose.exp 2> $tmpdir/err.txt
     xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
     err=$(cat $tmpdir/err.txt)
     txt=$(cat $tmpdir/res.txt)
@@ -86,7 +83,7 @@ testP2X8() {
 }
 
 testP2X9() {
-    p2x -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose2.exp 2> $tmpdir/err.txt
+    p2x $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose2.exp 2> $tmpdir/err.txt
     xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
     err=$(cat $tmpdir/err.txt)
     txt=$(cat $tmpdir/res.txt)
@@ -101,7 +98,7 @@ testP2X9() {
 }
 
 testP2X10() {
-    p2x -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose3.exp 2> $tmpdir/err.txt
+    p2x $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose3.exp 2> $tmpdir/err.txt
     xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
     err=$(cat $tmpdir/err.txt)
     txt=$(cat $tmpdir/res.txt)

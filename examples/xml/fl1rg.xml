@@ -4,8 +4,11 @@
   <paren line="1" col="1" type="L_PAREN">
    <id line="1" col="0" repr="f" type="IDENTIFIER"><ca:text>f</ca:text></id>
    <ca:text>(</ca:text>
-   <integer line="1" col="2" type="INTEGER"><ca:text>1</ca:text></integer>
-   <id line="1" col="4" repr="g" type="IDENTIFIER"><ca:text>g</ca:text></id>
+   <paren line="1" col="3" type="R_PAREN">
+    <integer line="1" col="2" type="INTEGER"><ca:text>1</ca:text></integer>
+    <ca:text>)</ca:text>
+    <id line="1" col="4" repr="g" type="IDENTIFIER"><ca:text>g</ca:text></id>
+   </paren>
   </paren>
  </root>
 </code-xml>

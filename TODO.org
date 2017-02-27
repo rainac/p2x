@@ -53,7 +53,7 @@ TokenInfo has function outputMode
 Reading XML: should be doable with expat parser
 
 *** DONE Option --output, -o
-    CLOSED: [2015-06-08 Mo 22:17]
+    CLOSED: [2016-11-01 Di 13:46]
 
 Write output to file instead of stdout
 
@@ -97,6 +97,76 @@ Such as int, float, string
 **** DONE Skip ca:text when empty
      CLOSED: [2015-06-08 Mo 22:22]
 
+*** DONE MATLAB struct output
+    CLOSED: [2016-11-01 Di 13:47]
+
+*** DONE JSON output
+    CLOSED: [2016-11-01 Di 13:47]
+
+Structurally same as MATLAB -> needs postprocessing
+
+*** TODO Ignore parentheses
+
+Does it work?
+
+*** TODO Newline as literal in config file
+
+Does not work:
+#+BEGIN_EXAMPLE
+"
+" ignore 1
+#+END_EXAMPLE
+
+Does not work:
+#+BEGIN_EXAMPLE
+"\n" ignore 1
+#+END_EXAMPLE
+
+Does work:
+#+BEGIN_EXAMPLE
+NEWLINE ignore 1
+#+END_EXAMPLE
+
+*** TODO Use env USERPROFILE
+
+on windows, prefer USERPROFILE, then fall back to HOMEPATH etc.
+
+*** TODO Always use env HOME for home dir
+
+on windows, fall back to USERPROFILE, etc.
+
+*** TODO Load scanner as plugin (shared library)
+
+Load function "yylex" (default) from given shared library
+
+*** TODO Speed up flex scanner
+
+    - Generate C scanner?
+    - Options?
+
+*** TODO Scan with IFS
+
+Provide scanner using simple input field separator (IFS)
+
+*** TODO C++ API
+
 ** TODO Source code cleanup
 
 *** TODO Remove method TreeXMLWriter::writeXMLTypeElem
+
+* TODO Refactoring
+
+** DONE Back to pure binary tree
+   CLOSED: [2016-11-01 Di 13:48]
+
+Just left and right pointers
+
+Exception: ignore pointer
+
+** TODO Switch parenthesis handling
+
+: ("[", left-child, ("]", content, right-child))
+
+instead of
+
+: ("]", ("[", left-child, content), right-child)

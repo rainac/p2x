@@ -1,4 +1,7 @@
-#! /bin/bash
+#! /bin/zsh
+
+export SHUNIT_PARENT=$0
+. ./setup_sh.sh
 
 testParseTwiceIdentical() {
 
@@ -13,14 +16,20 @@ testParseTwiceIdentical() {
             reprxsl=empty-latin1.xsl
             opts="$opts -e latin1"
         fi
-        p2x $opts -p ../../examples/configs/default $i > res.xml
-        xsltproc ../../src/xsl/$reprxsl res.xml > res.txt
-        p2x $opts -p ../../examples/configs/default res.txt > res2.xml
-        diff res.xml res2.xml > /dev/null
+        if [[ "$i" = "../../examples/in/cr.exp" ]]
+        then
+            reprxsl=reproduce.xsl
+            opts=""
+        fi
+        p2x $opts -p ../../examples/configs/default $i > $tmpdir/res.xml
+        assertEquals "P2X should exit with status 0" 0 $?
+        xsltproc ../../src/xsl/$reprxsl $tmpdir/res.xml > $tmpdir/res.txt
+        p2x $opts -p ../../examples/configs/default $tmpdir/res.txt > $tmpdir/res2.xml
+        diff $tmpdir/res.xml $tmpdir/res2.xml > /dev/null
         assertEquals "Reparse test $i did not return same result" 0 $?
-        rm res.xml res2.xml res.txt
+        rm $tmpdir/res.xml $tmpdir/res2.xml $tmpdir/res.txt
     done
 
 }
 
-. shunit2
+. ./myshunit2

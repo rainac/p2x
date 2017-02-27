@@ -100,6 +100,7 @@ bin_PROGRAMS = p2x$(EXEEXT) $(am__EXEEXT_1)
 @acond_BUILD_TESTS_TRUE@am__append_1 = p2xtests
 @acond_GENGETOPT_AVAIL_TRUE@am__append_2 = p2x-opts.hh p2x-opts.cc
 @acond_TRANG_AVAIL_TRUE@am__append_3 = code-xml.rng
+@acond_FLEX_AVAIL_TRUE@am__append_4 = $(patsubst %.ll,%.cc,$(p2x_FLEX_SRCS))
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -113,10 +114,11 @@ CONFIG_CLEAN_VPATH_FILES =
 @acond_BUILD_TESTS_TRUE@am__EXEEXT_1 = p2xtests$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(instdir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_p2x_OBJECTS = p2x-p2x.$(OBJEXT) p2x-scanner.$(OBJEXT) \
-	p2x-scanner-no-strings.$(OBJEXT) p2x-scanner-r.$(OBJEXT) \
-	p2x-scanner-c.$(OBJEXT) p2x-p2x-opts.$(OBJEXT) \
-	p2x-token.$(OBJEXT) p2x-logger.$(OBJEXT)
+am__objects_1 = p2x-scanner.$(OBJEXT) p2x-scanner-no-strings.$(OBJEXT) \
+	p2x-scanner-r.$(OBJEXT) p2x-scanner-c.$(OBJEXT)
+am_p2x_OBJECTS = p2x-p2x.$(OBJEXT) $(am__objects_1) \
+	p2x-p2x-opts.$(OBJEXT) p2x-token.$(OBJEXT) \
+	p2x-logger.$(OBJEXT)
 p2x_OBJECTS = $(am_p2x_OBJECTS)
 p2x_LINK = $(CXXLD) $(p2x_CXXFLAGS) $(CXXFLAGS) $(p2x_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -259,6 +261,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FLEX = @FLEX@
 GENGETOPT = @GENGETOPT@
 GHEAD = @GHEAD@
 GREP = @GREP@
@@ -356,7 +359,8 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-p2x_SOURCES = p2x.cc scanner.xml scanner.ll scanner-no-strings.ll scanner-r.ll scanner-c.ll p2x-opts.cc token.cc logger.cc
+p2x_FLEX_SRCS = scanner.ll scanner-no-strings.ll scanner-r.ll scanner-c.ll
+p2x_SOURCES = p2x.cc scanner.xml $(p2x_FLEX_SRCS) p2x-opts.cc token.cc logger.cc
 p2xtests_SOURCES = p2xtests.cc scanner.ll scanner-no-strings.ll p2x-opts.cc token.cc logger.cc
 p2x_CXXFLAGS = 
 p2x_LDADD = 
@@ -364,7 +368,7 @@ p2x_LDFLAGS =
 p2x_DEPENDENCIES = 
 p2xtests_LDADD = -lcppunit
 generated_files = namespaces.hh code-xml.rnc scanner2.ll \
-	$(am__append_2) $(am__append_3)
+	$(am__append_2) $(am__append_3) $(am__append_4)
 flexPrefix = scan
 instbasedir = $(pkgdatadir)
 instdir = $(instbasedir)
@@ -755,7 +759,7 @@ distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
-	distclean-tags
+	distclean-local distclean-tags
 
 dvi: dvi-am
 
@@ -821,16 +825,17 @@ uninstall-am: uninstall-binPROGRAMS uninstall-instDATA
 .PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
 	clean-binPROGRAMS clean-generic clean-local cscopelist-am \
 	ctags ctags-am distclean distclean-compile distclean-generic \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-binPROGRAMS install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-instDATA install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-instDATA
+	distclean-local distclean-tags distdir dvi dvi-am html html-am \
+	info info-am install install-am install-binPROGRAMS \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-instDATA install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-instDATA
 
 .PRECIOUS: Makefile
 
@@ -873,6 +878,8 @@ code-xml.rnc: code-xml.rnc.in
 
 clean-local:
 	$(RM) -f $(generated_files)
+
+distclean-local:
 
 check:
 	./p2xtests

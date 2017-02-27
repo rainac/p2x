@@ -5,6 +5,7 @@
     <ca:op type='R_PAREN' mode='ITEM'/>
    </ca:closing-list>
   </ca:op>
+  <ca:op type='R_PAREN' mode='POSTFIX' precedence='101' associativity='NONE' output-mode='NESTED' is-rparen='1'/>
   <ca:op type='EQUAL' mode='BINARY' precedence='5' associativity='LEFT' output-mode='NESTED'/>
   <ca:op type='PLUS' mode='UNARY_BINARY' precedence='10' associativity='LEFT' output-mode='NESTED' unary-precedence='110'/>
   <ca:op type='MINUS' mode='UNARY_BINARY' precedence='10' associativity='LEFT' output-mode='NESTED' unary-precedence='110'/>
@@ -12,6 +13,5 @@
   <ca:op type='DIV' mode='BINARY' precedence='30' associativity='LEFT' output-mode='NESTED'/>
   <ca:op type='MOD' mode='BINARY' precedence='30' associativity='LEFT' output-mode='NESTED'/>
   <ca:op type='JUXTA' mode='BINARY' precedence='900' associativity='LEFT' output-mode='NESTED'/>
-  <ca:op type='IGNORE' mode='IGNORE'/>
  </ca:parser>
 </parser>
