@@ -10,15 +10,16 @@ P2X.importObject = function(obj, target) {
 P2X.importObject(require('./scanner.js'), P2X)
 
 if (typeof window == 'undefined') {
-    var ENUM = {}
-    ENUM.ParserMode = require('./modes.ncd.js')
-    P2X.importObject(ENUM.ParserMode, ENUM)
-    ENUM.ParserToken = require('./token.ncd.js')
-    P2X.importObject(ENUM.ParserToken, ENUM)
-    ENUM.ParserAssoc = require('./assoc.ncd.js')
-    P2X.importObject(ENUM.ParserAssoc, ENUM)
+    P2X.ENUM = {}
+    P2X.ENUM.ParserMode = require('./modes.ncd.js')
+    P2X.ENUM.ParserToken = require('./token.ncd.js')
+    P2X.ENUM.ParserAssoc = require('./assoc.ncd.js')
     var pXML = require('./parse-xml.js')
 }
+
+P2X.importObject(P2X.ENUM.ParserMode, P2X)
+P2X.importObject(P2X.ENUM.ParserToken, P2X)
+P2X.importObject(P2X.ENUM.ParserAssoc, P2X)
 
 var parseXml = pXML.parseXml
 
@@ -30,20 +31,24 @@ P2X.getAttributeOrUndefined = function(elem, name) {
     return res
 }
 
-P2X.evalOrValue = function(val, def) {
+P2X.evalOrValue = (function(val, def) {
     var res
     try {
-        res = eval(val)
+        res = eval('this.' + val)
     } catch (err) {
+        try {
+            res = eval(val)
+        } catch (err) {
+        }
         // res = val
     }
-    // console.log('eval val: ' + typeof val + ' ' + val)
-    // console.log('eval res: ' + typeof res + ' ' + res)
+//     console.log('eval val: ' + typeof val + ' ' + val)
+//     console.log('eval res: ' + typeof res + ' ' + res)
     if (typeof res == 'undefined') {
         res = def
     }
     return res
-}
+}).bind(P2X)
 
 P2X.escapeRegExp = function(str){
     return str
@@ -195,24 +200,24 @@ P2X.TokenProtoRW = function() {
         var res = ''
         res += indent + '<ca:op'
         res += ' type="'
-        if (obj.token in ENUM.ParserToken.names_index) {
-            res += ENUM.ParserToken.getName(obj.token)
+        if (obj.token in P2X.ParserToken.names_index) {
+            res += P2X.ParserToken.getName(obj.token)
         } else {
             res += obj.token
         }
         res += '"'
-        if (obj.token == TOKEN_IDENTIFIER && obj.repr)
+        if (obj.token == P2X.TOKEN_IDENTIFIER && obj.repr)
             res += ' repr="' + obj.repr + '"'
         if (typeof obj.mode != 'undefined') {
-            res += ' mode="' + ENUM.ParserMode.getName(obj.mode) + '"'
+            res += ' mode="' + P2X.ParserMode.getName(obj.mode) + '"'
         }
-        if (obj.mode == MODE_UNARY_BINARY || obj.mode == MODE_BINARY)
-            res += ' associativity="' + ENUM.ParserAssoc.getName(obj.assoc) + '"'
-        if (obj.mode != MODE_ITEM && !obj.isParen)
+        if (obj.mode == P2X.MODE_UNARY_BINARY || obj.mode == P2X.MODE_BINARY)
+            res += ' associativity="' + P2X.ParserAssoc.getName(obj.assoc) + '"'
+        if (obj.mode != P2X.MODE_ITEM && !obj.isParen)
             res += ' precedence="' + obj.prec + '"'
         if (obj.name)
             res += ' name="' + obj.name + '"'
-        if (obj.mode == MODE_UNARY_BINARY)
+        if (obj.mode == P2X.MODE_UNARY_BINARY)
             res += ' unary-precedence="' + obj.precU + '"'
         if (obj.isParen)
             res += ' is-paren="1"'
@@ -235,21 +240,21 @@ P2X.TokenProtoRW = function() {
         var res = ''
         res += '{'
         res += ' type: '
-        if (obj.token in ENUM.ParserToken.names_index) {
-            res += 'TOKEN_' + ENUM.ParserToken.getName(obj.token)
+        if (obj.token in P2X.ParserToken.names_index) {
+            res += 'TOKEN_' + P2X.ParserToken.getName(obj.token)
         } else {
             res += obj.token
         }
         if (obj.repr)
             res += ', repr: "' + obj.repr + '"'
         if (typeof obj.mode != 'undefined') {
-            res += ', mode: MODE_' + ENUM.ParserMode.getName(obj.mode) + ''
+            res += ', mode: MODE_' + P2X.ParserMode.getName(obj.mode) + ''
         }
-        if (obj.mode == MODE_UNARY_BINARY || obj.mode == MODE_BINARY)
-            res += ', assoc: ASSOC_' + ENUM.ParserAssoc.getName(obj.assoc) + ''
+        if (obj.mode == P2X.MODE_UNARY_BINARY || obj.mode == P2X.MODE_BINARY)
+            res += ', assoc: ASSOC_' + P2X.ParserAssoc.getName(obj.assoc) + ''
         if (typeof obj.prec != 'undefined')
             res += ', prec: ' + obj.prec + ''
-        if (obj.mode == MODE_UNARY_BINARY)
+        if (obj.mode == P2X.MODE_UNARY_BINARY)
             res += ', precU: ' + obj.precU + ''
         if (obj.isParen)
             res += ', isParen: 1'
@@ -283,10 +288,10 @@ P2X.TokenProtoRW = function() {
             }
         }
         var res = {
-            token: P2X.evalOrValue(ENUM.ParserToken.prefix + P2X.getAttributeOrUndefined(tProtoNode, 'type')),
+            token: P2X.evalOrValue(P2X.ParserToken.prefix + P2X.getAttributeOrUndefined(tProtoNode, 'type')),
             repr: P2X.getAttributeOrUndefined(tProtoNode, 'repr'),
-            mode: P2X.evalOrValue(ENUM.ParserMode.prefix + P2X.getAttributeOrUndefined(tProtoNode, 'mode')),
-            assoc: P2X.evalOrValue(ENUM.ParserAssoc.prefix + P2X.getAttributeOrUndefined(tProtoNode, 'associativity')),
+            mode: P2X.evalOrValue(P2X.ParserMode.prefix + P2X.getAttributeOrUndefined(tProtoNode, 'mode')),
+            assoc: P2X.evalOrValue(P2X.ParserAssoc.prefix + P2X.getAttributeOrUndefined(tProtoNode, 'associativity')),
             prec: P2X.evalOrValue(P2X.getAttributeOrUndefined(tProtoNode, 'precedence')),
             precU: P2X.evalOrValue(P2X.getAttributeOrUndefined(tProtoNode, 'unary-precedence')),
             isParen: isParen,
