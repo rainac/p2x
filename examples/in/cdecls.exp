@@ -1,0 +1,4 @@
+int x;
+double x;
+int* x;
+int** x;
