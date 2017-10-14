@@ -1834,6 +1834,7 @@ bool parseOpCodeText(Lexer &lexer, Token const *t, ParserToken &opCode, std::str
 void parseOperOptions(std::vector<Token const*> const &itemList,
                       ParserAssoc &assoc,
                       OutputMode &outputMode,
+                      bool &ignoreIfStray,
                       int &precedence,
                       int &unaryPrecedence) {
 
@@ -1879,6 +1880,11 @@ void parseOperOptions(std::vector<Token const*> const &itemList,
           haveOMode = true;
           continue;
         }
+      }
+
+      if (modeName == "ignoreIfStray") {
+        ignoreIfStray = true;
+        continue;
       }
 
       if (valid != 0) {
@@ -1963,8 +1969,9 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
           OutputMode outputMode = OUTPUT_MODE_NESTED;
           int precedence = 100;
           int unary_precedence = 100;
+          bool ignoreIfStray = false;
 
-          parseOperOptions(itemList, assoc, outputMode, precedence, unary_precedence);
+          parseOperOptions(itemList, assoc, outputMode, ignoreIfStray, precedence, unary_precedence);
           
           cnfls(LS::DEBUG|LS::CONFIG) << "config: options:  " << assoc << ", " << outputMode << ", " << precedence
                                    << ", " << unary_precedence << "\n";
@@ -1974,6 +1981,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
             p.unaryPrecedence = unary_precedence;
           }
           p.outputMode = outputMode;
+          p.ignoreIfStray = ignoreIfStray;
           cnfls(LS::DEBUG|LS::CONFIG) << "config: token:  " << p << "\n";
 
           if (itemList[0]->token == TOKEN_IDENTIFIER) {
@@ -2014,8 +2022,9 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
             OutputMode outputMode = OUTPUT_MODE_NESTED;
             int precedence = 100;
             int unary_precedence = 100;
+            bool ignoreIfStray = false;
             
-            parseOperOptions(subItemList, assoc, outputMode, precedence, unary_precedence);
+            parseOperOptions(subItemList, assoc, outputMode, ignoreIfStray, precedence, unary_precedence);
 
             TokenProto *tp = tokenInfo.getProto(&token);
 
@@ -2023,6 +2032,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
             tp->precedence = precedence;
             tp->outputMode = outputMode;
             tp->associativity = assoc;
+            tp->ignoreIfStray = ignoreIfStray;
 
             for (auto it = tp->endList.begin(); it != tp->endList.end(); ++it) {
               TokenProto *etp = tokenInfo.getProto(&it->second);
