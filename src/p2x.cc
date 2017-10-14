@@ -824,10 +824,6 @@ struct Parser {
   // Class Binary
   void pushBinary(Token *t) {
     assert(root);
-    if (rightEdgeOpen()) {
-      pushIgnore(t);
-      return;
-    }
     Token *tmp = 0, *parent = 0;
     ParserAssoc const assoc = tokenInfo.assoc(t);
     int const prec = tokenInfo.binary_prec(t);
