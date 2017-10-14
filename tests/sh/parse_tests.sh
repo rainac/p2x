@@ -221,4 +221,12 @@ testParseTreeEqual_question_mark() {
     checkParseTreeEqual question.exp "[EQUAL]([JUXTA](Is, [MULT]([MULT](2, 2), 2)), [QUESTION](7))"
 }
 
+testParseTreeEqual_low_prec_binary_seps() {
+    checkParseTreeEqual low-prec-binary-seps.exp "[PLUS]([PLUS](1, 3), 5)"
+}
+
+testParseTreeEqual_low_prec_binary_seps2() {
+    checkParseTreeEqual low-prec-binary-seps2.exp "[PLUS]([PLUS]([PLUS](1, 3), [DIV](5, 3)), [MULT](1, [DIV](2, 6)))"
+}
+
 . shunit2
