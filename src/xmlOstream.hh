@@ -61,6 +61,7 @@ struct XMLBuf : public std::streambuf {
         r1 = m_sb1->sputc(';');
         break;
       }
+      // fallthrough
     default:
       r1 = m_sb1->sputc(c);
       break;
