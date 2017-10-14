@@ -32,7 +32,7 @@ Sie sollten eine Kopie der GNU Lesser General Public License zusammen
 mit diesem Programm erhalten haben. Wenn nicht, siehe
 <http://www.gnu.org/licenses/>.
 
-Copyright (C) 2011-2016 Johannes Willkomm
+Copyright (C) 2011-2017 Johannes Willkomm
 
 */
 
