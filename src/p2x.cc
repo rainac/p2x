@@ -172,6 +172,7 @@ struct TokenProto : public Token {
   ParserMode mode;
   bool isParen;
   bool isRParen;
+  bool ignoreIfStray;
   ParserAssoc associativity;
   OutputMode outputMode;
   typedef std::map<unsigned, TokenProto> EndList;
@@ -194,6 +195,7 @@ struct TokenProto : public Token {
     mode(mode),
     isParen(),
     isRParen(),
+    ignoreIfStray(),
     associativity(associativity),
     outputMode(),
     endList(endList)
@@ -894,6 +896,11 @@ struct Parser {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "mode = " << firstMode << "\n";
 #endif
+    if (firstMode == MODE_BINARY
+        and tokenInfo.getProto(first)->ignoreIfStray
+        and rightEdgeOpen()) {
+      firstMode = MODE_IGNORE;
+    }
     switch(firstMode) {
     case MODE_ITEM:
       pushItem(first);
