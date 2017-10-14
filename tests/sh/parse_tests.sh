@@ -233,4 +233,12 @@ testParseTreeEqual_low_prec_binary_seps3() {
     checkParseTreeEqual low-prec-binary-seps3.exp "[PLUS]([PLUS](1, 3), 5)"
 }
 
+testParseTreeEqual_juxta_binary() {
+    checkParseTreeEqual juxta-binary.exp "[PLUS]([PLUS](1, 3), [MULT](., 5))"
+}
+
+testParseTreeEqual_juxta_binary2() {
+    checkParseTreeEqual juxta-binary2.exp "[PLUS]([PLUS](1, [MULT](3)), 5)"
+}
+
 . shunit2
