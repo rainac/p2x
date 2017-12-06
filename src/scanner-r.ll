@@ -20,6 +20,10 @@ CR    "\r"
 TAB   "\t"
 UNDERSCORE   "_"
 
+DOT "."
+WHITESEQ  ({CR}|{NL}|{TAB}|{SPACE})+
+DOTSPACE {WHITESEQ}{DOT}
+
 DIGIT [0-9]
 LOWER [a-z]
 UPPER [A-Z]
@@ -29,7 +33,7 @@ http://stackoverflow.com/questions/8447701/c-parsing-library-with-utf-8-support
 */
 HIGHLET [\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF][\x80-\xBF]|[\xF0-\xF7][\x80-\xBF][\x80-\xBF][\x80-\xBF]
 LETTER {LOWER}|{UPPER}|{HIGHLET}
-IDINIT {LETTER}
+IDINIT {LETTER}|{DOTSPACE}
 ID    {IDINIT}({LETTER}|{DIGIT}|{UNDERSCORE})*
 WHITE {SPACE}|[\t\r\v]
 INT   ("0x")?{DIGIT}+[uUlL]*
