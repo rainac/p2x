@@ -2060,7 +2060,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
 bool debugInit = false;
 
 void printCopyright() {
-  printf("Copyright (C) 2011-2016 Johannes Willkomm <johannes@johannes-willkomm.de>\n");
+  printf("Copyright (C) 2011-2017 Johannes Willkomm <johannes@johannes-willkomm.de>\n");
 }
 
 void printBugreportInfo() {
