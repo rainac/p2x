@@ -391,8 +391,11 @@ struct TokenInfo {
     unsigned const code = mkOpCode(tp);
     OpPrototypes::iterator it = opPrototypes.find(code);
     if (it != opPrototypes.end()) {
-      ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp << "\n";
-      exit(EXIT_FAILURE);
+      if (not it->second.isRParen) {
+        ls(LS::CONFIG|LS::ERROR) << "Overriding declaration of rbrace " << it->second << " with " << tp << "\n";
+        exit(EXIT_FAILURE);
+      }
+      // else: ignore renewed rbrace declaration
     } else {
       opPrototypes[code] = tp;
     }
