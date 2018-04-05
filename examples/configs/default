@@ -2,7 +2,7 @@
 
 JUXTA_POST binary 2
 
-";" binary 101
+";" binary 101 ignoreIfStray
 
 "'" postfix 10001
 
