@@ -83,10 +83,10 @@ name, the node text and the node children, respectively.
 ** Program Configuration
 
 P2X can be configured either by options on the command line or from a
-configuration file, usally ~~/.p2x/p2x-options~.
+configuration file, usually ~~/.p2x/p2x-options~.
 
 *** Options
-<<option>>
+<<Options>>
 
 Each option has a long name and some also have a short name. The most
 important options are the following:
@@ -149,7 +149,7 @@ table:
 
 *** Configuration file
 
-The same options (see previous Section [[options]]) as on the command line
+The same options (see previous Section [[Options]]) as on the command line
 can also be given in a configuration file, which by default searched
 as ~~/.p2x/p2x-options~. In that file there may be one option per
 line, short or long, but without the leading ~-~ or ~--~. For example,
@@ -161,10 +161,10 @@ verbose debug
 verbose=debug
 #+END_EXAMPLE
 
-See also environment variable P2X_USER_DIR in Section [[P2X_ENV_VARS]].
+See also environment variable P2X_USER_DIR in Section [[Environment variables][Environment variables]].
 
 *** Environment variables
-<<P2X_ENV_VARS>>
+<<Environment variables>>
 
     - HOME: Linux only: determine home directory of current user
     
@@ -338,6 +338,15 @@ newline binary 1000 merged
 "*"     binary 1002 merged left
 #+END_EXAMPLE
 
+In the output tree the binary operators are represented as binary
+nodes with two children, their left and right operands. This can lead
+to deeply nested trees. To mitigate this P2X can also output the
+binary nodes in /merged/ mode. Then $n$ consecutive operators made of
+the same token are collapsed into a single node with $n+1$
+children. The option =-m= or =--merged= activates the merged output
+globally and the =merged= keyword in a language definition declaration
+can activate merged mode for individual operators in class Binary.
+
 *** Class Unary
 
 Token types in class Unary represent unary prefix operators, which
@@ -453,6 +462,7 @@ the token in class Ignore, so they are truly ignored and discared
 then.
 
 *** Parentheses
+<<Parentheses>>
 
 A pair of token which is declared as Parentheses encapsulates a
 subexpression, such that on the outside it appears as a single item,
