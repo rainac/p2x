@@ -83,7 +83,7 @@ name, the node text and the node children, respectively.
 ** Program Configuration
 
 P2X can be configured either by options on the command line or from a
-configuration file, usually ~~/.p2x/p2x-options~.
+configuration file, usually ~$HOME/.p2x/p2x-options~.
 
 *** Options
 <<Options>>
