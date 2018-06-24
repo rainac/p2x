@@ -1,5 +1,6 @@
 #! /bin/bash
 
+cat m4/*.m4 > acinclude.m4
 autoreconf -i -W no-portability
 #aclocal
 #autoconf
