@@ -148,16 +148,17 @@ verbose debug
 verbose=debug
 #+END_EXAMPLE
 
-See also environment variable P2X_USER_DIR in Section [[P2X_USER_DIR]].
+See also environment variable P2X_USER_DIR in Section [[P2X_ENV_VARS]].
 
 *** Environment variables
-    
+<<P2X_ENV_VARS>>
+
     - HOME: Linux only: determine home directory of current user
     
     - HOMEDRIVE, HOMEPATH, APPDATA: Windows only: determine home
       directory of current user
 
-    - <<P2X_USER_DIR>>P2X_USER_DIR: Set the directory where the
+    - P2X_USER_DIR: Set the directory where the
       configuration file ~p2x-options~ is found. Default is $HOME/.p2x
 
     - P2X_CONFIG_DIR: If set, this directory is also searched for
