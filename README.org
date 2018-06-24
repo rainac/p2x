@@ -67,6 +67,19 @@ P2X can also read from a file given as the first command line argument
 or write its output to a file given by command line option =-o=
 : p2x in.txt -o out.xml
 
+There are currently four different output modes:
+
+  - with option =-X= or =--xml= the tree is output in XML format
+  - with option =-M= or =--matlab= the tree is output in MATLAB
+    format, as a single large ~struct~ expression
+  - with option =-J= or =--json= the tree is output in JSON format
+  - the default is to output an older version of the XML format, which
+    is more verbose
+
+In XML the output tree is as described in this document. In MATLAB and
+JSON each node has the three fields =n=, =t= and =c=, for the node
+name, the node text and the node children, respectively.
+
 ** Program Configuration
 
 P2X can be configured either by options on the command line or from a
@@ -173,16 +186,15 @@ See also environment variable P2X_USER_DIR in Section [[P2X_ENV_VARS]].
 
 The equivalent of a grammar is called language definition in P2X. It
 consists of an assignment of /token/ to /token classes/. Token are
-those listed by the option =--list-token= or =-L=. Identifiers play a
-special role, that is, while IDENTIFIER is listed as a single token
-type, each identifier such as ~x~, ~name~ or ~begin~ may individually
-be assigned to a token class. For example ~name~ might be assigned to
-class Unary and ~begin~ might be assigned to class Parentheses.
+those listed by the option =--list-token= or =-L=.
 
-The token ROOT and JUXTA are special: ROOT is always in class Unary
-with precedence 0 and JUXTA is always in class Binary, and the
-precedence and associativity of this operator may be set by the
-user. Both ROOT and JUXTA do not represent any input.
+Which token are returned for a given character input depends on the
+scanner selected with option =--scanner= or =-S=. Since the scanners
+are defined with Flex there currently is only limited set of scanners
+to chose from: =c=, =r=, =strings=, =no-strings=. For example, the
+=no-strings= scanner reports each single quote ~'~ as a token APOS and
+each double quote ~"~ character as a token QUOTE, and it will never
+return a token STRING.
 
 The available token classes are the following:
 
@@ -192,6 +204,28 @@ The available token classes are the following:
    - Binary_unary
    - Postfix
    - Ignore
+
+Identifiers play a special role, that is, while IDENTIFIER is listed
+as one of the token types, each identifier such as ~x~, ~sin~ or
+~times~ may individually be assigned to a token class. For example
+~sin~ might be assigned to class Unary and ~times~ might be assigned
+to class Binary. The set of legal identifiers also depends on the
+selected scanner, but as of now all scanners have the same definition.
+
+The basic definition of an identifier is based on the C
+model. Identifiers may also contain any of the upper Unicode
+characters. Currently the hyphen character may not occur in an
+identifier, for example, "a-b" will be scanned as three tokens.
+
+The token ROOT and JUXTA are special: ROOT is always in class Unary
+with precedence 0 and JUXTA is always in class Binary, and the
+precedence and associativity of this operator may be set by the
+user. Both ROOT and JUXTA do not represent any input. The ROOT token
+is always present as the root of the parse tree. The JUXTA token is
+automatically inserted in the parse tree as a binary operator whenever
+two consecutive items are encountered.
+
+By default all other token are in class Item.
 
 Also, a pair of token may be declared as /parentheses/. This pair of
 token encapsulates some subexpression and will be inserted into the
@@ -207,6 +241,28 @@ The effect of the configuration can be inspected by using the option
 #+BEGIN_SRC sh
 p2x -T -p examples/configs/cfuncs
 #+END_SRC
+
+Generally token can either by referred to by the name of the token
+class as listed by the option =-L= or they can be referred to
+literally, in quotes. For example, the following two lines are
+equivalent:
+
+#+BEGIN_SRC sh
+MULT    binary 1002
+"*"     binary 1002
+#+END_SRC
+
+Currently there is no way to see the regular expression used by the
+scanner for each token type, and no way to see which set of input
+words is represented by a given token. Also there is currently no
+documentation telling you that the token returned by the scanner for
+the input =*= is called MULT. Hence it is probably preferably to use
+the second form. For individual identifiers the only option is of
+course to use the quoted form.
+
+Example configuration files can be found in the directory
+~examples/configs~. The file [[./examples/configs/default]] is used by the
+P2X test suite and showcases all available declarations and options.
 
 *** Class Item
 
@@ -306,7 +362,7 @@ p2x  -u 'sin,cos'
 
 The other way is by a ~unary~ declaration in the laguage definition
 file, which has the form ~token~ ~unary~ followed by an integer
-precedence field.The command line
+precedence field. The command line
 settings above are equivalent to the following entries in the language
 definition file:
 #+BEGIN_EXAMPLE
@@ -314,18 +370,58 @@ definition file:
 "cos" unary 2001
 #+END_EXAMPLE
 
+In the output tree Unary operators are output as a node with a two
+child nodes, as they can be seen as a binary operator with the left
+operand missing. The missing left operand is marked with a special
+~null~ element, so that the single operand is the second child
+element.
+
 *** Class Unary_Binary
 
 Class Unary_Binary is for token which may either occur as unary
 operators or as binary operators. A typical example are plus ~+~ and
 minus ~-~ in mathematical notation. For that, token may be assigned to
-class Unary_Binary, which accepts two integer token, the first of
+class Unary_Binary, which accepts two integer options, the first of
 which is the binary precedence and the second the unary precedence. An
 associativity may also be specified. For example, the following
 configuration
 #+BEGIN_EXAMPLE
 "-" unary_binary 1000 2200 left
 #+END_EXAMPLE
+
+The same input ~-3~ can now result in either a unary node or a binary
+node in the output tree, depending on the preceding token. When an
+Item is pending because the preceding token was of class Unary or
+Binary the minus ~-~ will result in a unary operator node, otherwise
+as a binary node.
+
+*** Class Postfix
+
+The class Postfix is complementary of the Unary class. It defines a
+unary postfix operator. Typical examples are the operators ~'~ and
+~.'~ in MATLAB. Another example would be to define units as postfix
+operators:
+
+#+BEGIN_EXAMPLE
+"kg" postfix 10000
+"m" postfix 10000
+"s" postfix 10000
+#+END_EXAMPLE
+
+Another important application are the typical function call and array
+access expressions in may languages, such as ~f(x)~ or ~x[2]~. These
+are most conveniently treated as postfix operators, which is possible
+with P2X because each pair of parentheses can also be given a token
+class, see section [[Parentheses]].
+
+#+BEGIN_EXAMPLE
+"(" PAREN ")" postfix 10000
+"[" PAREN "]"  postfix 10000
+#+END_EXAMPLE
+
+In the output tree Postfix operators are output as a node with a
+single child, as they can be seen as a binary operator with the right
+operand missing.
 
 *** Class Ignore
 
@@ -339,8 +435,22 @@ In the language definition file, a token is assigned to class Ignore
 with the keyword =ignore=, but a precedence is also required (it is
 ignored):
 #+BEGIN_EXAMPLE
-NEWLINE ignore 1x
+NEWLINE ignore 1
 #+end_example
+
+In the XML output token in class Ignore are represented using a
+separate namespace, so for many intents and purposes they are as good
+as invisible. However, for input reconstruction it is of course
+crucial that they are kept.
+
+Keeping the Ignore token one can reconstruct input identically even if
+its structure is unknown. P2X guarantees that all input characters,
+including those from token in class Ignore also occur in the output
+XML document, in the same order as they occured in the input.
+
+In the MATLAB and JSON output formats it is not possible to represent
+the token in class Ignore, so they are truly ignored and discared
+then.
 
 *** Parentheses
 
@@ -371,13 +481,25 @@ or using a ~paren~ declaration in the language definition file:
 #+END_EXAMPLE
 
 A parenthesis expression is be default handled as being in token class
-Item. However, parentheses declarations may also place assign the
-declaration to any other class. For example, the parentheses ~(~ and
-~)~ may be declared as being a postfix operator. This is done by
-adding the class keyword on the line together with an integer
-specifying the precedence:
+Item. However, parentheses declarations may also be assigned to any
+other token class. This can be done for each parentheses declaration
+individually. For example, the parentheses ~(~ and ~)~ may be declared
+as being a postfix operator, to represent the typical function call
+expression like ~f(x)~. This is done by adding the class keyword on
+the line together with an integer specifying the precedence:
 #+BEGIN_EXAMPLE
 "(" paren ")" postfix 10000
+#+END_EXAMPLE
+
+Another way to parse a function call expression is to leave the
+perentheses definition in token class Item and rely on the JUXTA
+operator which will be inserted between the function name -- provided
+that is parsed as an Item -- and the parentheses. One will probably
+give a rather high precedence to the JUXTA operator then.
+
+#+BEGIN_EXAMPLE
+"(" paren ")"
+JUXTA binary 2000
 #+END_EXAMPLE
 
 *** Example
