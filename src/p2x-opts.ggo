@@ -29,7 +29,7 @@ option "list-token" L "List token types" flag off
 option "list-classes" T "List token classes" flag off
 
 option "scan-only" s "Scan only, do not parse" flag off
-option "scanner" S "Select scanner class" string typestr="strings|no_strings" default="strings" multiple optional
+option "scanner" S "Select scanner class" string typestr="c|r|strings|no_strings" default="strings" multiple optional
 option "stdin-tty" -  "Read from stdin, even if it is a TTY" flag off
 
 section "Output options"
