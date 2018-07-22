@@ -33,8 +33,8 @@ http://stackoverflow.com/questions/8447701/c-parsing-library-with-utf-8-support
 */
 HIGHLET [\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF][\x80-\xBF]|[\xF0-\xF7][\x80-\xBF][\x80-\xBF][\x80-\xBF]
 LETTER {LOWER}|{UPPER}|{HIGHLET}
-IDINIT {LETTER}|{DOTSPACE}
-ID    {IDINIT}({LETTER}|{DIGIT}|{UNDERSCORE})*
+IDINIT {LETTER}|{DOT}
+ID    {IDINIT}({IDINIT}|{DIGIT}|{UNDERSCORE})*
 WHITE {SPACE}|[\t\r\v]
 INT   ("0x")?{DIGIT}+[uUlL]*
 FLOAT1 {DIGIT}+"."{DIGIT}+
