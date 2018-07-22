@@ -1743,11 +1743,23 @@ struct TreeXMLWriter {
 
 };
 
+static std::string getCopyright() {
+  return "Copyright (C) 2011-2018 Johannes Willkomm <johannes@johannes-willkomm.de>";
+}
+
+char const *vcs_version = VCS_REVISION;
+
+void writeVersionInfoXML(TreeXMLWriter::Options const &, std::string const &, std::ostream &out) {
+  out << "<!-- P2X version " << PACKAGE_VERSION << " (" << std::string(vcs_version).substr(0,8).c_str() << ") -->\n";
+  out << "<!-- " << getCopyright() << " -->\n";
+}
+
 void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
                   TreeXMLWriter::Options const &options, std::string const &indentUnit,
                   std::ostream &out, ScannerType scannerType) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+  writeVersionInfoXML(options, indentUnit, out);
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>" << treeXMLWriter.linebreak;
   out << treeXMLWriter.indentUnit << "<ca:steps/>" << treeXMLWriter.linebreak;
   out << treeXMLWriter.indentUnit << "<ca:scanner type='"
@@ -1763,6 +1775,7 @@ void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
                      std::ostream &out, ScannerType ) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+  writeVersionInfoXML(options, indentUnit, out);
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:c='" NAMESPACE_CA "' xmlns:ci='" NAMESPACE_CX "ignore'>" << treeXMLWriter.linebreak;
   treeXMLWriter.writeXML2_Stack(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
@@ -2063,7 +2076,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
 bool debugInit = false;
 
 void printCopyright() {
-  printf("Copyright (C) 2011-2018 Johannes Willkomm <johannes@johannes-willkomm.de>\n");
+  printf("%s\n", getCopyright().c_str());
 }
 
 void printBugreportInfo() {
@@ -2072,8 +2085,6 @@ void printBugreportInfo() {
 #endif
   printf("Report bugs to %s\n", PACKAGE_BUGREPORT);
 }
-
-char const *vcs_version = VCS_REVISION;
 
 void printVersion() {
   cmdline_parser_print_version();
