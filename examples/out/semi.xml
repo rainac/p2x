@@ -8,11 +8,9 @@
         <op code="68" type="NEWLINE">
          <op code="68" type="NEWLINE">
           <op code="68" type="NEWLINE">
-           <op code="56" type="SEMICOLON">
-            <op code="202" repr="a" type="IDENTIFIER">
-             <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
-            </op>
-            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">;</ca:text>
+           <op code="202" repr="a" type="IDENTIFIER">
+            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text>
+            <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="56" type="SEMICOLON"><ca:text>;</ca:text></ca:ignore>
            </op>
            <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
            <op code="56" type="SEMICOLON">
