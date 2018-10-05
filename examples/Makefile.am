@@ -22,5 +22,9 @@ out/fliesst.xml: p2xflags = -e latin1
 
 update-output: $(exampleoutput)
 
+force-update-output:
+	touch in/*.exp
+	make update-output
+
 clean-output:
 	$(RM) -f out/*.xml
