@@ -50,7 +50,7 @@ const char *gengetopt_args_info_full_help[] = {
   "  -L, --list-token              List token types  (default=off)",
   "  -T, --list-classes            List token classes  (default=off)",
   "  -s, --scan-only               Scan only, do not parse  (default=off)",
-  "  -S, --scanner=strings|no_strings\n                                Select scanner class  (default=`strings')",
+  "  -S, --scanner=c|r|strings|no_strings\n                                Select scanner class  (default=`strings')",
   "      --stdin-tty               Read from stdin, even if it is a TTY\n                                  (default=off)",
   "\nOutput options:",
   "  -o, --outfile=Filename        Write output to file",
