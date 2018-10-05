@@ -96,6 +96,10 @@ if test "$build_tests" = "yes"; then
    if test "x$TRANG" = "x"; then
       AC_MSG_ERROR([mandatory program trang was not found])
    fi
+   AC_CHECK_PROGS([VALGRIND], [valgrind])
+   if test "x$VALGRIND" = "x"; then
+      AC_MSG_ERROR([mandatory program valgrind was not found])
+   fi
 else
    defval_BUILD_TESTS=0
 fi
