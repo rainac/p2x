@@ -106,6 +106,7 @@ ReproduceMatlab() {
     echo -n "Parse with '$opts': file $infile"
     p2x $p2xopts $opts -p ../../examples/configs/default $infile > res.m
     cat > runscript.m <<EOF
+clear all
 run('res.m');
 fd = fopen('res.txt', 'w');
 fprintf(fd, '%s', reproduce(ans));
@@ -126,6 +127,7 @@ EOF
     echo -n "Parse with '$opts': file $infile"
     p2x $p2xopts $opts -p ../../examples/configs/default $infile > res2.m
     cat > runscript.m <<EOF
+clear all
 run('res2.m');
 fd = fopen('res.txt', 'w');
 fprintf(fd, '%s', reproduce(ans));
