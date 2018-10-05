@@ -101,6 +101,10 @@ AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([stddef.h unistd.h float.h ctype.h], , AC_MSG_ERROR([mandatory header file not found!]))
 AC_CHECK_HEADERS([cfloat cstdlib cstring cctype cunistd])
 
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADERS([FlexLexer.h], , AC_MSG_ERROR([mandatory header file not found!]))
+AC_LANG_POP([C++])
+
 # Create variables telling the operating system name in a string.
 AC_DEFINE_UNQUOTED(HOST_ARCH, "$target", [Host id string.])
 AC_DEFINE_UNQUOTED(HOST_CPU, "$target_cpu", [Host cpu type])
