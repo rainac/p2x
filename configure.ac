@@ -89,6 +89,17 @@ if test "$build_tests" = "yes"; then
    if test "x$XMLSTARLET" = "x"; then
       AC_MSG_ERROR([mandatory program xmlstarlet was not found])
    fi
+   AC_LANG_PUSH([C++])
+   AC_CHECK_HEADERS([cppunit/extensions/TestFactoryRegistry.h], , AC_MSG_ERROR([mandatory header file not found!]))
+   AC_LANG_POP([C++])
+   AC_CHECK_PROGS([TRANG], [trang])
+   if test "x$TRANG" = "x"; then
+      AC_MSG_ERROR([mandatory program trang was not found])
+   fi
+   AC_CHECK_PROGS([VALGRIND], [valgrind])
+   if test "x$VALGRIND" = "x"; then
+      AC_MSG_ERROR([mandatory program valgrind was not found])
+   fi
 else
    defval_BUILD_TESTS=0
 fi
@@ -100,6 +111,10 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([stddef.h unistd.h float.h ctype.h], , AC_MSG_ERROR([mandatory header file not found!]))
 AC_CHECK_HEADERS([cfloat cstdlib cstring cctype cunistd])
+
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADERS([FlexLexer.h], , AC_MSG_ERROR([mandatory header file not found!]))
+AC_LANG_POP([C++])
 
 # Create variables telling the operating system name in a string.
 AC_DEFINE_UNQUOTED(HOST_ARCH, "$target", [Host id string.])

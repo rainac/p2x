@@ -3,10 +3,17 @@
 run_suite() {
     echo "Run suite $1"
     ./$1
-    assertEquals "Test suite $1 has errors or failures" 0 $?
+    res=$?
+    assertEquals "Test suite $1 has errors or failures" 0 $res
+    if test "$res" = "0"; then
+	echo $1 >> ok.txt
+    else
+	echo $1 >> fail.txt
+    fi
 }
 
 test1() {
+    rm -f ok.txt fail.txt
     run_suite val_tests.sh
 }
 test2() {
