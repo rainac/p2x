@@ -135,6 +135,12 @@
   <c name="DOUBLE_LESS_EQUAL"/>
   <c name="DOUBLE_GREATER_EQUAL"/>
 
+  <c name="DOTMULT"/>
+  <c name="DOTDIV"/>
+  <c name="DOTBACKSLASH"/>
+  <c name="DOTPOW"/>
+  <c name="DOTAPOS"/>
+
   <c name="LAST"/>
 
 </ncdef>

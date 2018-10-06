@@ -8,5 +8,6 @@
   <c name="STRINGS"/>
   <c name="NO_STRINGS"/>
   <c name="R"/>
+  <c name="M"/>
   <c name="C"/>
 </ncdef>
