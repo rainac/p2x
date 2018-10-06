@@ -5,7 +5,7 @@
 #ifndef gennc_funcParserToken__hh
 #define gennc_funcParserToken__hh
 
-    inline std::ostream &operator << (std::ostream &out, Token::ParserToken t) {
+    inline std::ostream &operator << (std::ostream &out, ParserToken t) {
        out << Token::getParserTokenName(t);
        return out;
     }
