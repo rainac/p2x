@@ -10,6 +10,7 @@ src/code-xml.rnc
 src/code-xml.rng
 src/namespaces.hh
 src/p2xtests
+src/scanner*.cc
 stamp-h1
 svn-version.txt
 version.txt
