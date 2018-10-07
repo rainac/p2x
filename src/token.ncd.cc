@@ -113,6 +113,13 @@ static char const *getParserTokenName(unsigned long c) {
        case TOKEN_DOTBACKSLASH: return "DOTBACKSLASH";
        case TOKEN_DOTPOW: return "DOTPOW";
        case TOKEN_DOTAPOS: return "DOTAPOS";
+       case TOKEN_TRIPLE_DOT: return "TRIPLE_DOT";
+       case TOKEN_BACKSLASH_EQUAL: return "BACKSLASH_EQUAL";
+       case TOKEN_TILDE_EQUAL: return "TILDE_EQUAL";
+       case TOKEN_DOT_MULT_EQUAL: return "DOT_MULT_EQUAL";
+       case TOKEN_DOT_DIV_EQUAL: return "DOT_DIV_EQUAL";
+       case TOKEN_DOT_BACKSLASH_EQUAL: return "DOT_BACKSLASH_EQUAL";
+       case TOKEN_DOT_POW_EQUAL: return "DOT_POW_EQUAL";
        case TOKEN_LAST: return "LAST"; 
         default: break;
       }
@@ -229,6 +236,13 @@ static char const *getParserTokenName(unsigned long c) {
        case TOKEN_DOTBACKSLASH: return "";
        case TOKEN_DOTPOW: return "";
        case TOKEN_DOTAPOS: return "";
+       case TOKEN_TRIPLE_DOT: return "";
+       case TOKEN_BACKSLASH_EQUAL: return "";
+       case TOKEN_TILDE_EQUAL: return "";
+       case TOKEN_DOT_MULT_EQUAL: return "";
+       case TOKEN_DOT_DIV_EQUAL: return "";
+       case TOKEN_DOT_BACKSLASH_EQUAL: return "";
+       case TOKEN_DOT_POW_EQUAL: return "";
        case TOKEN_LAST: return ""; 
         default: break;
       }
@@ -564,6 +578,27 @@ static char const *getParserTokenName(unsigned long c) {
        } else if (strcasecmp("DOTAPOS", name) == 0
           || strcasecmp("TOKEN_DOTAPOS", name) == 0) {
           return TOKEN_DOTAPOS; 
+       } else if (strcasecmp("TRIPLE_DOT", name) == 0
+          || strcasecmp("TOKEN_TRIPLE_DOT", name) == 0) {
+          return TOKEN_TRIPLE_DOT; 
+       } else if (strcasecmp("BACKSLASH_EQUAL", name) == 0
+          || strcasecmp("TOKEN_BACKSLASH_EQUAL", name) == 0) {
+          return TOKEN_BACKSLASH_EQUAL; 
+       } else if (strcasecmp("TILDE_EQUAL", name) == 0
+          || strcasecmp("TOKEN_TILDE_EQUAL", name) == 0) {
+          return TOKEN_TILDE_EQUAL; 
+       } else if (strcasecmp("DOT_MULT_EQUAL", name) == 0
+          || strcasecmp("TOKEN_DOT_MULT_EQUAL", name) == 0) {
+          return TOKEN_DOT_MULT_EQUAL; 
+       } else if (strcasecmp("DOT_DIV_EQUAL", name) == 0
+          || strcasecmp("TOKEN_DOT_DIV_EQUAL", name) == 0) {
+          return TOKEN_DOT_DIV_EQUAL; 
+       } else if (strcasecmp("DOT_BACKSLASH_EQUAL", name) == 0
+          || strcasecmp("TOKEN_DOT_BACKSLASH_EQUAL", name) == 0) {
+          return TOKEN_DOT_BACKSLASH_EQUAL; 
+       } else if (strcasecmp("DOT_POW_EQUAL", name) == 0
+          || strcasecmp("TOKEN_DOT_POW_EQUAL", name) == 0) {
+          return TOKEN_DOT_POW_EQUAL; 
        } else if (strcasecmp("LAST", name) == 0
           || strcasecmp("TOKEN_LAST", name) == 0) {
           return TOKEN_LAST;  
@@ -578,7 +613,7 @@ static char const *getParserTokenName(unsigned long c) {
        }
     }
     static unsigned long getNumParserToken() {
-      return 110;
+      return 117;
     }
     static ParserToken getParserToken(int which) {
       switch(which) { 
@@ -691,7 +726,14 @@ static char const *getParserTokenName(unsigned long c) {
        case 106: return TOKEN_DOTBACKSLASH;
        case 107: return TOKEN_DOTPOW;
        case 108: return TOKEN_DOTAPOS;
-       case 109: return TOKEN_LAST; 
+       case 109: return TOKEN_TRIPLE_DOT;
+       case 110: return TOKEN_BACKSLASH_EQUAL;
+       case 111: return TOKEN_TILDE_EQUAL;
+       case 112: return TOKEN_DOT_MULT_EQUAL;
+       case 113: return TOKEN_DOT_DIV_EQUAL;
+       case 114: return TOKEN_DOT_BACKSLASH_EQUAL;
+       case 115: return TOKEN_DOT_POW_EQUAL;
+       case 116: return TOKEN_LAST; 
        default: break;
       }
       fprintf(stderr, "error: ParserToken constant index %d out of range\n",
