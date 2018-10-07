@@ -102,6 +102,18 @@ STRING2 "'"[^\'\n]*"'"
 ".^"                    BEGIN(STARTEXP); return TOKEN_DOTPOW;
 ".'"                    BEGIN(STARTEXP); return TOKEN_DOTAPOS;
 
+"+="                    BEGIN(STARTEXP); return TOKEN_PLUS_EQUAL;
+"-="                    BEGIN(STARTEXP); return TOKEN_MINUS_EQUAL;
+"/="                    BEGIN(STARTEXP); return TOKEN_DIV_EQUAL;
+"\\="                   BEGIN(STARTEXP); return TOKEN_BACKSLASH_EQUAL;
+"*="                    BEGIN(STARTEXP); return TOKEN_MULT_EQUAL;
+"^="                    BEGIN(STARTEXP); return TOKEN_POW_EQUAL;
+
+"./="                   BEGIN(STARTEXP); return TOKEN_DOT_DIV_EQUAL;
+".\\="                  BEGIN(STARTEXP); return TOKEN_DOT_BACKSLASH_EQUAL;
+".*="                   BEGIN(STARTEXP); return TOKEN_DOT_MULT_EQUAL;
+".^="                   BEGIN(STARTEXP); return TOKEN_DOT_POW_EQUAL;
+
 "#"                     BEGIN(INITIAL); return TOKEN_HASH;
 
 {CR}                    BEGIN(STARTEXP); return TOKEN_CRETURN;
