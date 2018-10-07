@@ -90,7 +90,6 @@ STRING {STRING1}|{STRING2}
 "&&"                    return TOKEN_DOUBLE_AND;
 "|"                     return TOKEN_OR;
 "||"                    return TOKEN_DOUBLE_OR;
-"^"                     return TOKEN_POW;
 
 "++"                    return TOKEN_DOUBLE_PLUS;
 "--"                    return TOKEN_DOUBLE_MINUS;
@@ -100,6 +99,18 @@ STRING {STRING1}|{STRING2}
 "/"                     return TOKEN_DIV;
 "*"                     return TOKEN_MULT;
 "%"                     return TOKEN_MOD;
+
+"*"                     return TOKEN_MULT;
+"/"                     return TOKEN_DIV;
+"\\"                    return TOKEN_BACKSLASH;
+"^"                     return TOKEN_POW;
+"'"                     return TOKEN_APOS;
+
+".*"                    return TOKEN_DOTMULT;
+"./"                    return TOKEN_DOTDIV;
+".\\"                   return TOKEN_DOTBACKSLASH;
+".^"                    return TOKEN_DOTPOW;
+".'"                    return TOKEN_DOTAPOS;
 
 "&="                    return TOKEN_AND_EQUAL;
 "|="                    return TOKEN_OR_EQUAL;
