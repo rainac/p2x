@@ -13,6 +13,7 @@ See the file p2x.cc for copying conditions.
 %}
 
 %option c++
+%s STARTEXP
 
 SPACE " "
 NL    "\n"
@@ -40,101 +41,76 @@ FLOATSUFFIX ([eEdD][+-]?{DIGIT}+)?[lLfFiI]?
 FLOAT ({FLOAT1}|{FLOAT2}|{FLOAT3}){FLOATSUFFIX}
 STRING1 "\""[^\"\n]*"\""
 STRING2 "'"[^\'\n]*"'"
-STRING {STRING1}|{STRING2}
 
 %%
 
-{INT}                   return TOKEN_INTEGER;
-{STRING}                return TOKEN_STRING;
-{FLOAT}                 return TOKEN_FLOAT;
-{DIGIT}+"."/[^.*/\\^]   return TOKEN_FLOAT;
+{INT}                   BEGIN(INITIAL);  return TOKEN_INTEGER;
+{STRING1}               BEGIN(STARTEXP); return TOKEN_STRING;
+<STARTEXP>{STRING2}     BEGIN(STARTEXP); return TOKEN_STRING;
+{FLOAT}                 BEGIN(INITIAL);  return TOKEN_FLOAT;
+{DIGIT}+"."/[^.*/\\^]   BEGIN(INITIAL);  return TOKEN_FLOAT;
 
-"("                     return TOKEN_L_PAREN;
-")"                     return TOKEN_R_PAREN;
+"("                     BEGIN(STARTEXP); return TOKEN_L_PAREN;
+")"                     BEGIN(INITIAL); return TOKEN_R_PAREN;
 
-"{"                     return TOKEN_L_BRACE;
-"}"                     return TOKEN_R_BRACE;
+"{"                     BEGIN(STARTEXP); return TOKEN_L_BRACE;
+"}"                     BEGIN(INITIAL); return TOKEN_R_BRACE;
 
-"["                     return TOKEN_L_BRACKET;
-"]"                     return TOKEN_R_BRACKET;
+"["                     BEGIN(STARTEXP); return TOKEN_L_BRACKET;
+"]"                     BEGIN(INITIAL); return TOKEN_R_BRACKET;
 
-"[["                    return TOKEN_DOUBLE_L_BRACKET;
-"]]"                    return TOKEN_DOUBLE_R_BRACKET;
+"="                     BEGIN(STARTEXP); return TOKEN_EQUAL;
 
-"="                     return TOKEN_EQUAL;
+"<"                     BEGIN(STARTEXP); return TOKEN_LESS;
+">"                     BEGIN(STARTEXP); return TOKEN_GREATER;
 
-"->"                    return TOKEN_MINUS_GREATER;
+"<="                    BEGIN(STARTEXP); return TOKEN_LE;
+">="                    BEGIN(STARTEXP); return TOKEN_GE;
 
-"<<"                    return TOKEN_DOUBLE_LESS;
-">>"                    return TOKEN_DOUBLE_GREATER;
+"=="                    BEGIN(STARTEXP); return TOKEN_DOUBLE_EQUAL;
+"!="                    BEGIN(STARTEXP); return TOKEN_NOT_EQUAL;
+"~="                    BEGIN(STARTEXP); return TOKEN_NOT_EQUAL;
 
-"<"                     return TOKEN_LESS;
-">"                     return TOKEN_GREATER;
+"~"                     BEGIN(STARTEXP); return TOKEN_TILDE;
+"!"                     BEGIN(STARTEXP); return TOKEN_EXCLAM;
+"?"                     BEGIN(STARTEXP); return TOKEN_QUESTION;
+":"                     BEGIN(STARTEXP); return TOKEN_COLON;
+","                     BEGIN(STARTEXP); return TOKEN_COMMA;
+";"                     BEGIN(STARTEXP); return TOKEN_SEMICOLON;
+"."                     BEGIN(STARTEXP); return TOKEN_FULL_STOP;
 
-"<="                    return TOKEN_LE;
-">="                    return TOKEN_GE;
+"&"                     BEGIN(STARTEXP); return TOKEN_AND;
+"&&"                    BEGIN(STARTEXP); return TOKEN_DOUBLE_AND;
+"|"                     BEGIN(STARTEXP); return TOKEN_OR;
+"||"                    BEGIN(STARTEXP); return TOKEN_DOUBLE_OR;
 
-"=="                    return TOKEN_DOUBLE_EQUAL;
-"!="                    return TOKEN_NOT_EQUAL;
-"~="                    return TOKEN_NOT_EQUAL;
+"+"                     BEGIN(STARTEXP); return TOKEN_PLUS;
+"-"                     BEGIN(STARTEXP); return TOKEN_MINUS;
+"/"                     BEGIN(STARTEXP); return TOKEN_DIV;
+"*"                     BEGIN(STARTEXP); return TOKEN_MULT;
+"%"                     BEGIN(STARTEXP); return TOKEN_MOD;
 
-"~"                     return TOKEN_TILDE;
-"!"                     return TOKEN_EXCLAM;
-"?"                     return TOKEN_QUESTION;
-":"                     return TOKEN_COLON;
-"::"                    return TOKEN_DOUBLE_COLON;
-","                     return TOKEN_COMMA;
-";"                     return TOKEN_SEMICOLON;
-"."                     return TOKEN_FULL_STOP;
+"*"                     BEGIN(STARTEXP); return TOKEN_MULT;
+"/"                     BEGIN(STARTEXP); return TOKEN_DIV;
+"\\"                    BEGIN(STARTEXP); return TOKEN_BACKSLASH;
+"^"                     BEGIN(STARTEXP); return TOKEN_POW;
+"'"                     BEGIN(STARTEXP); return TOKEN_APOS;
 
-"&"                     return TOKEN_AND;
-"&&"                    return TOKEN_DOUBLE_AND;
-"|"                     return TOKEN_OR;
-"||"                    return TOKEN_DOUBLE_OR;
+".*"                    BEGIN(STARTEXP); return TOKEN_DOTMULT;
+"./"                    BEGIN(STARTEXP); return TOKEN_DOTDIV;
+".\\"                   BEGIN(STARTEXP); return TOKEN_DOTBACKSLASH;
+".^"                    BEGIN(STARTEXP); return TOKEN_DOTPOW;
+".'"                    BEGIN(STARTEXP); return TOKEN_DOTAPOS;
 
-"++"                    return TOKEN_DOUBLE_PLUS;
-"--"                    return TOKEN_DOUBLE_MINUS;
+"#"                     BEGIN(INITIAL); return TOKEN_HASH;
 
-"+"                     return TOKEN_PLUS;
-"-"                     return TOKEN_MINUS;
-"/"                     return TOKEN_DIV;
-"*"                     return TOKEN_MULT;
-"%"                     return TOKEN_MOD;
+{CR}                    BEGIN(STARTEXP); return TOKEN_CRETURN;
+{NL}                    BEGIN(STARTEXP); return TOKEN_NEWLINE;
+{TAB}                   BEGIN(STARTEXP); return TOKEN_TAB;
+{SPACE}+                BEGIN(STARTEXP); return TOKEN_SPACE;
+{ID}                    BEGIN(INITIAL); return TOKEN_IDENTIFIER;
 
-"*"                     return TOKEN_MULT;
-"/"                     return TOKEN_DIV;
-"\\"                    return TOKEN_BACKSLASH;
-"^"                     return TOKEN_POW;
-"'"                     return TOKEN_APOS;
-
-".*"                    return TOKEN_DOTMULT;
-"./"                    return TOKEN_DOTDIV;
-".\\"                   return TOKEN_DOTBACKSLASH;
-".^"                    return TOKEN_DOTPOW;
-".'"                    return TOKEN_DOTAPOS;
-
-"&="                    return TOKEN_AND_EQUAL;
-"|="                    return TOKEN_OR_EQUAL;
-"^="                    return TOKEN_POW_EQUAL;
-
-"+="                    return TOKEN_PLUS_EQUAL;
-"-="                    return TOKEN_MINUS_EQUAL;
-"/="                    return TOKEN_DIV_EQUAL;
-"*="                    return TOKEN_MULT_EQUAL;
-"%="                    return TOKEN_MOD_EQUAL;
-
-"<<="                   return TOKEN_DOUBLE_LESS_EQUAL;
-">>="                   return TOKEN_DOUBLE_GREATER_EQUAL;
-
-"#"                     return TOKEN_HASH;
-
-{CR}                    return TOKEN_CRETURN;
-{NL}                    return TOKEN_NEWLINE;
-{TAB}                   return TOKEN_TAB;
-{SPACE}+                return TOKEN_SPACE;
-{ID}                    return TOKEN_IDENTIFIER;
-
-.                       return TOKEN_ILLEGAL_CHAR;
+.                       BEGIN(INITIAL); return TOKEN_ILLEGAL_CHAR;
 
 %%
 
