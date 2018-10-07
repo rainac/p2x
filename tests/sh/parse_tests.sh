@@ -6,7 +6,8 @@ checkParseTreeEqual() {
     infile=$1
     exp=$2
     opts="$3"
-    p2x $opts -p ../../examples/configs/default ../../examples/in/$infile > res.xml
+    config="${4:-../../examples/configs/default}"
+    p2x $opts -p $config ../../examples/in/$infile > res.xml
     xsltproc -o res.txt ../../src/xsl/parens.xsl res.xml
     res=$(cat res.txt)
     echo "$infile: $(cat ../../examples/in/$infile)  =>  $res"
@@ -239,6 +240,14 @@ testParseTreeEqual_juxta_binary() {
 
 testParseTreeEqual_juxta_binary2() {
     checkParseTreeEqual juxta-binary2.exp "[PLUS]([PLUS](1, [MULT](3)), 5)"
+}
+
+testParseTreeEqual_matlab_floats() {
+    checkParseTreeEqual floatmatlab.exp "[NEWLINE]([DOTMULT](12., 13.4), [DOTMULT](12, 13.4), [DOTBACKSLASH](12, 13.4I), [DOTDIV](12, 13.4), [DOTPOW](12, 13.4))" "-S m" ../../examples/configs/matlab.p2c
+}
+
+testParseTreeEqual_matlab_strings() {
+    checkParseTreeEqual stringsmatlab.exp "[NEWLINE]([L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([APOS](a), [APOS](b)), [APOS](c)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]('sd', 'sd'), 'sd'))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA](a, ' b'), [APOS](c)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA]([JUXTA]([JUXTA](a, ' b '), [L_PAREN]()), [L_BRACKET](., [R_BRACKET](c))), [APOS]([R_PAREN]())), [APOS](d)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA](a, ' b '), ' c '), ' d '))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA]([JUXTA]([JUXTA](a, ' b '), [L_PAREN]()), [L_BRACKET](., [R_BRACKET](c))), [R_PAREN]()), ' d'))))" "-S m" ../../examples/configs/matlab.p2c
 }
 
 . shunit2
