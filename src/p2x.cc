@@ -181,6 +181,7 @@ struct TokenProto : public Token {
   OutputMode outputMode;
   typedef std::map<unsigned, TokenProto> EndList;
   EndList endList;
+  std::set<ParserToken> ignoreAfter;
   TokenProto() :
     precedence(),
     unaryPrecedence(),
@@ -751,9 +752,10 @@ struct Parser {
   EndList endList;
   typedef std::map<int, Token*> LPrecMap;
   LPrecMap leastMap;
+  Token *m_lastToken;
 
   Parser(TokenInfo const &tokenInfo, Options const &options, TokenList &tokenList) :
-    root(), tokenInfo(tokenInfo), options(options), tokenList(tokenList) {
+    root(), tokenInfo(tokenInfo), options(options), tokenList(tokenList), m_lastToken() {
     endList.insert(std::make_pair(unsigned(TOKEN_EOF), Token(TOKEN_EOF, "")));
   }
 
@@ -910,9 +912,14 @@ struct Parser {
 #ifndef NDEBUG
     ls(LS::DEBUG|LS::PARSE) << "mode = " << firstMode << "\n";
 #endif
+    TokenProto const *tp = tokenInfo.getProto(first);
     if (firstMode == MODE_BINARY
-        and tokenInfo.getProto(first)->ignoreIfStray
+        and tp->ignoreIfStray
         and rightEdgeOpen()) {
+      firstMode = MODE_IGNORE;
+    }
+    if (m_lastToken and tp
+        and tp->ignoreAfter.find(m_lastToken->token) != tp->ignoreAfter.end()) {
       firstMode = MODE_IGNORE;
     }
     switch(firstMode) {
@@ -939,6 +946,7 @@ struct Parser {
       exit(1);
       break;
     }
+    m_lastToken = first;
   }
 
   Token *parse() {
@@ -1987,6 +1995,18 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
           continue;
         }
         Token token(opCode, opText);
+
+        if (itemList[1]->text == "ignoreAfter") {
+          ParserToken opCode2 = TOKEN_EOF;
+          std::string opText2;
+          parseOpCodeText(lexer, itemList[2], opCode2, opText2);
+          if (tokenInfo.getProto(&token) == 0) {
+            cnfls(LS::ERROR|LS::CONFIG) << "config: error: Token " << opText << " must be defined first\n";
+          } else {
+            tokenInfo.getProto(&token)->ignoreAfter.insert(opCode2);
+          }
+          continue;
+        }
 
         // parse mode field
         ParserMode mode = parseModeField(itemList[1]);
