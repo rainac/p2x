@@ -34,9 +34,9 @@ ID    {IDINIT}({LETTER}|{DIGIT}|{UNDERSCORE})*
 WHITE {SPACE}|[\t\r\v]
 INT   ("0x")?{DIGIT}+[uUlL]*
 FLOAT1 {DIGIT}+"."{DIGIT}+
-FLOAT2 {DIGIT}+("."{DIGIT}*)?
+FLOAT2 {DIGIT}+("."{DIGIT}+)?
 FLOAT3 {DIGIT}*"."{DIGIT}+
-FLOATSUFFIX ([eEdD][+-]?{DIGIT}+)?[lLfF]?
+FLOATSUFFIX ([eEdD][+-]?{DIGIT}+)?[lLfFiI]?
 FLOAT ({FLOAT1}|{FLOAT2}|{FLOAT3}){FLOATSUFFIX}
 STRING1 "\""[^\"\n]*"\""
 STRING2 "'"[^\'\n]*"'"
@@ -47,6 +47,7 @@ STRING {STRING1}|{STRING2}
 {INT}                   return TOKEN_INTEGER;
 {STRING}                return TOKEN_STRING;
 {FLOAT}                 return TOKEN_FLOAT;
+{DIGIT}+"."/[^.*/\\^]   return TOKEN_FLOAT;
 
 "("                     return TOKEN_L_PAREN;
 ")"                     return TOKEN_R_PAREN;
