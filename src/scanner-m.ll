@@ -110,6 +110,8 @@ STRING2 "'"[^\'\n]*"'"
 {SPACE}+                BEGIN(STARTEXP); return TOKEN_SPACE;
 {ID}                    BEGIN(INITIAL); return TOKEN_IDENTIFIER;
 
+"..""."+                BEGIN(STARTEXP); return TOKEN_TRIPLE_DOT;
+
 .                       BEGIN(INITIAL); return TOKEN_ILLEGAL_CHAR;
 
 %%
