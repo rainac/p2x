@@ -1,6 +1,6 @@
 /*
 This file is part of P2X.
-Copyright © 2013 Johannes Willkomm
+Copyright © 2018 Johannes Willkomm
 See the file p2x.cc for copying conditions.
 */
 
