@@ -49,6 +49,10 @@ Copyright (C) 2011-2018 Johannes Willkomm
 #include <FlexLexer.h>
 
 #undef  yyFlexLexer
+#define yyFlexLexer scanMFlexLexer
+#include <FlexLexer.h>
+
+#undef  yyFlexLexer
 #define yyFlexLexer scanCFlexLexer
 #include <FlexLexer.h>
 
@@ -642,6 +646,9 @@ struct Lexer {
       break;
     case SCANNER_R:
       m_flexLexer = new scanRFlexLexer();
+      break;
+    case SCANNER_M:
+      m_flexLexer = new scanMFlexLexer();
       break;
     case SCANNER_C:
       m_flexLexer = new scanCFlexLexer();
