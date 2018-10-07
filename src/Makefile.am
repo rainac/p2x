@@ -9,7 +9,7 @@ if acond_BUILD_TESTS
 bin_PROGRAMS += p2xtests
 endif
 
-p2x_FLEX_SRCS = scanner.ll scanner-no-strings.ll scanner-r.ll scanner-c.ll
+p2x_FLEX_SRCS = scanner.ll scanner-no-strings.ll scanner-m.ll scanner-r.ll scanner-c.ll
 p2x_SOURCES = p2x.cc $(p2x_FLEX_SRCS) p2x-opts.cc token.cc logger.cc
 p2xtests_SOURCES = p2xtests.cc scanner.ll scanner-no-strings.ll p2x-opts.cc token.cc logger.cc
 
@@ -49,6 +49,7 @@ flexPrefix = scan
 
 scanner-no-strings.cc: flexPrefix = scanNS
 scanner-r.cc: flexPrefix = scanR
+scanner-m.cc: flexPrefix = scanM
 scanner-c.cc: flexPrefix = scanC
 
 # scanner-no-strings.ll is produced by deleting the line which matches strings
