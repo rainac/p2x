@@ -141,6 +141,16 @@
   <c name="DOTPOW"/>
   <c name="DOTAPOS"/>
 
+  <c name="TRIPLE_DOT"/>
+
+  <c name="BACKSLASH_EQUAL"/>
+  <c name="TILDE_EQUAL"/>
+
+  <c name="DOT_MULT_EQUAL"/>
+  <c name="DOT_DIV_EQUAL"/>
+  <c name="DOT_BACKSLASH_EQUAL"/>
+  <c name="DOT_POW_EQUAL"/>
+
   <c name="LAST"/>
 
 </ncdef>
