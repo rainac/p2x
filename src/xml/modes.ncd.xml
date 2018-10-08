@@ -10,5 +10,6 @@
   <c name="POSTFIX"/>
   <c name="BINARY"/>
   <c name="UNARY_BINARY"/>
+  <c name="LINE_COMMENT"/>
   <c name="PAREN" val="32"/>
 </ncdef>

@@ -85,6 +85,8 @@ STRING {STRING1}|{STRING2}
 "\""                    return TOKEN_QUOTE;
 "'"                     return TOKEN_APOS;
 
+"//"                    return TOKEN_DOUBLE_DIV;
+
 {CR}                    return TOKEN_CRETURN;
 {NL}                    return TOKEN_NEWLINE;
 {TAB}                   return TOKEN_TAB;

@@ -11,8 +11,8 @@
 #set -x
 GENNC=${GENNC:-gennc}
 
-$GENNC -n Token xml/token.ncd.xml
-$GENNC -n LS -i xml/logger.ncd.xml
+$GENNC -i -n Token xml/token.ncd.xml
+$GENNC -n LS -i -I xml/logger.ncd.xml
 $GENNC -f xml/modes.ncd.xml
 $GENNC -f xml/assoc.ncd.xml
 $GENNC -f xml/scanners.ncd.xml

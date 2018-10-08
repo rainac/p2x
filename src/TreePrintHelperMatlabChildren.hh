@@ -175,15 +175,17 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
       writeSFLocAttrs(t);
 
       aus << comma << namequote << "i" << namequote << nvsep;
-      aus << namequote;
-      if (t->ignore) {
-        Token *ignore = t->ignore;
-        while (ignore) {
-          *textout << ignore->text;
-          ignore = ignore->ignore;
-        }
+      std::string rtIgnore = getIgnore(t);
+      bool const anySpecial = check(rtIgnore);
+      if (anySpecial and stringconcat) {
+	aus << "[";
       }
       aus << namequote;
+      *textout << rtIgnore;
+      aus << namequote;
+      if (anySpecial and stringconcat) {
+	aus << "]";
+      }
 
       aus << comma << namequote << "c" << namequote << nvsep << childStart;
 

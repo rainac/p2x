@@ -20,7 +20,8 @@ test_ReproduceMerged() {
     for i in ../../examples/in/*.exp; do
         #        echo "Parse test file $i"
 	if test $(basename $i) = "low-prec-binary-seps.exp" \
-	   || test $(basename $i) = "low-prec-binary-seps2.exp"
+	   || test $(basename $i) = "low-prec-binary-seps2.exp" \
+	   || test $(basename $i) = "line-comment2.exp"
 	then
 	    # in merged mode with non-XML output it si not always possible to reproduce ignored token exactly
 	    continue
@@ -42,7 +43,8 @@ test_ReproduceMerged_Indent() {
     for i in ../../examples/in/*.exp; do
         #        echo "Parse test file $i"
 	if test $(basename $i) = "low-prec-binary-seps.exp" \
-	   || test $(basename $i) = "low-prec-binary-seps2.exp"
+	   || test $(basename $i) = "low-prec-binary-seps2.exp" \
+	   || test $(basename $i) = "line-comment2.exp"
 	then
 	    # in merged mode with non-XML output it si not always possible to reproduce ignored token exactly
 	    continue

@@ -1,0 +1,5 @@
+// Test comment * /
+int f(char a) { return a+1; }
+// Test comment II
+int g(char a) { return a+1; // eol comment
+}

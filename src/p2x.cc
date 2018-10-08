@@ -941,6 +941,9 @@ struct Parser {
     case MODE_UNARY_BINARY:
       pushUnaryBinary(first);
       break;
+    case MODE_LINE_COMMENT:
+      pushIgnore(first);
+      break;
     default:
       ls(LS::ERROR|LS::PARSE) << "Parser: error: invalid mode " << firstMode << "\n";
       exit(1);
@@ -968,6 +971,13 @@ struct Parser {
       } else if (first->token == TOKEN_EOF) {
         ls(LS::WARNING) << "unexpected end of input encountered" << std::endl;
         endFound = true;
+      } else if (tokenInfo.mode(first) == MODE_LINE_COMMENT) {
+	Token *next = 0;
+	do {
+	  next = tokenList.next();
+	  first->text += next->text;
+	} while (next->token != TOKEN_NEWLINE and next->token != TOKEN_EOF and endList.find(tokenInfo.getOpCode(next)) == endList.end());
+        insertToken(first);
       } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
         parser.endList = tokenInfo.endList(first);
@@ -1254,8 +1264,21 @@ struct TreeXMLWriter {
     } else if (t->text.size()) {
       aus << "<ca:text>";
       XMLOstream x(aus);
-      x << t->text;
+      // ignore may end with NEWLINE, either because it is TOKEN_NEWLINE or it is a line comment
+      if (t->text.back() == '\n') {
+	x << t->text.substr(0, t->text.size()-1);
+	if (options.newlineAsEntity)
+	  aus << "&#xa;";
+	else if (options.newlineAsBr)
+	  ; // handled below
+	else
+	  aus << "\n";
+      } else {
+	x << t->text;
+      }
       aus << "</ca:text>";
+      if (options.newlineAsBr and t->text.back() == '\n')
+	aus << "<ca:br/>";
       res = 1;
     }
     return res;

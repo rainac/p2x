@@ -99,3 +99,5 @@ tab ignore 1
 "plus" binary 1000
 "minus" binary 1000
 "times" binary 1100
+
+"//" line_comment 1

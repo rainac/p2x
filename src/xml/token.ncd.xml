@@ -151,6 +151,11 @@
   <c name="DOT_BACKSLASH_EQUAL"/>
   <c name="DOT_POW_EQUAL"/>
 
+  <c name="DOUBLE_DIV"/>
+
+  <c name="C_COMMENT_START"/>
+  <c name="C_COMMENT_END"/>
+
   <c name="LAST"/>
 
 </ncdef>
