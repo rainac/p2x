@@ -243,11 +243,11 @@ testParseTreeEqual_juxta_binary2() {
 }
 
 testParseTreeEqual_matlab_floats() {
-    checkParseTreeEqual floatmatlab.exp "[NEWLINE]([DOTMULT](12., 13.4), [DOTMULT](12, 13.4), [DOTBACKSLASH](12, 13.4I), [DOTDIV](12, 13.4), [DOTPOW](12, 13.4))" "-S m" ../../examples/configs/matlab.p2c
+    checkParseTreeEqual floatmatlab.exp "[NEWLINE]([DOTMULT](12., 13.4), [DOTMULT](12, 13.4), [DOTBACKSLASH](12, 13.4I), [DOTDIV](12, 13.4), [DOTPOW](12, 13.4))" "-S m" ../../examples/configs-special/matlab.p2c
 }
 
 testParseTreeEqual_matlab_strings() {
-    checkParseTreeEqual stringsmatlab.exp "[NEWLINE]([L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([APOS](a), [APOS](b)), [APOS](c)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]('sd', 'sd'), 'sd'))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA](a, ' b'), [APOS](c)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA]([JUXTA]([JUXTA](a, ' b '), [L_PAREN]()), [L_BRACKET](., [R_BRACKET](c))), [APOS]([R_PAREN]())), [APOS](d)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA](a, ' b '), ' c '), ' d '))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA]([JUXTA]([JUXTA](a, ' b '), [L_PAREN]()), [L_BRACKET](., [R_BRACKET](c))), [R_PAREN]()), ' d'))))" "-S m" ../../examples/configs/matlab.p2c
+    checkParseTreeEqual stringsmatlab.exp "[NEWLINE]([L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([APOS](a), [APOS](b)), [APOS](c)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]('sd', 'sd'), 'sd'))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA](a, ' b'), [APOS](c)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA](a, ' b '), [APOS]([L_PAREN](., [R_PAREN]([L_BRACKET](., [R_BRACKET](c)))))), [APOS](d)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA](a, ' b '), ' c '), ' d '))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA](a, ' b '), [L_PAREN](., [R_PAREN]([L_BRACKET](., [R_BRACKET](c))))), ' d'))))" "-S m" ../../examples/configs-special/matlab.p2c
 }
 
 . shunit2
