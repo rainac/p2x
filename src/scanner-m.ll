@@ -114,6 +114,8 @@ STRING2 "'"[^\'\n]*"'"
 ".*="                   BEGIN(STARTEXP); return TOKEN_DOT_MULT_EQUAL;
 ".^="                   BEGIN(STARTEXP); return TOKEN_DOT_POW_EQUAL;
 
+"@"                     BEGIN(STARTEXP); return TOKEN_AT;
+
 "#"                     BEGIN(INITIAL); return TOKEN_HASH;
 
 {CR}                    BEGIN(STARTEXP); return TOKEN_CRETURN;
