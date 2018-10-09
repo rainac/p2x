@@ -257,4 +257,8 @@ testParseTreeEqual_matlab_strings() {
     checkParseTreeEqual stringsmatlab.exp "[NEWLINE]([L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([APOS](a), [APOS](b)), [APOS](c)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]('sd', 'sd'), 'sd'))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA](a, ' b'), [APOS](c)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA](a, ' b '), [APOS]([L_PAREN](., [R_PAREN]([L_BRACKET](., [R_BRACKET](c)))))), [APOS](d)))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA](a, ' b '), ' c '), ' d '))), [L_BRACKET](., [R_BRACKET]([JUXTA]([JUXTA]([JUXTA](a, ' b '), [L_PAREN](., [R_PAREN]([L_BRACKET](., [R_BRACKET](c))))), ' d'))))" "-S m" ../../examples/configs-special/matlab.p2c
 }
 
+testParseTreeEqual_linecomment_newline() {
+    checkParseTreeEqual lncnl.exp "[NEWLINE](test, test)"
+}
+
 . shunit2
