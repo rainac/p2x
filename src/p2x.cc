@@ -973,11 +973,21 @@ struct Parser {
         endFound = true;
       } else if (tokenInfo.mode(first) == MODE_LINE_COMMENT) {
 	Token *next = 0;
-	do {
+	while(true) {
 	  next = tokenList.next();
+          if (next->token == TOKEN_NEWLINE) {
+            break;
+          } else if (next->token == TOKEN_EOF) {
+            ls(LS::WARNING) << "unexpected end of input encountered" << std::endl;
+            endFound = true;
+            break;
+          }
 	  first->text += next->text;
-	} while (next->token != TOKEN_NEWLINE and next->token != TOKEN_EOF and endList.find(tokenInfo.getOpCode(next)) == endList.end());
+	}
         insertToken(first);
+        if (next->token == TOKEN_NEWLINE) {
+          insertToken(next);
+        }
       } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
         parser.endList = tokenInfo.endList(first);
