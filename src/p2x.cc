@@ -1432,23 +1432,7 @@ struct TreeXMLWriter {
       }
     }
 
-  void writeIgnoreXML(Token *t, Indent const &indent) {
-    if (t->ignore) {
-      writeIgnoreXML(t->ignore, indent);
-    }
-    aus << indent << "<ci:" << Token::getParserTokenName(t->token);
-    if (m_xmlWriter.options.id)
-      aus << " id='" << t->id << "'";
-    m_xmlWriter.writeXMLLocAttrs(t, aus);
-    // writeXMLTypeAttrs(t, aus);
-    aus << ">" << t->text << "</ci:" << Token::getParserTokenName(t->token) << ">" << m_xmlWriter.linebreak;
-  }
-
-  bool writeXMLTextElem(Token const *t, Indent const &indent) {
-    bool res = 0;
-    if (t->text.size() and (t->left or t->right or t->ignore)) {
-      aus << indent;
-    }
+  void writeSingleTokenTextNode(Token const *t) {
     if (t->token == TOKEN_NEWLINE) {
       if (m_xmlWriter.options.newlineAsBr) {
         aus << "<c:br/>";
@@ -1461,7 +1445,6 @@ struct TreeXMLWriter {
         }
         aus << "</c:t>";
       }
-      res = 1;
     } else if (t->token == TOKEN_CRETURN) {
       if (m_xmlWriter.options.newlineAsBr) {
         aus << "<c:cr/>";
@@ -1474,15 +1457,37 @@ struct TreeXMLWriter {
         }
         aus << "</c:t>";
       }
-      res = 1;
     } else if (t->text.size()) {
       aus << "<c:t>";
       xaus << t->text;
       aus << "</c:t>";
+    }
+  }
+
+  void writeIgnoreXML(Token const *t, Indent const &indent) {
+    if (t->ignore) {
+      writeIgnoreXML(t->ignore, indent);
+    }
+    aus << indent << "<ci:" << Token::getParserTokenName(t->token);
+    if (m_xmlWriter.options.id)
+      aus << " id='" << t->id << "'";
+    m_xmlWriter.writeXMLLocAttrs(t, aus);
+    // writeXMLTypeAttrs(t, aus);
+    aus << ">";
+    writeSingleTokenTextNode(t);
+    aus << "</ci:" << Token::getParserTokenName(t->token) << ">" << m_xmlWriter.linebreak;
+  }
+
+  bool writeXMLTextElem(Token const *t, Indent const &indent) {
+    bool res = 0;
+    if (t->text.size() and (t->left or t->right or t->ignore)) {
+      aus << indent;
       res = 1;
     }
+    writeSingleTokenTextNode(t);
     return res;
   }
+
     void setElemName(Token const *t) {
       if (t->token == TOKEN_IDENTIFIER) {
         if (t->left || t->right) {
