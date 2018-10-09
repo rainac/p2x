@@ -11,7 +11,14 @@ checkParseTreeEqual() {
     xsltproc -o res.txt ../../src/xsl/parens.xsl res.xml
     res=$(cat res.txt)
     echo "$infile: $(cat ../../examples/in/$infile)  =>  $res"
-    assertEquals "Parse tree is not in expected form: '$exp' != '$res'" "$exp" "$res"
+    if [[ "$exp" != "$res" ]]; then
+        echo "**** soll ****"
+        echo $exp
+        echo "**** result ****"
+        echo $res
+        echo "****  ****"
+    fi
+    assertEquals "Parse tree is not in expected form" "$exp" "$res"
 }
 
 testParseTreeEqual1() {
