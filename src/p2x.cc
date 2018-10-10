@@ -1026,10 +1026,11 @@ struct Parser {
 	std::string ctext = first->text;
 	while(true) {
 	  next = tokenList.next();
-	  if (pcommentEndList.find(tokenInfo.getOpCode(next)) != pcommentEndList.end()
-	      or next->token == TOKEN_EOF)
+	  if (next->token == TOKEN_EOF)
 	    break;
 	  ctext += next->text;
+	  if (pcommentEndList.find(tokenInfo.getOpCode(next)) != pcommentEndList.end())
+	    break;
 	  if (tokenInfo.mode(next) == MODE_BLOCK_COMMENT) {
 	    ls(LS::WARNING) << FileLineAndCol(*this, next) << ": Block comment start inside block comment "
 			    << TextLineAndCol(first)
