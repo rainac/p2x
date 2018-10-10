@@ -7,7 +7,7 @@
 if [[ -z "$SWPREFIX" ]]; then
     PREFIX=/usr/local
 else
-    PREFIX=$SWPREFIX/p2x-0.6.0
+    PREFIX=$SWPREFIX/p2x-0.6.4
 fi
 
 # Invoke configure
