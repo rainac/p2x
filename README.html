@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>P2X - Universal parser with XML output</title>
-<!-- 2016-11-07 Mo 23:31 -->
+<!-- 2018-10-10 Mi 23:23 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Johannes Willkomm" />
@@ -134,6 +134,48 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
 </head>
 <body>
 <div id="content">
@@ -158,9 +200,12 @@ for the JavaScript code in this tag.
 <li><a href="#sec-2-2-2">2.2.2. Class Binary</a></li>
 <li><a href="#sec-2-2-3">2.2.3. Class Unary</a></li>
 <li><a href="#sec-2-2-4">2.2.4. Class Unary_Binary</a></li>
-<li><a href="#sec-2-2-5">2.2.5. Class Ignore</a></li>
-<li><a href="#sec-2-2-6">2.2.6. Parentheses</a></li>
-<li><a href="#sec-2-2-7">2.2.7. Example</a></li>
+<li><a href="#sec-2-2-5">2.2.5. Class Postfix</a></li>
+<li><a href="#sec-2-2-6">2.2.6. Class Ignore</a></li>
+<li><a href="#sec-2-2-7">2.2.7. Parentheses</a></li>
+<li><a href="#sec-2-2-8">2.2.8. Line comments and block comments</a></li>
+<li><a href="#sec-2-2-9">2.2.9. Ignoring tokens depending on context</a></li>
+<li><a href="#sec-2-2-10">2.2.10. Example</a></li>
 </ul>
 </li>
 </ul>
@@ -190,7 +235,7 @@ operator PLUS and specify XML output in <i>merged mode</i>:
 </p>
 <div class="org-src-container">
 
-<pre class="src src-sh"><span style="color: #483d8b;">echo</span> -n <span style="color: #8b2252;">"1+2+3"</span> &gt; in.txt
+<pre class="src src-sh">echo -n "1+2+3" &gt; in.txt
 p2x -m -X -b PLUS -o out.xml in.txt
 cat out.xml
 </pre>
@@ -198,6 +243,7 @@ cat out.xml
 
 <pre class="example">
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;!-- P2X version 0.6.4 (72b96eb2) --&gt;
 &lt;code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'&gt;
  &lt;ROOT&gt;
   &lt;null/&gt;
@@ -213,18 +259,88 @@ cat out.xml
 </pre>
 
 <p>
-The same output structure can also be represented in MATLAB:
+One important property of the output is that all input token are
+present, and that they are present strictly in the order of the
+input. Thus the entire input text is present in the XML, structured by
+XML tags. This is even true when some token are set to be ignored. The
+ignored token are inserted into the tree by attaching them to the next
+best tree node, but otherwise they have no effect on the shape of the
+tree.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">echo -n "1 + 2 + 3" &gt; in.txt
+p2x -m -X -i SPACE -b PLUS -o out.xml in.txt
+cat out.xml
+</pre>
+</div>
+
+<pre class="example">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;!-- P2X version 0.6.4 (72b96eb2) --&gt;
+&lt;code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'&gt;
+ &lt;ROOT&gt;
+  &lt;null/&gt;
+  &lt;PLUS&gt;
+   &lt;INT&gt;
+    &lt;c:t&gt;1&lt;/c:t&gt;
+    &lt;ci:SPACE&gt; &lt;/ci:SPACE&gt;
+   &lt;/INT&gt;
+   &lt;c:t&gt;+&lt;/c:t&gt;
+   &lt;ci:SPACE&gt; &lt;/ci:SPACE&gt;
+   &lt;INT&gt;
+    &lt;c:t&gt;2&lt;/c:t&gt;
+    &lt;ci:SPACE&gt; &lt;/ci:SPACE&gt;
+   &lt;/INT&gt;
+   &lt;c:t&gt;+&lt;/c:t&gt;
+   &lt;ci:SPACE&gt; &lt;/ci:SPACE&gt;
+   &lt;INT&gt;&lt;c:t&gt;3&lt;/c:t&gt;&lt;/INT&gt;
+  &lt;/PLUS&gt;
+ &lt;/ROOT&gt;
+&lt;/code-xml&gt;
+</pre>
+
+<p>
+Any token in the tree has exactly one special child element that
+contains the input token text, in the example called <code>c:t</code>. Ignored
+token are output as elements with namespace prefix <code>ci</code>, in the
+example called <code>ci:SPACE</code>.
+</p>
+
+<p>
+Since the token text and ignored elements are in separate namespaces,
+they do not affect the structure of the tree made up of the elements of
+the code namespace. Still, the input can be recovered exactly by
+concatenating the token text and ignored elements in document
+order. This is done for example by the XSL stylesheet
+<a href="src/xsl/reproduce.xsl">src/xsl/reproduce.xsl</a>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">xsltproc src/xsl/reproduce.xsl out.xml
+</pre>
+</div>
+
+<pre class="example">
+1 + 2 + 3
+</pre>
+
+<p>
+The parsed tree structure can also be represented in MATLAB output:
 </p>
 <div class="org-src-container">
 
-<pre class="src src-sh">p2x -m -M -b PLUS in.txt
+<pre class="src src-sh">p2x -M -i SPACE -b PLUS in.txt
 </pre>
 </div>
 
 <pre class="example">
 struct('n','rt','i','','c',{...
- struct('n',{'','op'}, 't',{'','+'}, 'c',{[],...
-  struct('n','num', 't',{'1','2','3'})})});
+ struct('n',{'','op'}, 't',{'','+'}, 'i',{'',' '}, 'c',{[],...
+  struct('n',{'op','num'}, 't',{'+','3'}, 'i',{' ',''}, 'c',{...
+   struct('n','num', 't',{'1','2'}, 'i',' '),[]})})});
 </pre>
 
 <p>
@@ -232,15 +348,21 @@ or JSON:
 </p>
 <div class="org-src-container">
 
-<pre class="src src-sh">p2x -m -J -b PLUS in.txt
+<pre class="src src-sh">p2x -J -i SPACE -b PLUS in.txt
 </pre>
 </div>
 
 <pre class="example">
 {"n":"rt","i":"","c":[
- {"n":["","op"], "t":["","+"], "c":[{},
-  {"n":"num", "t":["1","2","3"]}]}]}
+ {"n":["","op"], "t":["","+"], "i":[""," "], "c":[{},
+  {"n":["op","num"], "t":["+","3"], "i":[" ",""], "c":[
+   {"n":"num", "t":["1","2"], "i":" "},{}]}]}]}
 </pre>
+
+<p>
+In both MATLAB and JSON format it is not possible to represent all
+ignored items when using the merged output mode.
+</p>
 </div>
 </div>
 
@@ -267,6 +389,29 @@ or write its output to a file given by command line option <code>-o</code>
 <pre class="example">
 p2x in.txt -o out.xml
 </pre>
+
+<p>
+There are currently four different output modes:
+</p>
+
+<ul class="org-ul">
+<li>with option <code>-X</code> or <code>--xml</code> the tree is output in XML format
+</li>
+<li>with option <code>-M</code> or <code>--matlab</code> the tree is output in MATLAB
+format, as a single large <code>struct</code> expression
+</li>
+<li>with option <code>-J</code> or <code>--json</code> the tree is output in JSON format
+</li>
+<li>the default is to output an older version of the XML format, which
+is more verbose
+</li>
+</ul>
+
+<p>
+In XML the output tree is as described in this document. In MATLAB and
+JSON each node has the three fields <code>n</code>, <code>t</code> and <code>c</code>, for the node
+name, the node text and the node children, respectively.
+</p>
 </div>
 
 <div id="outline-container-sec-2-1" class="outline-3">
@@ -274,7 +419,7 @@ p2x in.txt -o out.xml
 <div class="outline-text-3" id="text-2-1">
 <p>
 P2X can be configured either by options on the command line or from a
-configuration file, usally <code>~/.p2x/p2x-options</code>.
+configuration file, usually <code>$HOME/.p2x/p2x-options</code>.
 </p>
 </div>
 
@@ -282,7 +427,7 @@ configuration file, usally <code>~/.p2x/p2x-options</code>.
 <h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> Options</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
-<a id="option" name="option"></a>
+<a id="Options" name="Options"></a>
 </p>
 
 <p>
@@ -480,21 +625,21 @@ table:
 </tr>
 
 <tr>
-<td class="left">-w</td>
-<td class="left">&#x2013;sparse</td>
-<td class="left">Safe some non-essential attributes, newlines and indents  (default=off)</td>
+<td class="left">-n</td>
+<td class="left">&#x2013;noignore</td>
+<td class="left">Skip ignored token  (default=off)</td>
+</tr>
+
+<tr>
+<td class="left">-l</td>
+<td class="left">&#x2013;loose</td>
+<td class="left">Write null elements more loosely (default=off)</td>
 </tr>
 
 <tr>
 <td class="left">&#xa0;</td>
-<td class="left">&#x2013;write-xml-declaration</td>
-<td class="left">Emit XML declaration (with encoding) (default=off)</td>
-</tr>
-
-<tr>
-<td class="left">&#xa0;</td>
-<td class="left">&#x2013;write-bom</td>
-<td class="left">Emit byte order mark (BOM) character (default=off)</td>
+<td class="left">&#x2013;strict</td>
+<td class="left">Write null elements more strictly (default=off)</td>
 </tr>
 
 <tr>
@@ -584,7 +729,7 @@ table:
 <h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> Configuration file</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
-The same options (see previous Section <i>options</i>) as on the command line
+The same options (see previous Section <a href="#Options">2.1.1</a>) as on the command line
 can also be given in a configuration file, which by default searched
 as <code>~/.p2x/p2x-options</code>. In that file there may be one option per
 line, short or long, but without the leading <code>-</code> or <code>--</code>. For example,
@@ -598,7 +743,7 @@ verbose=debug
 </pre>
 
 <p>
-See also environment variable P2X_USER_DIR in Section <a href="#P2X_USER_DIR">3</a>.
+See also environment variable P2X_USER_DIR in Section <a href="#Environment-variables">Environment variables</a>.
 </p>
 </div>
 </div>
@@ -606,6 +751,10 @@ See also environment variable P2X_USER_DIR in Section <a href="#P2X_USER_DIR">3<
 <div id="outline-container-sec-2-1-3" class="outline-4">
 <h4 id="sec-2-1-3"><span class="section-number-4">2.1.3</span> Environment variables</h4>
 <div class="outline-text-4" id="text-2-1-3">
+<p>
+<a id="Environment-variables" name="Environment-variables"></a>
+</p>
+
 <ul class="org-ul">
 <li>HOME: Linux only: determine home directory of current user
 </li>
@@ -614,7 +763,7 @@ See also environment variable P2X_USER_DIR in Section <a href="#P2X_USER_DIR">3<
 directory of current user
 </li>
 
-<li><a id="P2X_USER_DIR" name="P2X_USER_DIR"></a>P2X_USER_DIR: Set the directory where the
+<li>P2X_USER_DIR: Set the directory where the
 configuration file <code>p2x-options</code> is found. Default is $HOME/.p2x
 </li>
 
@@ -638,18 +787,17 @@ the initialization of P2X
 <p>
 The equivalent of a grammar is called language definition in P2X. It
 consists of an assignment of <i>token</i> to <i>token classes</i>. Token are
-those listed by the option <code>--list-token</code> or <code>-L</code>. Identifiers play a
-special role, that is, while IDENTIFIER is listed as a single token
-type, each identifier such as <code>x</code>, <code>name</code> or <code>begin</code> may individually
-be assigned to a token class. For example <code>name</code> might be assigned to
-class Unary and <code>begin</code> might be assigned to class Parentheses.
+those listed by the option <code>--list-token</code> or <code>-L</code>.
 </p>
 
 <p>
-The token ROOT and JUXTA are special: ROOT is always in class Unary
-with precedence 0 and JUXTA is always in class Binary, and the
-precedence and associativity of this operator may be set by the
-user. Both ROOT and JUXTA do not represent any input.
+Which token are returned for a given character input depends on the
+scanner selected with option <code>--scanner</code> or <code>-S</code>. Since the scanners
+are defined with Flex there currently is only limited set of scanners
+to chose from: <code>c</code>, <code>r</code>, <code>strings</code>, <code>no-strings</code>. For example, the
+<code>no-strings</code> scanner reports each single quote ~'~ as a token APOS and
+each double quote ~"~ character as a token QUOTE, and it will never
+return a token STRING.
 </p>
 
 <p>
@@ -669,7 +817,41 @@ The available token classes are the following:
 </li>
 <li>Ignore
 </li>
+<li>Line_comment
+</li>
+<li>Block_comment
+</li>
 </ul>
+
+<p>
+Identifiers play a special role, that is, while IDENTIFIER is listed
+as one of the token types, each identifier such as <code>x</code>, <code>sin</code> or
+<code>times</code> may individually be assigned to a token class. For example
+<code>sin</code> might be assigned to class Unary and <code>times</code> might be assigned
+to class Binary. The set of legal identifiers also depends on the
+selected scanner, but as of now all scanners have the same definition.
+</p>
+
+<p>
+The basic definition of an identifier is based on the C
+model. Identifiers may also contain any of the upper Unicode
+characters. Currently the hyphen character may not occur in an
+identifier, for example, "a-b" will be scanned as three tokens.
+</p>
+
+<p>
+The token ROOT and JUXTA are special: ROOT is always in class Unary
+with precedence 0 and JUXTA is always in class Binary, and the
+precedence and associativity of this operator may be set by the
+user. Both ROOT and JUXTA do not represent any input. The ROOT token
+is always present as the root of the parse tree. The JUXTA token is
+automatically inserted in the parse tree as a binary operator whenever
+two consecutive items are encountered.
+</p>
+
+<p>
+By default all other token are in class Item.
+</p>
 
 <p>
 Also, a pair of token may be declared as <i>parentheses</i>. This pair of
@@ -690,9 +872,39 @@ The effect of the configuration can be inspected by using the option
 </p>
 <div class="org-src-container">
 
-<pre class="src src-sh">p2x -T -p examples/configs/cfuncs
+<pre class="src src-sh">p2x -T -p examples/configs-special/cfuncs.p2c
 </pre>
 </div>
+
+<p>
+Generally token can either by referred to by the name of the token
+class as listed by the option <code>-L</code> or they can be referred to
+literally, in quotes. For example, the following two lines are
+equivalent:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">MULT    binary 1002
+"*"     binary 1002
+</pre>
+</div>
+
+<p>
+Currently there is no way to see the regular expression used by the
+scanner for each token type, and no way to see which set of input
+words is represented by a given token. Also there is currently no
+documentation telling you that the token returned by the scanner for
+the input <code>*</code> is called MULT. Hence it is probably preferably to use
+the second form. For individual identifiers the only option is of
+course to use the quoted form.
+</p>
+
+<p>
+Example configuration files can be found in the directory
+<code>examples/configs</code>. The file <a href="./examples/configs/default">./examples/configs/default</a> is used by the
+P2X test suite and showcases all available declarations and options.
+</p>
 </div>
 
 <div id="outline-container-sec-2-2-1" class="outline-4">
@@ -767,6 +979,17 @@ newline binary 1000 merged
 "="     binary 1001 right nested
 "*"     binary 1002 merged left
 </pre>
+
+<p>
+In the output tree the binary operators are represented as binary
+nodes with two children, their left and right operands. This can lead
+to deeply nested trees. To mitigate this P2X can also output the
+binary nodes in <i>merged</i> mode. Then \(n\) consecutive operators made of
+the same token are collapsed into a single node with \(n+1\)
+children. The option <code>-m</code> or <code>--merged</code> activates the merged output
+globally and the <code>merged</code> keyword in a language definition declaration
+can activate merged mode for individual operators in class Binary.
+</p>
 </div>
 </div>
 
@@ -797,14 +1020,14 @@ beginning with 2000:
 </p>
 <div class="org-src-container">
 
-<pre class="src src-sh">p2x  -u <span style="color: #8b2252;">'sin,cos'</span>
+<pre class="src src-sh">p2x  -u 'sin,cos'
 </pre>
 </div>
 
 <p>
 The other way is by a <code>unary</code> declaration in the laguage definition
 file, which has the form <code>token</code> <code>unary</code> followed by an integer
-precedence field.The command line
+precedence field. The command line
 settings above are equivalent to the following entries in the language
 definition file:
 </p>
@@ -812,6 +1035,14 @@ definition file:
 "sin" unary 2000
 "cos" unary 2001
 </pre>
+
+<p>
+In the output tree Unary operators are output as a node with a two
+child nodes, as they can be seen as a binary operator with the left
+operand missing. The missing left operand is marked with a special
+<code>null</code> element, so that the single operand is the second child
+element.
+</p>
 </div>
 </div>
 
@@ -822,7 +1053,7 @@ definition file:
 Class Unary_Binary is for token which may either occur as unary
 operators or as binary operators. A typical example are plus <code>+</code> and
 minus <code>-</code> in mathematical notation. For that, token may be assigned to
-class Unary_Binary, which accepts two integer token, the first of
+class Unary_Binary, which accepts two integer options, the first of
 which is the binary precedence and the second the unary precedence. An
 associativity may also be specified. For example, the following
 configuration
@@ -830,12 +1061,57 @@ configuration
 <pre class="example">
 "-" unary_binary 1000 2200 left
 </pre>
+
+<p>
+The same input <code>-3</code> can now result in either a unary node or a binary
+node in the output tree, depending on the preceding token. When an
+Item is pending because the preceding token was of class Unary or
+Binary the minus <code>-</code> will result in a unary operator node, otherwise
+as a binary node.
+</p>
 </div>
 </div>
 
 <div id="outline-container-sec-2-2-5" class="outline-4">
-<h4 id="sec-2-2-5"><span class="section-number-4">2.2.5</span> Class Ignore</h4>
+<h4 id="sec-2-2-5"><span class="section-number-4">2.2.5</span> Class Postfix</h4>
 <div class="outline-text-4" id="text-2-2-5">
+<p>
+The class Postfix is complementary of the Unary class. It defines a
+unary postfix operator. Typical examples are the operators ~'~ and
+~.'~ in MATLAB. Another example would be to define units as postfix
+operators:
+</p>
+
+<pre class="example">
+"kg" postfix 10000
+"m" postfix 10000
+"s" postfix 10000
+</pre>
+
+<p>
+Another important application are the typical function call and array
+access expressions in may languages, such as <code>f(x)</code> or <code>x[2]</code>. These
+are most conveniently treated as postfix operators, which is possible
+with P2X because each pair of parentheses can also be given a token
+class, see section <a href="#Parentheses">2.2.7</a>.
+</p>
+
+<pre class="example">
+"(" PAREN ")" postfix 10000
+"[" PAREN "]"  postfix 10000
+</pre>
+
+<p>
+In the output tree Postfix operators are output as a node with a
+single child, as they can be seen as a binary operator with the right
+operand missing.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-6" class="outline-4">
+<h4 id="sec-2-2-6"><span class="section-number-4">2.2.6</span> Class Ignore</h4>
+<div class="outline-text-4" id="text-2-2-6">
 <p>
 A token in class Ignore is not used in the construction of the parse
 tree. However it is not simply discarded. Instead, it is inserted into
@@ -850,14 +1126,38 @@ with the keyword <code>ignore</code>, but a precedence is also required (it is
 ignored):
 </p>
 <pre class="example">
-NEWLINE ignore 1x
+NEWLINE ignore 1
 </pre>
+
+<p>
+In the XML output token in class Ignore are represented using a
+separate namespace, so for many intents and purposes they are as good
+as invisible. However, for input reconstruction it is of course
+crucial that they are kept.
+</p>
+
+<p>
+Keeping the Ignore token one can reconstruct input identically even if
+its structure is unknown. P2X guarantees that all input characters,
+including those from token in class Ignore also occur in the output
+XML document, in the same order as they occured in the input.
+</p>
+
+<p>
+In the MATLAB and JSON output formats it is not possible to represent
+the token in class Ignore, so they are truly ignored and discared
+then.
+</p>
 </div>
 </div>
 
-<div id="outline-container-sec-2-2-6" class="outline-4">
-<h4 id="sec-2-2-6"><span class="section-number-4">2.2.6</span> Parentheses</h4>
-<div class="outline-text-4" id="text-2-2-6">
+<div id="outline-container-sec-2-2-7" class="outline-4">
+<h4 id="sec-2-2-7"><span class="section-number-4">2.2.7</span> Parentheses</h4>
+<div class="outline-text-4" id="text-2-2-7">
+<p>
+<a id="Parentheses" name="Parentheses"></a>
+</p>
+
 <p>
 A pair of token which is declared as Parentheses encapsulates a
 subexpression, such that on the outside it appears as a single item,
@@ -892,29 +1192,101 @@ or using a <code>paren</code> declaration in the language definition file:
 
 <p>
 A parenthesis expression is be default handled as being in token class
-Item. However, parentheses declarations may also place assign the
-declaration to any other class. For example, the parentheses <code>(</code> and
-<code>)</code> may be declared as being a postfix operator. This is done by
-adding the class keyword on the line together with an integer
-specifying the precedence:
+Item. However, parentheses declarations may also be assigned to any
+other token class. This can be done for each parentheses declaration
+individually. For example, the parentheses <code>(</code> and <code>)</code> may be declared
+as being a postfix operator, to represent the typical function call
+expression like <code>f(x)</code>. This is done by adding the class keyword on
+the line together with an integer specifying the precedence:
 </p>
 <pre class="example">
 "(" paren ")" postfix 10000
 </pre>
+
+<p>
+Another way to parse a function call expression is to leave the
+parentheses definition in token class Item and rely on the JUXTA
+operator which will be inserted between the function name &#x2013; provided
+that is parsed as an Item &#x2013; and the parentheses. One will probably
+give a rather high precedence to the JUXTA operator then.
+</p>
+
+<pre class="example">
+"(" paren ")"
+JUXTA binary 2000
+</pre>
 </div>
 </div>
 
-<div id="outline-container-sec-2-2-7" class="outline-4">
-<h4 id="sec-2-2-7"><span class="section-number-4">2.2.7</span> Example</h4>
-<div class="outline-text-4" id="text-2-2-7">
+<div id="outline-container-sec-2-2-8" class="outline-4">
+<h4 id="sec-2-2-8"><span class="section-number-4">2.2.8</span> Line comments and block comments</h4>
+<div class="outline-text-4" id="text-2-2-8">
+<p>
+Line comments and block comments can be used to escape from the normal
+parsing parse comment text sections. Line comments start with a
+certain token and continue until the next NEWLINE token. Block
+comments work like parentheses and have start and end tokens.
+</p>
+
+<p>
+All the text belonging to a comment is collected and inserted as a
+single Ignore item into the parse tree. In the case of the line
+comment the terminating NEWLINE is inserted individually, according to
+the rules defined for it.
+</p>
+
+<p>
+For example, the two modes of comments used in the C++ language can
+be configured in P2X as follows:
+</p>
+
+<pre class="example">
+"//" line_comment 1
+"/*" block_comment "*/"
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-9" class="outline-4">
+<h4 id="sec-2-2-9"><span class="section-number-4">2.2.9</span> Ignoring tokens depending on context</h4>
+<div class="outline-text-4" id="text-2-2-9">
+<p>
+There are two special rules that can override the normally configured
+mode for certain token classes depending on the context. The first is
+the flag <code>ignoreIfStray</code> that can be used with Binary token. The
+effect is that a token from that class is treated as an Ignore token
+when there is an open operator (Unary or Binary) in the tree already.
+</p>
+
+<p>
+The other special rule is <code>A ignoreAfter B</code>, which means that a token A is
+treated as Ignore whenever it occurs after a B token.
+</p>
+
+<p>
+For example, a special token to escape a NEWLINE, as in MATLAB, can be
+configured in P2X as follows:
+</p>
+
+<pre class="example">
+NEWLINE    BINARY 1000
+"..."      IGNORE 1
+NEWLINE    ignoreAfter "..."
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-10" class="outline-4">
+<h4 id="sec-2-2-10"><span class="section-number-4">2.2.10</span> Example</h4>
+<div class="outline-text-4" id="text-2-2-10">
 <p>
 As an example consider the configuration file
-<a href="examples/configs/cfuncs">examples/configs/cfuncs</a> and the input text file
+<a href="examples/configs-special/cfuncs.p2c">examples/configs-special/cfuncs.p2c</a> and the input text file
 <a href="examples/in/cexpr.exp">examples/in/cexpr.exp</a>:
 </p>
 <div class="org-src-container">
 
-<pre class="src src-sh">cat examples/configs/cfuncs
+<pre class="src src-sh">cat examples/configs-special/cfuncs.p2c
 </pre>
 </div>
 
@@ -922,26 +1294,36 @@ As an example consider the configuration file
 #
 # Operator definitions
 #
-# Token  Class         Precedence  Unary Prec.  Associativity
-"="      binary        5                        right
+# Token  Class         Precedence  Unary Prec.  Associativity  Options
+","      binary        3                                       merged
+";"      binary        3                                       merged
+"return" unary         4
+JUXTA    binary        5
+"="      binary        6                        right
+"=="     binary        7
 
 "+"      unary_binary  10          110
 "-"      unary_binary  10          110
 
-"*"      binary        20
+"*"      unary_binary  20          120
 
 "/"      binary        30
 "%"      binary        30
 
-" "      ignore        1
-NEWLINE  ignore        1
-TAB      ignore        1
+"if"     unary        100
+"while"  unary        100
 
 #
 # Parentheses definitions
 #
 # Start  "paren" End  Class    Precedence  Unary Prec.  Associativity
 "("      paren   ")"  postfix  101
+"["      paren   "]"  postfix  102
+"{"      paren   "}"
+
+" "      ignore        1
+NEWLINE  ignore        1
+TAB      ignore        1
 </pre>
 
 <div class="org-src-container">
@@ -956,28 +1338,23 @@ f( a +  1)*2
 
 <div class="org-src-container">
 
-<pre class="src src-sh">p2x -mX -p examples/configs/cfuncs examples/in/cexpr.exp
+<pre class="src src-sh">p2x -S c -lnX -p examples/configs-special/cfuncs.p2c examples/in/cexpr.exp
 </pre>
 </div>
 
 <pre class="example">
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;!-- P2X version 0.6.4 (72b96eb2) --&gt;
 &lt;code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'&gt;
  &lt;ROOT&gt;
-  &lt;null/&gt;
   &lt;MULT&gt;
    &lt;L_PAREN&gt;
     &lt;ID&gt;&lt;c:t&gt;f&lt;/c:t&gt;&lt;/ID&gt;
     &lt;c:t&gt;(&lt;/c:t&gt;
-    &lt;ci:SPACE&gt; &lt;/ci:SPACE&gt;
     &lt;R_PAREN&gt;
      &lt;PLUS&gt;
-      &lt;ID&gt;
-       &lt;c:t&gt;a&lt;/c:t&gt;
-       &lt;ci:SPACE&gt; &lt;/ci:SPACE&gt;
-      &lt;/ID&gt;
+      &lt;ID&gt;&lt;c:t&gt;a&lt;/c:t&gt;&lt;/ID&gt;
       &lt;c:t&gt;+&lt;/c:t&gt;
-      &lt;ci:TAB&gt;	&lt;/ci:TAB&gt;
       &lt;INT&gt;&lt;c:t&gt;1&lt;/c:t&gt;&lt;/INT&gt;
      &lt;/PLUS&gt;
      &lt;c:t&gt;)&lt;/c:t&gt;
@@ -989,6 +1366,16 @@ f( a +  1)*2
  &lt;/ROOT&gt;
 &lt;/code-xml&gt;
 </pre>
+
+<p>
+As a more complex example try parsing an entire program:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">p2x -lnX -S c -p examples/configs-special/cfuncs.p2c examples/in/cfunc.exp
+</pre>
+</div>
 </div>
 </div>
 </div>
@@ -1002,15 +1389,15 @@ This file is part of P2X. See the file p2x.cc for copying conditions.
 </p>
 
 <p>
-Copyright © 2014,2016 Johannes Willkomm
+Copyright © 2014,2016,2018 Johannes Willkomm
 </p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Johannes Willkomm</p>
-<p class="date">Created: 2016-11-07 Mo 23:31</p>
-<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="date">Created: 2018-10-10 Mi 23:23</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.2.2 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
