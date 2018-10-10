@@ -967,6 +967,9 @@ struct Parser {
     case MODE_LINE_COMMENT:
       pushIgnore(first);
       break;
+    case MODE_PAREN_COMMENT:
+      pushIgnore(first);
+      break;
     default:
       ls(LS::ERROR|LS::PARSE) << "Parser: error: invalid mode " << firstMode << "\n";
       exit(1);
@@ -1011,6 +1014,28 @@ struct Parser {
         if (next->token == TOKEN_NEWLINE) {
           insertToken(next);
         }
+      } else if (tokenInfo.mode(first) == MODE_PAREN_COMMENT) {
+	Token *next = 0;
+        auto pcommentEndList = tokenInfo.endList(first);
+	std::string ctext = first->text;
+	do {
+	  next = tokenList.next();
+	  ctext += next->text;
+	  if (pcommentEndList.find(tokenInfo.getOpCode(next)) != pcommentEndList.end())
+	    break;
+	  if (tokenInfo.mode(next) == MODE_PAREN_COMMENT) {
+	    ls(LS::WARNING) << FileLineAndCol(*this, next) << ": Parenthesis comment start inside parenthesis comment "
+			    << TextLineAndCol(first)
+			    << ", but nesting is not allowed\n";
+	  }
+	} while (next->token != TOKEN_EOF);
+	if (next->token == TOKEN_EOF) {
+	  ls(LS::WARNING) << FileLineAndCol(*this, next) << ": Unexpected end of input in parenthesis comment "
+			  << TextLineAndCol(first)
+			  << " while searching for " << pcommentEndList << "\n";
+	}
+	first->text = ctext;
+        insertToken(first);
       } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
 	parser.options.rootNode = first;
@@ -2083,7 +2108,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
         // parse mode field
         ParserMode mode = parseModeField(itemList[1]);
 
-        if (mode != MODE_PAREN) {
+        if (mode != MODE_PAREN and mode != MODE_PAREN_COMMENT) {
           
           cnfls(LS::DEBUG|LS::CONFIG) << "config: token:  " << token << "\n";
 
@@ -2131,7 +2156,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
             tokenInfo.addBrace(opCode, eopCode);
           }
 
-          if (itemList.size() > 3) {
+          if (itemList.size() > 3 and mode != MODE_PAREN_COMMENT) {
 
             // shift list by two (FIXME: hack)
             std::vector<Token const*> subItemList(++ ++itemList.begin(), itemList.end());
@@ -2165,7 +2190,16 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
               etp->associativity = assoc;
             }
 
-          }
+          } else if (mode == MODE_PAREN_COMMENT) {
+            TokenProto *tp = tokenInfo.getProto(&token);
+	    tp->mode = MODE_PAREN_COMMENT;
+	    assert(tp->isParen);
+            for (auto it = tp->endList.begin(); it != tp->endList.end(); ++it) {
+              TokenProto *etp = tokenInfo.getProto(&it->second);
+              etp->mode = MODE_PAREN_COMMENT;
+	      assert(etp->isRParen);
+	    }
+	  }
         }
 
       }
