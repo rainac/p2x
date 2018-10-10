@@ -30,7 +30,7 @@ struct Token {
   char const *name() const { return getParserTokenName(token); }
 
   void prints(std::ostream &aus) const {
-    aus << "'" << text << "[" << name() << "," << line << "," << column << "]";
+    aus << "'" << text << "'[" << name() << "," << line << "," << column << "]";
   }
 
   void print(std::ostream &aus) const {
