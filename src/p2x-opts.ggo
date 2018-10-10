@@ -41,10 +41,13 @@ option "newline-as-br" -  "Emit newline text as ca:br element of ca:text" flag o
 option "newline-as-entity" -  "Emit newline text as &#xa; character entity" flag off
 option "merged" m  "Collect children of equal operator chains, output all binary nodes in MERGED mode" flag off
 option "strict" -  "Strict output mode: paren children always indicated by null elements" flag off
+option "loose"  l  "Loose output mode: never write null elements" flag off
+option "null"   -  "Null element name" string typestr="XML-Name" optional
 option "output-mode" - "Write output as XML/JSON/MATLAB" string typestr="Mode" optional
 option "matlab" M "Write output as MATLAB" flag off
 option "json" J "Write output as JSON" flag off
 option "xml" X "Write output as XML" flag off
+option "noignore" n "Skip ignore items" flag off
 
 option "write-recursive" -  "Recursive output writing" flag hidden off 
 option "src-info" g         "Emit source location attributes line, column, and character" flag off

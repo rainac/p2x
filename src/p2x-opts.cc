@@ -61,10 +61,13 @@ const char *gengetopt_args_info_full_help[] = {
   "      --newline-as-entity       Emit newline text as &#xa; character entity\n                                  (default=off)",
   "  -m, --merged                  Collect children of equal operator chains,\n                                  output all binary nodes in MERGED mode\n                                  (default=off)",
   "      --strict                  Strict output mode: paren children always\n                                  indicated by null elements  (default=off)",
+  "  -l, --loose                   Loose output mode: never write null elements\n                                  (default=off)",
+  "      --null=XML-Name           Null element name",
   "      --output-mode=Mode        Write output as XML/JSON/MATLAB",
   "  -M, --matlab                  Write output as MATLAB  (default=off)",
   "  -J, --json                    Write output as JSON  (default=off)",
   "  -X, --xml                     Write output as XML  (default=off)",
+  "  -n, --noignore                Skip ignore items  (default=off)",
   "      --write-recursive         Recursive output writing  (default=off)",
   "  -g, --src-info                Emit source location attributes line, column,\n                                  and character  (default=off)",
   "      --attribute-line          Emit attribute line with source line\n                                  (default=off)",
@@ -111,12 +114,15 @@ init_help_array(void)
   gengetopt_args_info_help[28] = gengetopt_args_info_full_help[28];
   gengetopt_args_info_help[29] = gengetopt_args_info_full_help[29];
   gengetopt_args_info_help[30] = gengetopt_args_info_full_help[30];
-  gengetopt_args_info_help[31] = gengetopt_args_info_full_help[32];
-  gengetopt_args_info_help[32] = 0; 
+  gengetopt_args_info_help[31] = gengetopt_args_info_full_help[31];
+  gengetopt_args_info_help[32] = gengetopt_args_info_full_help[32];
+  gengetopt_args_info_help[33] = gengetopt_args_info_full_help[33];
+  gengetopt_args_info_help[34] = gengetopt_args_info_full_help[35];
+  gengetopt_args_info_help[35] = 0; 
   
 }
 
-const char *gengetopt_args_info_help[33];
+const char *gengetopt_args_info_help[36];
 
 typedef enum {ARG_NO
   , ARG_FLAG
@@ -191,10 +197,13 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->newline_as_entity_given = 0 ;
   args_info->merged_given = 0 ;
   args_info->strict_given = 0 ;
+  args_info->loose_given = 0 ;
+  args_info->null_given = 0 ;
   args_info->output_mode_given = 0 ;
   args_info->matlab_given = 0 ;
   args_info->json_given = 0 ;
   args_info->xml_given = 0 ;
+  args_info->noignore_given = 0 ;
   args_info->write_recursive_given = 0 ;
   args_info->src_info_given = 0 ;
   args_info->attribute_line_given = 0 ;
@@ -246,11 +255,15 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->newline_as_entity_flag = 0;
   args_info->merged_flag = 0;
   args_info->strict_flag = 0;
+  args_info->loose_flag = 0;
+  args_info->null_arg = NULL;
+  args_info->null_orig = NULL;
   args_info->output_mode_arg = NULL;
   args_info->output_mode_orig = NULL;
   args_info->matlab_flag = 0;
   args_info->json_flag = 0;
   args_info->xml_flag = 0;
+  args_info->noignore_flag = 0;
   args_info->write_recursive_flag = 0;
   args_info->src_info_flag = 0;
   args_info->attribute_line_flag = 0;
@@ -316,19 +329,22 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->newline_as_entity_help = gengetopt_args_info_full_help[24] ;
   args_info->merged_help = gengetopt_args_info_full_help[25] ;
   args_info->strict_help = gengetopt_args_info_full_help[26] ;
-  args_info->output_mode_help = gengetopt_args_info_full_help[27] ;
-  args_info->matlab_help = gengetopt_args_info_full_help[28] ;
-  args_info->json_help = gengetopt_args_info_full_help[29] ;
-  args_info->xml_help = gengetopt_args_info_full_help[30] ;
-  args_info->write_recursive_help = gengetopt_args_info_full_help[31] ;
-  args_info->src_info_help = gengetopt_args_info_full_help[32] ;
-  args_info->attribute_line_help = gengetopt_args_info_full_help[33] ;
-  args_info->attribute_column_help = gengetopt_args_info_full_help[34] ;
-  args_info->attribute_char_help = gengetopt_args_info_full_help[35] ;
-  args_info->attribute_precedence_help = gengetopt_args_info_full_help[36] ;
-  args_info->attribute_mode_help = gengetopt_args_info_full_help[37] ;
-  args_info->attribute_type_help = gengetopt_args_info_full_help[38] ;
-  args_info->attribute_id_help = gengetopt_args_info_full_help[39] ;
+  args_info->loose_help = gengetopt_args_info_full_help[27] ;
+  args_info->null_help = gengetopt_args_info_full_help[28] ;
+  args_info->output_mode_help = gengetopt_args_info_full_help[29] ;
+  args_info->matlab_help = gengetopt_args_info_full_help[30] ;
+  args_info->json_help = gengetopt_args_info_full_help[31] ;
+  args_info->xml_help = gengetopt_args_info_full_help[32] ;
+  args_info->noignore_help = gengetopt_args_info_full_help[33] ;
+  args_info->write_recursive_help = gengetopt_args_info_full_help[34] ;
+  args_info->src_info_help = gengetopt_args_info_full_help[35] ;
+  args_info->attribute_line_help = gengetopt_args_info_full_help[36] ;
+  args_info->attribute_column_help = gengetopt_args_info_full_help[37] ;
+  args_info->attribute_char_help = gengetopt_args_info_full_help[38] ;
+  args_info->attribute_precedence_help = gengetopt_args_info_full_help[39] ;
+  args_info->attribute_mode_help = gengetopt_args_info_full_help[40] ;
+  args_info->attribute_type_help = gengetopt_args_info_full_help[41] ;
+  args_info->attribute_id_help = gengetopt_args_info_full_help[42] ;
   
 }
 
@@ -483,6 +499,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->outfile_orig));
   free_multiple_string_field (args_info->input_encoding_given, &(args_info->input_encoding_arg), &(args_info->input_encoding_orig));
   free_multiple_string_field (args_info->indent_unit_given, &(args_info->indent_unit_arg), &(args_info->indent_unit_orig));
+  free_string_field (&(args_info->null_arg));
+  free_string_field (&(args_info->null_orig));
   free_string_field (&(args_info->output_mode_arg));
   free_string_field (&(args_info->output_mode_orig));
   
@@ -569,6 +587,10 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "merged", 0, 0 );
   if (args_info->strict_given)
     write_into_file(outfile, "strict", 0, 0 );
+  if (args_info->loose_given)
+    write_into_file(outfile, "loose", 0, 0 );
+  if (args_info->null_given)
+    write_into_file(outfile, "null", args_info->null_orig, 0);
   if (args_info->output_mode_given)
     write_into_file(outfile, "output-mode", args_info->output_mode_orig, 0);
   if (args_info->matlab_given)
@@ -577,6 +599,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "json", 0, 0 );
   if (args_info->xml_given)
     write_into_file(outfile, "xml", 0, 0 );
+  if (args_info->noignore_given)
+    write_into_file(outfile, "noignore", 0, 0 );
   if (args_info->write_recursive_given)
     write_into_file(outfile, "write-recursive", 0, 0 );
   if (args_info->src_info_given)
@@ -1166,10 +1190,13 @@ cmdline_parser_internal (
         { "newline-as-entity",	0, NULL, 0 },
         { "merged",	0, NULL, 'm' },
         { "strict",	0, NULL, 0 },
+        { "loose",	0, NULL, 'l' },
+        { "null",	1, NULL, 0 },
         { "output-mode",	1, NULL, 0 },
         { "matlab",	0, NULL, 'M' },
         { "json",	0, NULL, 'J' },
         { "xml",	0, NULL, 'X' },
+        { "noignore",	0, NULL, 'n' },
         { "write-recursive",	0, NULL, 0 },
         { "src-info",	0, NULL, 'g' },
         { "attribute-line",	0, NULL, 0 },
@@ -1182,7 +1209,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:mMJXg", long_options, &option_index);
+      c = getopt_long (argc, argv, "hV::p:i:b:r:u:I:B:LTsS:o:e:mlMJXng", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1347,6 +1374,16 @@ cmdline_parser_internal (
             goto failure;
         
           break;
+        case 'l':	/* Loose output mode: never write null elements.  */
+        
+        
+          if (update_arg((void *)&(args_info->loose_flag), 0, &(args_info->loose_given),
+              &(local_args_info.loose_given), optarg, 0, 0, ARG_FLAG,
+              check_ambiguity, override, 1, 0, "loose", 'l',
+              additional_error))
+            goto failure;
+        
+          break;
         case 'M':	/* Write output as MATLAB.  */
         
         
@@ -1373,6 +1410,16 @@ cmdline_parser_internal (
           if (update_arg((void *)&(args_info->xml_flag), 0, &(args_info->xml_given),
               &(local_args_info.xml_given), optarg, 0, 0, ARG_FLAG,
               check_ambiguity, override, 1, 0, "xml", 'X',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'n':	/* Skip ignore items.  */
+        
+        
+          if (update_arg((void *)&(args_info->noignore_flag), 0, &(args_info->noignore_given),
+              &(local_args_info.noignore_given), optarg, 0, 0, ARG_FLAG,
+              check_ambiguity, override, 1, 0, "noignore", 'n',
               additional_error))
             goto failure;
         
@@ -1511,6 +1558,20 @@ cmdline_parser_internal (
             if (update_arg((void *)&(args_info->strict_flag), 0, &(args_info->strict_given),
                 &(local_args_info.strict_given), optarg, 0, 0, ARG_FLAG,
                 check_ambiguity, override, 1, 0, "strict", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Null element name.  */
+          else if (strcmp (long_options[option_index].name, "null") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->null_arg), 
+                 &(args_info->null_orig), &(args_info->null_given),
+                &(local_args_info.null_given), optarg, 0, 0, ARG_STRING,
+                check_ambiguity, override, 0, 0,
+                "null", '-',
                 additional_error))
               goto failure;
           

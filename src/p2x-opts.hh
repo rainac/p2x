@@ -121,6 +121,11 @@ struct gengetopt_args_info
   const char *merged_help; /**< @brief Collect children of equal operator chains, output all binary nodes in MERGED mode help description.  */
   int strict_flag;	/**< @brief Strict output mode: paren children always indicated by null elements (default=off).  */
   const char *strict_help; /**< @brief Strict output mode: paren children always indicated by null elements help description.  */
+  int loose_flag;	/**< @brief Loose output mode: never write null elements (default=off).  */
+  const char *loose_help; /**< @brief Loose output mode: never write null elements help description.  */
+  char * null_arg;	/**< @brief Null element name.  */
+  char * null_orig;	/**< @brief Null element name original value given at command line.  */
+  const char *null_help; /**< @brief Null element name help description.  */
   char * output_mode_arg;	/**< @brief Write output as XML/JSON/MATLAB.  */
   char * output_mode_orig;	/**< @brief Write output as XML/JSON/MATLAB original value given at command line.  */
   const char *output_mode_help; /**< @brief Write output as XML/JSON/MATLAB help description.  */
@@ -130,6 +135,8 @@ struct gengetopt_args_info
   const char *json_help; /**< @brief Write output as JSON help description.  */
   int xml_flag;	/**< @brief Write output as XML (default=off).  */
   const char *xml_help; /**< @brief Write output as XML help description.  */
+  int noignore_flag;	/**< @brief Skip ignore items (default=off).  */
+  const char *noignore_help; /**< @brief Skip ignore items help description.  */
   int write_recursive_flag;	/**< @brief Recursive output writing (default=off).  */
   const char *write_recursive_help; /**< @brief Recursive output writing help description.  */
   int src_info_flag;	/**< @brief Emit source location attributes line, column, and character (default=off).  */
@@ -175,10 +182,13 @@ struct gengetopt_args_info
   unsigned int newline_as_entity_given ;	/**< @brief Whether newline-as-entity was given.  */
   unsigned int merged_given ;	/**< @brief Whether merged was given.  */
   unsigned int strict_given ;	/**< @brief Whether strict was given.  */
+  unsigned int loose_given ;	/**< @brief Whether loose was given.  */
+  unsigned int null_given ;	/**< @brief Whether null was given.  */
   unsigned int output_mode_given ;	/**< @brief Whether output-mode was given.  */
   unsigned int matlab_given ;	/**< @brief Whether matlab was given.  */
   unsigned int json_given ;	/**< @brief Whether json was given.  */
   unsigned int xml_given ;	/**< @brief Whether xml was given.  */
+  unsigned int noignore_given ;	/**< @brief Whether noignore was given.  */
   unsigned int write_recursive_given ;	/**< @brief Whether write-recursive was given.  */
   unsigned int src_info_given ;	/**< @brief Whether src-info was given.  */
   unsigned int attribute_line_given ;	/**< @brief Whether attribute-line was given.  */
