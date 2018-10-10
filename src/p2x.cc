@@ -1258,7 +1258,8 @@ struct TreeXMLWriter {
       loose(),
       writeRec(true),
       minStraightIndentLevel(135),
-      encoding("default is in .ggo")
+      encoding("default is in .ggo"),
+      nullName("null")
     {}
     bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, loose, writeRec;
     unsigned minStraightIndentLevel;
