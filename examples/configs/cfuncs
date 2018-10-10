@@ -1,23 +1,33 @@
 #
 # Operator definitions
 #
-# Token  Class         Precedence  Unary Prec.  Associativity
-"="      binary        5                        right
+# Token  Class         Precedence  Unary Prec.  Associativity  Options
+","      binary        3                                       merged
+";"      binary        3                                       merged
+"return" unary         4
+JUXTA    binary        5
+"="      binary        6                        right
+"=="     binary        7
 
 "+"      unary_binary  10          110
 "-"      unary_binary  10          110
 
-"*"      binary        20
+"*"      unary_binary  20          120
 
 "/"      binary        30
 "%"      binary        30
 
-" "      ignore        1
-NEWLINE  ignore        1
-TAB      ignore        1
+"if"     unary        100
+"while"  unary        100
 
 #
 # Parentheses definitions
 #
 # Start  "paren" End  Class    Precedence  Unary Prec.  Associativity
 "("      paren   ")"  postfix  101
+"["      paren   "]"  postfix  102
+"{"      paren   "}"
+
+" "      ignore        1
+NEWLINE  ignore        1
+TAB      ignore        1
