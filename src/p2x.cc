@@ -1004,45 +1004,48 @@ struct Parser {
 	std::string lncText;
 	while(true) {
 	  next = tokenList.next();
-          if (next->token == TOKEN_NEWLINE) {
+          if (next->token == TOKEN_NEWLINE or next->token == TOKEN_EOF)
             break;
-          } else if (next->token == TOKEN_EOF) {
-	    ls(LS::PARSE) << FileLineAndCol(*this, next) << ": Unexpected end of input in line comment "
-			  << TextLineAndCol(first)
-			  << " while searching for " << TOKEN_NEWLINE << "\n";
-            endFound = true;
-            break;
-          }
 	  lncText += next->text;
 	}
         insertToken(first);
-	first->text += lncText;
+	Token * const inserted = first;
         if (next->token == TOKEN_NEWLINE) {
           insertToken(next);
-        }
+        } else if (next->token == TOKEN_EOF) {
+	  ls(LS::PARSE) << FileLineAndCol(*this, next) << ": Unexpected end of input in line comment "
+			<< TextLineAndCol(first)
+			<< " while searching for " << TOKEN_NEWLINE << "\n";
+	  endFound = true;
+	  first = next;
+	}
+	inserted->text += lncText;
       } else if (tokenInfo.mode(first) == MODE_BLOCK_COMMENT and tokenInfo.isLParen(first)) {
 	Token *next = 0;
         auto pcommentEndList = tokenInfo.endList(first);
 	std::string ctext = first->text;
-	do {
+	while(true) {
 	  next = tokenList.next();
-	  ctext += next->text;
-	  if (pcommentEndList.find(tokenInfo.getOpCode(next)) != pcommentEndList.end())
+	  if (pcommentEndList.find(tokenInfo.getOpCode(next)) != pcommentEndList.end()
+	      or next->token == TOKEN_EOF)
 	    break;
+	  ctext += next->text;
 	  if (tokenInfo.mode(next) == MODE_BLOCK_COMMENT) {
 	    ls(LS::WARNING) << FileLineAndCol(*this, next) << ": Block comment start inside block comment "
 			    << TextLineAndCol(first)
 			    << ", but nesting is not allowed\n";
 	  }
-	} while (next->token != TOKEN_EOF);
+	}
+        insertToken(first);
+	Token * const inserted = first;
 	if (next->token == TOKEN_EOF) {
 	  ls(LS::WARNING) << FileLineAndCol(*this, next) << ": Unexpected end of input in block comment "
 			  << TextLineAndCol(first)
 			  << " while searching for " << pcommentEndList << "\n";
 	  endFound = true;
+	  first = next;
 	}
-        insertToken(first);
-	first->text = ctext;
+	inserted->text = ctext;
       } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
 	parser.options.rootNode = first;
