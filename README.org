@@ -204,6 +204,8 @@ The available token classes are the following:
    - Binary_unary
    - Postfix
    - Ignore
+   - Line_comment
+   - Block_comment
 
 Identifiers play a special role, that is, while IDENTIFIER is listed
 as one of the token types, each identifier such as ~x~, ~sin~ or
@@ -510,6 +512,46 @@ give a rather high precedence to the JUXTA operator then.
 #+BEGIN_EXAMPLE
 "(" paren ")"
 JUXTA binary 2000
+#+END_EXAMPLE
+
+*** Line comments and block comments
+
+Line comments and block comments can be used to escape from the normal
+parsing parse comment text sections. Line comments start with a
+certain token and continue until the next NEWLINE token. Block
+comments work like parentheses and have start and end tokens.
+
+All the text belonging to a comment is collected and inserted as a
+single Ignore item into the parse tree. In the case of the line
+comment the terminating NEWLINE is inserted individually, according to
+the rules defined for it.
+
+For example, the two modes of comments used in the C++ language can
+be configured in P2X as follows:
+
+#+BEGIN_EXAMPLE
+"//" line_comment 1
+"/*" block_comment "*/"
+#+END_EXAMPLE
+
+*** Ignoring tokens depending on context
+
+There are two special rules that can override the normally configured
+mode for certain token classes depending on the context. The first is
+the flag ~ignoreIfStray~ that can be used with Binary token. The
+effect is that a token from that class is treated as an Ignore token
+when there is an open operator (Unary or Binary) in the tree already.
+
+The other special rule is ~A ignoreAfter B~, which means that a token A is
+treated as Ignore whenever it occurs after a B token.
+
+For example, a special token to escape a NEWLINE, as in MATLAB, can be
+configured in P2X as follows:
+
+#+BEGIN_EXAMPLE
+NEWLINE    BINARY 1000
+"..."      IGNORE 1
+NEWLINE    ignoreAfter "..."
 #+END_EXAMPLE
 
 *** Example
