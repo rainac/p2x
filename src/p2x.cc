@@ -1020,7 +1020,7 @@ struct Parser {
         if (next->token == TOKEN_NEWLINE) {
           insertToken(next);
         }
-      } else if (tokenInfo.mode(first) == MODE_BLOCK_COMMENT) {
+      } else if (tokenInfo.mode(first) == MODE_BLOCK_COMMENT and tokenInfo.isLParen(first)) {
 	Token *next = 0;
         auto pcommentEndList = tokenInfo.endList(first);
 	std::string ctext = first->text;
@@ -1039,9 +1039,10 @@ struct Parser {
 	  ls(LS::WARNING) << FileLineAndCol(*this, next) << ": Unexpected end of input in block comment "
 			  << TextLineAndCol(first)
 			  << " while searching for " << pcommentEndList << "\n";
+	  endFound = true;
 	}
-	first->text = ctext;
         insertToken(first);
+	first->text = ctext;
       } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
 	parser.options.rootNode = first;
