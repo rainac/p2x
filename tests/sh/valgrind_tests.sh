@@ -7,6 +7,8 @@ runvalgrind() {
     res=$?
     echo "valgrind exit code: $res"
     assertNotEquals "Valgrind reports errors" 101 $res
+    ecCrash=$(( $res > 128))
+    assertEquals "Program crashed" 0 $ecCrash
     rm -f out.txt
 }
 
