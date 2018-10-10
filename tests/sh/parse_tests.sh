@@ -265,4 +265,8 @@ testParseTreeEqual_linecomment_newline2() {
     checkParseTreeEqual lncnl2.exp "[NEWLINE]([NEWLINE](test, test))"
 }
 
+testParseTreeEqual_block_closed_in_comment() {
+    checkParseTreeEqual opencloseincomment.exp "[begin](., [NEWLINE]([NEWLINE]([NEWLINE](., [begin](., [endblock]([NEWLINE]([NEWLINE](., [PLUS](x, 1)))))), [PLUS](y, 1))))"
+}
+
 . shunit2
