@@ -92,7 +92,7 @@ closing-list = element ca:closing-list {
 
 ca-ignore = element ca:ignore {
       attr-node,
-      ca-itr+
+      (ca-itr+ | text)
 }
 
 ca-text = element ca:text {

@@ -1519,30 +1519,24 @@ struct TreeXMLWriter {
       if (m_xmlWriter.options.newlineAsBr) {
         aus << "<c:br/>";
       } else {
-        aus << "<c:t>";
         if (m_xmlWriter.options.newlineAsEntity) {
           aus << "&#xa;";
         } else {
           aus << t->text;
         }
-        aus << "</c:t>";
       }
     } else if (t->token == TOKEN_CRETURN) {
       if (m_xmlWriter.options.newlineAsBr) {
         aus << "<c:cr/>";
       } else {
-        aus << "<c:t>";
         if (m_xmlWriter.options.newlineAsEntity) {
           aus << "&#xd;";
         } else {
           aus << t->text;
         }
-        aus << "</c:t>";
       }
     } else if (t->text.size()) {
-      aus << "<c:t>";
       xaus << t->text;
-      aus << "</c:t>";
     }
   }
 
@@ -1566,7 +1560,13 @@ struct TreeXMLWriter {
       aus << indent;
       res = 1;
     }
+    if (t->token != TOKEN_NEWLINE and t->token != TOKEN_CRETURN
+        and not t->text.empty())
+      aus << "<c:t>";
     writeSingleTokenTextNode(t);
+    if (t->token != TOKEN_NEWLINE and t->token != TOKEN_CRETURN
+        and not t->text.empty())
+      aus << "</c:t>";
     return res;
   }
 
