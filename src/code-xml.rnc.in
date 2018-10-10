@@ -14,6 +14,7 @@ code-xml = element code-xml {
              attribute col { text },
              attribute merged { text },
              attribute encoding { text },
+             attribute nullName { text },
              attribute id { text },
              attribute indent { text },
              attribute line { text },
@@ -22,6 +23,7 @@ code-xml = element code-xml {
              attribute newlineAsEntity { text },
              attribute prec { text },
              attribute strict{ text },
+             attribute loose { text },
              attribute type { text }
        },
        element ca:token-types { ca-op* },
