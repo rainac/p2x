@@ -54,3 +54,14 @@ inline std::ostream &operator<(std::ostream &aus, Token const &t) {
   t.print(aus);
   return aus;
 }
+
+struct TextLineAndCol {
+  Token const &m_t;
+  TextLineAndCol(Token const &t) : m_t(t) {}
+  TextLineAndCol(Token const *t) : m_t(*t) {}
+};
+
+inline std::ostream &operator <<(std::ostream &aus, TextLineAndCol const &t) {
+  aus << "'" << t.m_t.text << "' @" << t.m_t.line << ":" << t.m_t.column;
+  return aus;
+}

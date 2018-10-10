@@ -219,7 +219,11 @@ std::ostream &operator << (std::ostream &out, EndList const &endList) {
     if (it != endList.begin()) {
       out << ", ";
     }
-    out << it->first << "(" << it->second << ")";
+    if (it->second.text.empty()) {
+      out << it->second.token;
+    } else {
+      out << "'" << it->second.text << "'";
+    }
   }
   out << "}";
   return out;
@@ -738,16 +742,35 @@ struct Scanner {
   }
 };
 
+struct FileAndLine {
+  struct Parser const &m_p;
+  Token const &m_t;
+  FileAndLine(Parser const &p, Token const &t) : m_p(p), m_t(t) {}
+  FileAndLine(Parser const &p, Token const *t) : m_p(p), m_t(*t) {}
+};
+
+struct FileLineAndCol {
+  struct Parser const &m_p;
+  Token const &m_t;
+  FileLineAndCol(Parser const &p, Token const &t) : m_p(p), m_t(t) {}
+  FileLineAndCol(Parser const &p, Token const *t) : m_p(p), m_t(*t) {}
+};
+
+std::ostream &operator <<(std::ostream &aus, FileAndLine const &t);
+std::ostream &operator <<(std::ostream &aus, FileLineAndCol const &t);
+
 struct Parser {
   struct Options {
     bool ignoreIgnore;
+    std::string inputFileName;
+    Token *rootNode;
     Options() {
       ignoreIgnore = false;
     }
   };
   Token *root;
   TokenInfo const &tokenInfo;
-  Options const &options;
+  Options options;
   TokenList &tokenList;
   EndList endList;
   typedef std::map<int, Token*> LPrecMap;
@@ -990,6 +1013,7 @@ struct Parser {
         }
       } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
+	parser.options.rootNode = first;
         parser.endList = tokenInfo.endList(first);
         Token *last = parser.parse();
 
@@ -1059,6 +1083,16 @@ struct FPParser {
   }
 
 };
+
+inline std::ostream &operator <<(std::ostream &aus, FileAndLine const &t) {
+  aus << t.m_p.options.inputFileName << ":" << t.m_t.line;
+  return aus;
+}
+
+inline std::ostream &operator <<(std::ostream &aus, FileLineAndCol const &t) {
+  aus << t.m_p.options.inputFileName << ":" << t.m_t.line << ":" << t.m_t.column;
+  return aus;
+}
 
 #define p2x_stack_use_list
 // #define p2x_stack_use_vector
@@ -2696,6 +2730,7 @@ int main(int argc, char *argv[]) {
 
 
   FPParser fpParser(scannerType);
+  fpParser.options.inputFileName = (fileList.size() ? fileList[0].c_str() : "stdin");
   fpParser.tokenInfo = tokenInfo;
 
   Token::count = 0;
