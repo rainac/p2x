@@ -1,4 +1,5 @@
 #+TITLE: P2X - Universal parser with XML output
+#+author: Johannes Willkomm
 
 * Introduction
 
@@ -22,6 +23,7 @@ cat out.xml
 #+RESULTS:
 #+begin_example
 <?xml version="1.0" encoding="utf-8"?>
+<!-- P2X version 0.6.4 (72b96eb2) -->
 <code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>
  <ROOT>
   <null/>
@@ -36,25 +38,89 @@ cat out.xml
 </code-xml>
 #+end_example
 
-The same output structure can also be represented in MATLAB:
+One important property of the output is that all input token are
+present, and that they are present strictly in the order of the
+input. Thus the entire input text is present in the XML, structured by
+XML tags. This is even true when some token are set to be ignored. The
+ignored token are inserted into the tree by attaching them to the next
+best tree node, but otherwise they have no effect on the shape of the
+tree.
+
 #+BEGIN_SRC sh :results output :exports both
-p2x -m -M -b PLUS in.txt
+echo -n "1 + 2 + 3" > in.txt
+p2x -m -X -i SPACE -b PLUS -o out.xml in.txt
+cat out.xml
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P2X version 0.6.4 (72b96eb2) -->
+<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>
+ <ROOT>
+  <null/>
+  <PLUS>
+   <INT>
+    <c:t>1</c:t>
+    <ci:SPACE> </ci:SPACE>
+   </INT>
+   <c:t>+</c:t>
+   <ci:SPACE> </ci:SPACE>
+   <INT>
+    <c:t>2</c:t>
+    <ci:SPACE> </ci:SPACE>
+   </INT>
+   <c:t>+</c:t>
+   <ci:SPACE> </ci:SPACE>
+   <INT><c:t>3</c:t></INT>
+  </PLUS>
+ </ROOT>
+</code-xml>
+#+end_example
+
+Any token in the tree has exactly one special child element that
+contains the input token text, in the example called ~c:t~. Ignored
+token are output as elements with namespace prefix ~ci~, in the
+example called ~ci:SPACE~.
+
+Since the token text and ignored elements are in separate namespaces,
+they do not affect the structure of the tree made up of the elements of
+the code namespace. Still, the input can be recovered exactly by
+concatenating the token text and ignored elements in document
+order. This is done for example by the XSL stylesheet
+file:src/xsl/reproduce.xsl:
+
+#+BEGIN_SRC sh :results output :exports both
+xsltproc src/xsl/reproduce.xsl out.xml
+#+END_SRC
+
+#+RESULTS:
+: 1 + 2 + 3
+
+The parsed tree structure can also be represented in MATLAB output:
+#+BEGIN_SRC sh :results output :exports both
+p2x -M -i SPACE -b PLUS in.txt
 #+END_SRC
 
 #+RESULTS:
 : struct('n','rt','i','','c',{...
-:  struct('n',{'','op'}, 't',{'','+'}, 'c',{[],...
-:   struct('n','num', 't',{'1','2','3'})})});
+:  struct('n',{'','op'}, 't',{'','+'}, 'i',{'',' '}, 'c',{[],...
+:   struct('n',{'op','num'}, 't',{'+','3'}, 'i',{' ',''}, 'c',{...
+:    struct('n','num', 't',{'1','2'}, 'i',' '),[]})})});
 
 or JSON:
 #+BEGIN_SRC sh :results output :exports both
-p2x -m -J -b PLUS in.txt
+p2x -J -i SPACE -b PLUS in.txt
 #+END_SRC
 
 #+RESULTS:
 : {"n":"rt","i":"","c":[
-:  {"n":["","op"], "t":["","+"], "c":[{},
-:   {"n":"num", "t":["1","2","3"]}]}]}
+:  {"n":["","op"], "t":["","+"], "i":[""," "], "c":[{},
+:   {"n":["op","num"], "t":["+","3"], "i":[" ",""], "c":[
+:    {"n":"num", "t":["1","2"], "i":" "},{}]}]}]}
+
+In both MATLAB and JSON format it is not possible to represent all
+ignored items when using the merged output mode.
 
 * Usage
 
@@ -129,9 +195,9 @@ table:
 |       | --newline-as-br          | Emit newline text as ca:br element of ca:text (default=on)                                  |
 |       | --newline-as-entity      | Emit newline text as &#xa; character entity (default=off)                                   |
 | -m    | --merged                 | Merge same operator chains, tree will not be binary (default=off)                           |
-| -w    | --sparse                 | Safe some non-essential attributes, newlines and indents  (default=off)                     |
-|       | --write-xml-declaration  | Emit XML declaration (with encoding) (default=off)                                          |
-|       | --write-bom              | Emit byte order mark (BOM) character (default=off)                                          |
+| -n    | --noignore               | Skip ignored token  (default=off)                                                           |
+| -l    | --loose                  | Write null elements more loosely (default=off)                                              |
+|       | --strict                 | Write null elements more strictly (default=off)                                             |
 | -O    | --output-mode=Mode       | Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code (default=`y') |
 | -M    | --matlab                 | Write output as MATLAB  (default=off)                                                       |
 | -J    | --json                   | Write output as JSON  (default=off)                                                         |
@@ -241,7 +307,7 @@ operator.
 The effect of the configuration can be inspected by using the option
 =-T=.
 #+BEGIN_SRC sh
-p2x -T -p examples/configs/cfuncs
+p2x -T -p examples/configs-special/cfuncs.p2c
 #+END_SRC
 
 Generally token can either by referred to by the name of the token
@@ -312,20 +378,21 @@ p2x -b NEWLINE -b PLUS -bMULT,DIV -btimes,divide
 #+RESULTS:
 #+begin_example
 <?xml version="1.0" encoding="utf-8"?>
+<!-- P2X version 0.6.4 (72b96eb2) -->
 <code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>
  <ca:steps/>
- <ca:scanner>STRINGS</ca:scanner>
- <ca:tree-writer collect='0' col='1' encoding='utf-8' id='0' indent='1' newlineAsBr='1' prec='0' mode='0' type='1'/>
+ <ca:scanner type='STRINGS'/>
+ <ca:tree-writer col='0' merged='0' encoding='utf-8' nullName='null' id='0' indent='1' line='0' mode='0' newlineAsBr='1' newlineAsEntity='0' prec='0' strict='0' loose='0' type='1'/>
  <ca:token-types>
-  <ca:op code='47' type='PLUS' mode='BINARY' precedence='1001' associativity='LEFT' output-mode='NONE'/>
-  <ca:op code='49' type='MULT' mode='BINARY' precedence='1002' associativity='LEFT' output-mode='NONE'/>
-  <ca:op code='50' type='DIV' mode='BINARY' precedence='1003' associativity='LEFT' output-mode='NONE'/>
-  <ca:op code='68' type='NEWLINE' mode='BINARY' precedence='1000' associativity='LEFT' output-mode='NONE'/>
-  <ca:op code='71' type='JUXTA' mode='BINARY' precedence='900' associativity='LEFT' output-mode='NONE'/>
-  <ca:op code='100' repr='times' type='IDENTIFIER' mode='BINARY' precedence='1004' associativity='LEFT' output-mode='NONE'/>
-  <ca:op code='101' repr='divide' type='IDENTIFIER' mode='BINARY' precedence='1005' associativity='LEFT' output-mode='NONE'/>
+  <ca:op code='47' type='PLUS' mode='BINARY' precedence='1001' associativity='LEFT'/>
+  <ca:op code='49' type='MULT' mode='BINARY' precedence='1002' associativity='LEFT'/>
+  <ca:op code='50' type='DIV' mode='BINARY' precedence='1003' associativity='LEFT'/>
+  <ca:op code='68' type='NEWLINE' mode='BINARY' precedence='1000' associativity='LEFT'/>
+  <ca:op code='71' type='JUXTA' mode='BINARY' precedence='900' associativity='LEFT'/>
+  <ca:op code='200' repr='times' type='IDENTIFIER' mode='BINARY' precedence='1004' associativity='LEFT'/>
+  <ca:op code='201' repr='divide' type='IDENTIFIER' mode='BINARY' precedence='1005' associativity='LEFT'/>
  </ca:token-types>
- <root line='0' col='0' code='27' type='ROOT'>
+ <root code='27' type='ROOT'>
  </root>
 </code-xml>
 #+end_example
@@ -504,7 +571,7 @@ the line together with an integer specifying the precedence:
 #+END_EXAMPLE
 
 Another way to parse a function call expression is to leave the
-perentheses definition in token class Item and rely on the JUXTA
+parentheses definition in token class Item and rely on the JUXTA
 operator which will be inserted between the function name -- provided
 that is parsed as an Item -- and the parentheses. One will probably
 give a rather high precedence to the JUXTA operator then.
@@ -557,10 +624,10 @@ NEWLINE    ignoreAfter "..."
 *** Example
 
 As an example consider the configuration file
-[[file:examples/configs/cfuncs]] and the input text file
+[[file:examples/configs-special/cfuncs.p2c]] and the input text file
 [[file:examples/in/cexpr.exp]]:
 #+BEGIN_SRC sh :results output :exports both
-cat examples/configs/cfuncs
+cat examples/configs-special/cfuncs.p2c
 #+END_SRC
 
 #+RESULTS:
@@ -568,26 +635,36 @@ cat examples/configs/cfuncs
 #
 # Operator definitions
 #
-# Token  Class         Precedence  Unary Prec.  Associativity
-"="      binary        5                        right
+# Token  Class         Precedence  Unary Prec.  Associativity  Options
+","      binary        3                                       merged
+";"      binary        3                                       merged
+"return" unary         4
+JUXTA    binary        5
+"="      binary        6                        right
+"=="     binary        7
 
 "+"      unary_binary  10          110
 "-"      unary_binary  10          110
 
-"*"      binary        20
+"*"      unary_binary  20          120
 
 "/"      binary        30
 "%"      binary        30
 
-" "      ignore        1
-NEWLINE  ignore        1
-TAB      ignore        1
+"if"     unary        100
+"while"  unary        100
 
 #
 # Parentheses definitions
 #
 # Start  "paren" End  Class    Precedence  Unary Prec.  Associativity
 "("      paren   ")"  postfix  101
+"["      paren   "]"  postfix  102
+"{"      paren   "}"
+
+" "      ignore        1
+NEWLINE  ignore        1
+TAB      ignore        1
 #+end_example
 
 #+BEGIN_SRC sh :results output :exports both
@@ -598,28 +675,23 @@ cat examples/in/cexpr.exp
 : f( a +	1)*2
 
 #+BEGIN_SRC sh :results output :exports both
-p2x -mX -p examples/configs/cfuncs examples/in/cexpr.exp
+p2x -S c -lnX -p examples/configs-special/cfuncs.p2c examples/in/cexpr.exp
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
 <?xml version="1.0" encoding="utf-8"?>
+<!-- P2X version 0.6.4 (72b96eb2) -->
 <code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>
  <ROOT>
-  <null/>
   <MULT>
    <L_PAREN>
     <ID><c:t>f</c:t></ID>
     <c:t>(</c:t>
-    <ci:SPACE> </ci:SPACE>
     <R_PAREN>
      <PLUS>
-      <ID>
-       <c:t>a</c:t>
-       <ci:SPACE> </ci:SPACE>
-      </ID>
+      <ID><c:t>a</c:t></ID>
       <c:t>+</c:t>
-      <ci:TAB>	</ci:TAB>
       <INT><c:t>1</c:t></INT>
      </PLUS>
      <c:t>)</c:t>
@@ -632,11 +704,105 @@ p2x -mX -p examples/configs/cfuncs examples/in/cexpr.exp
 </code-xml>
 #+end_example
 
+As a more complex example try parsing an entire program:
+
+#+BEGIN_SRC sh :results output :exports code
+p2x -lnX -S c -p examples/configs-special/cfuncs.p2c examples/in/cfunc.exp
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P2X version 0.6.4 (72b96eb2) -->
+<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>
+ <ROOT>
+  <JUXTA>
+   <JUXTA>
+    <ID><c:t>int</c:t></ID>
+    <L_PAREN>
+     <ID><c:t>main</c:t></ID>
+     <c:t>(</c:t>
+     <R_PAREN>
+      <COMMA>
+       <JUXTA>
+        <ID><c:t>int</c:t></ID>
+        <ID><c:t>argc</c:t></ID>
+       </JUXTA>
+       <c:t>,</c:t>
+       <MULT>
+        <ID><c:t>char</c:t></ID>
+        <c:t>*</c:t>
+        <MULT>
+         <c:t>*</c:t>
+         <ID><c:t>argv</c:t></ID>
+        </MULT>
+       </MULT>
+      </COMMA>
+      <c:t>)</c:t>
+     </R_PAREN>
+    </L_PAREN>
+   </JUXTA>
+   <L_BRACE>
+    <c:t>{</c:t>
+    <R_BRACE>
+     <SEMICOLON>
+      <JUXTA>
+       <if>
+        <c:t>if</c:t>
+        <L_PAREN>
+         <c:t>(</c:t>
+         <R_PAREN>
+          <JUXTA>
+           <JUXTA>
+            <ID><c:t>argc</c:t></ID>
+            <GREATER><c:t>&gt;</c:t></GREATER>
+           </JUXTA>
+           <INT><c:t>1</c:t></INT>
+          </JUXTA>
+          <c:t>)</c:t>
+         </R_PAREN>
+        </L_PAREN>
+       </if>
+       <L_PAREN>
+        <ID><c:t>printf</c:t></ID>
+        <c:t>(</c:t>
+        <R_PAREN>
+         <COMMA>
+          <STRING><c:t>"Hello %s"</c:t></STRING>
+          <c:t>,</c:t>
+          <L_BRACKET>
+           <ID><c:t>argv</c:t></ID>
+           <c:t>[</c:t>
+           <R_BRACKET>
+            <INT><c:t>1</c:t></INT>
+            <c:t>]</c:t>
+           </R_BRACKET>
+          </L_BRACKET>
+         </COMMA>
+         <c:t>)</c:t>
+        </R_PAREN>
+       </L_PAREN>
+      </JUXTA>
+      <c:t>;</c:t>
+      <return>
+       <c:t>return</c:t>
+       <INT><c:t>0</c:t></INT>
+      </return>
+      <c:t>;</c:t>
+     </SEMICOLON>
+     <c:t>}</c:t>
+    </R_BRACE>
+   </L_BRACE>
+  </JUXTA>
+ </ROOT>
+</code-xml>
+#+end_example
+
 * About this document
 
 This file is part of P2X. See the file p2x.cc for copying conditions.  
 
-Copyright © 2014,2016 Johannes Willkomm
+Copyright © 2014,2016,2018 Johannes Willkomm
 
 * Internal                                                         :noexport:
 
