@@ -1855,7 +1855,7 @@ struct TreeXMLWriter {
     aus << " col='" << t.options.col << "'";
     aus << " merged='" << t.options.merged << "'";
     aus << " encoding='" << t.options.encoding << "'";
-    aus << " null-name='" << t.options.nullName << "'";
+    aus << " nullName='" << t.options.nullName << "'";
     aus << " id='" << t.options.id << "'";
     aus << " indent='" << t.options.indent << "'";
     aus << " line='" << t.options.line << "'";
