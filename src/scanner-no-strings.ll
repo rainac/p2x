@@ -86,6 +86,8 @@ STRING {STRING1}|{STRING2}
 "'"                     return TOKEN_APOS;
 
 "//"                    return TOKEN_DOUBLE_DIV;
+"/*"                    return TOKEN_C_COMMENT_START;
+"*/"                    return TOKEN_C_COMMENT_END;
 
 {CR}                    return TOKEN_CRETURN;
 {NL}                    return TOKEN_NEWLINE;
