@@ -20,7 +20,7 @@
        case MODE_UNARY_BINARY: return "UNARY_BINARY";
        case MODE_LINE_COMMENT: return "LINE_COMMENT";
        case MODE_PAREN: return "PAREN";
-       case MODE_PAREN_COMMENT: return "PAREN_COMMENT";
+       case MODE_BLOCK_COMMENT: return "BLOCK_COMMENT";
         default: break;
       }
       return "unknown value in enumeration ParserMode";
@@ -35,7 +35,7 @@
        case MODE_UNARY_BINARY: return "";
        case MODE_LINE_COMMENT: return "";
        case MODE_PAREN: return "";
-       case MODE_PAREN_COMMENT: return "";
+       case MODE_BLOCK_COMMENT: return "";
         default: break;
       }
       return "unknown value in enumeration ParserMode";
@@ -67,9 +67,9 @@
        } else if (strcasecmp("PAREN", name) == 0
           || strcasecmp("MODE_PAREN", name) == 0) {
           return MODE_PAREN;
-       } else if (strcasecmp("PAREN_COMMENT", name) == 0
-          || strcasecmp("MODE_PAREN_COMMENT", name) == 0) {
-          return MODE_PAREN_COMMENT;
+       } else if (strcasecmp("BLOCK_COMMENT", name) == 0
+          || strcasecmp("MODE_BLOCK_COMMENT", name) == 0) {
+          return MODE_BLOCK_COMMENT;
        } else {
           if (! res) {
             fprintf(stderr, "error: unknown %s constant named `%s'\n",
@@ -93,7 +93,7 @@
        case 5: return MODE_UNARY_BINARY;
        case 6: return MODE_LINE_COMMENT;
        case 7: return MODE_PAREN;
-       case 8: return MODE_PAREN_COMMENT;
+       case 8: return MODE_BLOCK_COMMENT;
        default: break;
       }
       fprintf(stderr, "error: ParserMode constant index %d out of range\n",

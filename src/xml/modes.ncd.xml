@@ -12,5 +12,5 @@
   <c name="UNARY_BINARY"/>
   <c name="LINE_COMMENT"/>
   <c name="PAREN" val="32"/>
-  <c name="PAREN_COMMENT" val="64"/>
+  <c name="BLOCK_COMMENT" val="64"/>
 </ncdef>
