@@ -1001,6 +1001,7 @@ struct Parser {
         endFound = true;
       } else if (tokenInfo.mode(first) == MODE_LINE_COMMENT) {
 	Token *next = 0;
+	std::string lncText;
 	while(true) {
 	  next = tokenList.next();
           if (next->token == TOKEN_NEWLINE) {
@@ -1012,9 +1013,10 @@ struct Parser {
             endFound = true;
             break;
           }
-	  first->text += next->text;
+	  lncText += next->text;
 	}
         insertToken(first);
+	first->text += lncText;
         if (next->token == TOKEN_NEWLINE) {
           insertToken(next);
         }
