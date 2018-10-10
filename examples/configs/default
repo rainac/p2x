@@ -106,5 +106,5 @@ tab ignore 1
 
 "/*" block_comment "*/"
 
-"scom" block_comment "end"
+"scom" block_comment "endcom"
 "scom" block_comment "ecom"

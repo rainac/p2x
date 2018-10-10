@@ -1,2 +1,2 @@
 char const * s = "Hi" scom ", he said"
-  " she said" scom + ecom end " it said\n";
+  " she said" scom + ecom endcom " it said\n";
