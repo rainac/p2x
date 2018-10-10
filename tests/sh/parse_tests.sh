@@ -261,4 +261,8 @@ testParseTreeEqual_linecomment_newline() {
     checkParseTreeEqual lncnl.exp "[NEWLINE](test, test)"
 }
 
+testParseTreeEqual_linecomment_newline2() {
+    checkParseTreeEqual lncnl2.exp "[NEWLINE]([NEWLINE](test, test))"
+}
+
 . shunit2

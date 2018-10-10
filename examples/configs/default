@@ -101,3 +101,5 @@ tab ignore 1
 "times" binary 1100
 
 "//" line_comment 1
+
+"eolc" line_comment 1
