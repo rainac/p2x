@@ -1006,7 +1006,9 @@ struct Parser {
           if (next->token == TOKEN_NEWLINE) {
             break;
           } else if (next->token == TOKEN_EOF) {
-            ls(LS::WARNING) << "unexpected end of input encountered" << std::endl;
+	    ls(LS::PARSE) << FileLineAndCol(*this, next) << ": Unexpected end of input in line comment "
+			  << TextLineAndCol(first)
+			  << " while searching for " << TOKEN_NEWLINE << "\n";
             endFound = true;
             break;
           }
