@@ -103,3 +103,8 @@ tab ignore 1
 "//" line_comment 1
 
 "eolc" line_comment 1
+
+"/*" block_comment "*/"
+
+"scom" block_comment "end"
+"scom" block_comment "ecom"

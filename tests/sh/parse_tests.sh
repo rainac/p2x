@@ -269,4 +269,20 @@ testParseTreeEqual_block_closed_in_comment() {
     checkParseTreeEqual opencloseincomment.exp "[begin](., [NEWLINE]([NEWLINE]([NEWLINE](., [begin](., [endblock]([NEWLINE]([NEWLINE](., [PLUS](x, 1)))))), [PLUS](y, 1))))"
 }
 
+testParseTreeEqual_block_comment1() {
+    checkParseTreeEqual ccomment.exp '[NEWLINE]([SEMICOLON]([EQUAL]([JUXTA](char, [MULT](const, [s]())), [JUXTA]("Hi", " she said"))))' "-S c"
+}
+
+testParseTreeEqual_block_comment2() {
+    checkParseTreeEqual word-paren-comment.exp '[NEWLINE]([SEMICOLON]([EQUAL]([JUXTA](char, [MULT](const, [s]())), [JUXTA]("Hi", " she said"))))'
+}
+
+testParseTreeEqual_block_comment3() {
+    checkParseTreeEqual word-paren-comment-nested.exp '[NEWLINE]([SEMICOLON]([EQUAL]([JUXTA](char, [MULT](const, [s]())), [JUXTA]("Hi", " it said\n"))))'
+}
+
+testParseTreeEqual_block_comment4() {
+    checkParseTreeEqual word-paren-comment-unclosed.exp '[EQUAL]([JUXTA](char, [MULT](const, [s]())), "Hi")'
+}
+
 . shunit2
