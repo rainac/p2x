@@ -995,7 +995,9 @@ struct Parser {
       if (endList.find(tokenInfo.getOpCode(first)) != endList.end()) {
         endFound = true;
       } else if (first->token == TOKEN_EOF) {
-        ls(LS::WARNING) << "unexpected end of input encountered" << std::endl;
+	ls(LS::WARNING) << FileLineAndCol(*this, first) << ": Unexpected end of input in block "
+			<< TextLineAndCol(options.rootNode)
+			<< " while searching for " << endList << "\n";
         endFound = true;
       } else if (tokenInfo.mode(first) == MODE_LINE_COMMENT) {
 	Token *next = 0;
