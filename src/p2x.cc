@@ -1255,13 +1255,14 @@ struct TreeXMLWriter {
       newlineAsEntity(false),
       merged(),
       strict(),
+      loose(),
       writeRec(true),
       minStraightIndentLevel(135),
       encoding("default is in .ggo")
     {}
-    bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, writeRec;
+    bool id, line, col, _char, prec, mode, type, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, loose, writeRec;
     unsigned minStraightIndentLevel;
-    std::string encoding;
+    std::string encoding, nullName;
   };
   TokenInfo const &tokenInfo;
   Options options;
@@ -1439,8 +1440,8 @@ struct TreeXMLWriter {
         aus << ">" << m_xmlWriter.linebreak;
         ++m_level;
       }
-      if (t->left == 0 and t->right != 0) {
-        aus << subindent << "<null/>" << m_xmlWriter.linebreak;
+      if (t->left == 0 and t->right != 0 and not m_xmlWriter.options.loose) {
+        aus << subindent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
       }
 
       return 0;
@@ -1610,8 +1611,8 @@ struct TreeXMLWriter {
           ++m_level;
         }
       }
-      if (t->left == 0 and t->right != 0) {
-        aus << subindent << "<null/>" << m_xmlWriter.linebreak;
+      if (t->left == 0 and t->right != 0 and not m_xmlWriter.options.loose) {
+        aus << subindent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
       }
 
       return 0;
@@ -1771,8 +1772,8 @@ struct TreeXMLWriter {
         passParent = t;
       }
       writeXML_Rec(t->left, aus, subindent, passParent, level+1);
-    } else if (t->right != 0) {
-      aus << indent << indentUnit << "<null/>" << linebreak;
+    } else if (t->right != 0 and not options.loose) {
+      aus << indent << indentUnit << "<" << options.nullName << "/>" << linebreak;
     }
     if (not t->text.empty()) {
       aus << subindent;
@@ -1853,6 +1854,7 @@ struct TreeXMLWriter {
     aus << " col='" << t.options.col << "'";
     aus << " merged='" << t.options.merged << "'";
     aus << " encoding='" << t.options.encoding << "'";
+    aus << " null-name='" << t.options.nullName << "'";
     aus << " id='" << t.options.id << "'";
     aus << " indent='" << t.options.indent << "'";
     aus << " line='" << t.options.line << "'";
@@ -1861,6 +1863,7 @@ struct TreeXMLWriter {
     aus << " newlineAsEntity='" << t.options.newlineAsEntity << "'";
     aus << " prec='" << t.options.prec << "'";
     aus << " strict='" << t.options.strict << "'";
+    aus << " loose='" << t.options.loose << "'";
     aus << " type='" << t.options.type << "'";
     aus << "/>" << linebreak;
   }
@@ -2432,7 +2435,12 @@ int main(int argc, char *argv[]) {
   options.indent = args.indent_flag;
   options.merged = args.merged_flag;
   options.strict = args.strict_flag;
+  options.loose  = args.loose_flag;
   options.writeRec = args.write_recursive_flag;
+
+  if (args.null_given) {
+    options.nullName = args.null_arg;
+  }
 
   std::string indentUnit = args.indent_unit_arg[0];
   if (args.indent_unit_given) {
@@ -2776,6 +2784,9 @@ int main(int argc, char *argv[]) {
 
   FPParser fpParser(scannerType);
   fpParser.options.inputFileName = (fileList.size() ? fileList[0].c_str() : "stdin");
+  if (args.noignore_given) {
+    fpParser.options.ignoreIgnore = true;
+  }
   fpParser.tokenInfo = tokenInfo;
 
   Token::count = 0;
