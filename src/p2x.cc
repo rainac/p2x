@@ -1882,7 +1882,7 @@ char const *vcs_version = VCS_REVISION;
 
 void writeVersionInfoXML(TreeXMLWriter::Options const &, std::string const &, std::ostream &out) {
   out << "<!-- P2X version " << PACKAGE_VERSION << " (" << std::string(vcs_version).substr(0,8).c_str() << ") -->\n";
-  out << "<!-- " << getCopyright() << " -->\n";
+  //  out << "<!-- " << getCopyright() << " -->\n";
 }
 
 void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
