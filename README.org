@@ -804,6 +804,4 @@ This file is part of P2X. See the file p2x.cc for copying conditions.
 
 Copyright © 2014,2016,2018 Johannes Willkomm
 
-* Internal                                                         :noexport:
-
 #+options: ^:{} H:4
