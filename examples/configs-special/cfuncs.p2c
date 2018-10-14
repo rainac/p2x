@@ -8,6 +8,7 @@
 JUXTA    binary        5
 "="      binary        6                        right
 "=="     binary        7
+">"      binary        8
 
 "+"      unary_binary  10          110
 "-"      unary_binary  10          110
