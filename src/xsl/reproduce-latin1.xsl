@@ -9,4 +9,3 @@
   <xsl:output method="text" encoding="latin1"/>
 
 </xsl:stylesheet>
-<!-- $Id: reproduce-latin1.xsl 75 2014-10-24 16:21:34Z johannes.willkomm@googlemail.com $ -->
