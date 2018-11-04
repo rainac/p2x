@@ -70,7 +70,7 @@ code-xml.rnc: code-xml.rnc.in
 instbasedir=$(pkgdatadir)
 instdir= $(instbasedir)
 
-inst_DATA = code-xml.rnc xsl/reproduce.xsl xsl/reproduce-latin1.xsl
+inst_DATA = code-xml.rnc xsl/reproduce.xsl xsl/reproduce-latin1.xsl xsl/copy.xsl
 
 clean-local:
 	$(RM) -f $(generated_files)
