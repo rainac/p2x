@@ -40,7 +40,7 @@ INT   ("0x")?{DIGIT}+[uUlL]*
 FLOAT1 {DIGIT}+"."{DIGIT}+
 FLOAT2 {DIGIT}+("."{DIGIT}*)?
 FLOAT3 {DIGIT}*"."{DIGIT}+
-FLOATSUFFIX ([eEdD][+-]?{DIGIT}+)?[lLfF]?
+FLOATSUFFIX ([eEdD][+-]?{DIGIT}+)?[i]?
 FLOAT ({FLOAT1}|{FLOAT2}|{FLOAT3}){FLOATSUFFIX}
 STRING1 "\""[^\"\n]*"\""
 STRING2 "'"[^\'\n]*"'"
