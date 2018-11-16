@@ -5,7 +5,7 @@
 default namespace = "NAMESPACE_CX"
 namespace ca = "NAMESPACE_CA"
 
-start = code-xml
+start = code-xml | scan-xml
 
 code-xml = element code-xml {
        element ca:steps { ca-step* },
@@ -121,4 +121,7 @@ attr-is-paren = attribute is-paren { text }
 attr-location = attribute line { xsd:int }, attribute col { xsd:int }
 attr-file = attribute file { text }, attribute path { text }
 
-# $Id: code-xml.rnc.in 95 2014-10-27 08:21:37Z johannes.willkomm@googlemail.com $
+scan-xml = element scan-xml {
+	 element ca:scanner { attribute type { text } }?,
+	 node+
+}
