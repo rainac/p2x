@@ -40,6 +40,12 @@ if test "x$FLEX" = "x"; then
   AC_MSG_ERROR([mandatory program flex was not found])
 fi
 
+AC_CHECK_PROGS([RE2C], [re2c])
+AM_CONDITIONAL(acond_RE2C_AVAIL, [test "x$FLEX" != "x"])
+
+AC_CHECK_PROGS([EMACS], [emacs])
+AM_CONDITIONAL(acond_EMACS_AVAIL, [test "x$EMACS" != "x"])
+
 AC_ARG_ENABLE([static], [  --enable-static         Build statically linked executables.
   --disable-static        Build dynamically linked executables.], [
       static_build=$enableval
