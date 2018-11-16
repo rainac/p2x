@@ -57,7 +57,7 @@ const char *gengetopt_args_info_full_help[] = {
   "  -e, --input-encoding=Charset  Input encoding  (default=`utf-8')",
   "      --indent                  Indent  (default=on)",
   "      --indent-unit=STRING      Indentation unit  (default=` ')",
-  "      --newline-as-br           Emit newline text as ca:br element of ca:text\n                                  (default=on)",
+  "      --newline-as-br           Emit newline text as ca:br element\n                                  (default=on)",
   "      --newline-as-entity       Emit newline text as &#xa; character entity\n                                  (default=off)",
   "  -m, --merged                  Collect children of equal operator chains,\n                                  output all binary nodes in MERGED mode\n                                  (default=off)",
   "      --strict                  Strict output mode: paren children always\n                                  indicated by null elements  (default=off)",
@@ -1526,7 +1526,7 @@ cmdline_parser_internal (
               goto failure;
           
           }
-          /* Emit newline text as ca:br element of ca:text.  */
+          /* Emit newline text as ca:br element.  */
           else if (strcmp (long_options[option_index].name, "newline-as-br") == 0)
           {
           

@@ -113,8 +113,8 @@ struct gengetopt_args_info
   unsigned int indent_unit_min; /**< @brief Indentation unit's minimum occurreces */
   unsigned int indent_unit_max; /**< @brief Indentation unit's maximum occurreces */
   const char *indent_unit_help; /**< @brief Indentation unit help description.  */
-  int newline_as_br_flag;	/**< @brief Emit newline text as ca:br element of ca:text (default=on).  */
-  const char *newline_as_br_help; /**< @brief Emit newline text as ca:br element of ca:text help description.  */
+  int newline_as_br_flag;	/**< @brief Emit newline text as ca:br element (default=on).  */
+  const char *newline_as_br_help; /**< @brief Emit newline text as ca:br element help description.  */
   int newline_as_entity_flag;	/**< @brief Emit newline text as &#xa; character entity (default=off).  */
   const char *newline_as_entity_help; /**< @brief Emit newline text as &#xa; character entity help description.  */
   int merged_flag;	/**< @brief Collect children of equal operator chains, output all binary nodes in MERGED mode (default=off).  */
