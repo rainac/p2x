@@ -9,9 +9,14 @@ See the file p2x.cc for copying conditions.
 
 #include <map>
 #include <iostream>
+#include <functional>
 #include <strings.h>
 
 struct LS {
+#ifdef DEBUG
+#warning DEBUG defined, undefining
+#undef DEBUG
+#endif
 #include "logger.ncd.enum.hh"
 #include "logger.ncd.cc"
 
@@ -40,7 +45,7 @@ struct LS {
 int ffs(int x);
 #endif
 
-inline std::ostream &ls(int const code) {
+inline std::ostream &getls(int const code = 0xffffffff) {
   if (code & LS::mask) {
     std::ostream &res = LS::select(1 << ffs(code));
     res << "p2x: ";
@@ -48,6 +53,16 @@ inline std::ostream &ls(int const code) {
   }
   return LS::nullStream;
 }
+
+inline void logmsg(int const code, std::function<void()> func) {
+  if (code & LS::mask) {
+    func();
+  }
+}
+
+#define Log(c, x)  logmsg((c), [&]() { getls() << x; });
+
+#define IfLog(c, x)  if ((c) & LS::mask) { x }
 
 #include "logger.ncd.hh"
 

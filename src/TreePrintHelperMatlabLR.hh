@@ -30,7 +30,7 @@ struct TreePrintHelperMATLABLR {
     if (m_xmlWriter.options.indent) {
       int ilevel = std::min<int>(m_level, m_xmlWriter.options.minStraightIndentLevel + log(std::max<size_t>(m_level, 1)));
 #ifndef NDEBUG
-      ls(LS::DEBUG|LS::PARSE) << "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n";
+      Log(LS::DEBUG|LS::PARSE, "rec. level -> indent level: " << m_level << " -> " << ilevel << "\n")
 #endif
       setWhiteLen(indent, ilevel);
       setWhiteLen(subindent, ilevel+1);
@@ -86,7 +86,7 @@ struct TreePrintHelperMATLABLR {
 
   virtual int onEnter(Token const *t, Token const *parent) {
 #ifndef NDEBUG
-    ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
+    Log(LS::DEBUG|LS::PARSE, "parse: onEnter " << (void*)t << " " << *t << "\n")
 #endif
     if (t->left or t->right) {
       ++m_level;
@@ -140,7 +140,7 @@ struct TreePrintHelperMATLABLR {
   }
   virtual int onContent(Token const *t, Token const * /* parent */) {
 #ifndef NDEBUG
-    ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
+    Log(LS::DEBUG|LS::PARSE, "parse: onContent " << (void*)t << " " << *t << "\n")
 #endif
 
     setupNode(t);
@@ -157,7 +157,7 @@ struct TreePrintHelperMATLABLR {
   }
   virtual int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
-    ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
+    Log(LS::DEBUG|LS::PARSE, "parse: onLeave " << (void*)t << " " << *t << "\n")
 #endif
 
     setupNode(t);

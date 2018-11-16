@@ -159,7 +159,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
 
   virtual int onEnter(Token const *t, Token const *parent) {
 #ifndef NDEBUG
-    ls(LS::DEBUG|LS::PARSE) << "parse: onEnter " << (void*)t << " " << *t << "\n";
+    Log(LS::DEBUG|LS::PARSE, "parse: onEnter " << (void*)t << " " << *t << "\n");
 #endif
     setupNode(t);
     setIndent();
@@ -228,7 +228,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
   }
   virtual int onContent(Token const *t, Token const *) {
 #ifndef NDEBUG
-    ls(LS::DEBUG|LS::PARSE) << "parse: onContent " << (void*)t << " " << *t << "\n";
+    Log(LS::DEBUG|LS::PARSE, "parse: onContent " << (void*)t << " " << *t << "\n");
 #endif
     if (not m_allItems.top()) {
       if (t->left or t->right) {
@@ -239,7 +239,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
   }
   virtual int onLeave(Token const *t, Token const *parent) {
 #ifndef NDEBUG
-    ls(LS::DEBUG|LS::PARSE) << "parse: onLeave " << (void*)t << " " << *t << "\n";
+    Log(LS::DEBUG|LS::PARSE, "parse: onLeave " << (void*)t << " " << *t << "\n");
 #endif
 
     setupNode(t);
