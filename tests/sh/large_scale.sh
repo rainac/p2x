@@ -13,7 +13,7 @@ test_LargeCVS1_create() {
 }
 
 test_LargeCVS1_parse2XML() {
-    time p2x --indent -m -bNEWLINE -bCOMMA -iSPACE -o res.xml $TMP/large.csv
+    time p2x -Vtimes --indent -m -bNEWLINE -bCOMMA -iSPACE -o res.xml $TMP/large.csv
     assertEquals "P2X should not fail in this case" 0 $?
     sz2=$(ls -l res.xml | cut -d " " -f 5)
     ratio=$(( 1.0 * $sz2 / $sz1 ))
@@ -21,7 +21,7 @@ test_LargeCVS1_parse2XML() {
 }
 
 test_LargeCVS1_parse2XML_Y() {
-    time p2x --indent -m --output-mode=y -bNEWLINE -bCOMMA -iSPACE -o res.xml $TMP/large.csv
+    time p2x -Vtimes --indent -m --output-mode=y -bNEWLINE -bCOMMA -iSPACE -o res.xml $TMP/large.csv
     assertEquals "P2X should not fail in this case" 0 $?
     sz2=$(ls -l res.xml | cut -d " " -f 5)
     ratio=$(( 1.0 * $sz2 / $sz1 ))
@@ -29,7 +29,7 @@ test_LargeCVS1_parse2XML_Y() {
 }
 
 test_LargeCVS1_parse2MATLAB() {
-    time p2x --indent -m -M -bNEWLINE -bCOMMA -iSPACE -o res.m $TMP/large.csv
+    time p2x -Vtimes --indent -m -M -bNEWLINE -bCOMMA -iSPACE -o res.m $TMP/large.csv
     assertEquals "P2X should not fail in this case" 0 $?
     sz2=$(ls -l res.m | cut -d " " -f 5)
     ratio=$(( 1.0 * $sz2 / $sz1 ))
@@ -37,7 +37,7 @@ test_LargeCVS1_parse2MATLAB() {
 }
 
 test_LargeCVS1_parse2JSON() {
-    time p2x --indent -m -J -bNEWLINE -bCOMMA -iSPACE -o res.json $TMP/large.csv
+    time p2x -Vtimes --indent -m -J -bNEWLINE -bCOMMA -iSPACE -o res.json $TMP/large.csv
     assertEquals "P2X should not fail in this case" 0 $?
     sz2=$(ls -l res.json | cut -d " " -f 5)
     ratio=$(( 1.0 * $sz2 / $sz1 ))

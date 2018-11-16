@@ -56,9 +56,18 @@ test_valgrind_no_errors_noin() {
     runvalgrind
 }
 
+test_valgrind_no_errors_scan() {
+    P2XOPTS="-s -o out.txt"
+    runvalgrind
+}
+
+test_valgrind_no_errors_scan_re2c() {
+    P2XOPTS="-S re2c_c -s -o out.txt"
+    runvalgrind
+}
+
 test_valgrind_cleanup() {
     rm -f in.txt
 }
 
 . shunit2
-

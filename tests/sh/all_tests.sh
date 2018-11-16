@@ -71,6 +71,10 @@ test_large_scale() {
     run_suite large_scale.sh
 }
 
+test_scanner_equiv() {
+    run_suite scanner_equivalence.sh
+}
+
 test_valgrind() {
     run_suite valgrind_tests.sh
 }
