@@ -39,7 +39,8 @@ FLOAT2 {DIGIT}+("."{DIGIT}+)?
 FLOAT3 {DIGIT}*"."{DIGIT}+
 FLOATSUFFIX ([eEdD][+-]?{DIGIT}+)?[lLfFiI]?
 FLOAT ({FLOAT1}|{FLOAT2}|{FLOAT3}){FLOATSUFFIX}
-STRING1 "\""[^\"\n]*"\""
+STRING1_ESC_CONTENT "\\\""
+STRING1 "\""([^\"\n]|{STRING1_ESC_CONTENT})*"\""
 STRING2 "'"[^\'\n]*"'"
 
 %%
@@ -89,9 +90,6 @@ STRING2 "'"[^\'\n]*"'"
 "/"                     BEGIN(STARTEXP); return TOKEN_DIV;
 "*"                     BEGIN(STARTEXP); return TOKEN_MULT;
 "%"                     BEGIN(STARTEXP); return TOKEN_MOD;
-
-"*"                     BEGIN(STARTEXP); return TOKEN_MULT;
-"/"                     BEGIN(STARTEXP); return TOKEN_DIV;
 "\\"                    BEGIN(STARTEXP); return TOKEN_BACKSLASH;
 "^"                     BEGIN(STARTEXP); return TOKEN_POW;
 "'"                     BEGIN(STARTEXP); return TOKEN_APOS;

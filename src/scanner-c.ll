@@ -38,8 +38,10 @@ FLOAT2 {DIGIT}+("."{DIGIT}*)?
 FLOAT3 {DIGIT}*"."{DIGIT}+
 FLOATSUFFIX ([eEdD][+-]?{DIGIT}+)?[lLfF]?
 FLOAT ({FLOAT1}|{FLOAT2}|{FLOAT3}){FLOATSUFFIX}
-STRING1 "\""[^\"\n]*"\""
-STRING2 "'"[^\'\n]*"'"
+STRING1_ESC_CONTENT "\\\""
+STRING2_ESC_CONTENT "\\'"
+STRING1 "\""([^\"\n\x00]|{STRING1_ESC_CONTENT})*"\""
+STRING2 "'"([^\'\n\x00]|{STRING2_ESC_CONTENT})*"'"
 STRING {STRING1}|{STRING2}
 
 %%
@@ -56,9 +58,6 @@ STRING {STRING1}|{STRING2}
 
 "["                     return TOKEN_L_BRACKET;
 "]"                     return TOKEN_R_BRACKET;
-
-"[["                    return TOKEN_DOUBLE_L_BRACKET;
-"]]"                    return TOKEN_DOUBLE_R_BRACKET;
 
 "="                     return TOKEN_EQUAL;
 
