@@ -11,9 +11,62 @@
 #set -x
 GENNC=${GENNC:-gennc}
 
-$GENNC -i -n Token xml/token.ncd.xml
-$GENNC -n LS -i -I xml/logger.ncd.xml
-$GENNC -f xml/modes.ncd.xml
-$GENNC -f xml/assoc.ncd.xml
-$GENNC -f xml/scanners.ncd.xml
-$GENNC -f xml/output-modes.ncd.xml
+which=$1
+
+update_token() {
+    $GENNC -i -n Token xml/token.ncd.xml
+}
+
+update_logger() {
+    $GENNC -n LS -i -I xml/logger.ncd.xml
+}
+
+update_modes() {
+    $GENNC -f xml/modes.ncd.xml
+}
+
+update_assoc() {
+    $GENNC -f xml/assoc.ncd.xml
+}
+
+update_scanners() {
+    $GENNC -f xml/scanners.ncd.xml
+}
+
+update_output_modes() {
+    $GENNC -f xml/output-modes.ncd.xml
+}
+
+if [[ -z "$which" ]]; then
+
+    update_token
+    update_logger
+    update_modes
+    update_assoc
+    update_scanners
+    update_output_modes
+
+else
+
+    case $which in
+	(*token*)
+	    update_token
+	    ;;
+	(*logger*)
+	    update_logger
+	    ;;
+	(*output_modes*)
+	    update_output_modes
+	    ;;
+	(*modes*)
+	    update_modes
+	    ;;
+	(*assoc*)
+	    update_assoc
+	    ;;
+	(*scanners*)
+	    update_scanners
+	    ;;
+    esac    
+
+fi
