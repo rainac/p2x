@@ -10,4 +10,13 @@
   <c name="R"/>
   <c name="M"/>
   <c name="C"/>
+  <c name="FLEX_STRINGS"/>
+  <c name="FLEX_NO_STRINGS"/>
+  <c name="FLEX_R"/>
+  <c name="FLEX_M"/>
+  <c name="FLEX_C"/>
+  <c name="RE2C_STRINGS"/>
+  <c name="RE2C_R"/>
+  <c name="RE2C_M"/>
+  <c name="RE2C_C"/>
 </ncdef>
