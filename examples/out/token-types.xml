@@ -6,15 +6,34 @@
    </ca:closing-list>
   </ca:op>
   <ca:op type='R_PAREN' mode='POSTFIX' precedence='101' associativity='NONE' output-mode='NESTED' is-rparen='1'/>
-  <ca:op type='EQUAL' mode='BINARY' precedence='5' associativity='RIGHT' output-mode='NESTED'/>
+  <ca:op type='L_BRACE' mode='ITEM' is-paren='1'>
+   <ca:closing-list>
+    <ca:op type='R_BRACE' mode='ITEM'/>
+   </ca:closing-list>
+  </ca:op>
+  <ca:op type='R_BRACE' mode='ITEM' is-rparen='1'/>
+  <ca:op type='L_BRACKET' mode='POSTFIX' precedence='102' associativity='NONE' output-mode='NESTED' is-paren='1'>
+   <ca:closing-list>
+    <ca:op type='R_BRACKET' mode='ITEM'/>
+   </ca:closing-list>
+  </ca:op>
+  <ca:op type='R_BRACKET' mode='POSTFIX' precedence='102' associativity='NONE' output-mode='NESTED' is-rparen='1'/>
+  <ca:op type='EQUAL' mode='BINARY' precedence='6' associativity='RIGHT' output-mode='NESTED'/>
+  <ca:op type='GREATER' mode='BINARY' precedence='8' associativity='LEFT' output-mode='NESTED'/>
   <ca:op type='PLUS' mode='UNARY_BINARY' precedence='10' associativity='LEFT' output-mode='NESTED' unary-precedence='110'/>
   <ca:op type='MINUS' mode='UNARY_BINARY' precedence='10' associativity='LEFT' output-mode='NESTED' unary-precedence='110'/>
-  <ca:op type='MULT' mode='BINARY' precedence='20' associativity='LEFT' output-mode='NESTED'/>
+  <ca:op type='MULT' mode='UNARY_BINARY' precedence='20' associativity='LEFT' output-mode='NESTED' unary-precedence='120'/>
   <ca:op type='DIV' mode='BINARY' precedence='30' associativity='LEFT' output-mode='NESTED'/>
   <ca:op type='MOD' mode='BINARY' precedence='30' associativity='LEFT' output-mode='NESTED'/>
+  <ca:op type='COMMA' mode='BINARY' precedence='3' associativity='LEFT' output-mode='MERGED'/>
+  <ca:op type='SEMICOLON' mode='BINARY' precedence='3' associativity='LEFT' output-mode='MERGED'/>
   <ca:op type='NEWLINE' mode='IGNORE'/>
   <ca:op type='TAB' mode='IGNORE'/>
   <ca:op type='SPACE' mode='IGNORE'/>
-  <ca:op type='JUXTA' mode='BINARY' precedence='900' associativity='LEFT' output-mode='NESTED'/>
+  <ca:op type='JUXTA' mode='BINARY' precedence='5' associativity='LEFT' output-mode='NESTED'/>
+  <ca:op type='DOUBLE_EQUAL' mode='BINARY' precedence='7' associativity='LEFT' output-mode='NESTED'/>
+  <ca:op repr='return' type='IDENTIFIER' mode='UNARY' precedence='4' associativity='NONE' output-mode='NESTED'/>
+  <ca:op repr='if' type='IDENTIFIER' mode='UNARY' precedence='100' associativity='NONE' output-mode='NESTED'/>
+  <ca:op repr='while' type='IDENTIFIER' mode='UNARY' precedence='100' associativity='NONE' output-mode='NESTED'/>
  </ca:parser>
 </parser>

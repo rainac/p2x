@@ -60,7 +60,7 @@ testP2X6() {
 }
 
 testP2X7() {
-    p2x $P2XFLAGS --stdin-tty -T -p ../../examples/configs/cfuncs > $tmpdir/tmp.out
+    p2x $P2XFLAGS -S c --stdin-tty -T -p ../../examples/configs-special/cfuncs.p2c > $tmpdir/tmp.out
     assertEquals "P2X should not fail in this case" $? 0
     diff $tmpdir/tmp.out ../../examples/out/token-types.xml
     assertEquals "$?" 0
@@ -72,8 +72,8 @@ testP2X8() {
     err=$(cat $tmpdir/err.txt)
     txt=$(cat $tmpdir/res.txt)
     grep "EOF" $tmpdir/res.xml > /dev/null
-    assertEquals "P2X XLM should not contain EOF token" "1" "$?"
-    grep "unexpected" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X XML should not contain EOF token" "1" "$?"
+    grep "Unexpected" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
     grep "end" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
@@ -87,12 +87,12 @@ testP2X9() {
     xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
     err=$(cat $tmpdir/err.txt)
     txt=$(cat $tmpdir/res.txt)
-#    cat res.xml
+    #    cat res.xml
     grep "EOF" $tmpdir/res.xml > /dev/null
-    assertEquals "P2X XLM should not contain EOF token" "1" "$?"
-    grep "unexpected" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X XML should not contain EOF token" "1" "$?"
+    grep "Unexpected" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
-    grep "\"close\"" $tmpdir/err.txt > /dev/null
+    grep "'close'" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
     assertEquals "P2X work and produce the correct XML" "[COMMA](int, [open](., [NEWLINE](3)))" "$txt"
 }
@@ -103,14 +103,14 @@ testP2X10() {
     err=$(cat $tmpdir/err.txt)
     txt=$(cat $tmpdir/res.txt)
     grep "EOF" $tmpdir/res.xml > /dev/null
-    assertEquals "P2X XLM should not contain EOF token" "1" "$?"
-    grep "unexpected" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X XML should not contain EOF token" "1" "$?"
+    grep "Unexpected" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
-    grep "\"endblock\"" $tmpdir/err.txt > /dev/null
+    grep "'endblock'" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
-    grep "\"finish\"" $tmpdir/err.txt > /dev/null
+    grep "'finish'" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
-    grep "\"endblock\"" $tmpdir/err.txt > /dev/null
+    grep "'endblock'" $tmpdir/err.txt > /dev/null
     assertEquals "P2X should print an error message" "0" "$?"
     assertEquals "P2X work and produce the correct XML" "[COMMA](int, [open](., [begin](., 3)))" "$txt"
 }
