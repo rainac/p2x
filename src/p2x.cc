@@ -1199,8 +1199,8 @@ struct Parser {
         Log(LS::ERROR, "error: unexpected end of input token list\n");
         exit(4);
       }
-      
-      
+
+
       Log(LS::DEBUG|LS::PARSE,  "Parser: next: " << *first
 	  << ": mode: " << tokenInfo.mode(first)
 	  << ": prec: " << tokenInfo.prec(first)
