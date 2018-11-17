@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 export SHUNIT_PARENT=$0
-. ./setup_sh.sh
+. ./setup_zsh.sh
 
 testParseTwiceIdentical() {
 
