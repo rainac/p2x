@@ -11,6 +11,7 @@ See the file p2x.cc for copying conditions.
 #include <iostream>
 #include <functional>
 #include <strings.h>
+#include <stdio.h>
 
 struct LS {
 #ifdef DEBUG

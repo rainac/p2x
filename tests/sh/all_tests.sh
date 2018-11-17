@@ -2,7 +2,7 @@
 
 run_suite() {
     echo "Run suite $1"
-    ./$1
+    ./$1 > log_$1.txt 2> err_$1.txt
     res=$?
     assertEquals "Test suite $1 has errors or failures" 0 $res
     if test "$res" = "0"; then
@@ -17,16 +17,28 @@ test1() {
     run_suite val_tests.sh
 }
 test2() {
-    run_suite reproduce_strict_tests.sh
+    run_suite test_reproduce_strict.sh
 }
 test3() {
-    run_suite reproduce_tests.sh
+    run_suite test_reproduce.sh
 }
 test4() {
+    run_suite test_reparse.sh
+}
+test2_old() {
+    run_suite reproduce_strict_tests.sh
+}
+test3_old() {
+    run_suite reproduce_tests.sh
+}
+test4_old() {
     run_suite reparse_tests.sh
 }
 test5() {
     run_suite parse_tests.sh
+}
+test5_new() {
+    run_suite parse_tests_new.sh
 }
 test6() {
     run_suite merge_tests.sh
@@ -34,9 +46,22 @@ test6() {
 test_p2x_suite() {
     run_suite p2x_tests.sh
 }
+test8() {
+    run_suite test_cmp_js.sh
+}
+test9() {
+    run_suite p2xjs_mocha_tests.sh
+}
+test10() {
+    run_suite test_output_stability.sh
+}
 
 test_indentation() {
     run_suite indent_tests.sh
+}
+
+test_inst() {
+    run_suite install_tests.sh
 }
 
 test_performance() {
@@ -45,6 +70,10 @@ test_performance() {
 
 test_p2x_suite2() {
     run_suite p2x_tests2.sh
+}
+
+test_reproduce_ign() {
+    run_suite reproduce_ign.sh
 }
 
 test_output_modey() {

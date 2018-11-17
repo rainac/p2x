@@ -287,7 +287,9 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
+MOCHA = @MOCHA@
 MV = @MV@
+NPM = @NPM@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -364,7 +366,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = src examples tests
+SUBDIRS = src src-js examples tests
 project_files = AUTHORS COPYING ChangeLog INSTALL README.txt TODO NEWS	\
 version.txt
 
@@ -883,6 +885,9 @@ version.txt:
 distclean-local:
 	$(RM) -f svn-version.txt version.txt
 	$(RM) -rf autom4te.cache
+
+git-clean:
+	git clean -d
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

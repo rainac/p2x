@@ -1,42 +1,39 @@
 #! /bin/zsh
 
 zmodload zsh/mathfunc
-set -o shwordsplit
-echo $0
 export SHUNIT_PARENT=$0
-export LANG=C # for grep used in shunit2, depends on english output
+
+. ./setup_zsh.sh
 
 testP2X1() {
-    p2x notthere.txt > log 2> err
+    p2x notthere.txt > $tmpdir/log 2> $tmpdir/err
     assertNotEquals "P2X should fail in this case" $? 0
-    err=$(cat err)
-    grep notthere.txt err > /dev/null
+    err=$(cat $tmpdir/err)
+    grep notthere.txt $tmpdir/err > /dev/null
     assertEquals "P2X should print the missing file name" $? 0
-    grep -i fail err > /dev/null
+    grep -i fail $tmpdir/err > /dev/null
     assertEquals "P2X should say that it failed" $? 0
-    grep -i open err > /dev/null
+    grep -i open $tmpdir/err > /dev/null
     assertEquals "P2X should say 'open'" $? 0
-    grep -i file err > /dev/null
+    grep -i file $tmpdir/err > /dev/null
     assertEquals "P2X should say 'file'" $? 0
-    grep -i in err > /dev/null
+    grep -i in $tmpdir/err > /dev/null
     assertEquals "P2X should say 'in'" $? 0
-    rm err log
 }
 
 testP2X2() {
-    p2x -p notthere.txt ../../examples/in/mult3.exp > log 2> err
+    p2x -p notthere.txt ../../examples/in/mult3.exp > $tmpdir/log 2> $tmpdir/err
     assertNotEquals "P2X should fail in this case" $? 0
-    grep notthere.txt err > /dev/null
+    grep notthere.txt $tmpdir/err > /dev/null
     assertEquals "P2X should print the missing file name" $? 0
-    grep -i fail err > /dev/null
+    grep -i fail $tmpdir/err > /dev/null
     assertEquals "P2X should say that it failed" $? 0
-    grep -i open err > /dev/null
+    grep -i open $tmpdir/err > /dev/null
     assertEquals "P2X should say 'open'" $? 0
-    grep -i file err > /dev/null
+    grep -i file $tmpdir/err > /dev/null
     assertEquals "P2X should say 'file'" $? 0
-    grep -i config err > /dev/null
+    grep -i config $tmpdir/err > /dev/null
     assertEquals "P2X should say 'config'" $? 0
-    rm err log
 }
 
 testP2X3() {
@@ -50,18 +47,72 @@ testP2X4() {
 }
 
 testP2X5() {
-    echo -n "a b c" | p2x -i SPACE | xsltproc ../../src/xsl/parens.xsl - > tmp.txt
-    txt=$(cat tmp.txt)
+    echo -n "a b c" | p2x $P2XFLAGS -i SPACE | xsltproc ../../src/xsl/parens.xsl - > $tmpdir/tmp.txt
+    txt=$(cat $tmpdir/tmp.txt)
     assertEquals "P2X should read from stdin produce the correct XML" "$txt" "[JUXTA]([JUXTA](a, b), c)"
-    rm tmp.txt
 }
 
 testP2X6() {
-    if ! test -t 0; then
-        return 0
+    if [[ -t 0 ]]; then
+        p2x -i ../../examples/in/mult3.exp
+        assertNotEquals "P2X should fail in this case" $? 0
     fi
-    p2x -i ../../examples/in/mult3.exp 2> /dev/null
-    assertNotEquals "P2X should fail in this case" $? 0
 }
 
-. shunit2
+testP2X7() {
+    p2x $P2XFLAGS --stdin-tty -T -p ../../examples/configs/cfuncs > $tmpdir/tmp.out
+    assertEquals "P2X should not fail in this case" $? 0
+    diff $tmpdir/tmp.out ../../examples/out/token-types.xml
+    assertEquals "$?" 0
+}
+
+testP2X8() {
+    p2x $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose.exp 2> $tmpdir/err.txt
+    xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
+    err=$(cat $tmpdir/err.txt)
+    txt=$(cat $tmpdir/res.txt)
+    grep "EOF" $tmpdir/res.xml > /dev/null
+    assertEquals "P2X XLM should not contain EOF token" "1" "$?"
+    grep "unexpected" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "end" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "R_PAREN" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    assertEquals "P2X should work and produce the correct XML" "[COMMA](int, [L_PAREN](., [NEWLINE]()))" "$txt"
+}
+
+testP2X9() {
+    p2x $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose2.exp 2> $tmpdir/err.txt
+    xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
+    err=$(cat $tmpdir/err.txt)
+    txt=$(cat $tmpdir/res.txt)
+#    cat res.xml
+    grep "EOF" $tmpdir/res.xml > /dev/null
+    assertEquals "P2X XLM should not contain EOF token" "1" "$?"
+    grep "unexpected" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "\"close\"" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    assertEquals "P2X work and produce the correct XML" "[COMMA](int, [open](., [NEWLINE](3)))" "$txt"
+}
+
+testP2X10() {
+    p2x $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose3.exp 2> $tmpdir/err.txt
+    xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
+    err=$(cat $tmpdir/err.txt)
+    txt=$(cat $tmpdir/res.txt)
+    grep "EOF" $tmpdir/res.xml > /dev/null
+    assertEquals "P2X XLM should not contain EOF token" "1" "$?"
+    grep "unexpected" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "\"endblock\"" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "\"finish\"" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    grep "\"endblock\"" $tmpdir/err.txt > /dev/null
+    assertEquals "P2X should print an error message" "0" "$?"
+    assertEquals "P2X work and produce the correct XML" "[COMMA](int, [open](., [begin](., 3)))" "$txt"
+}
+
+. ./myshunit2

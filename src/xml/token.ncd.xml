@@ -156,6 +156,8 @@
   <c name="C_COMMENT_START"/>
   <c name="C_COMMENT_END"/>
 
+  <c name="IGNORE"/>
+
   <c name="LAST"/>
 
 </ncdef>

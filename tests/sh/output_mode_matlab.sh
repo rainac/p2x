@@ -44,4 +44,4 @@ test_QuitOctave() {
     ftest_QuitOctave
 }
 
-. shunit2
+. ./myshunit2

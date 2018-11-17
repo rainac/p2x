@@ -1,0 +1,20 @@
+<parser xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>
+ <ca:parser>
+  <ca:op type='L_PAREN' mode='POSTFIX' precedence='101' associativity='NONE' output-mode='NESTED' is-paren='1'>
+   <ca:closing-list>
+    <ca:op type='R_PAREN' mode='ITEM'/>
+   </ca:closing-list>
+  </ca:op>
+  <ca:op type='R_PAREN' mode='POSTFIX' precedence='101' associativity='NONE' output-mode='NESTED' is-rparen='1'/>
+  <ca:op type='EQUAL' mode='BINARY' precedence='5' associativity='RIGHT' output-mode='NESTED'/>
+  <ca:op type='PLUS' mode='UNARY_BINARY' precedence='10' associativity='LEFT' output-mode='NESTED' unary-precedence='110'/>
+  <ca:op type='MINUS' mode='UNARY_BINARY' precedence='10' associativity='LEFT' output-mode='NESTED' unary-precedence='110'/>
+  <ca:op type='MULT' mode='BINARY' precedence='20' associativity='LEFT' output-mode='NESTED'/>
+  <ca:op type='DIV' mode='BINARY' precedence='30' associativity='LEFT' output-mode='NESTED'/>
+  <ca:op type='MOD' mode='BINARY' precedence='30' associativity='LEFT' output-mode='NESTED'/>
+  <ca:op type='NEWLINE' mode='IGNORE'/>
+  <ca:op type='TAB' mode='IGNORE'/>
+  <ca:op type='SPACE' mode='IGNORE'/>
+  <ca:op type='JUXTA' mode='BINARY' precedence='900' associativity='LEFT' output-mode='NESTED'/>
+ </ca:parser>
+</parser>

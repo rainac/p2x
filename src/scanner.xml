@@ -1,0 +1,114 @@
+<flex-scanner>
+  <head>
+    <comment>
+    /* 
+    This file is part of P2X.
+    Copyright © 2013 Johannes Willkomm 
+    See the file p2x.cc for copying conditions.  
+    */
+
+    </comment>
+    <c-code>
+%{
+
+#include "token.ncd.enum.hh"
+
+#define yystype ParserToken
+
+%}
+    </c-code>
+    <options>
+      %option c++
+    </options>
+    <definitions>
+      <def name="SPACE"><q> </q></def>
+      <def name="NL"><q>\n</q></def>
+      <def name="CR"><q>\r</q></def>
+      <def name="TAB"><q>\t</q></def>
+      <def name="UNDERSCORE"><q>_</q></def>
+
+      <def name="DIGIT">[0-9]</def>
+      <def name="LOWER">[a-z]</def>
+      <def name="UPPER">[A-Z]</def>
+      <def name="HIGHLET_C">[\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF][\x80-\xBF]|[\xF0-\xF7][\x80-\xBF][\x80-\xBF][\x80-\xBF]</def>
+      <def name="HIGHLET">[\u0100-\uffff]</def>
+      <def name="LETTER"><ref name="LOWER"/>|<ref name="UPPER"/>|<ref name="HIGHLET"/></def>
+      <def name="IDINIT"><ref name="LETTER"/></def>
+      <def name="ID"><ref name="IDINIT"/>(<ref name="LETTER"/>|<ref name="DIGIT"/>|<ref name="UNDERSCORE"/>)*</def>
+      <def name="WHITE"><ref name="SPACE"/>|[\t\r\v]</def>
+      <def name="INT">(<q>0x</q>)?<ref name="DIGIT"/>+[uUlL]*</def>
+      <def name="FLOAT1"><ref name="DIGIT"/>+<q>.</q><ref name="DIGIT"/>+</def>
+      <def name="FLOAT2"><ref name="DIGIT"/>+(<q>.</q><ref name="DIGIT"/>*)?</def>
+      <def name="FLOAT3"><ref name="DIGIT"/>*<q>.</q><ref name="DIGIT"/>+</def>
+      <def name="FLOATSUFFIX">([eEdD][+-]?<ref name="DIGIT"/>+)?[lLfF]?</def>
+      <def name="FLOAT">(<ref name="FLOAT1"/>|<ref name="FLOAT2"/>|<ref name="FLOAT3"/>)<ref name="FLOATSUFFIX"/></def>
+      <def name="STRING1"><q>\""[^\"\n]*"\"</q></def>
+      <def name="STRING2"><q>'"[^\'\n]*"'</q></def>
+      <def name="STRING"><ref name="STRING1"/>|<ref name="STRING2"/></def>
+    </definitions>
+  </head>
+  <body>
+    <rules>
+      <rule><re><ref name="INT"/></re><action>TOKEN_INTEGER</action></rule>
+      <rule><re><ref name="STRING"/></re><action>TOKEN_STRING</action></rule>
+      <rule><re><ref name="FLOAT"/></re><action>TOKEN_FLOAT</action></rule>
+
+      <rule><re><q>(</q></re><action>TOKEN_L_PAREN</action></rule>
+      <rule><re><q>)</q></re><action>TOKEN_R_PAREN</action></rule>
+
+      <rule><re><q>{</q></re><action>TOKEN_L_BRACE</action></rule>
+      <rule><re><q>}</q></re><action>TOKEN_R_BRACE</action></rule>
+
+      <rule><re><q>[</q></re><action>TOKEN_L_BRACKET</action></rule>
+      <rule><re><q>]</q></re><action>TOKEN_R_BRACKET</action></rule>
+
+      <rule><re><q>=</q></re><action>TOKEN_EQUAL</action></rule>
+      <rule><re><q>&lt;</q></re><action>TOKEN_LESS</action></rule>
+      <rule><re><q>&gt;</q></re><action>TOKEN_GREATER</action></rule>
+      <rule><re><q>~</q></re><action>TOKEN_TILDE</action></rule>
+      <rule><re><q>!</q></re><action>TOKEN_EXCLAM</action></rule>
+      <rule><re><q>?</q></re><action>TOKEN_QUESTION</action></rule>
+      <rule><re><q>:</q></re><action>TOKEN_COLON</action></rule>
+      <rule><re><q>,</q></re><action>TOKEN_COMMA</action></rule>
+      <rule><re><q>;</q></re><action>TOKEN_SEMICOLON</action></rule>
+      <rule><re><q>.</q></re><action>TOKEN_FULL_STOP</action></rule>
+      <rule><re><q>@</q></re><action>TOKEN_AT</action></rule>
+      <rule><re><q>&amp;</q></re><action>TOKEN_AND</action></rule>
+      <rule><re><q>|</q></re><action>TOKEN_OR</action></rule>
+
+      <rule><re><q>+</q></re><action>TOKEN_PLUS</action></rule>
+      <rule><re><q>-</q></re><action>TOKEN_MINUS</action></rule>
+      <rule><re><q>/</q></re><action>TOKEN_DIV</action></rule>
+      <rule><re><q>\\</q></re><action>TOKEN_BACKSLASH</action></rule>
+      <rule><re><q>*</q></re><action>TOKEN_MULT</action></rule>
+      <rule><re><q>%</q></re><action>TOKEN_MOD</action></rule>
+      <rule><re><q>^</q></re><action>TOKEN_POW</action></rule>
+      <rule><re><q>_</q></re><action>TOKEN_UNDERSCORE</action></rule>
+      <rule><re><q>$</q></re><action>TOKEN_DOLLAR</action></rule>
+      <rule><re><q>°</q></re><action>TOKEN_CIRC</action></rule>
+      <rule><re><q>#</q></re><action>TOKEN_HASH</action></rule>
+      <rule><re><q>\"</q></re><action>TOKEN_QUOTE</action></rule>
+      <rule><re><q>'</q></re><action>TOKEN_APOS</action></rule>
+
+      <rule><re><ref name="CR"/></re><action>TOKEN_CRETURN</action></rule>
+      <rule><re><ref name="NL"/></re><action>TOKEN_NEWLINE</action></rule>
+      <rule><re><ref name="TAB"/></re><action>TOKEN_TAB</action></rule>
+      <rule><re><ref name="SPACE"/>+</re><action>TOKEN_SPACE</action></rule>
+      <rule><re><ref name="ID"/></re><action>TOKEN_IDENTIFIER</action></rule>
+
+      <rule><re>.</re><action>TOKEN_ILLEGAL_CHAR</action></rule>
+
+    </rules>
+    <c-code>
+
+      int yyFlexLexer::yywrap() { return 1; }
+
+      /* 
+      $Id$
+      */
+    </c-code>
+  </body>
+</flex-scanner>
+<!--
+    $Id$
+-->

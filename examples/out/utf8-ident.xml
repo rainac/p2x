@@ -1,28 +1,18 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" code="68" type="NEWLINE">
-   <op code="68" type="NEWLINE">
-    <op code="68" type="NEWLINE">
-     <op code="68" type="NEWLINE">
-      <id code="31" repr="&#x2260;" type="IDENTIFIER">
-       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">≠</ca:text>
-      </id>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="NEWLINE">
+   <op type="NEWLINE">
+    <op type="NEWLINE">
+     <op type="NEWLINE">
+      <id repr="&#x2260;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">≠</ca:text></id>
       <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-      <id code="31" repr="&#x20AC;" type="IDENTIFIER">
-       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">€</ca:text>
-      </id>
+      <id repr="&#x20AC;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">€</ca:text></id>
      </op>
      <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-     <id code="31" repr="&#xE4;&#xF6;" type="IDENTIFIER">
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">äö</ca:text>
-     </id>
+     <id repr="&#xE4;&#xF6;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">äö</ca:text></id>
     </op>
     <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-    <id code="31" repr="&#x2227;" type="IDENTIFIER">
-     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">∧</ca:text>
-    </id>
+    <id repr="&#x2227;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">∧</ca:text></id>
    </op>
    <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-   <id code="31" repr="&#x2228;" type="IDENTIFIER">
-    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">∨</ca:text>
-   </id>
+   <id repr="&#x2228;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">∨</ca:text></id>
   </op>

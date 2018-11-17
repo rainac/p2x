@@ -31,6 +31,20 @@ AC_CHECK_PROGS([GHEAD], [ghead head])
 AC_CHECK_PROGS([GENGETOPT], [gengetopt])
 AM_CONDITIONAL(acond_GENGETOPT_AVAIL, [test "x$GENGETOPT" != "x"])
 
+AC_CHECK_PROGS([NPM], [npm])
+if test "x$NPM" = "x"; then
+   AC_MSG_ERROR([mandatory program npm was not found])
+fi
+
+npm_packages="most-xml tmp"
+
+for pkg in $npm_packages; do
+    if ! $NPM list -g $pkg > /dev/null; then
+       AC_MSG_ERROR([mandatory program node-js module "$pkg" is not installed
+                     please do "$NPM install -g $pkg"])
+    fi
+done
+
 AC_CHECK_PROGS([TRANG], [trang])
 AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])
 
@@ -109,6 +123,10 @@ if test "$build_tests" = "yes"; then
    if test "x$VALGRIND" = "x"; then
       AC_MSG_ERROR([mandatory program valgrind was not found])
    fi
+   AC_CHECK_PROGS([MOCHA], [mocha])
+   if test "x$MOCHA" = "x"; then
+      AC_MSG_ERROR([mandatory program mocha was not found])
+   fi
 else
    defval_BUILD_TESTS=0
 fi
@@ -149,6 +167,7 @@ av_LONG_VERSION="$VERSION-$VCS_REVISION"
 AC_MSG_CHECKING([value for LONG_VERSION])
 AC_MSG_RESULT([$av_LONG_VERSION])
 AC_DEFINE_UNQUOTED(LONG_VERSION, "$av_LONG_VERSION", [Long version string])
+AC_DEFINE_UNQUOTED(VERSION, "$av_LONG_VERSION", [Long version string])
 
 echo "creating VERSION_NUMBER"
 VERSION_NUMBER=`echo "$VERSION" | sed -e 's/\.//2'`
@@ -175,6 +194,7 @@ AC_CHECK_HEADERS([sys/stat.h])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
+                 src-js/Makefile
                  examples/Makefile
                  tests/Makefile
                  tests/sh/Makefile

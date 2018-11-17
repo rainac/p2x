@@ -22,7 +22,8 @@ p2x_DEPENDENCIES =
 
 p2xtests_LDADD = -lcppunit
 
-generated_files = namespaces.hh code-xml.rnc
+
+generated_files = namespaces.hh code-xml.rnc scanner2.ll
 if acond_GENGETOPT_AVAIL
 generated_files += p2x-opts.hh p2x-opts.cc
 endif
@@ -62,6 +63,12 @@ re2c-scanner-m.cc: RE2CFLAGS=-c
 %.cc: %.re
 	$(RE2C) $(RE2CFLAGS) -o$@ $<
 
+scanner2.ll: $(top_srcdir)/src/xsl/gen-flex-scanner.xsl scanner.xml $(top_srcdir)/src/xsl/patch-flex-scanner.xsl
+	xsltproc -o $@.tmp $(top_srcdir)/src/xsl/patch-flex-scanner.xsl scanner.xml
+	xsltproc -o $@ $(top_srcdir)/src/xsl/gen-flex-scanner.xsl $@.tmp
+	-diff -wB scanner.ll scanner2.ll
+	rm $@.tmp
+
 # scanner-no-strings.ll is produced by deleting the line which matches strings
 scanner-no-strings.ll: scanner.ll
 	sed -e '/{STRING}/ c \ ' < $< > $@
@@ -80,7 +87,8 @@ code-xml.rnc: code-xml.rnc.in
 instbasedir=$(pkgdatadir)
 instdir= $(instbasedir)
 
-inst_DATA = code-xml.rnc xsl/reproduce.xsl xsl/reproduce-latin1.xsl xsl/copy.xsl
+inst_DATA = code-xml.rnc xsl/reproduce.xsl xsl/reproduce-latin1.xsl	\
+xsl/copy.xsl ../examples/configs/scanner-c.xml
 
 clean-local:
 	$(RM) -f $(generated_files)

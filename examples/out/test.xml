@@ -1,74 +1,56 @@
 <?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" code="68" type="NEWLINE">
-   <op code="55" type="COMMA">
-    <id code="31" repr="int" type="IDENTIFIER">
-     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">int</ca:text>
-    </id>
+<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="NEWLINE">
+   <op type="COMMA">
+    <id repr="int" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">int</ca:text></id>
     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">,</ca:text>
-    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
-    <op code="71" type="JUXTA">
-     <op code="71" type="JUXTA">
-      <op code="71" type="JUXTA">
-       <op code="71" type="JUXTA">
-        <op code="71" type="JUXTA">
-         <op code="71" type="JUXTA">
-          <paren code="35" type="L_PAREN">
+    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
+    <op type="JUXTA">
+     <op type="JUXTA">
+      <op type="JUXTA">
+       <op type="JUXTA">
+        <op type="JUXTA">
+         <op type="JUXTA">
+          <paren type="L_PAREN">
            <null/>
            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">(</ca:text>
-           <paren code="36" type="R_PAREN">
-            <op code="71" type="JUXTA">
-             <integer code="28" type="INTEGER">
-              <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text>
-             </integer>
-             <paren code="37" type="L_BRACE">
+           <paren type="R_PAREN">
+            <op type="JUXTA">
+             <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">4</ca:text></integer>
+             <paren type="L_BRACE">
               <null/>
               <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">{</ca:text>
-              <paren code="38" type="R_BRACE">
-               <op code="68" type="NEWLINE">
-                <op code="55" type="COMMA">
-                 <id code="31" repr="test" type="IDENTIFIER">
-                  <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">test</ca:text>
-                 </id>
+              <paren type="R_BRACE">
+               <op type="NEWLINE">
+                <op type="COMMA">
+                 <id repr="test" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">test</ca:text></id>
                  <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">,</ca:text>
-                 <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+                 <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
                 </op>
                 <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-                <id code="31" repr="test" type="IDENTIFIER">
-                 <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">test</ca:text>
-                </id>
+                <id repr="test" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">test</ca:text></id>
                </op>
                <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">}</ca:text>
               </paren>
              </paren>
             </op>
             <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text>
-            <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+            <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
            </paren>
           </paren>
-          <integer code="28" type="INTEGER">
+          <integer type="INTEGER">
            <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text>
-           <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" code="70" type="SPACE"><ca:text> </ca:text></ca:ignore>
+           <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
           </integer>
          </op>
-         <paren code="38" type="R_BRACE">
-          <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">}</ca:text>
-         </paren>
+         <paren type="R_BRACE"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">}</ca:text></paren>
         </op>
-        <paren code="38" type="R_BRACE">
-         <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">}</ca:text>
-        </paren>
+        <paren type="R_BRACE"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">}</ca:text></paren>
        </op>
-       <paren code="38" type="R_BRACE">
-        <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">}</ca:text>
-       </paren>
+       <paren type="R_BRACE"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">}</ca:text></paren>
       </op>
-      <paren code="36" type="R_PAREN">
-       <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text>
-      </paren>
+      <paren type="R_PAREN"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text></paren>
      </op>
-     <paren code="36" type="R_PAREN">
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text>
-     </paren>
+     <paren type="R_PAREN"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">)</ca:text></paren>
     </op>
    </op>
    <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>

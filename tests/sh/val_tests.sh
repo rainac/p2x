@@ -1,5 +1,7 @@
 #! /bin/bash
 
+. setup_sh.sh
+
 runWithTimeout() {
     rm -f done.txt fail.txt
     ($* && touch done.txt || touch fail.txt) &
@@ -48,14 +50,13 @@ testOutputValid() {
         then
             opts="-e latin1"
         fi
-        p2x $opts -p $mydir/../../examples/configs/default $i > res.xml
+        p2x $P2XFLAGS $opts -p $mydir/../../examples/configs/default $i > $tmpdir/res.xml
 #        runWithTimeout xmlstarlet val -e -r ../../src/code-xml.rng res.xml
-        xmlstarlet val -b -e -r $mydir/../../src/code-xml.rng res.xml
+        xmlstarlet val -b -e -r $mydir/../../src/code-xml.rng $tmpdir/res.xml
         assertEquals "Validating XML output for $i failed" 0 $?
-        rm res.xml
+#        rm $tmpdir/res.xml
     done
 
 }
 
-. shunit2
-
+. myshunit2

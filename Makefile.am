@@ -4,7 +4,7 @@
 # See the file p2x.cc for copying conditions.  
 #
 
-SUBDIRS = src examples tests
+SUBDIRS = src src-js examples tests
 
 generated_files = README.txt README.html README.pdf
 
@@ -47,5 +47,8 @@ distclean-local:
 if acond_EMACS_AVAIL
 	$(RM) -f $(generated_files)
 endif
+
+git-clean:
+	git clean -d
 
 METASOURCES = AUTO

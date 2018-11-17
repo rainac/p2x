@@ -7,6 +7,7 @@ See the file p2x.cc for copying conditions.
 #include <strings.h>
 #include <iostream>
 #include <string>
+#include <stdio.h>
 #include "token.ncd.enum.hh"
 
 struct Token {
@@ -38,9 +39,8 @@ struct Token {
         << "," << line << "," << column << "," << character << ")";
   }
 
-// #include "token.ncd.enum.hh"
+  //#include "token.ncd.enum.hh"
 #include "token.ncd.cc"
-
 };
 
 #include "token.ncd.hh"
