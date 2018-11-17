@@ -1,14 +1,14 @@
 #! /bin/bash
 
 # Software prefix $PREFIX is set to /usr/local, if $SWPREFIX is not set
-# it is set to $SWPREFIX/p2x-0.6.4 otherwise
+# it is set to $SWPREFIX/p2x-0.6.8 otherwise
 
 
 if [[ -z "$PREFIX" ]]; then
     if [[ -z "$SWPREFIX" ]]; then
         PREFIX=/usr/local
     else
-        PREFIX=$SWPREFIX/p2x-0.6.4
+        PREFIX=$SWPREFIX/p2x-0.6.8
     fi
 fi
 
