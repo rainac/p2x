@@ -22,4 +22,5 @@ src-js/scanner-c.json
 tests/sh/forall_tests.sh
 tests/sh/log_*.txt
 tests/sh/err_*.txt
+src-js/p2xa.js
 *.min.js
