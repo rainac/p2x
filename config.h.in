@@ -9,6 +9,10 @@
 /* Define to 1 if you have the <cfloat> header file. */
 #undef HAVE_CFLOAT
 
+/* Define to 1 if you have the <cppunit/extensions/TestFactoryRegistry.h>
+   header file. */
+#undef HAVE_CPPUNIT_EXTENSIONS_TESTFACTORYREGISTRY_H
+
 /* Define to 1 if you have the <cstdlib> header file. */
 #undef HAVE_CSTDLIB
 
@@ -20,6 +24,12 @@
 
 /* Define to 1 if you have the <cunistd> header file. */
 #undef HAVE_CUNISTD
+
+/* define if the compiler supports basic C++11 syntax */
+#undef HAVE_CXX11
+
+/* Define to 1 if you have the <FlexLexer.h> header file. */
+#undef HAVE_FLEXLEXER_H
 
 /* Define to 1 if you have the <float.h> header file. */
 #undef HAVE_FLOAT_H
@@ -165,7 +175,7 @@
 /* VCS revision identifier */
 #undef VCS_REVISION
 
-/* Long version string */
+/* Version number of package */
 #undef VERSION
 
 /* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
