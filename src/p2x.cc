@@ -2159,7 +2159,7 @@ static std::string getCopyright() {
 char const *vcs_version = VCS_REVISION;
 
 void writeVersionInfoXMLComment(TreeXMLWriter::Options const &, std::string const &, std::ostream &out) {
-  out << "<!-- P2X version " << PACKAGE_VERSION << " (" << std::string(vcs_version).substr(0,8).c_str() << ") -->\n";
+  out << "<!-- P2X version " << PACKAGE_VERSION << " (" << std::string(vcs_version).substr(0,8).c_str() << ") -->";
   //  out << "<!-- " << getCopyright() << " -->\n";
 }
 
@@ -2185,6 +2185,7 @@ void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
   writeVersionInfoXMLComment(options, indentUnit, out);
+  out << treeXMLWriter.linebreak;
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "' ca:version='1.0'>" << treeXMLWriter.linebreak;
   if (options.caVersion) {
     writeVersionInfoXML(options, indentUnit, out);
@@ -2212,6 +2213,7 @@ void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
   writeVersionInfoXMLComment(options, indentUnit, out);
+  out << treeXMLWriter.linebreak;
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:" << options.prefix_ca << "='" NAMESPACE_CA "'"
     " xmlns:" << options.prefix_ci << "='" NAMESPACE_CX "ignore/'>" << treeXMLWriter.linebreak;
   if (options.caVersion) {
