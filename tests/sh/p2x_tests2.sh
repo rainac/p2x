@@ -53,7 +53,7 @@ do_check_no_output_newline() {
 
 check_no_output_newline() {
     cnn_modefl="$1 --indent"
-    cnn_flags=("-m" "-Vparse")
+    cnn_flags=("-m" "-Vtimes")
     #    echo "cnn_flags=${cnn_flags[*]}"
     P2XFLAGS=${cnn_modefl}
     checkXforFlags "checkXforAllConfs do_check_no_output_newline" "${cnn_flags[*]}"
@@ -80,7 +80,7 @@ testP2X_output_newline_if_desired() {
     p2x --indent --newline-as-br -p  ../../examples/configs/default ../../examples/in/email.exp > res.xml 2> err
     assertEquals "P2X should not fail in this case" "0" "$?"
     numl=$(grep -v -e -- res.xml | wc | awk '{print $1}')
-    test $numl = 6
+    test $numl = 5
     assertEquals "P2X should print newlines in XML if desired" "0" "$?"
     rm err res.xml
 }
@@ -89,7 +89,7 @@ testP2X_output_newline_as_entity_if_desired() {
     p2x --indent --newline-as-entity -p  ../../examples/configs/default ../../examples/in/email.exp > res.xml 2> err
     assertEquals "P2X should not fail in this case" "0" "$?"
     numl=$(grep -v -e -- res.xml | wc | awk '{print $1}')
-    test $numl = 2
+    test $numl = 1
     assertEquals "P2X should print no newlines in XML when desired" "0" "$?"
     grep -E "&#xa;" res.xml > /dev/null
     assertEquals "P2X should print newlines as character entities if desired" "0" "$?"
