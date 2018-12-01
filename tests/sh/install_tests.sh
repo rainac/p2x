@@ -28,6 +28,8 @@ runInstallation() {
     git checkout $branch
     assertEquals "GIT checkout of branch $branch must succeed" 0 $?
 
+    ./bootstrap
+
     ./configure --quiet --prefix=$TMP/p2x-build-test
     assertEquals "CONFIGURE run must succeed" 0 $?
 
