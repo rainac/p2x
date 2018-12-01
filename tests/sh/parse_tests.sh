@@ -106,4 +106,4 @@ testParseTreeEqual_block_comment4() {
     checkParseTreeEqual word-paren-comment-unclosed.exp '[EQUAL]([JUXTA](char, [MULT](const, [s]())), "Hi")'
 }
 
-. myshunit2
+. ./myshunit2
