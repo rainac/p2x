@@ -127,6 +127,9 @@ int re2c_scanner_c_lex(const uint8_t *&s, const uint8_t *&m, uint8_t const * lim
 	"/*"             { return TOKEN_C_COMMENT_START; }
 	"*/"             { return TOKEN_C_COMMENT_END; }
 
+        "$"              { return TOKEN_DOLLAR; }
+        "\\"             { return TOKEN_BACKSLASH; }
+
 	"\x00"           { return TOKEN_EOF; }
 
 	*   { return TOKEN_ILLEGAL_CHAR; }

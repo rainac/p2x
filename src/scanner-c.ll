@@ -125,6 +125,9 @@ STRING {STRING1}|{STRING2}
 {SPACE}+                return TOKEN_SPACE;
 {ID}                    return TOKEN_IDENTIFIER;
 
+"$"                     return TOKEN_DOLLAR;
+"\\"                    return TOKEN_BACKSLASH;
+
 .                       return TOKEN_ILLEGAL_CHAR;
 
 %%
