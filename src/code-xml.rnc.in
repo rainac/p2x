@@ -8,8 +8,18 @@ namespace ca = "NAMESPACE_CA"
 start = code-xml | scan-xml
 
 scan-xml = element scan-xml {
+   ca-version?,
    scan-conf?,
    scan-list-content
+}
+
+ca-version = element ca:version {
+           attribute name   {text},
+           attribute id     {text},
+           attribute major  {text},
+           attribute minor  {text},
+           attribute patch  {text},
+           text
 }
 
 scan-list-content = node | ca-ignore
@@ -36,6 +46,7 @@ ca-op-def = element ca:op {
 
 code-xml = element code-xml {
        attribute ca:version { text }?,
+       ca-version?,
        element ca:steps { ca-step* }?,
        scan-conf?,
        element ca:tree-writer { 
