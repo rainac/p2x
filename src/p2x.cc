@@ -2163,22 +2163,20 @@ void writeVersionInfoXMLComment(TreeXMLWriter::Options const &, std::string cons
   //  out << "<!-- " << getCopyright() << " -->\n";
 }
 
-void writeVersionInfoXML(TreeXMLWriter::Options const &, std::string const &indent, std::ostream &out, bool strict) {
-  out << indent << "<ca:version"
+void writeVersionInfoXML(TreeXMLWriter::Options const &opts, std::string const &indent, std::ostream &out) {
+  if (opts.indent)
+    out << indent;
+  out << "<" << opts.prefix_ca << ":version"
       << " name='P2X'"
       << " id='" << std::string(vcs_version).substr(0,8) << "'"
       << " major='" << std::string(PACKAGE_VERSION).substr(0,1) << "'"
       << " minor='" << std::string(PACKAGE_VERSION).substr(2,1) << "'"
       << " patch='" << std::string(PACKAGE_VERSION).substr(4,1) << "'"
       << ">";
-  if (strict) {
-    out << "<!--";
-  }
+  out << "<!--";
   out << "P2X version " << PACKAGE_VERSION << " (" << std::string(vcs_version).substr(0,8) << ")";
-  if (strict) {
-    out << "-->";
-  }
-  out << "</ca:version>";
+  out << "-->";
+  out << "</" << opts.prefix_ca << ":version>";
 }
 
 void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
@@ -2189,7 +2187,7 @@ void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
   writeVersionInfoXMLComment(options, indentUnit, out);
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "' ca:version='1.0'>" << treeXMLWriter.linebreak;
   if (options.caVersion) {
-    writeVersionInfoXML(options, indentUnit, out, options.strict);
+    writeVersionInfoXML(options, indentUnit, out);
     out << treeXMLWriter.linebreak;
   }
   if (options.caSteps)
@@ -2217,7 +2215,7 @@ void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:" << options.prefix_ca << "='" NAMESPACE_CA "'"
     " xmlns:" << options.prefix_ci << "='" NAMESPACE_CX "ignore/'>" << treeXMLWriter.linebreak;
   if (options.caVersion) {
-    writeVersionInfoXML(options, indentUnit, out, options.strict);
+    writeVersionInfoXML(options, indentUnit, out);
     out << treeXMLWriter.linebreak;
   }
   treeXMLWriter.writeXML2_Stack(root, out, treeXMLWriter.indentUnit);
@@ -3109,7 +3107,7 @@ int main(int argc, char *argv[]) {
       out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
     out << "<scan-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "'>\n";
     if (options.caVersion) {
-      writeVersionInfoXML(options, indentUnit, out, false);
+      writeVersionInfoXML(options, indentUnit, out);
       out << "\n";
     }
     out << indentUnit << "<ca:scanner type='" << scannerType << "'/>" << "\n";
