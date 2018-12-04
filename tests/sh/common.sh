@@ -13,7 +13,7 @@ trapSCHLD() {
 trap trapSCHLD SIGCHLD
 
 startOctave() {
-    coproc octave --path $PWD/../../src/m --no-gui
+    coproc octave --no-init-file -W --no-gui --path $PWD/../../src/m
     octpid=$!
     echo "computer" >&p
     read -p FFF

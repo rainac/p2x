@@ -54,7 +54,7 @@ testP2_perf_plus_not_too_bad() {
     for kb in $KB_LIST; do
         runTest $kb "1+"
     done
-    octave --quiet <<EOF
+    octave -W --no-gui --quiet <<EOF
 v = load('$times_file');
 Bps = v(:,1) ./ v(:,2)
 min(Bps)
@@ -72,7 +72,7 @@ testP2_perf_eq_not_too_bad() {
     for kb in $KB_LIST; do
         runTest $kb "1="
     done
-    octave --quiet <<EOF
+    octave -W --no-gui --quiet <<EOF
 v = load('$times_file');
 Bps = v(:,1) ./ v(:,2)
 min(Bps)
@@ -90,7 +90,7 @@ testP2_perf_eqs_not_too_bad() {
     for kb in $KB_LIST; do
         runTest $kb "1= "
     done
-    octave --quiet <<EOF
+    octave -W --no-gui --quiet <<EOF
 v = load('$times_file');
 Bps = v(:,1) ./ v(:,2)
 min(Bps)
@@ -104,7 +104,7 @@ EOF
 
 plotResult() {
     inFile=$1
-    octave --quiet <<EOF
+    octave -W --no-gui --quiet <<EOF
 graphics_toolkit("gnuplot")
 v = load('$inFile');
 loglog(v(:,1), v(:,2), '-+')
