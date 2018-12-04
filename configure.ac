@@ -32,18 +32,17 @@ AC_CHECK_PROGS([GENGETOPT], [gengetopt])
 AM_CONDITIONAL(acond_GENGETOPT_AVAIL, [test "x$GENGETOPT" != "x"])
 
 AC_CHECK_PROGS([NPM], [npm])
-if test "x$NPM" = "x"; then
-   AC_MSG_ERROR([mandatory program npm was not found])
+AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
+
+if [test "x$NPM" != "x"]; then
+   npm_packages="most-xml tmp"
+   for pkg in $npm_packages; do
+       if ! $NPM list -g $pkg > /dev/null; then
+	  AC_MSG_ERROR([mandatory program node-js module "$pkg" is not installed
+			please do "$NPM install -g $pkg"])
+       fi
+   done
 fi
-
-npm_packages="most-xml tmp"
-
-for pkg in $npm_packages; do
-    if ! $NPM list -g $pkg > /dev/null; then
-       AC_MSG_ERROR([mandatory program node-js module "$pkg" is not installed
-                     please do "$NPM install -g $pkg"])
-    fi
-done
 
 AC_CHECK_PROGS([TRANG], [trang])
 AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])
@@ -123,9 +122,11 @@ if test "$build_tests" = "yes"; then
    if test "x$VALGRIND" = "x"; then
       AC_MSG_ERROR([mandatory program valgrind was not found])
    fi
-   AC_CHECK_PROGS([MOCHA], [mocha])
-   if test "x$MOCHA" = "x"; then
-      AC_MSG_ERROR([mandatory program mocha was not found])
+   if [test "x$NPM" != "x"]; then
+      AC_CHECK_PROGS([MOCHA], [mocha])
+      if test "x$MOCHA" = "x"; then
+	 AC_MSG_ERROR([mandatory program mocha was not found])
+      fi
    fi
 else
    defval_BUILD_TESTS=0
@@ -232,4 +233,7 @@ echo " emacs:          [$EMACS]"
 echo " xmlstarlet:     [$XMLSTARLET]"
 echo " shunit2:        [$SHUNIT2]"
 echo " valgrind:       [$VALGRIND]"
+echo ""
+echo " npm:            [$npm]"
+echo " mocha:          [$mocha]"
 echo ""

@@ -4,7 +4,10 @@
 # See the file p2x.cc for copying conditions.  
 #
 
-SUBDIRS = src src-js examples tests
+SUBDIRS = src examples tests
+if acond_NPM_AVAIL
+SUBDIRS += src-js
+endif
 
 generated_files = README.txt README.html README.pdf
 
