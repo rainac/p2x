@@ -47,10 +47,14 @@ test_p2x_suite() {
     run_suite p2x_tests.sh
 }
 test8() {
-    run_suite test_cmp_js.sh
+    if which npm 2>&1 > /dev/null; then
+	run_suite test_cmp_js.sh
+    fi
 }
 test9() {
-    run_suite p2xjs_mocha_tests.sh
+    if which npm 2>&1 > /dev/null; then
+        run_suite p2xjs_mocha_tests.sh
+    fi
 }
 test10() {
     run_suite test_output_stability.sh
@@ -73,7 +77,9 @@ test_p2x_suite2() {
 }
 
 test_reproduce_ign() {
-    run_suite reproduce_ign.sh
+    if which npm 2>&1 > /dev/null; then
+	run_suite reproduce_ign.sh
+    fi
 }
 
 test_output_modey() {
