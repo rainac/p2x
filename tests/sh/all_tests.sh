@@ -51,11 +51,13 @@ test_output_modey() {
     run_suite output_modey.sh
 }
 
-test_output_mode_matlab() {
+diabled_test_output_mode_matlab() {
+# this is not working reliably anymore with Octave 5.X
     run_suite output_mode_matlab.sh
 }
 
-test_output_mode_matlab_merged() {
+disabled_test_output_mode_matlab_merged() {
+# this is not working reliably anymore with Octave 5.X
     run_suite output_mode_matlab_merged.sh
 }
 
