@@ -42,6 +42,11 @@ testParseTreeEqual4() {
   assertEquals "sub test should pass" "0" "$?"
 }
 
+testParseTreeEqual5() {
+  env -u P2XFLAGS ./parse_tests_null_placement.sh
+  assertEquals "sub test should pass" "0" "$?"
+}
+
 testParseTreeEqual_low_prec_binary_seps() {
     checkParseTreeEqual low-prec-binary-seps.exp "[PLUS]([PLUS](1, 3), 5)"
 }
