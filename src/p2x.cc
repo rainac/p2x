@@ -1726,7 +1726,7 @@ struct TreeXMLWriter {
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
       if (not tags and (t->left != 0 and t->right == 0)) {
-        aus << indent << "<null/>" << m_xmlWriter.linebreak;
+        aus << indent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
       }
       if (tags) {
         bool const ownLine = t->left || t->right || t->ignore;
@@ -1902,7 +1902,7 @@ struct TreeXMLWriter {
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
       if (not tags and (t->left != 0 and t->right == 0)) {
-        aus << indent << "<null/>" << m_xmlWriter.linebreak;
+        aus << indent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
       }
       if (tags) {
         if (t->left or t->right or t->ignore) {
