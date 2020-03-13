@@ -1,0 +1,13 @@
+# this is a comment
+
+JUXTA_POST binary 2
+
+"," binary  400       merged
+";" binary  410 right merged
+
+"." binary  400
+":" binary  410 right
+
+NEWLINE binary 10
+
+"(" paren ")"
