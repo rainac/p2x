@@ -42,7 +42,8 @@ checkParseTreeEqual2() {
 }
 
 testParseTreeEqual_null_in_merged1() {
-    checkParseTreeEqual miss-ops1.exp '[NEWLINE]([COMMA](., ., x, ., .))' '' '../../examples/configs/merged-binary'
+    checkParseTreeEqual miss-ops1.exp '[NEWLINE]([COMMA](., ., x, .))' '' '../../examples/configs/merged-binary'
+    checkParseTreeEqual miss-ops1.exp '[NEWLINE]([COMMA](., ., x, ., .))' '--strict' '../../examples/configs/merged-binary'
 }
 testParseTreeEqual_null_in_merged2() {
     checkParseTreeEqual miss-ops2.exp '[NEWLINE]([FULL_STOP]([FULL_STOP]([FULL_STOP]([FULL_STOP](), x))))' '' '../../examples/configs/merged-binary'
@@ -71,10 +72,29 @@ code-xml/ROOT/NEWLINE/COMMA/ID/c:t
 code-xml/ROOT/NEWLINE/COMMA/c:t
 code-xml/ROOT/NEWLINE/COMMA/null
 code-xml/ROOT/NEWLINE/COMMA/c:t
-code-xml/ROOT/NEWLINE/COMMA/null
 code-xml/ROOT/NEWLINE/c:br
 EOF
     checkParseTreeEqual2 miss-ops1.exp "$VAR" '-X' '../../examples/configs/merged-binary'
+    read -r -d '' VAR <<'EOF'
+code-xml
+code-xml/c:version
+code-xml/ROOT
+code-xml/ROOT/null
+code-xml/ROOT/NEWLINE
+code-xml/ROOT/NEWLINE/COMMA
+code-xml/ROOT/NEWLINE/COMMA/null
+code-xml/ROOT/NEWLINE/COMMA/c:t
+code-xml/ROOT/NEWLINE/COMMA/null
+code-xml/ROOT/NEWLINE/COMMA/c:t
+code-xml/ROOT/NEWLINE/COMMA/ID
+code-xml/ROOT/NEWLINE/COMMA/ID/c:t
+code-xml/ROOT/NEWLINE/COMMA/c:t
+code-xml/ROOT/NEWLINE/COMMA/null
+code-xml/ROOT/NEWLINE/COMMA/c:t
+code-xml/ROOT/NEWLINE/COMMA/null
+code-xml/ROOT/NEWLINE/c:br
+EOF
+    checkParseTreeEqual2 miss-ops1.exp "$VAR" '-X --strict' '../../examples/configs/merged-binary'
 }
 testParseTreeEqual_null_in_merged2_X() {
     read -r -d '' VAR <<'EOF'
