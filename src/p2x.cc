@@ -1688,13 +1688,13 @@ struct TreeXMLWriter {
           ++m_level;
         }
       }
-      if (t->left == 0 and t->right != 0 and not m_xmlWriter.options.loose) {
-        aus << subindent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
+      if (t->left == 0 and (t->right != 0 or !tags) and not m_xmlWriter.options.loose) {
+        aus << (t->right != 0 and tags ? subindent : indent) << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
       }
 
       return 0;
     }
-    int onContent(Token const *t, Token const * /* parent */) {
+    int onContent(Token const *t, Token const * parent) {
 #ifndef NDEBUG
       Log(LS::DEBUG|LS::PARSE, "parse: onContent " << (void*)t << " " << *t << "\n");
 #endif
@@ -1703,7 +1703,10 @@ struct TreeXMLWriter {
       setIndent();
 
       if (not t->text.empty()) {
-        bool const ownLine = t->left || t->right || t->ignore;
+        bool const tags = not(parent
+                   and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
+                   and merged);
+        bool const ownLine = t->left || t->right || t->ignore || !tags;
         if (ownLine)
           aus << indent;
         m_xmlWriter.writeXMLTextElem(t, aus);
@@ -1725,8 +1728,10 @@ struct TreeXMLWriter {
       tags = not(parent
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
-      if (not tags and (t->left != 0 and t->right == 0)) {
-        aus << indent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
+      if (t->right == 0) {
+        if (not tags or (t->left != 0 and merged and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left))) {
+          aus << indent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
+        }
       }
       if (tags) {
         bool const ownLine = t->left || t->right || t->ignore;
