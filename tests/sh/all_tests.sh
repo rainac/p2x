@@ -46,12 +46,12 @@ test6() {
 test_p2x_suite() {
     run_suite p2x_tests.sh
 }
-test8() {
+__test8() {
     if which npm 2>&1 > /dev/null; then
 	run_suite test_cmp_js.sh
     fi
 }
-test9() {
+__test9() {
     if which npm 2>&1 > /dev/null; then
         run_suite p2xjs_mocha_tests.sh
     fi
@@ -76,7 +76,7 @@ test_p2x_suite2() {
     run_suite p2x_tests2.sh
 }
 
-test_reproduce_ign() {
+__test_reproduce_ign() {
     if which npm 2>&1 > /dev/null; then
 	run_suite reproduce_ign.sh
     fi
