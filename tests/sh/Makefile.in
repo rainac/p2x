@@ -483,9 +483,6 @@ clean:
 	$(RM) -f $(generated_files) test-log.txt test-report.html log_*.txt
 	rm -f ok.txt fail.txt
 
-clean:
-	rm -f ok.txt fail.txt
-
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

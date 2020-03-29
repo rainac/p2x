@@ -653,6 +653,8 @@ FLEX
 acond_TRANG_AVAIL_FALSE
 acond_TRANG_AVAIL_TRUE
 TRANG
+acond_NPM_AVAIL_FALSE
+acond_NPM_AVAIL_TRUE
 NPM
 acond_GENGETOPT_AVAIL_FALSE
 acond_GENGETOPT_AVAIL_TRUE
@@ -5694,18 +5696,24 @@ fi
   test -n "$NPM" && break
 done
 
-if test "x$NPM" = "x"; then
-   as_fn_error $? "mandatory program npm was not found" "$LINENO" 5
+ if test "x$NPM" != "x"; then
+  acond_NPM_AVAIL_TRUE=
+  acond_NPM_AVAIL_FALSE='#'
+else
+  acond_NPM_AVAIL_TRUE='#'
+  acond_NPM_AVAIL_FALSE=
 fi
 
-npm_packages="most-xml tmp"
 
-for pkg in $npm_packages; do
-    if ! $NPM list -g $pkg > /dev/null; then
-       as_fn_error $? "mandatory program node-js module \"$pkg\" is not installed
-                     please do \"$NPM install -g $pkg\"" "$LINENO" 5
-    fi
-done
+if test "x$NPM" != "x"; then
+   npm_packages="most-xml tmp"
+   for pkg in $npm_packages; do
+       if ! $NPM list -g $pkg > /dev/null; then
+	  as_fn_error $? "mandatory program node-js module \"$pkg\" is not installed
+			please do \"$NPM install -g $pkg\"" "$LINENO" 5
+       fi
+   done
+fi
 
 for ac_prog in trang
 do
@@ -6602,7 +6610,8 @@ done
    if test "x$VALGRIND" = "x"; then
       as_fn_error $? "mandatory program valgrind was not found" "$LINENO" 5
    fi
-   for ac_prog in mocha
+   if test "x$NPM" != "x"; then
+      for ac_prog in mocha
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -6644,8 +6653,9 @@ fi
   test -n "$MOCHA" && break
 done
 
-   if test "x$MOCHA" = "x"; then
-      as_fn_error $? "mandatory program mocha was not found" "$LINENO" 5
+      if test "x$MOCHA" = "x"; then
+	 as_fn_error $? "mandatory program mocha was not found" "$LINENO" 5
+      fi
    fi
 else
    defval_BUILD_TESTS=0
@@ -7721,6 +7731,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${acond_GENGETOPT_AVAIL_TRUE}" && test -z "${acond_GENGETOPT_AVAIL_FALSE}"; then
   as_fn_error $? "conditional \"acond_GENGETOPT_AVAIL\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${acond_NPM_AVAIL_TRUE}" && test -z "${acond_NPM_AVAIL_FALSE}"; then
+  as_fn_error $? "conditional \"acond_NPM_AVAIL\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${acond_TRANG_AVAIL_TRUE}" && test -z "${acond_TRANG_AVAIL_FALSE}"; then
@@ -9111,4 +9125,7 @@ echo " emacs:          $EMACS"
 echo " xmlstarlet:     $XMLSTARLET"
 echo " shunit2:        $SHUNIT2"
 echo " valgrind:       $VALGRIND"
+echo ""
+echo " npm:            $NPM"
+echo " mocha:          $MOCHA"
 echo ""
