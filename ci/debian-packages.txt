@@ -1,0 +1,6 @@
+flex
+shunit2
+xmlstarlet
+libcppunit-dev
+trang
+valgrind
