@@ -107,10 +107,19 @@ ReproduceMatlab() {
     opts="$eopts $arg1_opts"
     echo -n "Parse with '$opts': file $infile"
     p2x $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res.m
+#    cat $tmpdir/res.m
+#    file $tmpdir/res.m
+    SRC_ENC=$(file -b --mime-encoding $tmpdir/res.m)
+    if ! [[ "$SRC_ENC" = "us-ascii" ]]; then
+        echo -e "\n$infile: SRC_ENC=$SRC_ENC, skipping"
+        return
+    fi
     cat > $tmpdir/runscript.m <<EOF
+% __mfile_encoding__ ('$SRC_ENC');
 clear all
+% pause(1e-2);
 run('$tmpdir/res.m');
-fd = fopen('$tmpdir/res.txt', 'w');
+fd = fopen('$tmpdir/res.txt', 'w', 'l', '$SRC_ENC');
 fprintf(fd, '%s', reproduce(ans));
 fclose(fd);
 'done'
