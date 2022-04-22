@@ -135,7 +135,6 @@ AC_DEFINE_UNQUOTED([P2X_BUILD_TESTS], [$defval_BUILD_TESTS], [1: static build])
 AM_CONDITIONAL(acond_BUILD_TESTS, [test "x$build_tests" = "xyes"])
 
 
-AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([stddef.h unistd.h float.h ctype.h], , AC_MSG_ERROR([mandatory header file not found!]))
 AC_CHECK_HEADERS([cfloat cstdlib cstring cctype cunistd])
