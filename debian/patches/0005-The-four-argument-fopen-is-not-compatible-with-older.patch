@@ -1,0 +1,25 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Sat, 23 Apr 2022 19:53:43 +0200
+Subject: The four argument fopen is not compatible with older versions
+
+---
+ tests/sh/common.sh | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/tests/sh/common.sh b/tests/sh/common.sh
+index 58ad332..7d477c4 100644
+--- a/tests/sh/common.sh
++++ b/tests/sh/common.sh
+@@ -123,11 +123,10 @@ ReproduceMatlab() {
+         return
+     fi
+     cat > $tmpdir/runscript.m <<EOF
+-% __mfile_encoding__ ('$SRC_ENC');
+ clear all
+ % pause(1e-2);
+ run('$tmpdir/res.m');
+-fd = fopen('$tmpdir/res.txt', 'w', 'l', '$SRC_ENC');
++fd = fopen('$tmpdir/res.txt', 'w', 'l');
+ fprintf(fd, '%s', reproduce(ans));
+ fclose(fd);
+ 'done'

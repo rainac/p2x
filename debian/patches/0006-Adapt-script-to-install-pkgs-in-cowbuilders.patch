@@ -1,0 +1,22 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 25 Apr 2022 20:47:30 +0200
+Subject: Adapt script to install pkgs in cowbuilders
+
+---
+ ci/scripts/setup-build-system.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/ci/scripts/setup-build-system.sh b/ci/scripts/setup-build-system.sh
+index aa00f83..e2e17dd 100755
+--- a/ci/scripts/setup-build-system.sh
++++ b/ci/scripts/setup-build-system.sh
+@@ -1,5 +1,8 @@
+ #! /bin/bash
+ 
++set -x
++
+ mydir=$(dirname $BASH_SOURCE)
++top_srcdir=${1:-$mydir/../..}
+ 
+-sudo apt-get install $(cat $mydir/../debian-packages.txt)
++apt-get install -y $(cat $top_srcdir/ci/debian-packages.txt)

@@ -1,0 +1,19 @@
+Source: p2x
+Section: unknown
+Priority: optional
+Maintainer: Johannes Willkomm <johannes.willkomm@googlemail.com>
+Build-Depends: debhelper-compat (= 12), autotools-dev, flex,
+ libfl-dev, shunit2, xsltproc, xmlstarlet, libcppunit-dev, trang,
+ valgrind, re2c, python3, octave, zsh
+Standards-Version: 4.6.0
+Homepage: https://github.com/rainac/p2x/
+#Vcs-Browser: https://salsa.debian.org/debian/p2x
+#Vcs-Git: https://salsa.debian.org/debian/p2x.git
+Rules-Requires-Root: no
+
+Package: p2x
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: P2X - flexible text to tree parser with XML output
+ P2X can parse almost any kind of structured text into trees with XML
+ output. JSON output is also available.

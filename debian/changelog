@@ -1,0 +1,17 @@
+p2x (0.6.9-2) aiandit-unstable; urgency=medium
+
+  * Remove CI stuff from pkg again
+  * simplify config
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Thu, 12 May 2022 00:00:25 +0200
+
+p2x (0.6.9-1) aiandit-unstable; urgency=medium
+
+  * Distro: aiandit-unstable
+  * New patch: install RNG grammar too
+  * New patch: also install RNG grammar
+  * New pkg release
+  * Debug failing test
+  * Initial release
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Fri, 22 Apr 2022 12:57:06 +0200

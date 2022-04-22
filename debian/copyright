@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: p2x
+Upstream-Contact: Johannes Willkomm <johannes@johannes-willkomm.de>
+Source: https://github.com/rainac/p2x/
+
+Files: *
+Copyright: 2013-2022 Johannes Willkomm <johannes@johannes-willkomm.de>
+License: GPL-3
