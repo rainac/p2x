@@ -4,3 +4,4 @@ xmlstarlet
 libcppunit-dev
 trang
 valgrind
+re2c
