@@ -2,7 +2,7 @@
 
 mydir=$(dirname $BASH_SOURCE)
 
-./bootstrap.sh
+./bootstrap
 ./do_config.sh
 make -j 8
 sudo make install
