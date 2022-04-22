@@ -3,7 +3,8 @@ checkParseTreeEqual() {
     infile=$1
     exp=$2
     opts="$3"
-    $P2X $P2XFLAGS $opts -p ../../examples/configs/default ../../examples/in/$infile > $tmpdir/res.xml
+    config="${4:-../../examples/configs/default}"
+    $P2X $P2XFLAGS $opts -p $config ../../examples/in/$infile > $tmpdir/res.xml
     xsltproc -o $tmpdir/res.txt ../../src/xsl/parens.xsl $tmpdir/res.xml
     res=$(cat $tmpdir/res.txt)
     echo "$infile: $(cat ../../examples/in/$infile)  =>  $res"

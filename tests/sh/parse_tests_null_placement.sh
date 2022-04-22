@@ -3,33 +3,14 @@
 export SHUNIT_PARENT=$0
 . ./setup_zsh.sh
 
-checkParseTreeEqual() {
-    infile=$1
-    exp=$2
-    opts="$3"
-    config="${4:-../../examples/configs/default}"
-    $P2X $opts -p $config ../../examples/in/$infile > res.xml
-    xsltproc -o res.txt ../../src/xsl/parens.xsl res.xml
-    res=$(cat res.txt)
-    echo "$infile: $(cat ../../examples/in/$infile)  =>  $res"
-    if [[ "$exp" != "$res" ]]; then
-        echo "**** soll ****"
-        echo $exp
-        echo "**** result ****"
-        echo $res
-        echo "****  ****"
-    fi
-    assertEquals "Parse tree is not in expected form" "$exp" "$res"
-}
-
 checkParseTreeEqual2() {
     infile=$1
     exp=$2
     opts="$3"
     config="${4:-../../examples/configs/default}"
-    $P2X $opts -p $config ../../examples/in/$infile > res.xml
-    xmlstarlet el res.xml > res.txt
-    res=$(cat res.txt)
+    $P2X $opts -p $config ../../examples/in/$infile > $tmpdir/res.xml
+    xmlstarlet el $tmpdir/res.xml > $tmpdir/res.txt
+    res=$(cat $tmpdir/res.txt)
     echo "$infile: $(cat ../../examples/in/$infile)  => res.txt"
     if [[ "$exp" != "$res" ]]; then
         echo "**** soll ****"
