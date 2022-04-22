@@ -2,6 +2,7 @@
 
 mydir=$(dirname $BASH_SOURCE)
 
+make clean
 ./bootstrap
 ./do_config.sh
 make -j 8
