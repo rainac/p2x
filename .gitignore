@@ -24,3 +24,6 @@ tests/sh/log_*.txt
 tests/sh/err_*.txt
 src-js/p2xa.js
 *.min.js
+*.in
+configure
+aclocal.m4
