@@ -5,6 +5,7 @@ set -o shwordsplit
 export LANG=C # for grep used in shunit2, depends on english output
 
 . ./setup_tmp.sh
+PYTHON=${PYTHON:-python3}
 
 trapSCHLD() {
     echo "SIGCHILD received"
@@ -176,7 +177,7 @@ ReproduceJSONPy() {
     opts="$eopts $arg1_opts"
     echo -n "Parse with '$opts': file $infile"
     p2x $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res.json
-    python $PWD/../../src/py/reproduce.py < $tmpdir/res.json > $tmpdir/res.txt
+    $PYTHON $PWD/../../src/py/reproduce.py < $tmpdir/res.json > $tmpdir/res.txt
     assertEquals "Output should be valid MATLAB code" 0 $?
     diff $diffopts $infile $tmpdir/res.txt
     assertEquals "Plain reproduce test $infile did not return same result" 0 $?
@@ -186,7 +187,7 @@ ReproduceJSONPy() {
     opts=($eopts $arg1_opts $arg1_alt_opts)
     echo -n "Parse with '$opts': file $infile"
     p2x $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res2.json
-    python $PWD/../../src/py/reproduce.py < $tmpdir/res2.json > $tmpdir/res2.txt
+    $PYTHON $PWD/../../src/py/reproduce.py < $tmpdir/res2.json > $tmpdir/res2.txt
     assertEquals "Output should be valid MATLAB code" 0 $?
     diff $diffopts $infile $tmpdir/res2.txt
     assertEquals "Alternate opts reproduce test $infile did not return same result" 0 $?

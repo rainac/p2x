@@ -3,7 +3,7 @@ import sys, json
 def dictOfLists2ListOfDicts(d):
     if type(d) != type({}):
         return d
-    allKeys = d.keys();
+    allKeys = list(d.keys())
     listKeys = []
     nlistKeys = []
     for k in range(len(allKeys)):
@@ -36,17 +36,17 @@ def reproduce(d):
     r = u"";
     def printTxt(d):
         r = u"";
-        if d.has_key('t'):
+        if 't' in d:
             r = r + d['t'];
-        if d.has_key('i'):
+        if 'i' in d:
             r = r + d['i'];
         return r
-    if d.has_key('c') and len(d['c']):
+    if 'c' in d and len(d['c']):
         for k in range(len(d['c'])):
             if k > 0:
                 r += printTxt(d)
             r += reproduce(d['c'][k]);
-    if not d.has_key('c') or len(d['c']) <= 1:
+    if not 'c' in d or len(d['c']) <= 1:
         r += printTxt(d)
     return r
 
@@ -56,4 +56,4 @@ if __name__ == "__main__":
     d = json.loads(s)
     d2 = dictOfLists2ListOfDicts(d)
     r = reproduce(d2)
-    sys.stdout.write(r.encode('utf8'))
+    sys.stdout.write(r)
