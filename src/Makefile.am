@@ -96,4 +96,7 @@ clean-local:
 distclean-local:
 
 check:
+if acond_BUILD_TESTS
 	./p2xtests
+endif
+	true
