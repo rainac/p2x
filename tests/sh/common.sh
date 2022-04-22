@@ -5,6 +5,8 @@ set -o shwordsplit
 export LANG=C # for grep used in shunit2, depends on english output
 
 . ./setup_tmp.sh
+. ./setup_sh.sh
+
 PYTHON=${PYTHON:-python3}
 
 trapSCHLD() {
@@ -68,7 +70,7 @@ ReproduceTest() {
 
     opts="$eopts $arg1_opts"
     echo -n "Parse file $infile with '$opts', "
-    p2x $opts -p ../../examples/configs/default $infile > $tmpdir/res.xml
+    $P2X $opts -p ../../examples/configs/default $infile > $tmpdir/res.xml
     xsltproc ../../src/xsl/$reprxsl $tmpdir/res.xml > $tmpdir/res.txt
     diff $infile $tmpdir/res.txt > /dev/null
     assertEquals "Plain reproduce test $infile did not return same result" 0 $?
@@ -77,7 +79,7 @@ ReproduceTest() {
 
     opts=($eopts $arg1_opts $arg1_alt_opts)
     echo -n "Parse file $infile with '$opts'\r"
-    p2x $opts -p ../../examples/configs/default $infile > $tmpdir/res.xml
+    $P2X $opts -p ../../examples/configs/default $infile > $tmpdir/res.xml
     xsltproc ../../src/xsl/$reprxsl $tmpdir/res.xml > $tmpdir/res.txt
     diff $infile $tmpdir/res.txt
     assertEquals "Alternate opts reproduce test $infile did not return same result" 0 $?
@@ -106,7 +108,7 @@ ReproduceMatlab() {
 
     opts="$eopts $arg1_opts"
     echo -n "Parse with '$opts': file $infile"
-    p2x $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res.m
+    $P2X $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res.m
 #    cat $tmpdir/res.m
 #    file $tmpdir/res.m
     SRC_ENC=$(file -b --mime-encoding $tmpdir/res.m)
@@ -136,7 +138,7 @@ EOF
 
     opts=($eopts $arg1_opts $arg1_alt_opts)
     echo -n "Parse with '$opts': file $infile"
-    p2x $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res2.m
+    $P2X $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res2.m
     cat > $tmpdir/runscript.m <<EOF
 clear all
 run('$tmpdir/res2.m');
@@ -185,7 +187,7 @@ ReproduceJSONPy() {
 
     opts="$eopts $arg1_opts"
     echo -n "Parse with '$opts': file $infile"
-    p2x $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res.json
+    $P2X $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res.json
     $PYTHON $PWD/../../src/py/reproduce.py < $tmpdir/res.json > $tmpdir/res.txt
     assertEquals "Output should be valid MATLAB code" 0 $?
     diff $diffopts $infile $tmpdir/res.txt
@@ -195,7 +197,7 @@ ReproduceJSONPy() {
 
     opts=($eopts $arg1_opts $arg1_alt_opts)
     echo -n "Parse with '$opts': file $infile"
-    p2x $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res2.json
+    $P2X $p2xopts $opts -p ../../examples/configs/default $infile > $tmpdir/res2.json
     $PYTHON $PWD/../../src/py/reproduce.py < $tmpdir/res2.json > $tmpdir/res2.txt
     assertEquals "Output should be valid MATLAB code" 0 $?
     diff $diffopts $infile $tmpdir/res2.txt

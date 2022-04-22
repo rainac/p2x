@@ -8,7 +8,7 @@ checkParseTreeEqual() {
     exp=$2
     opts="$3"
     config="${4:-../../examples/configs/default}"
-    p2x $opts -p $config ../../examples/in/$infile > res.xml
+    $P2X $opts -p $config ../../examples/in/$infile > res.xml
     xsltproc -o res.txt ../../src/xsl/parens.xsl res.xml
     res=$(cat res.txt)
     echo "$infile: $(cat ../../examples/in/$infile)  =>  $res"
@@ -27,7 +27,7 @@ checkParseTreeEqual2() {
     exp=$2
     opts="$3"
     config="${4:-../../examples/configs/default}"
-    p2x $opts -p $config ../../examples/in/$infile > res.xml
+    $P2X $opts -p $config ../../examples/in/$infile > res.xml
     xmlstarlet el res.xml > res.txt
     res=$(cat res.txt)
     echo "$infile: $(cat ../../examples/in/$infile)  => res.txt"

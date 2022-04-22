@@ -50,7 +50,7 @@ testOutputValid() {
         then
             opts="-e latin1"
         fi
-        p2x $P2XFLAGS $opts -p $mydir/../../examples/configs/default $i > $tmpdir/res.xml
+        $P2X $P2XFLAGS $opts -p $mydir/../../examples/configs/default $i > $tmpdir/res.xml
 #        runWithTimeout xmlstarlet val -e -r ../../src/code-xml.rng res.xml
         xmlstarlet val -b -e -r $mydir/../../src/code-xml.rng $tmpdir/res.xml
         assertEquals "Validating XML output for $i failed" 0 $?

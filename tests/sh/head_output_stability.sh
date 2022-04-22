@@ -15,7 +15,7 @@ checkExpFile() {
         rm -f $tmpdir/res.xml $tmpdir/res2.xml
         touch $tmpdir/res2.xml
 
-        p2x $P2XFLAGS $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
+        $P2X $P2XFLAGS $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
         assertEquals "P2X command must succeed" 0 $?
 
         xsltproc -o $tmpdir/res2.xml ../../src/xsl/but-root.xsl $tmpdir/res.xml

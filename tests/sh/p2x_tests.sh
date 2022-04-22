@@ -6,7 +6,7 @@ export SHUNIT_PARENT=$0
 . ./setup_zsh.sh
 
 testP2X1() {
-    p2x notthere.txt > $tmpdir/log 2> $tmpdir/err
+    $P2X notthere.txt > $tmpdir/log 2> $tmpdir/err
     assertNotEquals "P2X should fail in this case" $? 0
     err=$(cat $tmpdir/err)
     grep notthere.txt $tmpdir/err > /dev/null
@@ -22,7 +22,7 @@ testP2X1() {
 }
 
 testP2X2() {
-    p2x -p notthere.txt ../../examples/in/mult3.exp > $tmpdir/log 2> $tmpdir/err
+    $P2X -p notthere.txt ../../examples/in/mult3.exp > $tmpdir/log 2> $tmpdir/err
     assertNotEquals "P2X should fail in this case" $? 0
     grep notthere.txt $tmpdir/err > /dev/null
     assertEquals "P2X should print the missing file name" $? 0
@@ -37,37 +37,37 @@ testP2X2() {
 }
 
 testP2X3() {
-    echo "a b c" | p2x > /dev/null
+    echo "a b c" | $P2X > /dev/null
     assertEquals "P2X should read from std input" $? 0
 }
 
 testP2X4() {
-    echo "a b c" | p2x | xsltproc ../../src/xsl/empty.xsl -  > /dev/null
+    echo "a b c" | $P2X | xsltproc ../../src/xsl/empty.xsl -  > /dev/null
     assertEquals "P2X should read from stdin and produce valid XML" $? 0
 }
 
 testP2X5() {
-    echo -n "a b c" | p2x $P2XFLAGS -i SPACE | xsltproc ../../src/xsl/parens.xsl - > $tmpdir/tmp.txt
+    echo -n "a b c" | $P2X $P2XFLAGS -i SPACE | xsltproc ../../src/xsl/parens.xsl - > $tmpdir/tmp.txt
     txt=$(cat $tmpdir/tmp.txt)
     assertEquals "P2X should read from stdin produce the correct XML" "$txt" "[JUXTA]([JUXTA](a, b), c)"
 }
 
 testP2X6() {
     if [[ -t 0 ]]; then
-        p2x -i ../../examples/in/mult3.exp
+        $P2X -i ../../examples/in/mult3.exp
         assertNotEquals "P2X should fail in this case" $? 0
     fi
 }
 
 testP2X7() {
-    p2x $P2XFLAGS -S c --stdin-tty -T -p ../../examples/configs-special/cfuncs.p2c > $tmpdir/tmp.out
+    $P2X $P2XFLAGS -S c --stdin-tty -T -p ../../examples/configs-special/cfuncs.p2c > $tmpdir/tmp.out
     assertEquals "P2X should not fail in this case" $? 0
     diff $tmpdir/tmp.out ../../examples/out/token-types.xml
     assertEquals "$?" 0
 }
 
 testP2X8() {
-    p2x $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose.exp 2> $tmpdir/err.txt
+    $P2X $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose.exp 2> $tmpdir/err.txt
     xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
     err=$(cat $tmpdir/err.txt)
     txt=$(cat $tmpdir/res.txt)
@@ -83,7 +83,7 @@ testP2X8() {
 }
 
 testP2X9() {
-    p2x $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose2.exp 2> $tmpdir/err.txt
+    $P2X $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose2.exp 2> $tmpdir/err.txt
     xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
     err=$(cat $tmpdir/err.txt)
     txt=$(cat $tmpdir/res.txt)
@@ -98,7 +98,7 @@ testP2X9() {
 }
 
 testP2X10() {
-    p2x $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose3.exp 2> $tmpdir/err.txt
+    $P2X $P2XFLAGS -o $tmpdir/res.xml -p ../../examples/configs/default ../../examples/in/noclose3.exp 2> $tmpdir/err.txt
     xsltproc ../../src/xsl/parens.xsl $tmpdir/res.xml > $tmpdir/res.txt
     err=$(cat $tmpdir/err.txt)
     txt=$(cat $tmpdir/res.txt)
