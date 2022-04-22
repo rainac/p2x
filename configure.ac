@@ -4,12 +4,11 @@
 # Copyright © 2013 Johannes Willkomm 
 # See the file p2x.cc for copying conditions.  
 #
-AC_INIT(p2x, 0.6.8, [johannes@johannes-willkomm.de],
-                p2x, [http://github.com/rainac/p2x])
+AC_INIT([p2x],[0.6.8],[johannes@johannes-willkomm.de],[p2x],[http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE()
 
 AC_PROG_MAKE_SET
@@ -19,7 +18,7 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_LN_S
 AC_PROG_RANLIB
-AM_PROG_LEX
+AC_PROG_LEX([yywrap])
 
 AC_CHECK_TOOL([STRIP], [strip], [strip-for-host-system-was-not-found])
 AC_CHECK_PROGS([CP], [cp copy])
