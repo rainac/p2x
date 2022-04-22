@@ -39,8 +39,13 @@ ftest_QuitOctave() {
     trap "" SIGCHLD
 
     echo "quit" >&p
-    read -p FFF
-    echo "oct:$octpid>> $FFF"
+    while true; do
+        read -p FFF
+        echo "oct:$octpid>> $FFF"
+        if [[ -z "$FFF" ]]; then
+            break
+        fi
+    done
 
     wait $octpid
     octres=$?
