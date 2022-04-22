@@ -20,7 +20,7 @@ instdir = $(datadir)/doc/$(PACKAGE)
 
 inst_DATA= $(project_files)
 
-install-recursive all-recursive: svn-version.txt
+install-recursive all-recursive: vcs-version.txt
 
 if acond_EMACS_AVAIL
 README.pdf: README.org
@@ -34,7 +34,7 @@ README.txt: README.org
 	emacs -q --batch --file $< -f org-ascii-export-to-ascii
 endif
 
-svn-version.txt: .
+vcs-version.txt: .
 	./vcs-version.sh > $@.tmp; \
 	if ! diff $@.tmp $@ > /dev/null; then cp $@.tmp $@; else echo "$@ is unchanged"; fi; \
 	$(RM) $@.tmp
@@ -45,7 +45,7 @@ version.txt:
 clean-local:
 
 distclean-local:
-	$(RM) -f svn-version.txt version.txt
+	$(RM) -f vcs-version.txt version.txt
 	$(RM) -rf autom4te.cache
 if acond_EMACS_AVAIL
 	$(RM) -f $(generated_files)

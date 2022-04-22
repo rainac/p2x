@@ -12,7 +12,7 @@ src/namespaces.hh
 src/p2xtests
 src/scanner*.cc
 stamp-h1
-svn-version.txt
+vcs-version.txt
 version.txt
 *~
 acinclude.m4
