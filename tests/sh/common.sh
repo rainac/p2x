@@ -122,11 +122,10 @@ ReproduceMatlab() {
         return
     fi
     cat > $tmpdir/runscript.m <<EOF
-% __mfile_encoding__ ('$SRC_ENC');
 clear all
 % pause(1e-2);
 run('$tmpdir/res.m');
-fd = fopen('$tmpdir/res.txt', 'w', 'l', '$SRC_ENC');
+fd = fopen('$tmpdir/res.txt', 'w', 'l');
 fprintf(fd, '%s', reproduce(ans));
 fclose(fd);
 'done'
