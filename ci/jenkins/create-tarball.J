@@ -1,5 +1,8 @@
 pipeline {
   parameters {
+    choice(name: 'branch',
+           choices: ['master', 'devel', 'debian/experimental'],
+           description: 'Git branch')
     choice(name: 'container',
            choices: ['debian-stable', 'debian-testing', 'debian-unstable'],
            description: 'Container Image')
@@ -17,6 +20,7 @@ pipeline {
     stage('checkout') {
       steps {
         sh 'ls -l'
+        sh "git checkout ${params.BRANCH}"
       }
     }
     stage('get-version') {
