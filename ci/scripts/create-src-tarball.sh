@@ -16,7 +16,7 @@ done
 
 top_srcdir=$PWD
 
-version=$(cat $top_srcdir/version.txt)
+version=$($top_srcdir/ci/scripts/get-version.sh)
 
 if [[ -z "$P2X_DEVEL_REPO" ]]; then
     export P2X_DEVEL_REPO=$top_srcdir
