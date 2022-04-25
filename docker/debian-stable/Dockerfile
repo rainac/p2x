@@ -17,7 +17,3 @@ WORKDIR src
 RUN git clone https://github.com/rainac/p2x.git
 
 WORKDIR p2x
-
-CMD git pull
-
-ADD bashrc .bashrc
