@@ -32,7 +32,6 @@ pipeline {
       }
     }
     stage('build') {
-      environment {  }
       steps {
           sh './ci/scripts/create-src-tarball.sh'
       }
