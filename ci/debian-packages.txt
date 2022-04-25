@@ -1,7 +1,1 @@
-flex
-shunit2
-xmlstarlet
-libcppunit-dev
-trang
-valgrind
-re2c
+flex libfl-dev shunit2 xsltproc xmlstarlet libcppunit-dev trang valgrind re2c python3 octave zsh
