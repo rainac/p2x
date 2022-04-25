@@ -20,7 +20,7 @@ pipeline {
     stage('checkout') {
       steps {
         sh 'ls -l'
-        sh "git checkout ${params.BRANCH}"
+        sh "git checkout ${params.branch}"
       }
     }
     stage('get-version') {
