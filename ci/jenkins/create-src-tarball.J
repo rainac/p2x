@@ -21,7 +21,6 @@ pipeline {
       steps {
         sh 'ls -l'
         sh "git checkout ${params.branch}"
-        sh "git pull"
       }
     }
     stage('get-version') {
