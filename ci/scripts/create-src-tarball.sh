@@ -31,6 +31,7 @@ version=$($curdir/ci/scripts/get-version.sh)
 commit=$(git rev-parse HEAD)
 commit=${commit:0:8}
 branch=$(git rev-parse --abbrev-ref HEAD)
+branch=${branch/\//-}
 
 tmpd=$TMP/p2x-create-src-$BASHPID
 mkdir $tmpd
