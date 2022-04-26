@@ -1,6 +1,6 @@
 pipeline {
   parameters {
-    choice(name: 'branch',
+    editableChoice(name: 'branch',
            choices: ['master', 'devel', 'debian/experimental'],
            description: 'Git branch')
     choice(name: 'container',
@@ -20,7 +20,7 @@ pipeline {
     stage('checkout') {
       steps {
         sh 'ls -l'
-        sh "git checkout ${params.branch}"
+        git branch: "${params.branch}", credentialsId: 'joy-fs', url: 'famserv.local:git/p2x'
       }
     }
     stage('get-version') {
@@ -29,21 +29,27 @@ pipeline {
         sh 'groups'
         sh 'id'
         sh 'env|sort'
-        sh 'ls -l'
-        script {
-            env.VERSION = sh label: 'Test', returnStdout: true, script: './vcs-version.sh'
+        dir("p2x") {
+          sh 'ls -l'
+          script {
+              env.VERSION = sh label: 'Test', returnStdout: true, script: './vcs-version.sh'
+          }
         }
       }
     }
     stage('build') {
       steps {
+        dir("p2x") {
           sh './ci/scripts/create-src-tarball.sh'
+        }
       }
     }
     stage('pack') {
       steps {
-        sh 'ls -l'
-        archiveArtifacts 'p2x-*.tar.gz'
+        dir("p2x") {
+          sh 'ls -l'
+          archiveArtifacts 'p2x-*.tar.gz'
+        }
       }
     }
   }
