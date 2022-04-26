@@ -6,24 +6,27 @@ mydir=$(dirname $(readlink -f $BASH_SOURCE))
 
 curdir=$PWD
 
-while ! [[ -f "src/p2x.cc" ]]; do
-    cd ..
-    if [[ "$PWD" = "/" ]]; then
-	echo "Error: non in src tree"
-	exit 1
-    fi
-done
-
-top_srcdir=$PWD
-
-version=$($top_srcdir/ci/scripts/get-version.sh)
+P2X_DEVEL_REPO=${1:-$P2X_DEVEL_REPO}
 
 if [[ -z "$P2X_DEVEL_REPO" ]]; then
-    export P2X_DEVEL_REPO=$top_srcdir
+    while ! [[ -f "src/p2x.cc" ]]; do
+        cd ..
+        if [[ "$PWD" = "/" ]]; then
+	    echo "Error: non in src tree"
+	    exit 1
+        fi
+    done
+    export P2X_DEVEL_REPO=$PWD
+else
+    P2X_DEVEL_REPO=$(readlink -f $P2X_DEVEL_REPO)
 fi
 if [[ -z "$TMP" ]]; then
     export TMP=/tmp
 fi
+
+cd $P2X_DEVEL_REPO
+
+version=$($curdir/ci/scripts/get-version.sh)
 
 commit=$(git rev-parse HEAD)
 commit=${commit:0:8}

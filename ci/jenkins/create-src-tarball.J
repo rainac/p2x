@@ -42,17 +42,13 @@ pipeline {
     }
     stage('build') {
       steps {
-        dir("p2x") {
-          sh './ci/scripts/create-src-tarball.sh'
-        }
+        sh './ci/scripts/create-src-tarball.sh p2x'
       }
     }
     stage('pack') {
       steps {
-        dir("p2x") {
-          sh 'ls -l'
-          archiveArtifacts 'p2x-*.tar.gz'
-        }
+        sh 'ls -l'
+        archiveArtifacts 'p2x-*.tar.gz'
       }
     }
   }
