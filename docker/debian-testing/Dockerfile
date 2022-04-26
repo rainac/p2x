@@ -1,4 +1,4 @@
-FROM debian
+FROM debian:testing
 
 RUN adduser devel
 RUN adduser devel staff
