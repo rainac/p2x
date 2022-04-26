@@ -43,10 +43,16 @@ version=$version$branch
 echo "CLONE $P2X_DEVEL_REPO"
 git clone $P2X_DEVEL_REPO p2x-$version
 
+pwd
+ls -l
+
 cd p2x-$version
 rm -rf .git
 echo "$commit" > vcs-version.txt
 cd ..
+
+pwd
+ls -l
 
 tar -czf $curdir/p2x-$version-src.tar.gz p2x-$version
 
