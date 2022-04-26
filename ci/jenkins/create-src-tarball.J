@@ -22,7 +22,7 @@ pipeline {
         sh 'ls -l'
         checkout([$class: 'GitSCM',
                   branches: [[name: "*/${params.branch}"]],
-                  extensions: [[$class: 'CleanCheckout']],
+                  extensions: [[$class: 'CleanCheckout'],  [$class: 'RelativeTargetDirectory', relativeTargetDir: 'p2x']],
                   userRemoteConfigs: [[credentialsId: 'joy-fs', url: 'famserv.local:git/p2x']]])
       }
     }
