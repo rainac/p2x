@@ -20,7 +20,10 @@ pipeline {
     stage('checkout') {
       steps {
         sh 'ls -l'
-        git branch: "${params.branch}", credentialsId: 'joy-fs', url: 'famserv.local:git/p2x'
+        checkout([$class: 'GitSCM',
+                  branches: [[name: "*/${params.branch}"]],
+                  extensions: [[$class: 'CleanCheckout']],
+                  userRemoteConfigs: [[credentialsId: 'joy-fs', url: 'famserv.local:git/p2x']]])
       }
     }
     stage('get-version') {
