@@ -4,7 +4,7 @@ pipeline {
            choices: ['master', 'devel', 'debian/experimental'],
            description: 'Git branch')
     choice(name: 'container',
-           choices: ['debian-stable', 'debian-testing', 'debian-unstable'],
+           choices: ['debian-stable', 'debian-testing', 'debian-unstable', 'debian-bullseye'],
            description: 'Container Image')
   }
   agent {
