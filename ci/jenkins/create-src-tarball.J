@@ -13,7 +13,7 @@ pipeline {
       dir "docker/${params.container}"
       label "builder"
       additionalBuildArgs  ''
-      args '--user=root'
+      args '--user=devel'
     }
   }
   stages {
