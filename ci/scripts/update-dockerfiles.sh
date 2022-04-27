@@ -12,7 +12,12 @@ USER root
 
 COPY debian-packages.txt .
 
-RUN apt-get -y install \$(cat debian-packages.txt) debhelper-compat eatmydata git-buildpackage
+RUN apt-get -y install \$(cat debian-packages.txt)
+
+RUN apt-get -y install sudo
+RUN adduser devel sudo
+RUN sed -i -e '/%sudo/ c %sudo   ALL=(ALL:ALL) NOPASSWD: ALL' /etc/sudoers
+RUN cat /etc/sudoers
 
 USER devel
 
