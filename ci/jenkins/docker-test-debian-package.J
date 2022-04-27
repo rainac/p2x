@@ -1,5 +1,8 @@
 pipeline {
   parameters {
+    editableChoice(name: 'branch',
+           choices: ['debian%2Fexperimental'],
+           description: 'Git branch')
     choice(name: 'container',
            choices: ['debian-stable', 'debian-testing', 'debian-unstable', 'debian-bullseye'],
            description: 'Container Image')
