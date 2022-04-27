@@ -49,7 +49,7 @@ pipeline {
         sh "sudo dpkg -i pkg/*.deb"
 
         sh "autoreconf -i"
-        sh "./configure"
+        sh "./configure --enable-tests"
 
         dir("tests/sh") {
           sh "make check P2X=p2x"
