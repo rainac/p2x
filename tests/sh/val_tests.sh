@@ -39,8 +39,15 @@ runWithTimeout() {
 
 mydir=$(dirname $BASH_SOURCE)
 
-testOutputValid() {
+P2X_HOME=${P2X_HOME:-/usr}
+P2X_SHARE_DIR=$P2X_HOME/share/p2x
 
+GRAMMAR=$mydir/../../src/code-xml.rng
+if ! [[ -f $GRAMMAR ]]; then
+    GRAMMAR=$P2X_SHARE_DIR/code-xml.rng
+fi
+
+testOutputValid() {
     for i in $mydir/../../examples/in/*.exp; do
         echo "Validate file $i"
         opts=""
@@ -52,7 +59,7 @@ testOutputValid() {
         fi
         $P2X $P2XFLAGS $opts -p $mydir/../../examples/configs/default $i > $tmpdir/res.xml
 #        runWithTimeout xmlstarlet val -e -r ../../src/code-xml.rng res.xml
-        xmlstarlet val -b -e -r $mydir/../../src/code-xml.rng $tmpdir/res.xml
+        xmlstarlet val -b -e -r $GRAMMAR $tmpdir/res.xml
         assertEquals "Validating XML output for $i failed" 0 $?
 #        rm $tmpdir/res.xml
     done
