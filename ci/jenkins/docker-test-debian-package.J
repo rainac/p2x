@@ -19,7 +19,7 @@ pipeline {
       dir "docker/${params.container}"
       label "builder"
       additionalBuildArgs  ''
-      args '--user=root'
+      args '--user=devel'
     }
   }
   stages {
@@ -46,7 +46,7 @@ pipeline {
     }
     stage('build') {
       steps {
-        sh "dpkg -i pkg/*.deb"
+        sh "sudo dpkg -i pkg/*.deb"
 
         sh "autoreconf -i"
         sh "./configure"
