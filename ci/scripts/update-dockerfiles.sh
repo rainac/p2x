@@ -17,7 +17,6 @@ RUN apt-get -y install \$(cat debian-packages.txt)
 RUN apt-get -y install sudo
 RUN adduser devel sudo
 RUN sed -i -e '/%sudo/ c %sudo   ALL=(ALL:ALL) NOPASSWD: ALL' /etc/sudoers
-RUN cat /etc/sudoers
 
 USER devel
 
