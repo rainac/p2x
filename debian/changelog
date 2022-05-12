@@ -1,3 +1,10 @@
+p2x (0.6.9-3) aiandit-unstable; urgency=medium
+
+  * Simplify pkg
+  * Section: misc, Priority: extra
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Thu, 12 May 2022 22:37:33 +0200
+
 p2x (0.6.9-2) aiandit-unstable; urgency=medium
 
   * Remove CI stuff from pkg again
