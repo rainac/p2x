@@ -1,6 +1,6 @@
 Source: p2x
-Section: unknown
-Priority: optional
+Section: misc
+Priority: extra
 Maintainer: Johannes Willkomm <johannes.willkomm@googlemail.com>
 Build-Depends: debhelper-compat (= 12), autotools-dev, flex,
  libfl-dev, shunit2, xsltproc, xmlstarlet, libcppunit-dev, trang,
