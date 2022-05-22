@@ -1,3 +1,9 @@
+p2x (0.6.9-4) aiandit-unstable; urgency=medium
+
+  * Section: misc, Priority: optional
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Sun, 22 May 2022 17:46:27 +0200
+
 p2x (0.6.9-3) aiandit-unstable; urgency=medium
 
   * Simplify pkg
