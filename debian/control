@@ -2,9 +2,9 @@ Source: p2x
 Section: misc
 Priority: optional
 Maintainer: Johannes Willkomm <johannes.willkomm@googlemail.com>
-Build-Depends: debhelper-compat (= 12), autotools, flex,
- libfl-dev, shunit2, xsltproc, xmlstarlet, libcppunit-dev, trang,
- valgrind, re2c, python3, octave, zsh
+Build-Depends: debhelper-compat (= 12), libfl-dev, shunit2, xsltproc,
+ xmlstarlet, libcppunit-dev, trang, valgrind, re2c, python3, octave,
+ zsh
 Standards-Version: 4.6.0
 Homepage: https://github.com/rainac/p2x/
 Rules-Requires-Root: no
