@@ -20,3 +20,5 @@
 0020-val_tests.patch
 0021-Fix-use-P2X-var-in-cdecls.sh.patch
 0022-Test.patch
+0023-Debug.patch
+0024-Installing-files-manually.patch

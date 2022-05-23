@@ -1,0 +1,22 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 23 May 2022 19:58:54 +0200
+Subject: Installing files manually
+
+---
+ examples/Makefile.am | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/examples/Makefile.am b/examples/Makefile.am
+index 9024e48..b9dec79 100644
+--- a/examples/Makefile.am
++++ b/examples/Makefile.am
+@@ -4,8 +4,7 @@
+ # See the file p2x.cc for copying conditions.  
+ #
+ 
+-instbasedir=$(docdir)
+-instdir= $(instbasedir)/examples
++instdir = $(DESTDIR)$(docdir)/examples
+ 
+ install:
+ 	echo "prefix=$(prefix)"

@@ -1,0 +1,20 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 23 May 2022 19:54:22 +0200
+Subject: Debug
+
+---
+ examples/Makefile.am | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/examples/Makefile.am b/examples/Makefile.am
+index 9613af6..9024e48 100644
+--- a/examples/Makefile.am
++++ b/examples/Makefile.am
+@@ -9,6 +9,7 @@ instdir= $(instbasedir)/examples
+ 
+ install:
+ 	echo "prefix=$(prefix)"
++	echo "bindir=$(bindir)"
+ 	mkdir -p $(instdir)/configs
+ 	mkdir -p $(instdir)/in
+ 	mkdir -p $(instdir)/xsl
