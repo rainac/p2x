@@ -1,10 +1,16 @@
-p2x (0.6.9-5~1.gbp9c4275) UNRELEASED; urgency=medium
+p2x (0.6.9-5~2.gbpec57de) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @9c42750c05df11a2b2b19b8d698812822b59edf3 **
+  ** SNAPSHOT build @ec57de48a99e552603ea68dc8f74aa566f3582c1 **
 
   * Shorten dep list
+  * Patches for installing one of the unit tests
+  * Patches
+  * Patches
+  * Patches
+  * Snapshop version
+  * Patches
 
- -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Mon, 23 May 2022 11:54:31 +0200
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Mon, 23 May 2022 21:53:31 +0200
 
 p2x (0.6.9-4) aiandit-unstable; urgency=medium
 
