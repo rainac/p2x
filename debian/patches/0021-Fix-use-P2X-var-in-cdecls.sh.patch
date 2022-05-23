@@ -1,0 +1,21 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 23 May 2022 17:13:18 +0200
+Subject: Fix: use $P2X var in cdecls.sh
+
+---
+ tests/sh/cdecls.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/sh/cdecls.sh b/tests/sh/cdecls.sh
+index b5e7462..4aa448f 100755
+--- a/tests/sh/cdecls.sh
++++ b/tests/sh/cdecls.sh
+@@ -14,7 +14,7 @@ tearDown() {
+ 
+ parseCCode() {
+     inf=$1
+-    p2x -gmXp $exdir/configs/cdecls $inf | tee cdecls.xml | xsltproc $exdir/xsl/cdecls.xsl -
++    $P2X -gmXp $exdir/configs/cdecls $inf | tee cdecls.xml | xsltproc $exdir/xsl/cdecls.xsl -
+     ps=($pipestatus)
+     assertEquals "${ps[1]}" "0"
+     assertEquals "${ps[2]}" "0"
