@@ -1,5 +1,5 @@
 
-generated_files = test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh test_output_stability.sh forall_tests.sh
+generated_files = all_tests.sh test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh test_output_stability.sh forall_tests.sh
 
 good = val_tests test_reproduce_strict test_reproduce test_reparse	\
 parse_tests merge_tests p2x_tests test_output_stability indent_tests	\
@@ -30,6 +30,9 @@ test_%.sh: head_%.sh forall_tests.sh
 	cat $< forall_tests.sh > $@
 	echo ". ./myshunit2" >> $@
 	chmod a+x $@
+
+all_tests.sh: update_all_tests.sh
+	./update_all_tests.sh $(good)
 
 all: $(generated_files)
 
