@@ -1,6 +1,6 @@
-p2x (0.6.9-5~2.gbpec57de) UNRELEASED; urgency=medium
+p2x (0.6.9-5~3.gbp8284f2) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @ec57de48a99e552603ea68dc8f74aa566f3582c1 **
+  ** SNAPSHOT build @8284f2857e536365781514ebdbfe7f1f48af7f14 **
 
   * Shorten dep list
   * Patches for installing one of the unit tests
@@ -9,8 +9,11 @@ p2x (0.6.9-5~2.gbpec57de) UNRELEASED; urgency=medium
   * Patches
   * Snapshop version
   * Patches
+  * New snapshot
+  * Patches
+  * Rediff patches
 
- -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Mon, 23 May 2022 21:53:31 +0200
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Mon, 23 May 2022 22:13:48 +0200
 
 p2x (0.6.9-4) aiandit-unstable; urgency=medium
 
