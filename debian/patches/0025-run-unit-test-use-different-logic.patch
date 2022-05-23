@@ -1,0 +1,36 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 23 May 2022 21:52:43 +0200
+Subject: run-unit-test use different logic
+
+---
+ tests/run-unit-test  | 2 +-
+ tests/sh/Makefile.am | 3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/tests/run-unit-test b/tests/run-unit-test
+index 1c0c66b..8b92eb7 100644
+--- a/tests/run-unit-test
++++ b/tests/run-unit-test
+@@ -12,7 +12,7 @@ cd $AUTOPKGTEST_TMP
+ cp -a $P2X_HOME/share/doc/$debname/tests/* $AUTOPKGTEST_TMP
+ gunzip -r *
+ for testfile in *.sh; do
+-    if [ -x "$testfile" ]; then
++    if head -n 6 $testfile | grep setup.sh &> /dev/null; then
+         echo "BEGIN TEST $testfile"
+         ./$testfile
+     fi
+diff --git a/tests/sh/Makefile.am b/tests/sh/Makefile.am
+index d0f99df..278b995 100644
+--- a/tests/sh/Makefile.am
++++ b/tests/sh/Makefile.am
+@@ -53,8 +53,7 @@ check-bad: $(bad_test_results)
+ instdir = $(docdir)/tests
+ bindir = $(docdir)/tests
+ 
+-inst_DATA = setup.sh myshunit2
+-dist_bin_SCRIPTS = cdecls.sh
++inst_DATA = setup.sh myshunit2 cdecls.sh
+ 
+ clean:
+ 	$(RM) -f $(generated_files) test-log.txt test-report.html log_*.txt
