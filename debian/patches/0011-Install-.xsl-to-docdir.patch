@@ -1,0 +1,62 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 23 May 2022 16:50:32 +0200
+Subject: Install .xsl to docdir
+
+---
+ configure.ac        |  1 +
+ src/Makefile.am     |  5 +++--
+ src/xsl/Makefile.am | 10 ++++++++++
+ 3 files changed, 14 insertions(+), 2 deletions(-)
+ create mode 100644 src/xsl/Makefile.am
+
+diff --git a/configure.ac b/configure.ac
+index 1e8fb34..733ceec 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -192,6 +192,7 @@ AC_CHECK_HEADERS([sys/stat.h])
+ 
+ AC_CONFIG_FILES([Makefile
+                  src/Makefile
++                 src/xsl/Makefile
+                  src-js/Makefile
+                  examples/Makefile
+                  tests/Makefile
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 6ef683b..744aeb4 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -4,6 +4,8 @@
+ # See the file p2x.cc for copying conditions.  
+ #
+ 
++SUBDIRS = xsl
++
+ bin_PROGRAMS = p2x
+ if acond_BUILD_TESTS
+ bin_PROGRAMS += p2xtests
+@@ -87,8 +89,7 @@ code-xml.rnc: code-xml.rnc.in
+ instbasedir=$(pkgdatadir)
+ instdir= $(instbasedir)
+ 
+-inst_DATA = code-xml.rnc code-xml.rng xsl/reproduce.xsl xsl/reproduce-latin1.xsl	\
+-xsl/copy.xsl ../examples/configs/scanner-c.xml
++inst_DATA = code-xml.rnc code-xml.rng
+ 
+ clean-local:
+ 	$(RM) -f $(generated_files)
+diff --git a/src/xsl/Makefile.am b/src/xsl/Makefile.am
+new file mode 100644
+index 0000000..464026b
+--- /dev/null
++++ b/src/xsl/Makefile.am
+@@ -0,0 +1,10 @@
++#
++# This file is part of P2X.
++# Copyright © 2022 Johannes Willkomm
++# See the file p2x.cc for copying conditions.
++#
++
++instbasedir=$(docdir)
++instdir= $(instbasedir)/examples/xsl
++
++inst_DATA = copy.xsl reproduce.xsl reproduce-latin1.xsl

@@ -1,0 +1,450 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 23 May 2022 17:06:41 +0200
+Subject: Reduce the number of shell source files for test setup
+
+---
+ tests/sh/common.sh                           |  6 +-
+ tests/sh/funcs.sh                            | 61 -------------------
+ tests/sh/head_cmp_js.sh                      |  2 +-
+ tests/sh/head_cmp_jsy.sh                     |  2 +-
+ tests/sh/head_output_stability.sh            |  2 +-
+ tests/sh/head_reparse.sh                     |  2 +-
+ tests/sh/head_reproduce.sh                   |  2 +-
+ tests/sh/head_reproduce_strict.sh            |  2 +-
+ tests/sh/indent_tests.sh                     |  9 +--
+ tests/sh/merge_tests.sh                      |  2 +-
+ tests/sh/p2x_tests.sh                        |  3 +-
+ tests/sh/parse_tests.sh                      |  2 +-
+ tests/sh/parse_tests_merged.sh               |  2 +-
+ tests/sh/parse_tests_new.sh                  |  2 +-
+ tests/sh/parse_tests_not_same_when_merged.sh |  2 +-
+ tests/sh/parse_tests_null_placement.sh       |  2 +-
+ tests/sh/parse_tests_same_when_merged.sh     |  2 +-
+ tests/sh/setup.sh                            | 89 ++++++++++++++++++++++++++++
+ tests/sh/setup_sh.sh                         |  7 ---
+ tests/sh/setup_tmp.sh                        |  9 ---
+ tests/sh/setup_zsh.sh                        |  6 --
+ 21 files changed, 105 insertions(+), 111 deletions(-)
+ delete mode 100644 tests/sh/funcs.sh
+ create mode 100644 tests/sh/setup.sh
+ delete mode 100644 tests/sh/setup_sh.sh
+ delete mode 100644 tests/sh/setup_tmp.sh
+ delete mode 100644 tests/sh/setup_zsh.sh
+
+diff --git a/tests/sh/common.sh b/tests/sh/common.sh
+index 0197c72..68f7731 100644
+--- a/tests/sh/common.sh
++++ b/tests/sh/common.sh
+@@ -1,11 +1,7 @@
+ #
+ 
+ zmodload zsh/mathfunc
+-set -o shwordsplit
+-export LANG=C # for grep used in shunit2, depends on english output
+-
+-. ./setup_tmp.sh
+-. ./setup_sh.sh
++. ./setup.sh
+ 
+ PYTHON=${PYTHON:-python3}
+ 
+diff --git a/tests/sh/funcs.sh b/tests/sh/funcs.sh
+deleted file mode 100644
+index 2079c14..0000000
+--- a/tests/sh/funcs.sh
++++ /dev/null
+@@ -1,61 +0,0 @@
+-
+-checkParseTreeEqual() {
+-    infile=$1
+-    exp=$2
+-    opts="$3"
+-    config="${4:-../../examples/configs/default}"
+-    $P2X $P2XFLAGS $opts -p $config ../../examples/in/$infile > $tmpdir/res.xml
+-    xsltproc -o $tmpdir/res.txt ../../src/xsl/parens.xsl $tmpdir/res.xml
+-    res=$(cat $tmpdir/res.txt)
+-    echo "$infile: $(cat ../../examples/in/$infile)  =>  $res"
+-    assertEquals "Parse tree is not in expected form: '$exp' != '$res'" "$exp" "$res"
+-    rm $tmpdir/res.txt $tmpdir/res.xml
+-}
+-
+-
+-checkXforAllConfs() {
+-    cfac_cmd=$1
+-    for cfac_conf in  ../../examples/configs/*; do
+-        if [[ "$cfac_conf" = *.json ]]; then
+-            continue
+-        fi
+-        if [[ "$cfac_conf" = *.xml ]]; then
+-            continue
+-        fi
+-        export P2XCONF=$cfac_conf
+-#        echo "${cfac_cmd[*]}"
+-        ${cfac_cmd[*]}
+-    done
+-}
+-
+-checkXforFlags() {
+-    cxff_cmd=$1
+-    cxff_flags=$2
+-    cxff_P2XFLAGS_=$P2XFLAGS
+-    for cxff_flag in $cxff_flags; do
+-#        echo "cxff_flag='$cxff_flag'"
+-        export P2XFLAGS="$cxff_P2XFLAGS_ $cxff_flag"
+-#        echo "P2XFLAGS: $P2XFLAGS"
+-#        echo "checkXforFlags: ${cxff_cmd[*]}"
+-        ${cxff_cmd[*]}
+-    done
+-    P2XFLAGS=$P2XFLAGS_
+-}
+-
+-checkXforFlags2() {
+-    cxff_cmd=$1
+-    cxff_flags=$2
+-    cxff_flags2=$3
+-    cxff_P2XFLAGS_=$P2XFLAGS
+-    for cxff_flag in $cxff_flags; do
+-#        echo "cxff_flag='$cxff_flag'"
+-        for cxff_flag2 in $cxff_flags2; do
+-#            echo "cxff_flag2='$cxff_flag2'"
+-            export P2XFLAGS="$cxff_P2XFLAGS_ $cxff_flag $cxff_flag2"
+-#            echo "P2XFLAGS: $P2XFLAGS"
+-#            echo "checkXforFlags: ${cxff_cmd[*]}"
+-            ${cxff_cmd[*]}
+-        done
+-    done
+-    P2XFLAGS=$P2XFLAGS_
+-}
+diff --git a/tests/sh/head_cmp_js.sh b/tests/sh/head_cmp_js.sh
+index c417965..29e78f9 100644
+--- a/tests/sh/head_cmp_js.sh
++++ b/tests/sh/head_cmp_js.sh
+@@ -1,6 +1,6 @@
+ #! /bin/bash
+ 
+-. setup_sh.sh
++. setup.sh
+ 
+ mkParseTree() {
+     infile="$1"
+diff --git a/tests/sh/head_cmp_jsy.sh b/tests/sh/head_cmp_jsy.sh
+index e57a8d9..b5305fe 100644
+--- a/tests/sh/head_cmp_jsy.sh
++++ b/tests/sh/head_cmp_jsy.sh
+@@ -1,6 +1,6 @@
+ #! /bin/bash
+ 
+-. setup_tmp.sh
++. setup.sh
+ 
+ mkParseTree() {
+     infile="$1"
+diff --git a/tests/sh/head_output_stability.sh b/tests/sh/head_output_stability.sh
+index bdc0d50..8b18bf0 100644
+--- a/tests/sh/head_output_stability.sh
++++ b/tests/sh/head_output_stability.sh
+@@ -1,6 +1,6 @@
+ #! /bin/bash
+ 
+-. setup_sh.sh
++. setup.sh
+ 
+ checkExpFile() {
+     i=$1
+diff --git a/tests/sh/head_reparse.sh b/tests/sh/head_reparse.sh
+index 941cba7..d8ff386 100755
+--- a/tests/sh/head_reparse.sh
++++ b/tests/sh/head_reparse.sh
+@@ -1,6 +1,6 @@
+ #! /bin/bash
+ 
+-. setup_tmp.sh
++. setup.sh
+ 
+ checkExpFile() {
+     i=$1
+diff --git a/tests/sh/head_reproduce.sh b/tests/sh/head_reproduce.sh
+index fb3a3cd..c65780d 100755
+--- a/tests/sh/head_reproduce.sh
++++ b/tests/sh/head_reproduce.sh
+@@ -1,6 +1,6 @@
+ #! /bin/bash
+ 
+-. setup_sh.sh
++. setup.sh
+ 
+ checkExpFile() {
+     i=$1
+diff --git a/tests/sh/head_reproduce_strict.sh b/tests/sh/head_reproduce_strict.sh
+index 053b1e5..7064cee 100644
+--- a/tests/sh/head_reproduce_strict.sh
++++ b/tests/sh/head_reproduce_strict.sh
+@@ -1,6 +1,6 @@
+ #! /bin/bash
+ 
+-. setup_sh.sh
++. setup.sh
+ 
+ checkExpFile() {
+     i=$1
+diff --git a/tests/sh/indent_tests.sh b/tests/sh/indent_tests.sh
+index 1ce58c2..d5b5e55 100755
+--- a/tests/sh/indent_tests.sh
++++ b/tests/sh/indent_tests.sh
+@@ -1,14 +1,7 @@
+ #! /bin/zsh
+ 
+-# P2X shunit2 test suite: failing tests
+-#
+-# This suite runs some tests running p2x with different option
+-# controlling indentation of the XML output.
+-
+-zmodload zsh/mathfunc
+-
+ export SHUNIT_PARENT=$0
+-. ./setup_zsh.sh
++. ./setup.sh
+ 
+ # Test section indent
+ testP2X_indentation() {
+diff --git a/tests/sh/merge_tests.sh b/tests/sh/merge_tests.sh
+index b2835d6..78ae05a 100755
+--- a/tests/sh/merge_tests.sh
++++ b/tests/sh/merge_tests.sh
+@@ -1,7 +1,7 @@
+ #! /bin/zsh
+ 
+ export SHUNIT_PARENT=$0
+-. ./setup_zsh.sh
++. ./setup.sh
+ 
+ checkParseTreeEqualLocal() {
+     checkParseTreeEqual "$1" "$2" "--merged $3"
+diff --git a/tests/sh/p2x_tests.sh b/tests/sh/p2x_tests.sh
+index 121a340..7d985a8 100755
+--- a/tests/sh/p2x_tests.sh
++++ b/tests/sh/p2x_tests.sh
+@@ -1,9 +1,8 @@
+ #! /bin/zsh
+ 
+-zmodload zsh/mathfunc
+ export SHUNIT_PARENT=$0
+ 
+-. ./setup_zsh.sh
++. ./setup.sh
+ 
+ testP2X1() {
+     $P2X notthere.txt > $tmpdir/log 2> $tmpdir/err
+diff --git a/tests/sh/parse_tests.sh b/tests/sh/parse_tests.sh
+index d6eeb43..f9c3f37 100755
+--- a/tests/sh/parse_tests.sh
++++ b/tests/sh/parse_tests.sh
+@@ -1,7 +1,7 @@
+ #! /bin/zsh
+ 
+ export SHUNIT_PARENT=$0
+-. ./setup_zsh.sh
++. ./setup.sh
+ 
+ testParseTreeEqual1() {
+   env -u P2XFLAGS ./parse_tests_same_when_merged.sh
+diff --git a/tests/sh/parse_tests_merged.sh b/tests/sh/parse_tests_merged.sh
+index d280d00..26110eb 100755
+--- a/tests/sh/parse_tests_merged.sh
++++ b/tests/sh/parse_tests_merged.sh
+@@ -1,7 +1,7 @@
+ #! /bin/zsh
+ 
+ export SHUNIT_PARENT=$0
+-. ./setup_zsh.sh
++. ./setup.sh
+ 
+ testParseTreeEqual_unary_binary_valid() {
+     checkParseTreeEqual ub2.exp "[ub]([ub](1, 2), 3)"
+diff --git a/tests/sh/parse_tests_new.sh b/tests/sh/parse_tests_new.sh
+index e120da2..4e8ec47 100755
+--- a/tests/sh/parse_tests_new.sh
++++ b/tests/sh/parse_tests_new.sh
+@@ -1,7 +1,7 @@
+ #! /bin/zsh
+ 
+ export SHUNIT_PARENT=$0
+-. ./setup_zsh.sh
++. ./setup.sh
+ 
+ testParseTreeEqual1() {
+   env -u P2XFLAGS  ./parse_tests_same_when_merged.sh
+diff --git a/tests/sh/parse_tests_not_same_when_merged.sh b/tests/sh/parse_tests_not_same_when_merged.sh
+index 6c759a4..f530e65 100755
+--- a/tests/sh/parse_tests_not_same_when_merged.sh
++++ b/tests/sh/parse_tests_not_same_when_merged.sh
+@@ -1,7 +1,7 @@
+ #! /bin/zsh
+ 
+ export SHUNIT_PARENT=$0
+-. ./setup_zsh.sh
++. ./setup.sh
+ 
+ testParseTreeEqual2() {
+     checkParseTreeEqual mult3.exp "[MULT]([MULT](2, 3), 4)"
+diff --git a/tests/sh/parse_tests_null_placement.sh b/tests/sh/parse_tests_null_placement.sh
+index 2553953..415e3cb 100755
+--- a/tests/sh/parse_tests_null_placement.sh
++++ b/tests/sh/parse_tests_null_placement.sh
+@@ -1,7 +1,7 @@
+ #! /bin/zsh
+ 
+ export SHUNIT_PARENT=$0
+-. ./setup_zsh.sh
++. ./setup.sh
+ 
+ checkParseTreeEqual2() {
+     infile=$1
+diff --git a/tests/sh/parse_tests_same_when_merged.sh b/tests/sh/parse_tests_same_when_merged.sh
+index f3cf6b2..3881dbc 100755
+--- a/tests/sh/parse_tests_same_when_merged.sh
++++ b/tests/sh/parse_tests_same_when_merged.sh
+@@ -1,7 +1,7 @@
+ #! /bin/zsh
+ 
+ export SHUNIT_PARENT=$0
+-. ./setup_zsh.sh
++. ./setup.sh
+ 
+ testParseTreeEqual1() {
+     checkParseTreeEqual postfix-test.exp "[NEWLINE]([a]([P](2), 3))"
+diff --git a/tests/sh/setup.sh b/tests/sh/setup.sh
+new file mode 100644
+index 0000000..a281bae
+--- /dev/null
++++ b/tests/sh/setup.sh
+@@ -0,0 +1,89 @@
++
++set -o shwordsplit
++
++export LANG=C # for grep used in shunit2 when running with zsh, depends on english output
++
++export P2XFLAGS="$P2XFLAGS --output-mode=x"
++
++top_srcdir=../..
++
++P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $(which p2x))/..)}
++
++if [[ -x $top_srcdir/src/p2x ]]; then
++    P2X=${P2X:-$top_srcdir/src/p2x}
++    exdir=$top_srcdir/examples
++else
++    P2X=p2x
++    exdir=$P2X_HOME/share/doc/p2x/examples
++fi
++
++tmpdir=${TMP:-/tmp}/shunit2-test-$$
++mkdir $tmpdir
++
++function mycleanup() {
++#    echo "CLEANUP"
++    rm -rf $tmpdir
++}
++
++export SHUNIT_EXIT=mycleanup
++
++checkParseTreeEqual() {
++    infile=$1
++    exp=$2
++    opts="$3"
++    config="${4:-../../examples/configs/default}"
++    $P2X $P2XFLAGS $opts -p $config ../../examples/in/$infile > $tmpdir/res.xml
++    xsltproc -o $tmpdir/res.txt ../../src/xsl/parens.xsl $tmpdir/res.xml
++    res=$(cat $tmpdir/res.txt)
++    echo "$infile: $(cat ../../examples/in/$infile)  =>  $res"
++    assertEquals "Parse tree is not in expected form: '$exp' != '$res'" "$exp" "$res"
++    rm $tmpdir/res.txt $tmpdir/res.xml
++}
++
++
++checkXforAllConfs() {
++    cfac_cmd=$1
++    for cfac_conf in  ../../examples/configs/*; do
++        if [[ "$cfac_conf" = *.json ]]; then
++            continue
++        fi
++        if [[ "$cfac_conf" = *.xml ]]; then
++            continue
++        fi
++        export P2XCONF=$cfac_conf
++#        echo "${cfac_cmd[*]}"
++        ${cfac_cmd[*]}
++    done
++}
++
++checkXforFlags() {
++    cxff_cmd=$1
++    cxff_flags=$2
++    cxff_P2XFLAGS_=$P2XFLAGS
++    for cxff_flag in $cxff_flags; do
++#        echo "cxff_flag='$cxff_flag'"
++        export P2XFLAGS="$cxff_P2XFLAGS_ $cxff_flag"
++#        echo "P2XFLAGS: $P2XFLAGS"
++#        echo "checkXforFlags: ${cxff_cmd[*]}"
++        ${cxff_cmd[*]}
++    done
++    P2XFLAGS=$P2XFLAGS_
++}
++
++checkXforFlags2() {
++    cxff_cmd=$1
++    cxff_flags=$2
++    cxff_flags2=$3
++    cxff_P2XFLAGS_=$P2XFLAGS
++    for cxff_flag in $cxff_flags; do
++#        echo "cxff_flag='$cxff_flag'"
++        for cxff_flag2 in $cxff_flags2; do
++#            echo "cxff_flag2='$cxff_flag2'"
++            export P2XFLAGS="$cxff_P2XFLAGS_ $cxff_flag $cxff_flag2"
++#            echo "P2XFLAGS: $P2XFLAGS"
++#            echo "checkXforFlags: ${cxff_cmd[*]}"
++            ${cxff_cmd[*]}
++        done
++    done
++    P2XFLAGS=$P2XFLAGS_
++}
+diff --git a/tests/sh/setup_sh.sh b/tests/sh/setup_sh.sh
+deleted file mode 100644
+index 3fe65b9..0000000
+--- a/tests/sh/setup_sh.sh
++++ /dev/null
+@@ -1,7 +0,0 @@
+-export P2XFLAGS="$P2XFLAGS --output-mode=x"
+-
+-top_srcdir=../..
+-P2X=${P2X:-$top_srcdir/src/p2x}
+-
+-. ./setup_tmp.sh
+-. ./funcs.sh
+diff --git a/tests/sh/setup_tmp.sh b/tests/sh/setup_tmp.sh
+deleted file mode 100644
+index b6e6c9c..0000000
+--- a/tests/sh/setup_tmp.sh
++++ /dev/null
+@@ -1,9 +0,0 @@
+-tmpdir=${TMP:-/tmp}/shunit2-test-$$
+-mkdir $tmpdir
+-
+-function mycleanup() {
+-#    echo "CLEANUP"
+-    rm -rf $tmpdir
+-}
+-
+-export SHUNIT_EXIT=mycleanup
+diff --git a/tests/sh/setup_zsh.sh b/tests/sh/setup_zsh.sh
+deleted file mode 100644
+index a23f63b..0000000
+--- a/tests/sh/setup_zsh.sh
++++ /dev/null
+@@ -1,6 +0,0 @@
+-
+-set -o shwordsplit
+-
+-export LANG=C # for grep used in shunit2 when running with zsh, depends on english output
+-
+-. ./setup_sh.sh

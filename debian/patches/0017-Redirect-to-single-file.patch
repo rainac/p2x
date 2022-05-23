@@ -1,0 +1,21 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 23 May 2022 17:07:01 +0200
+Subject: Redirect to single file
+
+---
+ tests/sh/header_all_tests.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/sh/header_all_tests.sh b/tests/sh/header_all_tests.sh
+index e4ed403..910809f 100644
+--- a/tests/sh/header_all_tests.sh
++++ b/tests/sh/header_all_tests.sh
+@@ -2,7 +2,7 @@
+ 
+ run_suite() {
+     echo "Run suite $1"
+-    ./$1 > log_$1.txt 2> err_$1.txt
++    ./$1 &> log_$1.txt
+     res=$?
+     assertEquals "Test suite $1 has errors or failures" 0 $res
+     if test "$res" = "0"; then

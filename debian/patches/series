@@ -5,3 +5,16 @@
 0005-Make-list-of-packages-identical-to-debian-control.patch
 0006-Adapt-script-to-install-pkgs-in-cowbuilders.patch
 0007-Also-install-RNG-grammar.patch
+0008-Generate-all_tests.sh.patch
+0009-Fix-whitespace-not-ignored.patch
+0010-Shortcut.patch
+0011-Install-.xsl-to-docdir.patch
+0012-Install-cdecls-example-to-docdir-examples.patch
+0013-Install-cdecls-test-to-docdir-tests.patch
+0014-Add-cdecls-to-list-of-tests.patch
+0015-Ignore-autogen-test-file.patch
+0016-Reduce-the-number-of-shell-source-files-for-test-set.patch
+0017-Redirect-to-single-file.patch
+0018-Update-autogen-deps.patch
+0019-cdecls-test.patch
+0020-val_tests.patch

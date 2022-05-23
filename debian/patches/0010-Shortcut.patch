@@ -1,0 +1,21 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 23 May 2022 16:49:37 +0200
+Subject: Shortcut
+
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 3f64fe4..36e23b9 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -16,7 +16,7 @@ version.txt $(generated_files)
+ 
+ EXTRA_DIST = aclocal.m4 configure.ac
+ 
+-instdir = $(datadir)/doc/$(PACKAGE)
++instdir = $(docdir)
+ 
+ inst_DATA= $(project_files)
+ 
