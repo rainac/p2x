@@ -7,10 +7,10 @@ Subject: Octave does not exit cleanly when run in cowrunner.
  1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/tests/sh/common.sh b/tests/sh/common.sh
-index 5dbda8b..58ad332 100644
+index e4f3c60..68f7731 100644
 --- a/tests/sh/common.sh
 +++ b/tests/sh/common.sh
-@@ -45,7 +45,13 @@ ftest_QuitOctave() {
+@@ -46,7 +46,13 @@ ftest_QuitOctave() {
      wait $octpid
      octres=$?
  

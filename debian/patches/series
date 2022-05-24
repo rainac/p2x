@@ -1,10 +1,2 @@
-0001-Some-changes-to-octave-invocation-options-no-change-.patch
 0004-Octave-does-not-exit-cleanly-when-run-in-cowrunner.patch
-0005-The-four-argument-fopen-is-not-compatible-with-older.patch
-0005-Debug-failing-test.patch
-0005-Make-list-of-packages-identical-to-debian-control.patch
 0006-Adapt-script-to-install-pkgs-in-cowbuilders.patch
-0007-Also-install-RNG-grammar.patch
-0008-Generate-all_tests.sh.patch
-0009-Fix-whitespace-not-ignored.patch
-0010-Adapt-tests-so-that-cdecls-test-is-installed-with-th.patch
