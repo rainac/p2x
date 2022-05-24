@@ -1,0 +1,118 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Tue, 24 May 2022 22:49:46 +0200
+Subject: Use C++-17 to compile
+
+---
+ acinclude.m4                   | 38 ++++++++++++++++++++++++++++++++++++++
+ configure.ac                   |  2 +-
+ m4/ax_cxx_compile_stdcxx_17.m4 | 39 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 78 insertions(+), 1 deletion(-)
+ create mode 100644 m4/ax_cxx_compile_stdcxx_17.m4
+
+diff --git a/acinclude.m4 b/acinclude.m4
+index 4eae93d..c83f013 100644
+--- a/acinclude.m4
++++ b/acinclude.m4
+@@ -36,6 +36,44 @@
+ 
+ AX_REQUIRE_DEFINED([AX_CXX_COMPILE_STDCXX])
+ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [AX_CXX_COMPILE_STDCXX([11], [$1], [$2])])
++# =============================================================================
++#  https://www.gnu.org/software/autoconf-archive/ax_cxx_compile_stdcxx_11.html
++# =============================================================================
++#
++# SYNOPSIS
++#
++#   AX_CXX_COMPILE_STDCXX_11([ext|noext], [mandatory|optional])
++#
++# DESCRIPTION
++#
++#   Check for baseline language coverage in the compiler for the C++11
++#   standard; if necessary, add switches to CXX and CXXCPP to enable
++#   support.
++#
++#   This macro is a convenience alias for calling the AX_CXX_COMPILE_STDCXX
++#   macro with the version set to C++11.  The two optional arguments are
++#   forwarded literally as the second and third argument respectively.
++#   Please see the documentation for the AX_CXX_COMPILE_STDCXX macro for
++#   more information.  If you want to use this macro, you also need to
++#   download the ax_cxx_compile_stdcxx.m4 file.
++#
++# LICENSE
++#
++#   Copyright (c) 2008 Benjamin Kosnik <bkoz@redhat.com>
++#   Copyright (c) 2012 Zack Weinberg <zackw@panix.com>
++#   Copyright (c) 2013 Roy Stogner <roystgnr@ices.utexas.edu>
++#   Copyright (c) 2014, 2015 Google Inc.; contributed by Alexey Sokolov <sokolov@google.com>
++#   Copyright (c) 2015 Paul Norman <penorman@mac.com>
++#   Copyright (c) 2015 Moritz Klammler <moritz@klammler.eu>
++#
++#   Copying and distribution of this file, with or without modification, are
++#   permitted in any medium without royalty provided the copyright notice
++#   and this notice are preserved. This file is offered as-is, without any
++#   warranty.
++
++
++AX_REQUIRE_DEFINED([AX_CXX_COMPILE_STDCXX])
++AC_DEFUN([AX_CXX_COMPILE_STDCXX_17], [AX_CXX_COMPILE_STDCXX([17], [$1], [$2])])
+ # ===========================================================================
+ #  https://www.gnu.org/software/autoconf-archive/ax_cxx_compile_stdcxx.html
+ # ===========================================================================
+diff --git a/configure.ac b/configure.ac
+index c5c6dad..3934e75 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -138,7 +138,7 @@ AC_HEADER_SYS_WAIT
+ AC_CHECK_HEADERS([stddef.h unistd.h float.h ctype.h], , AC_MSG_ERROR([mandatory header file not found!]))
+ AC_CHECK_HEADERS([cfloat cstdlib cstring cctype cunistd])
+ 
+-AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
++AX_CXX_COMPILE_STDCXX_17([noext], [mandatory])
+ 
+ AC_LANG_PUSH([C++])
+ AC_CHECK_HEADERS([FlexLexer.h], , AC_MSG_ERROR([mandatory header file not found!]))
+diff --git a/m4/ax_cxx_compile_stdcxx_17.m4 b/m4/ax_cxx_compile_stdcxx_17.m4
+new file mode 100644
+index 0000000..4ad9aeb
+--- /dev/null
++++ b/m4/ax_cxx_compile_stdcxx_17.m4
+@@ -0,0 +1,39 @@
++# =============================================================================
++#  https://www.gnu.org/software/autoconf-archive/ax_cxx_compile_stdcxx_11.html
++# =============================================================================
++#
++# SYNOPSIS
++#
++#   AX_CXX_COMPILE_STDCXX_11([ext|noext], [mandatory|optional])
++#
++# DESCRIPTION
++#
++#   Check for baseline language coverage in the compiler for the C++11
++#   standard; if necessary, add switches to CXX and CXXCPP to enable
++#   support.
++#
++#   This macro is a convenience alias for calling the AX_CXX_COMPILE_STDCXX
++#   macro with the version set to C++11.  The two optional arguments are
++#   forwarded literally as the second and third argument respectively.
++#   Please see the documentation for the AX_CXX_COMPILE_STDCXX macro for
++#   more information.  If you want to use this macro, you also need to
++#   download the ax_cxx_compile_stdcxx.m4 file.
++#
++# LICENSE
++#
++#   Copyright (c) 2008 Benjamin Kosnik <bkoz@redhat.com>
++#   Copyright (c) 2012 Zack Weinberg <zackw@panix.com>
++#   Copyright (c) 2013 Roy Stogner <roystgnr@ices.utexas.edu>
++#   Copyright (c) 2014, 2015 Google Inc.; contributed by Alexey Sokolov <sokolov@google.com>
++#   Copyright (c) 2015 Paul Norman <penorman@mac.com>
++#   Copyright (c) 2015 Moritz Klammler <moritz@klammler.eu>
++#
++#   Copying and distribution of this file, with or without modification, are
++#   permitted in any medium without royalty provided the copyright notice
++#   and this notice are preserved. This file is offered as-is, without any
++#   warranty.
++
++#serial 18
++
++AX_REQUIRE_DEFINED([AX_CXX_COMPILE_STDCXX])
++AC_DEFUN([AX_CXX_COMPILE_STDCXX_17], [AX_CXX_COMPILE_STDCXX([17], [$1], [$2])])

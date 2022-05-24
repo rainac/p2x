@@ -1,2 +1,3 @@
 0004-Octave-does-not-exit-cleanly-when-run-in-cowrunner.patch
 0006-Adapt-script-to-install-pkgs-in-cowbuilders.patch
+0003-Use-C-17-to-compile.patch
