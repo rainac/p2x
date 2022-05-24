@@ -4,8 +4,17 @@
 # See the file p2x.cc for copying conditions.  
 #
 
-instbasedir=$(pkgdatadir)
-instdir= $(instbasedir)
+instdir = $(DESTDIR)$(docdir)/examples
+
+install:
+	echo "prefix=$(prefix)"
+	echo "bindir=$(bindir)"
+	mkdir -p $(instdir)/configs
+	mkdir -p $(instdir)/in
+	mkdir -p $(instdir)/xsl
+	install -c -m 644 configs/cdecls $(instdir)/configs
+	install -c -m 644 in/cdecls.exp  $(instdir)/in
+	install -c -m 644 xsl/cdecls.xsl $(instdir)/xsl
 
 examples = $(wildcard in/*.exp)
 

@@ -1,11 +1,7 @@
 #
 
 zmodload zsh/mathfunc
-set -o shwordsplit
-export LANG=C # for grep used in shunit2, depends on english output
-
-. ./setup_tmp.sh
-. ./setup_sh.sh
+. ./setup.sh
 
 PYTHON=${PYTHON:-python3}
 

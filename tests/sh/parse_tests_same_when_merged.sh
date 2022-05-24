@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 export SHUNIT_PARENT=$0
-. ./setup_zsh.sh
+. ./setup.sh
 
 testParseTreeEqual1() {
     checkParseTreeEqual postfix-test.exp "[NEWLINE]([a]([P](2), 3))"

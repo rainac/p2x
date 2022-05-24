@@ -1,14 +1,7 @@
 #! /bin/zsh
 
-# P2X shunit2 test suite: failing tests
-#
-# This suite runs some tests running p2x with different option
-# controlling indentation of the XML output.
-
-zmodload zsh/mathfunc
-
 export SHUNIT_PARENT=$0
-. ./setup_zsh.sh
+. ./setup.sh
 
 # Test section indent
 testP2X_indentation() {

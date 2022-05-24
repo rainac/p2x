@@ -4,6 +4,8 @@
 # See the file p2x.cc for copying conditions.  
 #
 
+SUBDIRS = xsl
+
 bin_PROGRAMS = p2x
 if acond_BUILD_TESTS
 bin_PROGRAMS += p2xtests
@@ -87,8 +89,7 @@ code-xml.rnc: code-xml.rnc.in
 instbasedir=$(pkgdatadir)
 instdir= $(instbasedir)
 
-inst_DATA = code-xml.rnc code-xml.rng xsl/reproduce.xsl xsl/reproduce-latin1.xsl	\
-xsl/copy.xsl ../examples/configs/scanner-c.xml
+inst_DATA = code-xml.rnc code-xml.rng
 
 clean-local:
 	$(RM) -f $(generated_files)

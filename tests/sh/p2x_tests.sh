@@ -1,9 +1,8 @@
 #! /bin/zsh
 
-zmodload zsh/mathfunc
 export SHUNIT_PARENT=$0
 
-. ./setup_zsh.sh
+. ./setup.sh
 
 testP2X1() {
     $P2X notthere.txt > $tmpdir/log 2> $tmpdir/err

@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 export SHUNIT_PARENT=$0
-. ./setup_zsh.sh
+. ./setup.sh
 
 testParseTreeEqual1() {
   env -u P2XFLAGS  ./parse_tests_same_when_merged.sh

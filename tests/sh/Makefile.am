@@ -4,7 +4,7 @@ generated_files = all_tests.sh test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh te
 good = val_tests test_reproduce_strict test_reproduce test_reparse	\
 parse_tests merge_tests p2x_tests test_output_stability indent_tests	\
 valgrind_tests output_mode_json_merged output_mode_json			\
-output_mode_matlab_merged output_mode_matlab
+output_mode_matlab_merged output_mode_matlab cdecls
 
 # js tests
 # reproduce_ign test_cmp_js p2xjs_mocha_tests
@@ -31,7 +31,7 @@ test_%.sh: head_%.sh forall_tests.sh
 	echo ". ./myshunit2" >> $@
 	chmod a+x $@
 
-all_tests.sh: update_all_tests.sh
+all_tests.sh: update_all_tests.sh header_all_tests.sh Makefile.am
 	./update_all_tests.sh $(good)
 
 all: $(generated_files)
@@ -50,7 +50,10 @@ check-good: $(good_test_results)
 
 check-bad: $(bad_test_results)
 
-install: all
+instdir = $(docdir)/tests
+bindir = $(docdir)/tests
+
+inst_DATA = setup.sh myshunit2 cdecls.sh
 
 clean:
 	$(RM) -f $(generated_files) test-log.txt test-report.html log_*.txt

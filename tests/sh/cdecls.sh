@@ -1,16 +1,28 @@
 #! /bin/zsh
 
 export SHUNIT_PARENT=$0
-. ./setup_zsh.sh
+
+. ./setup.sh
+
+setUp() {
+    :
+}
+
+tearDown() {
+    :
+}
 
 parseCCode() {
     inf=$1
-#    p2x -gmp ../../examples/configs/cdecls $inf | xsltproc ../../src/xsl/parens.xsl -
-    p2x -gmXp ../../examples/configs/cdecls $inf | xsltproc ../../examples/xsl/cdecls.xsl -
+    $P2X -gmXp $exdir/configs/cdecls $inf | tee cdecls.xml | xsltproc $exdir/xsl/cdecls.xsl -
+    ps=($pipestatus)
+    assertEquals "${ps[1]}" "0"
+    assertEquals "${ps[2]}" "0"
+    assertEquals "${ps[3]}" "0"
 }
 
 test_cdecls1() {
-    parseCCode ../../examples/in/cdecls.exp
+    parseCCode $exdir/in/cdecls.exp
 }
 
 . ./myshunit2

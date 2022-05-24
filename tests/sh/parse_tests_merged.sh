@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 export SHUNIT_PARENT=$0
-. ./setup_zsh.sh
+. ./setup.sh
 
 testParseTreeEqual_unary_binary_valid() {
     checkParseTreeEqual ub2.exp "[ub]([ub](1, 2), 3)"
