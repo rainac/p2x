@@ -1,11 +1,8 @@
-p2x (0.6.10-1~1.gbp335997) UNRELEASED; urgency=medium
+p2x (0.6.10-1) aiandit-unstable; urgency=medium
 
-  ** SNAPSHOT build @335997930b8bd37db791d2f0f51eed666bad2762 **
+  * New upstream version 0.6.10
 
-  * New version 0.6.10
-  * UNRELEASED
-
- -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Tue, 24 May 2022 21:41:33 +0200
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Tue, 24 May 2022 21:50:04 +0200
 
 p2x (0.6.9-5) aiandit-unstable; urgency=medium
 
