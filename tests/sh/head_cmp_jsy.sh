@@ -1,6 +1,6 @@
 #! /bin/bash
 
-. setup_tmp.sh
+. setup.sh
 
 mkParseTree() {
     infile="$1"

@@ -16,7 +16,7 @@ version.txt $(generated_files)
 
 EXTRA_DIST = aclocal.m4 configure.ac
 
-instdir = $(datadir)/doc/$(PACKAGE)
+instdir = $(docdir)
 
 inst_DATA= $(project_files)
 

@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 export SHUNIT_PARENT=$0
-. ./setup_zsh.sh
+. ./setup.sh
 
 testParseTreeEqual2() {
     checkParseTreeEqual mult3.exp "[MULT]([MULT](2, 3), 4)"

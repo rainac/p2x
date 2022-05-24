@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 export SHUNIT_PARENT=$0
-. ./setup_zsh.sh
+. ./setup.sh
 
 checkParseTreeEqual2() {
     infile=$1

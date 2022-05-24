@@ -4,7 +4,7 @@
 # Copyright © 2013 Johannes Willkomm 
 # See the file p2x.cc for copying conditions.  
 #
-AC_INIT([p2x],[0.6.9],[johannes@johannes-willkomm.de],[p2x],[http://github.com/rainac/p2x])
+AC_INIT([p2x],[0.6.10],[johannes@johannes-willkomm.de],[p2x],[http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
@@ -192,6 +192,7 @@ AC_CHECK_HEADERS([sys/stat.h])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
+                 src/xsl/Makefile
                  src-js/Makefile
                  examples/Makefile
                  tests/Makefile

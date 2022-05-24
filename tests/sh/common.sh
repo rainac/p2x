@@ -1,11 +1,7 @@
 #
 
 zmodload zsh/mathfunc
-set -o shwordsplit
-export LANG=C # for grep used in shunit2, depends on english output
-
-. ./setup_tmp.sh
-. ./setup_sh.sh
+. ./setup.sh
 
 PYTHON=${PYTHON:-python3}
 
@@ -16,7 +12,7 @@ trapSCHLD() {
 trap trapSCHLD SIGCHLD
 
 startOctave() {
-    coproc octave --no-init-file -W --no-gui --path $PWD/../../src/m
+    coproc octave --no-init-file --no-window-system --no-history --no-gui --path $PWD/../../src/m
     octpid=$!
     echo "computer" >&p
     read -p FFF
@@ -39,8 +35,13 @@ ftest_QuitOctave() {
     trap "" SIGCHLD
 
     echo "quit" >&p
-    read -p FFF
-    echo "oct:$octpid>> $FFF"
+    while true; do
+        read -p FFF
+        echo "oct:$octpid>> $FFF"
+        if [[ -z "$FFF" ]]; then
+            break
+        fi
+    done
 
     wait $octpid
     octres=$?
@@ -117,11 +118,10 @@ ReproduceMatlab() {
         return
     fi
     cat > $tmpdir/runscript.m <<EOF
-% __mfile_encoding__ ('$SRC_ENC');
 clear all
 % pause(1e-2);
 run('$tmpdir/res.m');
-fd = fopen('$tmpdir/res.txt', 'w', 'l', '$SRC_ENC');
+fd = fopen('$tmpdir/res.txt', 'w', 'l');
 fprintf(fd, '%s', reproduce(ans));
 fclose(fd);
 'done'

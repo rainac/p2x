@@ -1,6 +1,6 @@
 #! /bin/bash
 
-. setup_sh.sh
+. setup.sh
 
 checkExpFile() {
     i=$1

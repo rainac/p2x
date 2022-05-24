@@ -5,7 +5,7 @@ Copyright © 2014,2016 Johannes Willkomm
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:cx='http://johannes-willkomm.de/xml/code-xml/'
     xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/'
-    xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'
+    xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore/'
     version="1.0">
 
   <xsl:output method="text"/>
