@@ -138,7 +138,7 @@ AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([stddef.h unistd.h float.h ctype.h], , AC_MSG_ERROR([mandatory header file not found!]))
 AC_CHECK_HEADERS([cfloat cstdlib cstring cctype cunistd])
 
-AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
+AX_CXX_COMPILE_STDCXX_17([noext], [mandatory])
 
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADERS([FlexLexer.h], , AC_MSG_ERROR([mandatory header file not found!]))
