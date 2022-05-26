@@ -26,12 +26,11 @@ gennc-common.js: token.ncd.js
 %.json: $(top_srcdir)/src/xml/%.xml $(node_modules)
 	./p2xjs scanconf-xml2json -S $< > $@
 
-%.min.js: %.js kill-comments-empty.sh
-	./kill-comments-empty.sh $< > $@
-
+%.min.js: %.js kill-comments-empty.sh $(node_modules)
+	nodejs compress.js -o $@ $<
 
 p2xa.js: gennc-common.min.js modes.ncd.min.js token.ncd.min.js assoc.ncd.min.js hashmap.min.js scanner.min.js
-	cat $^ > $@
+	nodejs compress.js -o $@ $^
 
 scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/scanner.xml
 	xsltproc -o $@ $^
@@ -41,7 +40,7 @@ clean-local:
 
 apache_confd=$(sysconfdir)/apache2/conf.d
 
-node_module_names = most-xml tmp
+node_module_names = most-xml tmp node-minify
 
 node_modules = $(addprefix node_modules/, $(node_module_names))
 

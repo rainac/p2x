@@ -34,7 +34,7 @@ AC_CHECK_PROGS([NPM], [npm])
 AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
 
 if [test "x$NPM" != "x"]; then
-   npm_packages="most-xml tmp"
+   npm_packages="most-xml tmp node-minify"
    for pkg in $npm_packages; do
        if ! $NPM list -g $pkg > /dev/null; then
 	  AC_MSG_ERROR([mandatory program node-js module "$pkg" is not installed
