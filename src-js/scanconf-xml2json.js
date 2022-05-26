@@ -25,11 +25,10 @@ if (typeof window == 'undefined') {
         { short: 's', long: 'scan-only' },
         { short: 'S', long: 'scanner-config' },
         { short: 'i', long: 'arguments' },
+        { short: 'o', long: 'outfile' },
     ]
     
-    // console.dir(argv)
     options = POpts.parseOptions(argv, optDefs)
-    // console.dir(options)
 
     var emitter = new events.EventEmitter()
     
@@ -67,7 +66,16 @@ function readScannerConfig() {
         var configFile = options['scanner-config'][0]
         fs.readFile(configFile, function(err, data) {
             if (err) throw(err)
-            loadScannerConfig(data)
+            var jsdata = loadScannerConfig(data)
+            var outfile = options['outfile']
+            if (outfile && outfile[0] != '-') {
+                fs.writeFile(outfile[0], jsdata, function(err, data) {
+                    if (err) throw(err)
+                    console.log("Wrote JSON scanner to " + outfile[0])
+                })
+            } else {
+                console.log(jsdata)
+            }
         })
     } else {
         console.error('Scanner config file must be given');
@@ -80,5 +88,5 @@ function loadScannerConfig(cnfScanXML) {
     // console.log('Scanner config loaded:')
     // console.log(scanner.get().asxml())
     // console.log(scanner.actions)
-    console.log(scanner.get().asjson())
+    return scanner.get().asjson()
 }

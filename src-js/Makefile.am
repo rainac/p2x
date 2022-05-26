@@ -23,10 +23,10 @@ gennc-common.js: token.ncd.js
 %.ncd.js: $(top_srcdir)/src/xml/%.ncd.xml
 	gennc -m JavaScript $^
 
-%.json: $(top_srcdir)/src/xml/%.xml $(node_modules)
-	./p2xjs scanconf-xml2json -S $< > $@
+%.json: $(top_srcdir)/src/xml/%.xml $(node_modules) scanconf-xml2json.min.js
+	./p2xjs scanconf-xml2json -S $< -o $@
 
-%.min.js: %.js kill-comments-empty.sh $(node_modules)
+%.min.js: %.js  compress.js $(node_modules)
 	nodejs compress.js -o $@ $<
 
 p2xa.js: gennc-common.min.js modes.ncd.min.js token.ncd.min.js assoc.ncd.min.js hashmap.min.js scanner.min.js
