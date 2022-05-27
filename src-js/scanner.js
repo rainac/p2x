@@ -4,6 +4,8 @@ var P2X = P2X || {};
 if (typeof window == 'undefined') {
     P2X._HashMap = require('./hashmap.js')
     P2X.HashMap = P2X._HashMap.HashMap
+    var pXML = require('./parse-xml.js')
+    var parseXml = pXML.parseXml
 }
 
 P2X.maxPrec = 1e5
@@ -151,6 +153,54 @@ P2X.TokenList.prototype.asxml = function(indent) {
     }
     s += bindent + '</scan-xml>\n'
     return s
+}
+P2X.TokenList.prototype.loadXML = function(scanListXML) {
+    var scanDoc = parseXml(scanListXML)
+    switch (scanDoc.documentElement.nodeName) {
+    case 'scan-xml':
+        return this.loadXMLNode(scanDoc.documentElement)
+        break
+    default:
+        console.error('unexpected doc element name: ' + scanDoc.documentElement)
+        console.error('unexpected doc element contains: ' + scanDoc.documentElement.firstChild.nodeValue)
+        return null
+        break
+    }
+}
+P2X.TokenList.prototype.loadXMLNode = function(scanList) {
+    var rlist = [], ctoken
+    for (var k in scanList.childNodes) {
+        ctoken = scanList.childNodes[k]
+        if (ctoken.nodeType == 1 && ctoken.nodeName == "token") {
+            catext = null
+            for (j in ctoken.childNodes) {
+                cctoken = ctoken.childNodes[j]
+                text = ''
+                if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:text") {
+                    catext = cctoken
+                    if (catext.childNodes.length > 0
+                        && catext.childNodes[0].nodeType == 3) {
+                        text = catext.childNodes[0].nodeValue
+                    }
+                    break
+                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:br") {
+                    catext = cctoken
+                    text = '\n'
+                    break
+                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:cr") {
+                    catext = cctoken
+                    text = '\r'
+                    break
+                }
+            }
+            rlist.push(P2X.Token(ctoken.getAttribute('type'),
+                                 text,
+                                 ctoken.getAttribute('index'),
+                                 ctoken.getAttribute('line'),
+                                 ctoken.getAttribute('col')))
+        }
+    }
+    return new P2X.TokenList(rlist)
 }
 
 P2X.ScannerConfig = function(x) {
@@ -641,6 +691,12 @@ P2X.TokenInfo = function() {
             var patchTokenFunc = function(x){
                 if (typeof x.token == "undefined" && typeof x.repr == "string" && x.length > 0) {
                     x.token == P2X.TOKEN_IDENTIFIER
+                }
+                if (typeof x.type == "string") {
+                    if (x.type.startsWith('TOKEN_')) {
+                        x.type == x.type.substring(6)
+                    }
+                    x.type = P2X.ParserToken.index[x.type]
                 }
                 if (typeof x.type != "undefined") {
                     x.token = x.type

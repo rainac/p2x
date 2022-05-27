@@ -1,7 +1,7 @@
 {
     rules: [
-        { re: '\\n', name: 'nl',  mode: MODE_BINARY, assoc: ASSOC_LEFT,  prec: 10 },
-        { re: ':',   name: 'colon',  mode: MODE_BINARY, assoc: ASSOC_LEFT,  prec: 15 },
+        { re: '\\n', name: 'nl',  mode: 'MODE_BINARY', assoc: 'ASSOC_LEFT',  prec: 10 },
+        { re: ':',   name: 'colon',  mode: 'MODE_BINARY', assoc: 'ASSOC_LEFT',  prec: 15 },
         { re: ',',   name: 'comma',  mode: 'binary',  prec: 20 },
         { re: '[a-zA-Z]+',  name: 'id' },
     ],

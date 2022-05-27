@@ -20,9 +20,8 @@ describe('Array', function(){
   })
 })
 
-var P2X = require("../scanner.min.js")
-var P2XTools = require("../p2x-tools.min.js")
-
+var P2X = require("../scanner.js")
+var P2XTools = require("../p2x-tools.js")
 P2X.importObject(P2XTools, P2X)
 
 var TPOptions = function() {
@@ -460,8 +459,6 @@ describe('P2X.ParserConfig', function(){
             confB = tt.getconfig()
 
             for (var k in confA) {
-                console.dir(confA[k])
-                console.dir(confB[k])
                 assert.deepEqual(confA[k], confB[k]);
             }
       })
@@ -471,9 +468,62 @@ describe('P2X.ParserConfig', function(){
             tt.insert(P2X.TokenProto(1100, '/', P2X.MODE_BINARY, P2X.ASSOC_LEFT, 100, 0, false))
             tt.insert(P2X.TokenProto(1101, '*', P2X.MODE_BINARY, P2X.ASSOC_LEFT, 100, 0, false))
             tt.insert(P2X.TokenProto(1102, '=', P2X.MODE_IGNORE))
+            confA = tt.getconfig()
+
+            tt = P2X.TokenInfo()
+            confB = tt.setconfig([])
+            confB = tt.getconfig()
+
+            defConfig = [
+  {
+    token: 27,
+    repr: '',
+    mode: 3,
+    assoc: 0,
+    prec: 1,
+    precU: 2,
+    isParen: false,
+    isRParen: false,
+    closingList: undefined,
+    name: undefined
+  },
+  {
+    token: 71,
+    repr: '',
+    mode: 5,
+    assoc: 1,
+    prec: 2,
+    precU: 2,
+    isParen: false,
+    isRParen: false,
+    closingList: undefined,
+    name: undefined
+  },
+  {
+    token: 119,
+    repr: '',
+    mode: 1,
+    assoc: 0,
+    prec: 2,
+    precU: 2,
+    isParen: false,
+    isRParen: false,
+    closingList: undefined,
+    name: undefined
+  }
+            ]
+
+            assert.deepEqual(confB, defConfig);
+        })
+        it('ParserConfig can be serialized to JSON', function(){
+            var tt = P2X.TokenInfo()
+            tt.insert(P2X.TokenProto(1100, '/', P2X.MODE_BINARY, P2X.ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1101, '*', P2X.MODE_BINARY, P2X.ASSOC_LEFT, 100, 0, false))
+            tt.insert(P2X.TokenProto(1102, '=', P2X.MODE_IGNORE))
             var pcrw = P2X.ParserConfigRW()
             confA = tt.getconfig()
 
+            tt = P2X.TokenInfo()
             tt.setconfig(P2X.parseJSON(pcrw.asJSON(confA)))
             tt.normalize()
             confB = tt.getconfig()
@@ -921,6 +971,7 @@ describe('P2X.UniConfig', function(){
 })
 
 describe('P2X.TokenList', function(){
+    var xmlRes
     describe('#construct()', function(){
         var tl = new P2X.TokenList()
         it('should contain values in list given to it', function(){
@@ -946,7 +997,7 @@ describe('P2X.TokenList', function(){
               + '<token line="1" col="1" index="1" type="SPACE"><ca:text> </ca:text></token>\n'
               + '<token line="1" col="2" index="2" type="PLUS"><ca:text>+</ca:text></token>\n'
               + '</scan-xml>\n'
-          tl = P2X.TokenList.prototype.loadXML(xmlRes)
+          var tl = P2X.TokenList.prototype.loadXML(xmlRes)
           assert.equal(xmlRes, tl.asxml());
       })
       it('should return XML rule list', function(){
@@ -955,7 +1006,7 @@ describe('P2X.TokenList', function(){
               + '<token line="1" col="1" index="1" type="NEWLINE"><ca:br/></token>\n'
               + '<token line="1" col="2" index="2" type="CRETURN"><ca:cr/></token>\n'
               + '</scan-xml>\n'
-          tl = P2X.TokenList.prototype.loadXML(xmlRes)
+          var tl = P2X.TokenList.prototype.loadXML(xmlRes)
           assert.equal(xmlRes, tl.asxml());
       })
   })
@@ -1025,7 +1076,7 @@ describe('P2X.JScanner', function(){
         assert.equal(tl.list.length, 3);
 
         assert.deepEqual(tl.list[0], { token: 111,
-                                       tokenName: undefined,
+                                       tokenName: 'TILDE_EQUAL',
                                        text: 'abc',
                                        index: 0,
                                        line: 1,
@@ -1086,7 +1137,7 @@ describe('P2X.JScanner', function(){
         assert.equal(tl.list[5].text, ' dsa')
         
         assert.deepEqual(tl.list[0], { token: 111,
-                                       tokenName: undefined,
+                                       tokenName: 'TILDE_EQUAL',
                                        text: 'abc',
                                        index: 0,
                                        line: 1,
@@ -1120,19 +1171,19 @@ describe('P2X.JScanner', function(){
         assert.equal(tl.list.length, 3);
 
         assert.deepEqual(tl.list[0], { token: 113,
-                                       tokenName: undefined,
+                                       tokenName: 'DOT_DIV_EQUAL',
                                        text: '111',
                                        index: 0,
                                        line: 1,
                                        col: 0 })
         assert.deepEqual(tl.list[1], { token: 112,
-                                       tokenName: undefined,
+                                       tokenName: 'DOT_MULT_EQUAL',
                                        text: '11',
                                        index: 4,
                                        line: 1,
                                        col: 4 })
         assert.deepEqual(tl.list[2], { token: 111,
-                                       tokenName: undefined,
+                                       tokenName: 'TILDE_EQUAL',
                                        text: '1',
                                        index: 7,
                                        line: 1,
@@ -1929,7 +1980,7 @@ describe('P2X.CLI', function(){
     var p2x_options = '';
       
     function runP2XJS(scanConfigFile, configFile, inputFile, done) {
-        var cmd = 'p2xjs' + ' ' + p2x_options + (mode ? ' ' + mode : '')
+        var cmd = './p2xjs' + ' ' + p2x_options + (mode ? ' ' + mode : '')
             + (scanConfigFile ? ' -S ' + scanConfigFile : '')
             + (configFile ? ' -p ' + configFile : '')
             + (inputFile ? ' ' + inputFile : '')
@@ -1939,7 +1990,7 @@ describe('P2X.CLI', function(){
                                        function(errc, stdout, stderr)
                                        {
                                            if (errc) {
-                                               console.error('P2X exited with error:\n' + errc + stderr)
+                                               console.error('P2X exited with error:\nerrc: ' + errc + '\nstderr: ' + stderr)
                                                assert(false);
                                            } else {
                                                // console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
@@ -1949,7 +2000,7 @@ describe('P2X.CLI', function(){
     }
       
     function runP2XJSNew(p2xConfigFile, inputFile, done) {
-        var cmd = 'p2xjs' + ' ' + p2x_options + ' -c ' + p2xConfigFile + ' ' + inputFile
+        var cmd = './p2xjs' + ' ' + p2x_options + ' -c ' + p2xConfigFile + ' ' + inputFile
         console.log('run ' + cmd)
         // system(cmd)
         var child = child_process.exec(cmd, { stdio: 'inherit' },
@@ -1964,7 +2015,7 @@ describe('P2X.CLI', function(){
                                            done(stdout)
                                        })
     }
-      
+
     it('p2xjs client command', function(done) {
         var scanConfigFile = '../examples/configs/scanner-c.xml'
         var configFile = '../examples/configs/default'

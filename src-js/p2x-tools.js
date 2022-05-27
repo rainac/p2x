@@ -83,55 +83,6 @@ P2X.escapeBSQLines = function(str){
     return '\'' + escbs.replace(/\\n((\\n)+|.)/g, "\\n'\n+'$1") + '\''
 }
 
-P2X.TokenList.prototype.loadXML = function(scanListXML) {
-    var scanDoc = parseXml(scanListXML)
-    switch (scanDoc.documentElement.nodeName) {
-    case 'scan-xml':
-        return this.loadXMLNode(scanDoc.documentElement)
-        break
-    default:
-        console.error('unexpected doc element name: ' + scanDoc.documentElement)
-        console.error('unexpected doc element contains: ' + scanDoc.documentElement.firstChild.nodeValue)
-        return null
-        break
-    }
-}
-P2X.TokenList.prototype.loadXMLNode = function(scanList) {
-    var rlist = [], ctoken
-    for (var k in scanList.childNodes) {
-        ctoken = scanList.childNodes[k]
-        if (ctoken.nodeType == 1 && ctoken.nodeName == "token") {
-            catext = null
-            for (j in ctoken.childNodes) {
-                cctoken = ctoken.childNodes[j]
-                text = ''
-                if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:text") {
-                    catext = cctoken
-                    if (catext.childNodes.length > 0
-                        && catext.childNodes[0].nodeType == 3) {
-                        text = catext.childNodes[0].nodeValue
-                    }
-                    break
-                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:br") {
-                    catext = cctoken
-                    text = '\n'
-                    break
-                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:cr") {
-                    catext = cctoken
-                    text = '\r'
-                    break
-                }
-            }
-            rlist.push(P2X.Token(ctoken.getAttribute('type'),
-                                 text,
-                                 ctoken.getAttribute('index'),
-                                 ctoken.getAttribute('line'),
-                                 ctoken.getAttribute('col')))
-        }
-    }
-    return new P2X.TokenList(rlist)
-}
-
 P2X.ScannerConfigOrig = P2X.ScannerConfig
 
 P2X.ScannerConfigPlus = function(x) {
@@ -241,17 +192,17 @@ P2X.TokenProtoRW = function() {
         res += '{'
         res += ' type: '
         if (obj.token in P2X.ParserToken.names_index) {
-            res += 'TOKEN_' + P2X.ParserToken.getName(obj.token)
+            res += '"TOKEN_' + P2X.ParserToken.getName(obj.token) + '"'
         } else {
             res += obj.token
         }
         if (obj.repr)
             res += ', repr: "' + obj.repr + '"'
         if (typeof obj.mode != 'undefined') {
-            res += ', mode: MODE_' + P2X.ParserMode.getName(obj.mode) + ''
+            res += ', mode: "MODE_' + P2X.ParserMode.getName(obj.mode) + '"'
         }
         if (obj.mode == P2X.MODE_UNARY_BINARY || obj.mode == P2X.MODE_BINARY)
-            res += ', assoc: ASSOC_' + P2X.ParserAssoc.getName(obj.assoc) + ''
+            res += ', assoc: "ASSOC_' + P2X.ParserAssoc.getName(obj.assoc) + '"'
         if (typeof obj.prec != 'undefined')
             res += ', prec: ' + obj.prec + ''
         if (obj.mode == P2X.MODE_UNARY_BINARY)
@@ -346,10 +297,10 @@ P2X.ParserConfigRW = function(x) {
         }
     }
     res.loadXMLNode = function(scanList) {
-        var rlist = [], ctoken, eres_re, eres_action
+        var rlist = [], ctoken, tProto
         var tprw = P2X.TokenProtoRW()
         for (var k in scanList.childNodes) {
-            ctoken = scanList.childNodes[k], eres_re, eres_action
+            ctoken = scanList.childNodes[k]
             if (ctoken.nodeType == 1 && ctoken.nodeName == "ca:op") {
                 tProto = tprw.loadXMLNode(ctoken)
                 rlist.push(tProto)
