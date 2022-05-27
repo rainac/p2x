@@ -359,7 +359,7 @@ describe('P2X.ScannerConfig', function(){
       })
       it('should return XML rule list', function(){
           xmlRes = '<ca:scanner>\n'
-              + '<ca:lexem><ca:re>ab\\\\c\\b</ca:re><ca:action>function () { return action*2 }</ca:action></ca:lexem>\n'
+              + '<ca:lexem><ca:re>ab\\\\c\\b</ca:re><ca:action>function() { return action*2 }</ca:action></ca:lexem>\n'
               + '</ca:scanner>\n'
           action = 102
           scConf = [
