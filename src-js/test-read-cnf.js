@@ -7,6 +7,8 @@ if (typeof window == 'undefined') {
     // console.dir(pXML)
     console.log('load scanner script')
     var P2X = require('./scanner.js')
+    var P2XTools = require('./p2x-tools.js')
+    P2X.importObject(P2XTools, P2X)
     //var O3XML = require('o3-xml-fork')
     var MostXML = require('most-xml')
     var child_process = require('child_process')
@@ -54,7 +56,9 @@ if (typeof window == 'undefined') {
     emitter.on('p2xerror', function(next, ev) {
         console.log('event "p2xerror" was triggered by:')
         console.dir(ev)
-        next()
+        if (next) {
+            next()
+        }
     })
     
 }
@@ -81,8 +85,7 @@ function readParserConfigFile() {
                                            }
                                        })
     } else {
-        emitter.emit('noParserConfig', function(){});
-        readScannerConfig();
+        emitter.emit('p2xerror', function(){}, 'noParserConfig');
     }
 }
 
@@ -112,7 +115,7 @@ function readScannerConfig() {
             loadScannerConfig(data)
         })
     } else {
-        emitter.emit('next', readInput, 'readInput');
+        emitter.emit('p2xerror', 0, 'no scanner config');
     }
 }
 
@@ -126,16 +129,16 @@ function loadScannerConfig(cnfScanXML) {
 }
 
 function readInput() {
-    if ('arguments' in options) {
+    if (options['arguments'].length > 0) {
         var inFile = options['arguments'][0]
         fs.readFile(inFile, function(err, data) {
             if (err) throw(err)
             parseInput(data + '')
         })
     } else {
-        emitter.emit('fail', function() {
+        emitter.emit('p2xerror', function() {
             console.log('no Input file')
-        });
+        }, 'no input file');
     }
 }
 
