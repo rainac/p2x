@@ -12,9 +12,9 @@ unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.
 
 min_files = $(addsuffix .min.js, $(basename $(unmin_files)))
 
-generated_files = $(min_files) $(json_files) p2xa.js
+generated_files = $(min_files) $(json_files)
 
-project_files = $(generated_files)
+project_files = $(generated_files) $(unmin_files)
 
 inst_DATA = $(project_files)
 

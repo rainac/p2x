@@ -977,6 +977,29 @@ P2X.Parser = function(tokenInfo) {
                     }
                     inserted.text += lncText
 
+                } else if (this.tokenInfo.mode(first) == P2X.MODE_BLOCK_COMMENT && this.tokenInfo.isLParen(first)) {
+                    var next, pcommentEndList = this.tokenInfo.endList(first)
+                    var ctext = first.text
+                    while(true) {
+                        next = this.input.next()
+                        if (next.token == P2X.TOKEN_EOF)
+                            break
+                        ctext += next.text
+                        if (pcommentEndList.indexOf(this.tokenInfo.getOpCode(next)) > -1)
+                            break;
+                        if (this.tokenInfo.mode(next) == P2X.MODE_BLOCK_COMMENT) {
+                            console.log("Block comment start inside block comment, but nesting is not allowed\n")
+                        }
+                    }
+                    this.insertToken(first)
+                    var inserted = first
+                    if (next.token == P2X.TOKEN_EOF) {
+                        console.log("Unexpected end of input in block comment while searching for " << pcommentEndList << "\n")
+                        endFound = true
+                        first = next
+                    }
+                    inserted.fullText = ctext
+
                 } else if (this.tokenInfo.isLParen(first)) {
                     var parser = P2X.Parser(this.tokenInfo)
                     var parent = this
@@ -1167,8 +1190,9 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         },
         writeXMLTypeAttrs: function(t) {
             var res = ''
-            if (t.text && t.token == P2X.TOKEN_IDENTIFIER && this.options.outputMode == 'x')
+            if (t.text && t.token == P2X.TOKEN_IDENTIFIER && this.options.outputMode == 'x') {
                 res += ' repr="' + t.text + '"'
+            }
             var ttext
             if (this.options.type && this.options.outputMode == 'x') {
                 if (t.token) {
@@ -1188,7 +1212,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         },
         writeXMLTextElem: function(t, indent) {
             var res = ''
-            var ttext = t.text || (t.token ? {text:''} : undefined) || t.toString() || string(t)
+            var ttext = t.fullText || t.text || (t.token ? {text:''} : undefined) || t.toString() || string(t)
             if (typeof ttext == "object" && Object.keys(ttext).indexOf('text') > -1)
                 ttext = ttext.text
             assert(typeof ttext == "string")

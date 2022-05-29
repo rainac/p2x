@@ -1256,7 +1256,7 @@ struct Parser {
 	  endFound = true;
 	  first = next;
 	}
-	inserted->text = ctext;
+	inserted->fullText = ctext;
       } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
 	parser.options.rootNode = first;
@@ -1598,6 +1598,8 @@ struct TreeXMLWriter {
 	  ; // handled below
 	else
 	  aus << "\n";
+      } else if (t->fullText.size()) {
+	x << t->fullText;
       } else {
 	x << t->text;
       }
@@ -1797,6 +1799,8 @@ struct TreeXMLWriter {
           aus << t->text;
         }
       }
+    } else if (t->fullText.size()) {
+      xaus << t->fullText;
     } else if (t->text.size()) {
       xaus << t->text;
     }
