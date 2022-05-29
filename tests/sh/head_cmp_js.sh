@@ -38,7 +38,9 @@ checkExpFile() {
 
     mkParseTree "$infile" "$tmpdir/res.txt" "p2x" "$opts -w $P2XFLAGS"
     mkParseTree "$infile" "$tmpdir/res2.txt" "p2xjs" "$opts $P2XFLAGS"
-    
+
+    sed -i -e '/<!-- P2X/ d' -e '/<ca:version/ d' $tmpdir/res.xml
+
     xmlstarlet c14n $tmpdir/res.xml > $tmpdir/cres.xml
     xmlstarlet c14n $tmpdir/res2.xml > $tmpdir/cres2.xml
 
