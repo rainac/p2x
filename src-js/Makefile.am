@@ -27,7 +27,9 @@ gennc-common.js: token.ncd.js
 	./p2xjs scanconf-xml2json -S $< -o $@
 
 %.min.js: %.js  compress.js $(node_modules)
-	nodejs compress.js -o $@ $<
+	sed -e '/require/ s/.js/.min.js/' $< > $<.tmp
+	nodejs compress.js -o $@ $<.tmp
+	rm $<.tmp
 
 p2xa.js: gennc-common.js modes.ncd.js token.ncd.js assoc.ncd.js hashmap.js scanner.js
 	cat $^ > $@

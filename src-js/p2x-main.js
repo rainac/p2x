@@ -244,7 +244,9 @@ function parseInput(data, uniConf) {
 
     if ('outfile' in options) {
         var outfile = options['outfile'][0];
-        fs.writeFile(outfile, res)
+        fs.writeFile(outfile, res, function() {
+            console.log('output written to ' + outfile)
+        })
     } else {
         console.log(res)
     }

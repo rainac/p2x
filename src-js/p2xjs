@@ -29,13 +29,15 @@ case $1 in
 esac
 
 srcdir=$(dirname $BASH_SOURCE)
+P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $BASH_SOURCE)/..)}
+export P2X_HOME
 
 main_src=$mode.min.js
 
 if test -r $srcdir/$main_src; then
     file=$srcdir/$main_src
-elif test -r $srcdir/../share/p2x/js/$main_src; then
-    file=$srcdir/../share/p2x/js/$main_src
+elif test -r $P2X_HOME/share/p2x/js/$main_src; then
+    file=$P2X_HOME/share/p2x/js/$main_src
 else
     echo "error: JS main program $main_src not found"
     exit 1
