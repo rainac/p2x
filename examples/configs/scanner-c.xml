@@ -34,6 +34,9 @@
   <ca:lexem><ca:re>#</ca:re><ca:action>TOKEN_HASH</ca:action></ca:lexem>
   <ca:lexem><ca:re>\"</ca:re><ca:action>TOKEN_QUOTE</ca:action></ca:lexem>
   <ca:lexem><ca:re>'</ca:re><ca:action>TOKEN_APOS</ca:action></ca:lexem>
+  <ca:lexem><ca:re>//</ca:re><ca:action>TOKEN_DOUBLE_DIV</ca:action></ca:lexem>
+  <ca:lexem><ca:re>/\*</ca:re><ca:action>TOKEN_C_COMMENT_END</ca:action></ca:lexem>
+  <ca:lexem><ca:re>\*/</ca:re><ca:action>TOKEN_C_COMMENT_START</ca:action></ca:lexem>
   <ca:lexem><ca:re>(\r)</ca:re><ca:action>TOKEN_CRETURN</ca:action></ca:lexem>
   <ca:lexem><ca:re>(\n)</ca:re><ca:action>TOKEN_NEWLINE</ca:action></ca:lexem>
   <ca:lexem><ca:re>(\t)</ca:re><ca:action>TOKEN_TAB</ca:action></ca:lexem>

@@ -212,7 +212,8 @@ function parseInput(data, uniConf) {
         console.log('Debug scanner conf dump:')
         console.dir(scanner.get())
         console.log('Debug parser conf dump:')
-        console.dir(parser.getconfig())
+        var pcrw = P2X.ParserConfigRW()
+        console.log(pcrw.asJSON(parser.getconfig()))
     }
     scanner.str(data)
     var tl = scanner.lexall().mkeof()

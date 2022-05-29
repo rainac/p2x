@@ -914,6 +914,12 @@ P2X.Parser = function(tokenInfo) {
             case P2X.MODE_UNARY_BINARY:
                 this.pushUnaryBinary(first);
                 break;
+            case P2X.MODE_LINE_COMMENT:
+                this.pushIgnore(first);
+                break;
+            case P2X.MODE_BLOCK_COMMENT:
+                this.pushIgnore(first);
+                break;
             default:
                 console.error("error: parser: invalid mode " + firstMode + "\n");
                 exit(1);
@@ -951,6 +957,26 @@ P2X.Parser = function(tokenInfo) {
                         console.error("Parser: expecting " + this.endList[k])
                     }
                     endFound = true
+
+                } else if (this.tokenInfo.mode(first) == P2X.MODE_LINE_COMMENT) {
+                    var next, lncText = ''
+                    while(true) {
+                        next = this.input.next()
+                        if (next.token == P2X.TOKEN_NEWLINE || next.token == P2X.TOKEN_EOF)
+                            break
+                        lncText += next.text
+                    }
+                    this.insertToken(first)
+                    var inserted = first
+                    if (next.token == P2X.TOKEN_NEWLINE) {
+                        this.insertToken(next)
+                    } else if (next.token == P2X.TOKEN_EOF) {
+                        console.error("Unexpected end of input in line comment while searching for EOL (\\n)\n");
+                        endFound = true
+                        first = next
+                    }
+                    inserted.text += lncText
+
                 } else if (this.tokenInfo.isLParen(first)) {
                     var parser = P2X.Parser(this.tokenInfo)
                     var parent = this
