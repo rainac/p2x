@@ -44,8 +44,9 @@ else
 fi
 
 if [[ "$@" == *"--debug"* ]]; then
-    NODEOPTS=--debug
-    set -x
+    NODEOPTS=--inspect
+elif [[ "$@" == *"--inspect"* ]]; then
+    NODEOPTS=--inspect
 fi
 
 $NODE $NODEOPTS $file $*

@@ -30,6 +30,7 @@ if (typeof window == 'undefined') {
         { short: 'O', long: 'output-mode' },
         { short: 'C', long: 'include-config', flag: 1 },
         { short: 'D', long: 'debug', flag: 1 },
+        { short: '', long: 'inspect', flag: 1 },
     ]
 
     // console.dir(argv)
