@@ -2107,6 +2107,8 @@ struct TreeXMLWriter {
       aus << " associativity='" << tp.associativity << "'";
       if (tp.outputMode)
         aus << " output-mode='" << getOutputModeName(tp.outputMode) << "'";
+      if (tp.ignoreIfStray)
+        aus << " ignore-if-stray='1'";
     }
     if (tp.mode == MODE_UNARY_BINARY) {
       aus << " unary-precedence='" << tp.unaryPrecedence << "'";
