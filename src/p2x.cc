@@ -2799,8 +2799,11 @@ int main(int argc, char *argv[]) {
   if (args.outfile_given) {
     _out = new std::ofstream(args.outfile_arg, std::ios::binary);
     Log(LS::FILES, "Open file " << args.outfile_arg << " for output\n");
+    if (!*_out) {
+      Log(LS::ERROR, "Failed to open output file: " << strerror(errno) << "\n");
+      return 1;
+    }
   }
-
   std::ostream &out = *_out;
 
 
