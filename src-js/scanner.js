@@ -506,10 +506,10 @@ var isOp = function(mode) {
             || mode == P2X.MODE_POSTFIX)
 }
 
-P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen, closingList, name) {
+P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen, closingList, name, ignoreIfStray) {
     var res
     if (typeof tk == 'object')
-        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.isRParen, tk.closingList, tk.name)
+        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.isRParen, tk.closingList, tk.name, tk.ignoreIfStray)
     else {
         if (!tk in P2X.ParserToken.names_index) {
             console.error('Value token ' + tk + ' must be in the set of allowed token: ')
@@ -549,7 +549,8 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen,
             isParen: isParen || false,
             isRParen: isRParen || false,
             closingList: closingList,
-            name: name
+            name: name,
+            ignoreIfStray: ignoreIfStray
         }
         if (res.mode == P2X.MODE_ITEM) {
             res.prec = res.precU = P2X.maxPrec
@@ -608,6 +609,9 @@ P2X.TokenInfo = function() {
         },
         mode: function (tl) {
             return this.get(tl).mode
+        },
+        ignoreIfStray: function (tl) {
+            return this.get(tl).ignoreIfStray
         },
         endList: function (tl) {
             return this.get(tl).closingList
@@ -884,6 +888,11 @@ P2X.Parser = function(tokenInfo) {
             assert(not(firstMode & P2X.MODE_PAREN)); // P2X.MODE_PAREN bit is cleared
             assert(firstMode != 0); // mode is not 0
             assert(firstMode != P2X.MODE_PAREN); // mode is not P2X.MODE_PAREN
+            if (firstMode == P2X.MODE_BINARY
+                && this.tokenInfo.ignoreIfStray(first)
+                && this.rightEdgeOpen()) {
+                firstMode = P2X.MODE_IGNORE
+            }
             switch(firstMode) {
             case P2X.MODE_ITEM:
                 this.pushItem(first);

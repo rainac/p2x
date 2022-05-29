@@ -248,6 +248,7 @@ P2X.TokenProtoRW = function() {
             isParen: isParen,
             isRParen: isRParen,
             closingList: closingList,
+            ignoreIfStray: Number(P2X.getAttributeOrUndefined(tProtoNode, 'ignore-if-stray')) > 0,
         }
         // console.log('load TP XML: ')
         // console.log(res)
