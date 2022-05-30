@@ -146,7 +146,7 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
     if (t->ignore) {
       Token const *ignore = t->ignore;
       while (ignore) {
-        res = ignore->text + res;
+        res = (ignore->fullText.size() ? ignore->fullText : ignore->text) + res;
         ignore = ignore->ignore;
       }
     }
