@@ -221,7 +221,7 @@ function parseInput(infile, data, uniConf) {
         var pcrw = P2X.ParserConfigRW()
         console.log(pcrw.asJSON(parser.getconfig()))
     }
-    scanner.str(infile, data)
+    scanner.str(data, infile)
     var tl = scanner.lexall().mkeof()
     // console.log('scanned token list:')
     // console.dir(tl)

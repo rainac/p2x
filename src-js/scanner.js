@@ -367,7 +367,7 @@ P2X.JScanner = function(name) {
         asjson: function() {
             return this.get().asjson()
         },
-        str: function(filename, str) {
+        str: function(str, filename) {
             this.filename = filename;
             this.input = str;
             this.token = []
@@ -936,6 +936,10 @@ P2X.Parser = function(tokenInfo) {
             this.result.scanner = tlist.scanner
             this.input = tlist;
 
+            var locInfo = function(tk) {
+                return tlist.scanner.filename + ":" + tk.line + ":" + tk.col
+            }
+
             var first
 
             var endFound = false;
@@ -979,7 +983,9 @@ P2X.Parser = function(tokenInfo) {
                     inserted.text += lncText
 
                 } else if (this.tokenInfo.mode(first) == P2X.MODE_BLOCK_COMMENT && this.tokenInfo.isLParen(first)) {
-                    var next, pcommentEndList = this.tokenInfo.endList(first)
+                    var next, parent = this, pcommentEndList = this.tokenInfo.endList(first).map(function(k) {
+                        return parent.tokenInfo.getOpCode(k.token, k.repr)
+                    })
                     var ctext = first.text
                     while(true) {
                         next = this.input.next()
@@ -989,7 +995,8 @@ P2X.Parser = function(tokenInfo) {
                         if (pcommentEndList.indexOf(this.tokenInfo.getOpCode(next)) > -1)
                             break;
                         if (this.tokenInfo.mode(next) == P2X.MODE_BLOCK_COMMENT) {
-                            console.log("Block comment start inside block comment, but nesting is not allowed\n")
+                            console.log(locInfo(first) + ": Block comment " + next.text + " starts inside block comment")
+                            console.log(locInfo(next) +  ": here, but nesting is not allowed")
                         }
                     }
                     this.insertToken(first)
