@@ -16,7 +16,9 @@ ENUM.createParserMode = function() {
  POSTFIX: ++k,
  BINARY: ++k,
  UNARY_BINARY: ++k,
+ LINE_COMMENT: ++k,
  PAREN: (k=32),
+ BLOCK_COMMENT: (k=64),
  }
  var comments
  var res=ENUM.createENUM(index, prefix, comments)

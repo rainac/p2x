@@ -12,7 +12,7 @@ See the file p2x.cc for copying conditions.
 
 struct Token {
 
-  std::string text;
+  std::string text, fullText;
 
   Token *left, *right, *ignore;
 

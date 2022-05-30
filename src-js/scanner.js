@@ -4,6 +4,8 @@ var P2X = P2X || {};
 if (typeof window == 'undefined') {
     P2X._HashMap = require('./hashmap.js')
     P2X.HashMap = P2X._HashMap.HashMap
+    var pXML = require('./parse-xml.js')
+    var parseXml = pXML.parseXml
 }
 
 P2X.maxPrec = 1e5
@@ -151,6 +153,54 @@ P2X.TokenList.prototype.asxml = function(indent) {
     }
     s += bindent + '</scan-xml>\n'
     return s
+}
+P2X.TokenList.prototype.loadXML = function(scanListXML) {
+    var scanDoc = parseXml(scanListXML)
+    switch (scanDoc.documentElement.nodeName) {
+    case 'scan-xml':
+        return this.loadXMLNode(scanDoc.documentElement)
+        break
+    default:
+        console.error('unexpected doc element name: ' + scanDoc.documentElement)
+        console.error('unexpected doc element contains: ' + scanDoc.documentElement.firstChild.nodeValue)
+        return null
+        break
+    }
+}
+P2X.TokenList.prototype.loadXMLNode = function(scanList) {
+    var rlist = [], ctoken
+    for (var k in scanList.childNodes) {
+        ctoken = scanList.childNodes[k]
+        if (ctoken.nodeType == 1 && ctoken.nodeName == "token") {
+            catext = null
+            for (j in ctoken.childNodes) {
+                cctoken = ctoken.childNodes[j]
+                text = ''
+                if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:text") {
+                    catext = cctoken
+                    if (catext.childNodes.length > 0
+                        && catext.childNodes[0].nodeType == 3) {
+                        text = catext.childNodes[0].nodeValue
+                    }
+                    break
+                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:br") {
+                    catext = cctoken
+                    text = '\n'
+                    break
+                } else if (cctoken.nodeType == 1 && cctoken.nodeName == "ca:cr") {
+                    catext = cctoken
+                    text = '\r'
+                    break
+                }
+            }
+            rlist.push(P2X.Token(ctoken.getAttribute('type'),
+                                 text,
+                                 ctoken.getAttribute('index'),
+                                 ctoken.getAttribute('line'),
+                                 ctoken.getAttribute('col')))
+        }
+    }
+    return new P2X.TokenList(rlist)
 }
 
 P2X.ScannerConfig = function(x) {
@@ -317,7 +367,8 @@ P2X.JScanner = function(name) {
         asjson: function() {
             return this.get().asjson()
         },
-        str: function(str) {
+        str: function(str, filename) {
+            this.filename = filename;
             this.input = str;
             this.token = []
             this.yyindex = 0
@@ -456,10 +507,10 @@ var isOp = function(mode) {
             || mode == P2X.MODE_POSTFIX)
 }
 
-P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen, closingList, name) {
+P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen, closingList, name, ignoreIfStray) {
     var res
     if (typeof tk == 'object')
-        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.isRParen, tk.closingList, tk.name)
+        res = P2X.TokenProto(tk.token, tk.repr, tk.mode, tk.assoc, tk.prec, tk.precU, tk.isParen, tk.isRParen, tk.closingList, tk.name, tk.ignoreIfStray)
     else {
         if (!tk in P2X.ParserToken.names_index) {
             console.error('Value token ' + tk + ' must be in the set of allowed token: ')
@@ -468,6 +519,8 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen,
         }
         isParen = isParen ? true : false
         isRParen = isRParen ? true : false
+        if (typeof token == 'string')
+            token = P2X.ParserMode.getValue(token)
         if (typeof mode == 'string')
             mode = P2X.ParserMode.getValue(mode)
         if (typeof assoc == 'string')
@@ -489,6 +542,9 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen,
                 return cli
             })
         }
+        if (!ignoreIfStray) {
+            ignoreIfStray = false
+        }
         var defAssoc = (mode == P2X.MODE_BINARY || mode == P2X.MODE_UNARY_BINARY) ? P2X.ASSOC_LEFT : P2X.ASSOC_NONE
         res = {
             token: tk, repr: repr,
@@ -499,7 +555,8 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen,
             isParen: isParen || false,
             isRParen: isRParen || false,
             closingList: closingList,
-            name: name
+            name: name,
+            ignoreIfStray: ignoreIfStray
         }
         if (res.mode == P2X.MODE_ITEM) {
             res.prec = res.precU = P2X.maxPrec
@@ -558,6 +615,9 @@ P2X.TokenInfo = function() {
         },
         mode: function (tl) {
             return this.get(tl).mode
+        },
+        ignoreIfStray: function (tl) {
+            return this.get(tl).ignoreIfStray
         },
         endList: function (tl) {
             return this.get(tl).closingList
@@ -641,6 +701,12 @@ P2X.TokenInfo = function() {
             var patchTokenFunc = function(x){
                 if (typeof x.token == "undefined" && typeof x.repr == "string" && x.length > 0) {
                     x.token == P2X.TOKEN_IDENTIFIER
+                }
+                if (typeof x.type == "string") {
+                    if (x.type.startsWith('TOKEN_')) {
+                        x.type == x.type.substring(6)
+                    }
+                    x.type = P2X.ParserToken.index[x.type]
                 }
                 if (typeof x.type != "undefined") {
                     x.token = x.type
@@ -828,6 +894,11 @@ P2X.Parser = function(tokenInfo) {
             assert(not(firstMode & P2X.MODE_PAREN)); // P2X.MODE_PAREN bit is cleared
             assert(firstMode != 0); // mode is not 0
             assert(firstMode != P2X.MODE_PAREN); // mode is not P2X.MODE_PAREN
+            if (firstMode == P2X.MODE_BINARY
+                && this.tokenInfo.ignoreIfStray(first)
+                && this.rightEdgeOpen()) {
+                firstMode = P2X.MODE_IGNORE
+            }
             switch(firstMode) {
             case P2X.MODE_ITEM:
                 this.pushItem(first);
@@ -847,6 +918,12 @@ P2X.Parser = function(tokenInfo) {
             case P2X.MODE_UNARY_BINARY:
                 this.pushUnaryBinary(first);
                 break;
+            case P2X.MODE_LINE_COMMENT:
+                this.pushIgnore(first);
+                break;
+            case P2X.MODE_BLOCK_COMMENT:
+                this.pushIgnore(first);
+                break;
             default:
                 console.error("error: parser: invalid mode " + firstMode + "\n");
                 exit(1);
@@ -861,6 +938,10 @@ P2X.Parser = function(tokenInfo) {
             this.result.parser = this
             this.result.scanner = tlist.scanner
             this.input = tlist;
+
+            var locInfo = function(tk) {
+                return tlist.scanner.filename + ":" + tk.line + ":" + tk.col
+            }
 
             var first
 
@@ -884,6 +965,52 @@ P2X.Parser = function(tokenInfo) {
                         console.error("Parser: expecting " + this.endList[k])
                     }
                     endFound = true
+
+                } else if (this.tokenInfo.mode(first) == P2X.MODE_LINE_COMMENT) {
+                    var next, lncText = ''
+                    while(true) {
+                        next = this.input.next()
+                        if (next.token == P2X.TOKEN_NEWLINE || next.token == P2X.TOKEN_EOF)
+                            break
+                        lncText += next.text
+                    }
+                    this.insertToken(first)
+                    var inserted = first
+                    if (next.token == P2X.TOKEN_NEWLINE) {
+                        this.insertToken(next)
+                    } else if (next.token == P2X.TOKEN_EOF) {
+                        console.error("Unexpected end of input in line comment while searching for EOL (\\n)\n");
+                        endFound = true
+                        first = next
+                    }
+                    inserted.text += lncText
+
+                } else if (this.tokenInfo.mode(first) == P2X.MODE_BLOCK_COMMENT && this.tokenInfo.isLParen(first)) {
+                    var next, parent = this, pcommentEndList = this.tokenInfo.endList(first).map(function(k) {
+                        return parent.tokenInfo.getOpCode(k.token, k.repr)
+                    })
+                    var ctext = first.text
+                    while(true) {
+                        next = this.input.next()
+                        if (next.token == P2X.TOKEN_EOF)
+                            break
+                        ctext += next.text
+                        if (pcommentEndList.indexOf(this.tokenInfo.getOpCode(next)) > -1)
+                            break;
+                        if (this.tokenInfo.mode(next) == P2X.MODE_BLOCK_COMMENT) {
+                            console.log(locInfo(first) + ": Block comment " + next.text + " starts inside block comment")
+                            console.log(locInfo(next) +  ": here, but nesting is not allowed")
+                        }
+                    }
+                    this.insertToken(first)
+                    var inserted = first
+                    if (next.token == P2X.TOKEN_EOF) {
+                        console.log("Unexpected end of input in block comment while searching for " << pcommentEndList << "\n")
+                        endFound = true
+                        first = next
+                    }
+                    inserted.fullText = ctext
+
                 } else if (this.tokenInfo.isLParen(first)) {
                     var parser = P2X.Parser(this.tokenInfo)
                     var parent = this
@@ -1074,8 +1201,9 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         },
         writeXMLTypeAttrs: function(t) {
             var res = ''
-            if (t.text && t.token == P2X.TOKEN_IDENTIFIER && this.options.outputMode == 'x')
+            if (t.text && t.token == P2X.TOKEN_IDENTIFIER && this.options.outputMode == 'x') {
                 res += ' repr="' + t.text + '"'
+            }
             var ttext
             if (this.options.type && this.options.outputMode == 'x') {
                 if (t.token) {
@@ -1095,7 +1223,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
         },
         writeXMLTextElem: function(t, indent) {
             var res = ''
-            var ttext = t.text || (t.token ? {text:''} : undefined) || t.toString() || string(t)
+            var ttext = t.fullText || t.text || (t.token ? {text:''} : undefined) || t.toString() || string(t)
             if (typeof ttext == "object" && Object.keys(ttext).indexOf('text') > -1)
                 ttext = ttext.text
             assert(typeof ttext == "string")

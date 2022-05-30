@@ -1256,7 +1256,7 @@ struct Parser {
 	  endFound = true;
 	  first = next;
 	}
-	inserted->text = ctext;
+	inserted->fullText = ctext;
       } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
 	parser.options.rootNode = first;
@@ -1598,6 +1598,8 @@ struct TreeXMLWriter {
 	  ; // handled below
 	else
 	  aus << "\n";
+      } else if (t->fullText.size()) {
+	x << t->fullText;
       } else {
 	x << t->text;
       }
@@ -1797,6 +1799,8 @@ struct TreeXMLWriter {
           aus << t->text;
         }
       }
+    } else if (t->fullText.size()) {
+      xaus << t->fullText;
     } else if (t->text.size()) {
       xaus << t->text;
     }
@@ -2107,6 +2111,8 @@ struct TreeXMLWriter {
       aus << " associativity='" << tp.associativity << "'";
       if (tp.outputMode)
         aus << " output-mode='" << getOutputModeName(tp.outputMode) << "'";
+      if (tp.ignoreIfStray)
+        aus << " ignore-if-stray='1'";
     }
     if (tp.mode == MODE_UNARY_BINARY) {
       aus << " unary-precedence='" << tp.unaryPrecedence << "'";
@@ -2797,8 +2803,11 @@ int main(int argc, char *argv[]) {
   if (args.outfile_given) {
     _out = new std::ofstream(args.outfile_arg, std::ios::binary);
     Log(LS::FILES, "Open file " << args.outfile_arg << " for output\n");
+    if (!*_out) {
+      Log(LS::ERROR, "Failed to open output file: " << strerror(errno) << "\n");
+      return 1;
+    }
   }
-
   std::ostream &out = *_out;
 
 

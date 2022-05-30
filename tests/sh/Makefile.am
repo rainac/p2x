@@ -4,7 +4,8 @@ generated_files = all_tests.sh test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh te
 good = val_tests test_reproduce_strict test_reproduce test_reparse	\
 parse_tests merge_tests p2x_tests test_output_stability indent_tests	\
 valgrind_tests output_mode_json_merged output_mode_json			\
-output_mode_matlab_merged output_mode_matlab cdecls
+output_mode_matlab_merged output_mode_matlab cdecls p2xjs_mocha_tests	\
+test_cmp_js
 
 # js tests
 # reproduce_ign test_cmp_js p2xjs_mocha_tests

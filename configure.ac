@@ -4,7 +4,7 @@
 # Copyright © 2013 Johannes Willkomm 
 # See the file p2x.cc for copying conditions.  
 #
-AC_INIT([p2x],[0.6.10],[johannes@johannes-willkomm.de],[p2x],[http://github.com/rainac/p2x])
+AC_INIT([p2x],[0.6.11],[johannes@johannes-willkomm.de],[p2x],[http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
@@ -34,7 +34,7 @@ AC_CHECK_PROGS([NPM], [npm])
 AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
 
 if [test "x$NPM" != "x"]; then
-   npm_packages="most-xml tmp"
+   npm_packages="most-xml tmp node-minify"
    for pkg in $npm_packages; do
        if ! $NPM list -g $pkg > /dev/null; then
 	  AC_MSG_ERROR([mandatory program node-js module "$pkg" is not installed
@@ -138,7 +138,7 @@ AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([stddef.h unistd.h float.h ctype.h], , AC_MSG_ERROR([mandatory header file not found!]))
 AC_CHECK_HEADERS([cfloat cstdlib cstring cctype cunistd])
 
-AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
+AX_CXX_COMPILE_STDCXX_17([noext], [mandatory])
 
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADERS([FlexLexer.h], , AC_MSG_ERROR([mandatory header file not found!]))

@@ -30,6 +30,8 @@ if (typeof window == 'undefined') {
         { short: 'O', long: 'output-mode' },
         { short: 'C', long: 'include-config', flag: 1 },
         { short: 'D', long: 'debug', flag: 1 },
+        { short: '', long: 'inspect', flag: 1 },
+        { short: '', long: 'unmin', flag: 1 },
     ]
 
     // console.dir(argv)
@@ -98,6 +100,9 @@ function interpretParserConfigText(pconf, callback) {
 //    console.log(pconf)
     if (pconf[0] == '<') {
         pcrw = P2X.ParserConfigRW()
+        if (P2X.debug) {
+            console.log('Read config from XML', pcrw.loadXML(pconf))
+        }
         callback(pcrw.loadXML(pconf))
     } else if (pconf[0] == '{' || pconf[0] == '[') {
         callback(P2X.parseJSON(pconf))
@@ -120,6 +125,9 @@ function interpretParserConfigText(pconf, callback) {
                                                    } else {
                                                        cnfXML = stdout;
                                                        // console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
+                                                       if (P2X.debug) {
+                                                           console.log('p2x XML con dump:', cnfXML)
+                                                       }
                                                        interpretParserConfigText(cnfXML, callback)
                                                    }
                                                    cleanupCallback();
@@ -197,7 +205,7 @@ function readInput(uniConf) {
         var inFile = options['arguments'][0]
         fs.readFile(inFile, function(err, data) {
             if (err) throw(err)
-            parseInput(data + '', uniConf)
+            parseInput(inFile, data + '', uniConf)
         })
     } else {
         emitter.emit('fail', function() {
@@ -206,14 +214,15 @@ function readInput(uniConf) {
     }
 }
 
-function parseInput(data, uniConf) {
+function parseInput(infile, data, uniConf) {
     if (P2X.debug) {
         console.log('Debug scanner conf dump:')
         console.dir(scanner.get())
         console.log('Debug parser conf dump:')
-        console.dir(parser.getconfig())
+        var pcrw = P2X.ParserConfigRW()
+        console.log(pcrw.asJSON(parser.getconfig()))
     }
-    scanner.str(data)
+    scanner.str(data, infile)
     var tl = scanner.lexall().mkeof()
     // console.log('scanned token list:')
     // console.dir(tl)
@@ -244,7 +253,9 @@ function parseInput(data, uniConf) {
 
     if ('outfile' in options) {
         var outfile = options['outfile'][0];
-        fs.writeFile(outfile, res)
+        fs.writeFile(outfile, res, function() {
+            console.log('output written to ' + outfile)
+        })
     } else {
         console.log(res)
     }

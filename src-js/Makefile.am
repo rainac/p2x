@@ -8,13 +8,13 @@ dist_bin_SCRIPTS = p2xjs
 
 ncd_files = token.ncd.js modes.ncd.js assoc.ncd.js
 
-unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js gennc-common.js p2x-tools.js
+unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2xa.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js gennc-common.js p2x-tools.js
 
 min_files = $(addsuffix .min.js, $(basename $(unmin_files)))
 
-generated_files = $(min_files) $(json_files) p2xa.js
+generated_files = $(min_files) $(json_files)
 
-project_files = $(generated_files)
+project_files = $(generated_files) $(unmin_files)
 
 inst_DATA = $(project_files)
 
@@ -23,14 +23,15 @@ gennc-common.js: token.ncd.js
 %.ncd.js: $(top_srcdir)/src/xml/%.ncd.xml
 	gennc -m JavaScript $^
 
-%.json: $(top_srcdir)/src/xml/%.xml $(node_modules)
-	./p2xjs scanconf-xml2json -S $< > $@
+%.json: $(top_srcdir)/src/xml/%.xml $(node_modules) scanconf-xml2json.min.js
+	./p2xjs scanconf-xml2json -S $< -o $@
 
-%.min.js: %.js kill-comments-empty.sh
-	./kill-comments-empty.sh $< > $@
+%.min.js: %.js  compress.js $(node_modules)
+	sed -e '/require/ s/.js/.min.js/' $< > $<.tmp
+	nodejs compress.js -o $@ $<.tmp
+	rm $<.tmp
 
-
-p2xa.js: gennc-common.min.js modes.ncd.min.js token.ncd.min.js assoc.ncd.min.js hashmap.min.js scanner.min.js
+p2xa.js: gennc-common.js modes.ncd.js token.ncd.js assoc.ncd.js hashmap.js scanner.js
 	cat $^ > $@
 
 scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/scanner.xml
@@ -41,7 +42,7 @@ clean-local:
 
 apache_confd=$(sysconfdir)/apache2/conf.d
 
-node_module_names = most-xml tmp
+node_module_names = most-xml tmp node-minify
 
 node_modules = $(addprefix node_modules/, $(node_module_names))
 
