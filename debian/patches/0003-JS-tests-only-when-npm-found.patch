@@ -1,0 +1,26 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Mon, 30 May 2022 12:26:50 +0200
+Subject: JS tests only when npm found
+
+---
+ tests/sh/Makefile.am | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/tests/sh/Makefile.am b/tests/sh/Makefile.am
+index ea7fcc8..630548c 100644
+--- a/tests/sh/Makefile.am
++++ b/tests/sh/Makefile.am
+@@ -4,8 +4,11 @@ generated_files = all_tests.sh test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh te
+ good = val_tests test_reproduce_strict test_reproduce test_reparse	\
+ parse_tests merge_tests p2x_tests test_output_stability indent_tests	\
+ valgrind_tests output_mode_json_merged output_mode_json			\
+-output_mode_matlab_merged output_mode_matlab cdecls p2xjs_mocha_tests	\
+-test_cmp_js
++output_mode_matlab_merged output_mode_matlab cdecls
++
++if acond_NPM_AVAIL
++good += p2xjs_mocha_tests test_cmp_js
++endif
+ 
+ # js tests
+ # reproduce_ign test_cmp_js p2xjs_mocha_tests
