@@ -1,3 +1,5 @@
 0004-Octave-does-not-exit-cleanly-when-run-in-cowrunner.patch
 0006-Adapt-script-to-install-pkgs-in-cowbuilders.patch
 0003-JS-tests-only-when-npm-found.patch
+0004-Just-warn-when-npm-pkgs-are-not-found-installed.patch
+0005-Better-makefile-dependencies-to-install-the-npm-modu.patch
