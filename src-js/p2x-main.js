@@ -99,6 +99,9 @@ function interpretParserConfigText(pconf, callback) {
 //    console.log(pconf)
     if (pconf[0] == '<') {
         pcrw = P2X.ParserConfigRW()
+        if (P2X.debug) {
+            console.log('Read config from XML', pcrw.loadXML(pconf))
+        }
         callback(pcrw.loadXML(pconf))
     } else if (pconf[0] == '{' || pconf[0] == '[') {
         callback(P2X.parseJSON(pconf))
@@ -121,6 +124,9 @@ function interpretParserConfigText(pconf, callback) {
                                                    } else {
                                                        cnfXML = stdout;
                                                        // console.log('P2X exited2 errc::' + errc + ':: stdout::' + stdout + '::')
+                                                       if (P2X.debug) {
+                                                           console.log('p2x XML con dump:', cnfXML)
+                                                       }
                                                        interpretParserConfigText(cnfXML, callback)
                                                    }
                                                    cleanupCallback();
