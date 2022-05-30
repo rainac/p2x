@@ -367,7 +367,8 @@ P2X.JScanner = function(name) {
         asjson: function() {
             return this.get().asjson()
         },
-        str: function(str) {
+        str: function(filename, str) {
+            this.filename = filename;
             this.input = str;
             this.token = []
             this.yyindex = 0

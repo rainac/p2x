@@ -204,7 +204,7 @@ function readInput(uniConf) {
         var inFile = options['arguments'][0]
         fs.readFile(inFile, function(err, data) {
             if (err) throw(err)
-            parseInput(data + '', uniConf)
+            parseInput(inFile, data + '', uniConf)
         })
     } else {
         emitter.emit('fail', function() {
@@ -213,7 +213,7 @@ function readInput(uniConf) {
     }
 }
 
-function parseInput(data, uniConf) {
+function parseInput(infile, data, uniConf) {
     if (P2X.debug) {
         console.log('Debug scanner conf dump:')
         console.dir(scanner.get())
@@ -221,7 +221,7 @@ function parseInput(data, uniConf) {
         var pcrw = P2X.ParserConfigRW()
         console.log(pcrw.asJSON(parser.getconfig()))
     }
-    scanner.str(data)
+    scanner.str(infile, data)
     var tl = scanner.lexall().mkeof()
     // console.log('scanned token list:')
     // console.dir(tl)
