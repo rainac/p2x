@@ -485,7 +485,8 @@ describe('P2X.ParserConfig', function(){
     isParen: false,
     isRParen: false,
     closingList: undefined,
-    name: undefined
+    name: undefined,
+    ignoreIfStray: false,
   },
   {
     token: 71,
@@ -497,7 +498,8 @@ describe('P2X.ParserConfig', function(){
     isParen: false,
     isRParen: false,
     closingList: undefined,
-    name: undefined
+    name: undefined,
+    ignoreIfStray: false,
   },
   {
     token: 119,
@@ -509,7 +511,8 @@ describe('P2X.ParserConfig', function(){
     isParen: false,
     isRParen: false,
     closingList: undefined,
-    name: undefined
+    name: undefined,
+    ignoreIfStray: false,
   }
             ]
 

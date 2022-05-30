@@ -542,6 +542,9 @@ P2X.TokenProto = function(tk, repr, mode, assoc, prec, precU, isParen, isRParen,
                 return cli
             })
         }
+        if (!ignoreIfStray) {
+            ignoreIfStray = false
+        }
         var defAssoc = (mode == P2X.MODE_BINARY || mode == P2X.MODE_UNARY_BINARY) ? P2X.ASSOC_LEFT : P2X.ASSOC_NONE
         res = {
             token: tk, repr: repr,
