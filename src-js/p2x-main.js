@@ -31,6 +31,7 @@ if (typeof window == 'undefined') {
         { short: 'C', long: 'include-config', flag: 1 },
         { short: 'D', long: 'debug', flag: 1 },
         { short: '', long: 'inspect', flag: 1 },
+        { short: '', long: 'unmin', flag: 1 },
     ]
 
     // console.dir(argv)

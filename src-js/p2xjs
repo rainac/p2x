@@ -46,6 +46,8 @@ fi
 if [[ "$@" == *"--debug"* ]]; then
     NODEOPTS=--inspect
     file=$(dirname $file)/$(basename $file .min.js).js
+elif [[ "$@" == *"--unmin"* ]]; then
+    file=$(dirname $file)/$(basename $file .min.js).js
 elif [[ "$@" == *"--inspect"* ]]; then
     NODEOPTS=--inspect
 fi
