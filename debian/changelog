@@ -1,3 +1,12 @@
+p2x (0.6.11-1~1.gbpf01269) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @f0126983e7a172afd19f3ff1535e673d23957686 **
+
+  * JS implementation now available too
+  * New version 0.6.11
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Mon, 30 May 2022 10:52:08 +0200
+
 p2x (0.6.10-2) aiandit-unstable; urgency=medium
 
   * Use C++-17 to compile
