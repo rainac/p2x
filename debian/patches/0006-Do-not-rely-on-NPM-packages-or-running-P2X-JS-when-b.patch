@@ -5,8 +5,9 @@ Subject: Do not rely on NPM packages or running P2X JS when building
 ---
  configure.ac         |  9 +++++++--
  src-js/Makefile.am   | 15 +++++++++++----
+ src-js/p2xjs         |  8 +++++---
  tests/sh/Makefile.am |  2 +-
- 3 files changed, 19 insertions(+), 7 deletions(-)
+ 4 files changed, 24 insertions(+), 10 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index 0349917..c413a40 100644
@@ -83,6 +84,32 @@ index 497ae2f..58fe4f1 100644
  
  $(instdir):
  	$(INSTALL) -d $@
+diff --git a/src-js/p2xjs b/src-js/p2xjs
+index c77b0d8..83dd40c 100755
+--- a/src-js/p2xjs
++++ b/src-js/p2xjs
+@@ -32,7 +32,11 @@ srcdir=$(dirname $BASH_SOURCE)
+ P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $BASH_SOURCE)/..)}
+ export P2X_HOME
+ 
+-main_src=$mode.min.js
++if [[ "$@" == *"--unmin"* ]]; then
++    main_src=$mode.js
++else
++    main_src=$mode.min.js
++fi
+ 
+ if test -r $srcdir/$main_src; then
+     file=$srcdir/$main_src
+@@ -46,8 +50,6 @@ fi
+ if [[ "$@" == *"--debug"* ]]; then
+     NODEOPTS=--inspect
+     file=$(dirname $file)/$(basename $file .min.js).js
+-elif [[ "$@" == *"--unmin"* ]]; then
+-    file=$(dirname $file)/$(basename $file .min.js).js
+ elif [[ "$@" == *"--inspect"* ]]; then
+     NODEOPTS=--inspect
+ fi
 diff --git a/tests/sh/Makefile.am b/tests/sh/Makefile.am
 index 630548c..d40b8fa 100644
 --- a/tests/sh/Makefile.am
