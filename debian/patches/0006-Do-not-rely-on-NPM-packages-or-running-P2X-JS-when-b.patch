@@ -43,7 +43,7 @@ index 0349917..c413a40 100644
 +fi
  echo ""
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 497ae2f..58fe4f1 100644
+index 497ae2f..dfa225c 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
 @@ -12,9 +12,14 @@ unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.
@@ -69,8 +69,8 @@ index 497ae2f..58fe4f1 100644
  
 -%.json: $(top_srcdir)/src/xml/%.xml node_modules_updated.txt scanconf-xml2json.min.js $(min_files)
 -	./p2xjs scanconf-xml2json -S $< -o $@
-+%.json: $(top_srcdir)/src/xml/%.xml node_modules_updated.txt $(unmin_files)
-+	./p2xjs scanconf-xml2json --unmin -S $< -o $@
++%.json: ../examples/configs/%.json
++	cp $< $@
  
  %.min.js: %.js compress.js node_modules_updated.txt
  	sed -e '/require/ s/.js/.min.js/' $< > $<.tmp
