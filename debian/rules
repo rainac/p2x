@@ -2,5 +2,8 @@
 
 export DH_VERBOSE = 1
 
+override_dh_auto_configure:
+	./configure --with-vcs-version=$(shell debian/vcs-version.txt)
+
 %:
 	dh $@
