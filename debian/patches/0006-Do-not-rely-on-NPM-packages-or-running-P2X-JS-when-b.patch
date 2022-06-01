@@ -3,13 +3,13 @@ Date: Wed, 1 Jun 2022 21:57:07 +0200
 Subject: Do not rely on NPM packages or running P2X JS when building
 
 ---
- configure.ac         |  5 +++--
+ configure.ac         |  9 +++++++--
  src-js/Makefile.am   | 13 ++++++++++---
  tests/sh/Makefile.am |  2 +-
- 3 files changed, 14 insertions(+), 6 deletions(-)
+ 3 files changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 0349917..cf94f7f 100644
+index 0349917..c413a40 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -35,10 +35,10 @@ AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
@@ -25,11 +25,21 @@ index 0349917..cf94f7f 100644
            AC_MSG_WARN([mandatory program node-js module "$pkg" is not installed
  			please do "$NPM install -g $pkg"])
         fi
-@@ -238,4 +238,5 @@ echo " valgrind:       [$VALGRIND]"
+@@ -232,10 +232,15 @@ echo " re2c:           [$RE2C]"
+ echo " trang:          [$TRANG]"
+ echo " gengetopt:      [$GENGETOPT]"
+ echo " emacs:          [$EMACS]"
++if test "$build_tests" = "yes"; then
+ echo " xmlstarlet:     [$XMLSTARLET]"
+ echo " shunit2:        [$SHUNIT2]"
+ echo " valgrind:       [$VALGRIND]"
++fi
  echo ""
  echo " npm:            [$NPM]"
- echo " mocha:          [$MOCHA]"
 +echo " npm packages:   [$npm_packages_avail]"
++if test "$build_tests" = "yes"; then
+ echo " mocha:          [$MOCHA]"
++fi
  echo ""
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
 index 497ae2f..0bdfabe 100644
