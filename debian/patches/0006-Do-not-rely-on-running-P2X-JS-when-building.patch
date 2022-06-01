@@ -1,0 +1,35 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Wed, 1 Jun 2022 21:57:07 +0200
+Subject: Do not rely on running P2X JS when building
+
+---
+ src-js/Makefile.am   | 2 +-
+ tests/sh/Makefile.am | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src-js/Makefile.am b/src-js/Makefile.am
+index 497ae2f..46dcd29 100644
+--- a/src-js/Makefile.am
++++ b/src-js/Makefile.am
+@@ -24,7 +24,7 @@ gennc-common.js: token.ncd.js
+ 	gennc -m JavaScript $^
+ 
+ %.json: $(top_srcdir)/src/xml/%.xml node_modules_updated.txt scanconf-xml2json.min.js $(min_files)
+-	./p2xjs scanconf-xml2json -S $< -o $@
++	./p2xjs scanconf-xml2json --unmin -S $< -o $@
+ 
+ %.min.js: %.js compress.js node_modules_updated.txt
+ 	sed -e '/require/ s/.js/.min.js/' $< > $<.tmp
+diff --git a/tests/sh/Makefile.am b/tests/sh/Makefile.am
+index 630548c..d40b8fa 100644
+--- a/tests/sh/Makefile.am
++++ b/tests/sh/Makefile.am
+@@ -6,7 +6,7 @@ parse_tests merge_tests p2x_tests test_output_stability indent_tests	\
+ valgrind_tests output_mode_json_merged output_mode_json			\
+ output_mode_matlab_merged output_mode_matlab cdecls
+ 
+-if acond_NPM_AVAIL
++if acond_NPM_PKGS_AVAIL
+ good += p2xjs_mocha_tests test_cmp_js
+ endif
+ 

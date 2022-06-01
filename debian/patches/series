@@ -3,3 +3,4 @@
 0003-JS-tests-only-when-npm-found.patch
 0004-Just-warn-when-npm-pkgs-are-not-found-installed.patch
 0005-Better-makefile-dependencies-to-install-the-npm-modu.patch
+0006-Do-not-rely-on-running-P2X-JS-when-building.patch
