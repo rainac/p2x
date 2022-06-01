@@ -4,10 +4,10 @@ Subject: Do not rely on NPM packages or running P2X JS when building
 
 ---
  configure.ac         |  9 +++++++--
- src-js/Makefile.am   | 15 +++++++++++----
+ src-js/Makefile.am   | 19 +++++++++++++------
  src-js/p2xjs         |  8 +++++---
  tests/sh/Makefile.am |  2 +-
- 4 files changed, 24 insertions(+), 10 deletions(-)
+ 4 files changed, 26 insertions(+), 12 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index 0349917..c413a40 100644
@@ -43,9 +43,20 @@ index 0349917..c413a40 100644
 +fi
  echo ""
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 497ae2f..dfa225c 100644
+index 497ae2f..034bbd1 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
+@@ -1,8 +1,8 @@
+ 
+ json_files = scanner-c.json
+ 
+-instbasedir=$(pkgdatadir)
+-instdir= $(instbasedir)/js
++instbasedir = $(DESTDIR)$(pkgdatadir)
++instdir = $(instbasedir)/js
+ 
+ dist_bin_SCRIPTS = p2xjs
+ 
 @@ -12,9 +12,14 @@ unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.
  
  min_files = $(addsuffix .min.js, $(basename $(unmin_files)))
