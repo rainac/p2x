@@ -10,7 +10,7 @@ Subject: Do not rely on NPM packages or running P2X JS when building
  4 files changed, 44 insertions(+), 19 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 47b60d3..c413a40 100644
+index 621b643..5c10189 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -35,13 +35,16 @@ AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
@@ -31,7 +31,7 @@ index 47b60d3..c413a40 100644
  
  AC_CHECK_PROGS([TRANG], [trang])
  AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])
-@@ -229,10 +232,15 @@ echo " re2c:           [$RE2C]"
+@@ -234,10 +237,15 @@ echo " re2c:           [$RE2C]"
  echo " trang:          [$TRANG]"
  echo " gengetopt:      [$GENGETOPT]"
  echo " emacs:          [$EMACS]"

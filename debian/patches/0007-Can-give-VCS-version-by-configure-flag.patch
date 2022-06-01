@@ -7,10 +7,10 @@ Subject: Can give VCS version by configure flag
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index c413a40..5c10189 100644
+index 47b60d3..621b643 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -156,7 +156,12 @@ target_os_short=`echo "$target_os" |sed -e s/-.*//`
+@@ -153,7 +153,12 @@ target_os_short=`echo "$target_os" |sed -e s/-.*//`
  AC_DEFINE_UNQUOTED(HOST_OS_SHORT, "$target_os_short", [Short host os type])
  AC_DEFINE_UNQUOTED(install_prefix, "$prefix", [The prefix where P2X is installed.])
  
