@@ -7,5 +7,3 @@ COMMITID=$(./vcs-version.sh)
 cd $GBP_BUILD_DIR
 
 echo "$COMMITID" > debian/vcs-version.txt
-
-dpkg-source --commit
