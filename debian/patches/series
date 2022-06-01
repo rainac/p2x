@@ -5,3 +5,4 @@
 0005-Better-makefile-dependencies-to-install-the-npm-modu.patch
 0006-Do-not-rely-on-NPM-packages-or-running-P2X-JS-when-b.patch
 0007-Can-give-VCS-version-by-configure-flag.patch
+0008-Install-to-correct-location.patch
