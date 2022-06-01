@@ -3,10 +3,10 @@ Date: Wed, 1 Jun 2022 21:57:07 +0200
 Subject: Do not rely on NPM packages or running P2X JS when building
 
 ---
- configure.ac         | 5 +++--
- src-js/Makefile.am   | 4 +++-
- tests/sh/Makefile.am | 2 +-
- 3 files changed, 7 insertions(+), 4 deletions(-)
+ configure.ac         |  5 +++--
+ src-js/Makefile.am   | 13 ++++++++++---
+ tests/sh/Makefile.am |  2 +-
+ 3 files changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index 0349917..cf94f7f 100644
@@ -32,10 +32,27 @@ index 0349917..cf94f7f 100644
 +echo " npm packages:   [$npm_packages_avail]"
  echo ""
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 497ae2f..22f3ffe 100644
+index 497ae2f..0bdfabe 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
-@@ -24,7 +24,7 @@ gennc-common.js: token.ncd.js
+@@ -12,9 +12,14 @@ unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.
+ 
+ min_files = $(addsuffix .min.js, $(basename $(unmin_files)))
+ 
+-generated_files = $(min_files) $(json_files) node_modules_updated.txt
++generated_files = $(json_files) node_modules_updated.txt
+ 
+-project_files = $(min_files) $(json_files) $(unmin_files)
++project_files = $(json_files) $(unmin_files)
++
++if acond_NPM_PKGS_AVAIL
++	generated_files += $(min_files)
++	project_files += $(min_files)
++endif
+ 
+ inst_DATA = $(project_files)
+ 
+@@ -24,7 +29,7 @@ gennc-common.js: token.ncd.js
  	gennc -m JavaScript $^
  
  %.json: $(top_srcdir)/src/xml/%.xml node_modules_updated.txt scanconf-xml2json.min.js $(min_files)
@@ -44,7 +61,7 @@ index 497ae2f..22f3ffe 100644
  
  %.min.js: %.js compress.js node_modules_updated.txt
  	sed -e '/require/ s/.js/.min.js/' $< > $<.tmp
-@@ -55,7 +55,9 @@ node_modules:
+@@ -55,7 +60,9 @@ node_modules:
  
  $(node_modules) node_modules_updated.txt: node_modules Makefile.am
  	touch node_modules_updated.txt
