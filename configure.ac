@@ -189,7 +189,12 @@ target_os_short=`echo "$target_os" |sed -e s/-.*//`
 AC_DEFINE_UNQUOTED(HOST_OS_SHORT, "$target_os_short", [Short host os type])
 AC_DEFINE_UNQUOTED(install_prefix, "$prefix", [The prefix where P2X is installed.])
 
-VCS_REVISION=`./vcs-version.sh`
+AC_ARG_ENABLE([vcs-version], [  --enable-vcs-version    VCS version file.
+  --disable-vcs-version   No VCS version file.], [
+      VCS_REVISION=$enableval
+], [
+      VCS_REVISION=`./vcs-version.sh`
+])
 AC_MSG_CHECKING([value for VCS_REVISION])
 AC_MSG_RESULT([$VCS_REVISION])
 AC_SUBST([VCS_REVISION])
