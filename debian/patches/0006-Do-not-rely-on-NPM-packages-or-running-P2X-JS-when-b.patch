@@ -4,9 +4,9 @@ Subject: Do not rely on NPM packages or running P2X JS when building
 
 ---
  configure.ac         |  9 +++++++--
- src-js/Makefile.am   | 13 ++++++++++---
+ src-js/Makefile.am   | 15 +++++++++++----
  tests/sh/Makefile.am |  2 +-
- 3 files changed, 18 insertions(+), 6 deletions(-)
+ 3 files changed, 19 insertions(+), 7 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index 0349917..c413a40 100644
@@ -42,7 +42,7 @@ index 0349917..c413a40 100644
 +fi
  echo ""
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 497ae2f..0bdfabe 100644
+index 497ae2f..58fe4f1 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
 @@ -12,9 +12,14 @@ unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.
@@ -62,11 +62,13 @@ index 497ae2f..0bdfabe 100644
  
  inst_DATA = $(project_files)
  
-@@ -24,7 +29,7 @@ gennc-common.js: token.ncd.js
+@@ -23,8 +28,8 @@ gennc-common.js: token.ncd.js
+ %.ncd.js: $(top_srcdir)/src/xml/%.ncd.xml
  	gennc -m JavaScript $^
  
- %.json: $(top_srcdir)/src/xml/%.xml node_modules_updated.txt scanconf-xml2json.min.js $(min_files)
+-%.json: $(top_srcdir)/src/xml/%.xml node_modules_updated.txt scanconf-xml2json.min.js $(min_files)
 -	./p2xjs scanconf-xml2json -S $< -o $@
++%.json: $(top_srcdir)/src/xml/%.xml node_modules_updated.txt $(unmin_files)
 +	./p2xjs scanconf-xml2json --unmin -S $< -o $@
  
  %.min.js: %.js compress.js node_modules_updated.txt
