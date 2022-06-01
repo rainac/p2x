@@ -1,11 +1,14 @@
-p2x (0.6.11-1~1.gbpf01269) UNRELEASED; urgency=medium
+p2x (0.6.11-1~2.gbp059371) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @f0126983e7a172afd19f3ff1535e673d23957686 **
+  ** SNAPSHOT build @059371807dfb4195bb1483d25a9e0ddab830bc81 **
 
   * JS implementation now available too
-  * New version 0.6.11
+  * New upstream version 0.6.11
+  * Git Commit ID copied before build
+  * Add npm, mocha as build deps...
+  * Do not rely on running P2X JS when building
 
- -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Mon, 30 May 2022 10:52:08 +0200
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Wed, 01 Jun 2022 22:46:01 +0200
 
 p2x (0.6.10-2) aiandit-unstable; urgency=medium
 
