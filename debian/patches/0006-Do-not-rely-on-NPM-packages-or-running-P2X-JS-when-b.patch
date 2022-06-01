@@ -3,10 +3,34 @@ Date: Wed, 1 Jun 2022 21:57:07 +0200
 Subject: Do not rely on NPM packages or running P2X JS when building
 
 ---
+ configure.ac         | 5 +++--
  src-js/Makefile.am   | 4 +++-
  tests/sh/Makefile.am | 2 +-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ 3 files changed, 7 insertions(+), 4 deletions(-)
 
+diff --git a/configure.ac b/configure.ac
+index 0349917..cf94f7f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -35,10 +35,10 @@ AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
+ 
+ if [test "x$NPM" != "x"]; then
+    npm_packages="most-xml tmp node-minify"
+-   npm_packages_avail=1
++   npm_packages_avail=yes
+    for pkg in $npm_packages; do
+        if ! $NPM list -g $pkg > /dev/null; then
+-          npm_packages_avail=0
++          npm_packages_avail=
+           AC_MSG_WARN([mandatory program node-js module "$pkg" is not installed
+ 			please do "$NPM install -g $pkg"])
+        fi
+@@ -238,4 +238,5 @@ echo " valgrind:       [$VALGRIND]"
+ echo ""
+ echo " npm:            [$NPM]"
+ echo " mocha:          [$MOCHA]"
++echo " npm packages:   [$npm_packages_avail]"
+ echo ""
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
 index 497ae2f..22f3ffe 100644
 --- a/src-js/Makefile.am
