@@ -1,14 +1,14 @@
 From: Johannes Willkomm <johannes@johannes-willkomm.de>
 Date: Wed, 1 Jun 2022 21:57:07 +0200
-Subject: Do not rely on running P2X JS when building
+Subject: Do not rely on NPM packages or running P2X JS when building
 
 ---
- src-js/Makefile.am   | 2 +-
+ src-js/Makefile.am   | 4 +++-
  tests/sh/Makefile.am | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 497ae2f..46dcd29 100644
+index 497ae2f..22f3ffe 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
 @@ -24,7 +24,7 @@ gennc-common.js: token.ncd.js
@@ -20,6 +20,16 @@ index 497ae2f..46dcd29 100644
  
  %.min.js: %.js compress.js node_modules_updated.txt
  	sed -e '/require/ s/.js/.min.js/' $< > $<.tmp
+@@ -55,7 +55,9 @@ node_modules:
+ 
+ $(node_modules) node_modules_updated.txt: node_modules Makefile.am
+ 	touch node_modules_updated.txt
++if acond_NPM_PKGS_AVAIL
+ 	npm link $(node_module_names)
++endif
+ 
+ $(instdir):
+ 	$(INSTALL) -d $@
 diff --git a/tests/sh/Makefile.am b/tests/sh/Makefile.am
 index 630548c..d40b8fa 100644
 --- a/tests/sh/Makefile.am
