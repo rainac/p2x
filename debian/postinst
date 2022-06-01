@@ -1,0 +1,12 @@
+#! /bin/sh
+
+cd /usr/share/p2x/js
+
+npm link most-xml tmp node-minify
+
+for i in *.js; do
+    if test $(basename $i .min.js) = $i; then
+       echo nodejs compress.js -o $(basename $i .js).min.js $i
+       nodejs compress.js -o $(basename $i .js).min.js $i
+    fi
+done

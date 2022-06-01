@@ -11,7 +11,7 @@ Rules-Requires-Root: no
 
 Package: p2x
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, npm
 Description: Flexible text parser with XML and JSON output
  P2X can parse structured text into trees with XML output. Flexible
  configuration allows definition of parenthesisation, unary or binary

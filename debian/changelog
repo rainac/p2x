@@ -1,14 +1,14 @@
-p2x (0.6.11-1~2.gbp059371) UNRELEASED; urgency=medium
-
-  ** SNAPSHOT build @059371807dfb4195bb1483d25a9e0ddab830bc81 **
+p2x (0.6.11-1) aiandit-unstable; urgency=medium
 
   * JS implementation now available too
   * New upstream version 0.6.11
   * Git Commit ID copied before build
   * Add npm, mocha as build deps...
   * Do not rely on running P2X JS when building
+  * Also install compress.js
+  * postinst/prerm: Install node_modules and compress JS files
 
- -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Wed, 01 Jun 2022 22:46:01 +0200
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Thu, 02 Jun 2022 00:10:24 +0200
 
 p2x (0.6.10-2) aiandit-unstable; urgency=medium
 

@@ -1,0 +1,8 @@
+#! /bin/sh
+
+cd /usr/share/p2x/js
+
+for i in *.min.js; do
+    echo rm $i
+    rm $i
+done
