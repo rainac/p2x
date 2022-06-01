@@ -8,7 +8,7 @@ dist_bin_SCRIPTS = p2xjs
 
 ncd_files = token.ncd.js modes.ncd.js assoc.ncd.js
 
-unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2xa.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js gennc-common.js p2x-tools.js
+unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.js p2xa.js p2x-main.js scanconf-xml2json.js parseconf-text2json.js gennc-common.js p2x-tools.js compress.js
 
 min_files = $(addsuffix .min.js, $(basename $(unmin_files)))
 
