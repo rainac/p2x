@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Johannes Willkomm <johannes.willkomm@googlemail.com>
 Build-Depends: debhelper-compat (= 12), libfl-dev, shunit2, xsltproc,
  xmlstarlet, libcppunit-dev, trang, valgrind, re2c, python3, octave,
- zsh
+ zsh, npm, mocha
 Standards-Version: 4.6.0
 Homepage: https://github.com/rainac/p2x/
 Rules-Requires-Root: no
