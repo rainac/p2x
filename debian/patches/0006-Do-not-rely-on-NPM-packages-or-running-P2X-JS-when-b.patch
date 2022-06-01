@@ -4,10 +4,10 @@ Subject: Do not rely on NPM packages or running P2X JS when building
 
 ---
  configure.ac         |  9 +++++++--
- src-js/Makefile.am   | 19 +++++++++++++------
+ src-js/Makefile.am   | 23 ++++++++++++++++-------
  src-js/p2xjs         |  8 +++++---
  tests/sh/Makefile.am |  2 +-
- 4 files changed, 26 insertions(+), 12 deletions(-)
+ 4 files changed, 29 insertions(+), 13 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
 index 0349917..c413a40 100644
@@ -43,7 +43,7 @@ index 0349917..c413a40 100644
 +fi
  echo ""
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 497ae2f..034bbd1 100644
+index 497ae2f..62e9cc6 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
 @@ -1,8 +1,8 @@
@@ -85,7 +85,16 @@ index 497ae2f..034bbd1 100644
  
  %.min.js: %.js compress.js node_modules_updated.txt
  	sed -e '/require/ s/.js/.min.js/' $< > $<.tmp
-@@ -55,7 +60,9 @@ node_modules:
+@@ -40,7 +45,7 @@ scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/sca
+ clean-local:
+ 	$(RM) -f $(generated_files)
+ 
+-apache_confd=$(sysconfdir)/apache2/conf.d
++apache_confd = $(DESTDIR)$(sysconfdir)/apache2/conf.d
+ 
+ node_module_names = most-xml tmp node-minify
+ 
+@@ -55,13 +60,17 @@ node_modules:
  
  $(node_modules) node_modules_updated.txt: node_modules Makefile.am
  	touch node_modules_updated.txt
@@ -95,6 +104,14 @@ index 497ae2f..034bbd1 100644
  
  $(instdir):
  	$(INSTALL) -d $@
+ 
+ install-data-local: $(instdir)
++if acond_NPM_PKGS_AVAIL
+ 	cd $(instdir) $(foreach f, $(node_module_names), && npm link $(f))
++endif
+ 	$(INSTALL) -d $(apache_confd)
+ 	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2x-js.conf
+ 
 diff --git a/src-js/p2xjs b/src-js/p2xjs
 index c77b0d8..83dd40c 100755
 --- a/src-js/p2xjs
