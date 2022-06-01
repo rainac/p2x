@@ -1,32 +1,37 @@
 From: Johannes Willkomm <johannes@johannes-willkomm.de>
-Date: Wed, 1 Jun 2022 21:57:07 +0200
+Date: Mon, 30 May 2022 12:26:50 +0200
 Subject: Do not rely on NPM packages or running P2X JS when building
 
 ---
- configure.ac         |  9 +++++++--
- src-js/Makefile.am   | 23 ++++++++++++++++-------
+ configure.ac         | 10 +++++++++-
+ src-js/Makefile.am   | 38 +++++++++++++++++++++++++-------------
  src-js/p2xjs         |  8 +++++---
- tests/sh/Makefile.am |  2 +-
- 4 files changed, 29 insertions(+), 13 deletions(-)
+ tests/sh/Makefile.am |  7 +++++--
+ 4 files changed, 44 insertions(+), 19 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 0349917..c413a40 100644
+index 47b60d3..c413a40 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -35,10 +35,10 @@ AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
+@@ -35,13 +35,16 @@ AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
  
  if [test "x$NPM" != "x"]; then
     npm_packages="most-xml tmp node-minify"
--   npm_packages_avail=1
 +   npm_packages_avail=yes
     for pkg in $npm_packages; do
         if ! $NPM list -g $pkg > /dev/null; then
--          npm_packages_avail=0
+-	  AC_MSG_ERROR([mandatory program node-js module "$pkg" is not installed
 +          npm_packages_avail=
-           AC_MSG_WARN([mandatory program node-js module "$pkg" is not installed
++          AC_MSG_WARN([mandatory program node-js module "$pkg" is not installed
  			please do "$NPM install -g $pkg"])
         fi
-@@ -232,10 +232,15 @@ echo " re2c:           [$RE2C]"
+    done
+ fi
++AM_CONDITIONAL(acond_NPM_PKGS_AVAIL, [test "$npm_packages_avail" != ""])
+ 
+ AC_CHECK_PROGS([TRANG], [trang])
+ AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])
+@@ -229,10 +232,15 @@ echo " re2c:           [$RE2C]"
  echo " trang:          [$TRANG]"
  echo " gengetopt:      [$GENGETOPT]"
  echo " emacs:          [$EMACS]"
@@ -43,7 +48,7 @@ index 0349917..c413a40 100644
 +fi
  echo ""
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 497ae2f..62e9cc6 100644
+index 76ac9b9..2ebb0e7 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
 @@ -1,8 +1,8 @@
@@ -52,7 +57,7 @@ index 497ae2f..62e9cc6 100644
  
 -instbasedir=$(pkgdatadir)
 -instdir= $(instbasedir)/js
-+instbasedir = $(DESTDIR)$(pkgdatadir)
++instbasedir = $(pkgdatadir)
 +instdir = $(instbasedir)/js
  
  dist_bin_SCRIPTS = p2xjs
@@ -61,10 +66,10 @@ index 497ae2f..62e9cc6 100644
  
  min_files = $(addsuffix .min.js, $(basename $(unmin_files)))
  
--generated_files = $(min_files) $(json_files) node_modules_updated.txt
+-generated_files = $(min_files) $(json_files)
 +generated_files = $(json_files) node_modules_updated.txt
  
--project_files = $(min_files) $(json_files) $(unmin_files)
+-project_files = $(generated_files) $(unmin_files)
 +project_files = $(json_files) $(unmin_files)
 +
 +if acond_NPM_PKGS_AVAIL
@@ -74,17 +79,20 @@ index 497ae2f..62e9cc6 100644
  
  inst_DATA = $(project_files)
  
-@@ -23,8 +28,8 @@ gennc-common.js: token.ncd.js
+@@ -23,10 +28,10 @@ gennc-common.js: token.ncd.js
  %.ncd.js: $(top_srcdir)/src/xml/%.ncd.xml
  	gennc -m JavaScript $^
  
--%.json: $(top_srcdir)/src/xml/%.xml node_modules_updated.txt scanconf-xml2json.min.js $(min_files)
+-%.json: $(top_srcdir)/src/xml/%.xml $(node_modules) scanconf-xml2json.min.js
 -	./p2xjs scanconf-xml2json -S $< -o $@
 +%.json: ../examples/configs/%.json
 +	cp $< $@
  
- %.min.js: %.js compress.js node_modules_updated.txt
+-%.min.js: %.js  compress.js $(node_modules)
++%.min.js: %.js compress.js node_modules_updated.txt
  	sed -e '/require/ s/.js/.min.js/' $< > $<.tmp
+ 	nodejs compress.js -o $@ $<.tmp
+ 	rm $<.tmp
 @@ -40,7 +45,7 @@ scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/sca
  clean-local:
  	$(RM) -f $(generated_files)
@@ -94,18 +102,27 @@ index 497ae2f..62e9cc6 100644
  
  node_module_names = most-xml tmp node-minify
  
-@@ -55,13 +60,17 @@ node_modules:
+@@ -48,14 +53,21 @@ node_modules = $(addprefix node_modules/, $(node_module_names))
  
- $(node_modules) node_modules_updated.txt: node_modules Makefile.am
- 	touch node_modules_updated.txt
+ .PRECIOUS: node_modules/%
+ 
+-node_modules/%:
+-	npm link $*
++node_modules/%: node_modules_updated.txt
++
++node_modules:
++	mkdir $@
+ 
+-$(instdir):
+-	$(INSTALL) -d $@
++$(node_modules) node_modules_updated.txt: node_modules Makefile.am
++	touch node_modules_updated.txt
 +if acond_NPM_PKGS_AVAIL
- 	npm link $(node_module_names)
++	npm link $(node_module_names)
 +endif
  
- $(instdir):
- 	$(INSTALL) -d $@
- 
- install-data-local: $(instdir)
+-install-data-local: $(instdir)
++install-data-local:
 +if acond_NPM_PKGS_AVAIL
  	cd $(instdir) $(foreach f, $(node_module_names), && npm link $(f))
 +endif
@@ -139,15 +156,20 @@ index c77b0d8..83dd40c 100755
      NODEOPTS=--inspect
  fi
 diff --git a/tests/sh/Makefile.am b/tests/sh/Makefile.am
-index 630548c..d40b8fa 100644
+index ea7fcc8..d40b8fa 100644
 --- a/tests/sh/Makefile.am
 +++ b/tests/sh/Makefile.am
-@@ -6,7 +6,7 @@ parse_tests merge_tests p2x_tests test_output_stability indent_tests	\
+@@ -4,8 +4,11 @@ generated_files = all_tests.sh test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh te
+ good = val_tests test_reproduce_strict test_reproduce test_reparse	\
+ parse_tests merge_tests p2x_tests test_output_stability indent_tests	\
  valgrind_tests output_mode_json_merged output_mode_json			\
- output_mode_matlab_merged output_mode_matlab cdecls
- 
--if acond_NPM_AVAIL
+-output_mode_matlab_merged output_mode_matlab cdecls p2xjs_mocha_tests	\
+-test_cmp_js
++output_mode_matlab_merged output_mode_matlab cdecls
++
 +if acond_NPM_PKGS_AVAIL
- good += p2xjs_mocha_tests test_cmp_js
- endif
++good += p2xjs_mocha_tests test_cmp_js
++endif
  
+ # js tests
+ # reproduce_ign test_cmp_js p2xjs_mocha_tests

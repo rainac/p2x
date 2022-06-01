@@ -1,8 +1,4 @@
 0004-Octave-does-not-exit-cleanly-when-run-in-cowrunner.patch
 0006-Adapt-script-to-install-pkgs-in-cowbuilders.patch
-0003-JS-tests-only-when-npm-found.patch
-0004-Just-warn-when-npm-pkgs-are-not-found-installed.patch
-0005-Better-makefile-dependencies-to-install-the-npm-modu.patch
-0006-Do-not-rely-on-NPM-packages-or-running-P2X-JS-when-b.patch
+0003-Do-not-rely-on-NPM-packages-or-running-P2X-JS-when-b.patch
 0007-Can-give-VCS-version-by-configure-flag.patch
-0008-Install-to-correct-location.patch
