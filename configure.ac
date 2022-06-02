@@ -33,6 +33,15 @@ AM_CONDITIONAL(acond_GENGETOPT_AVAIL, [test "x$GENGETOPT" != "x"])
 AC_CHECK_PROGS([NPM], [npm])
 AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
 
+AC_ARG_ENABLE([js], [  --enable-js    Enable install of P2X JS implementation.
+  --disable-js   No VCS version file.], [
+      js_enabled=$enableval
+], [
+      js_enabled=yes
+])
+AM_CONDITIONAL(acond_JS_ENABLED, [test "$js_enabled" = "yes"])
+
+if [test "$js_enabled" = "yes"]; then
 if [test "x$NPM" != "x"]; then
    npm_packages="most-xml tmp node-minify"
    npm_packages_avail=yes
@@ -43,6 +52,7 @@ if [test "x$NPM" != "x"]; then
 			please do "$NPM install -g $pkg"])
        fi
    done
+fi
 fi
 AM_CONDITIONAL(acond_NPM_PKGS_AVAIL, [test "$npm_packages_avail" != ""])
 
@@ -250,9 +260,11 @@ echo " shunit2:        [$SHUNIT2]"
 echo " valgrind:       [$VALGRIND]"
 fi
 echo ""
+if [test "$js_enabled" = "yes"]; then
 echo " npm:            [$NPM]"
 echo " npm packages:   [$npm_packages_avail]"
 if test "$build_tests" = "yes"; then
 echo " mocha:          [$MOCHA]"
 fi
 echo ""
+fi
