@@ -4,3 +4,4 @@
 0003-Do-not-rely-on-NPM-packages-or-running-P2X-JS-when-b.patch
 0005-Also-install-compress.js.patch
 0006-configure-switch-for-js-version.patch
+0007-Cleanup-configure.patch
