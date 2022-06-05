@@ -1,11 +1,8 @@
-p2x (0.6.11-2~1.gbp63025a) UNRELEASED; urgency=medium
+p2x (0.6.11-2) aiandit-unstable; urgency=medium
 
-  ** SNAPSHOT build @63025a29b5d42f09539c86753a20c0d16fc52e9f **
+  * Multi pkg version
 
-  * configure switch for js version
-  * Cleanup configure
-
- -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Fri, 03 Jun 2022 22:10:37 +0200
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Mon, 06 Jun 2022 00:44:31 +0200
 
 p2x (0.6.11-1) aiandit-unstable; urgency=medium
 
