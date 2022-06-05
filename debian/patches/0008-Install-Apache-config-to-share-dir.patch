@@ -1,0 +1,21 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Sun, 5 Jun 2022 11:15:58 +0200
+Subject: Install Apache config to share-dir
+
+---
+ src-js/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src-js/Makefile.am b/src-js/Makefile.am
+index 7892b18..b7f10e9 100644
+--- a/src-js/Makefile.am
++++ b/src-js/Makefile.am
+@@ -45,7 +45,7 @@ scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/sca
+ clean-local:
+ 	$(RM) -f $(generated_files)
+ 
+-apache_confd = $(DESTDIR)$(sysconfdir)/apache2/conf.d
++apache_confd = $(pkgdatadir)/etc/apache2/conf.d
+ 
+ node_module_names = most-xml tmp node-minify
+ 
