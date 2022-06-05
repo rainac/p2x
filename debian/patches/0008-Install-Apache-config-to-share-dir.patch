@@ -7,7 +7,7 @@ Subject: Install Apache config to share-dir
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 7892b18..07b4b7a 100644
+index 7892b18..065be13 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
 @@ -45,7 +45,7 @@ scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/sca
@@ -15,7 +15,7 @@ index 7892b18..07b4b7a 100644
  	$(RM) -f $(generated_files)
  
 -apache_confd = $(DESTDIR)$(sysconfdir)/apache2/conf.d
-+apache_confd = $(pkgdatadir)/etc/apache2
++apache_confd = $(DESTDIR)$(pkgdatadir)/etc/apache2
  
  node_module_names = most-xml tmp node-minify
  
