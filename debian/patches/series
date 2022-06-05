@@ -6,3 +6,4 @@
 0006-configure-switch-for-js-version.patch
 0007-Cleanup-configure.patch
 0008-Install-Apache-config-to-share-dir.patch
+0009-Install-scanner-c.xml.patch
