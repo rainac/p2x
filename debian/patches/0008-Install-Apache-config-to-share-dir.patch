@@ -3,11 +3,11 @@ Date: Sun, 5 Jun 2022 11:15:58 +0200
 Subject: Install Apache config to share-dir
 
 ---
- src-js/Makefile.am | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src-js/Makefile.am | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 7892b18..b7f10e9 100644
+index 7892b18..07b4b7a 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
 @@ -45,7 +45,7 @@ scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/sca
@@ -15,7 +15,16 @@ index 7892b18..b7f10e9 100644
  	$(RM) -f $(generated_files)
  
 -apache_confd = $(DESTDIR)$(sysconfdir)/apache2/conf.d
-+apache_confd = $(pkgdatadir)/etc/apache2/conf.d
++apache_confd = $(pkgdatadir)/etc/apache2
  
  node_module_names = most-xml tmp node-minify
  
+@@ -69,7 +69,7 @@ if acond_NPM_PKGS_AVAIL
+ 	cd $(instdir) $(foreach f, $(node_module_names), && npm link $(f))
+ endif
+ 	$(INSTALL) -d $(apache_confd)
+-	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2x-js.conf
++	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2xjs.conf
+ 
+ #install-data-local:
+ #	cp -r node_modules $(instdir)/node_modules
