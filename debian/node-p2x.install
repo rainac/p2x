@@ -1,2 +1,3 @@
 usr/bin/p2xjs
+usr/share/p2x/etc/apache2/p2xjs.conf etc/apache2/conf-available/p2xjs.conf
 usr/share/p2x/js/*
