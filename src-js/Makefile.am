@@ -45,7 +45,7 @@ scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/sca
 clean-local:
 	$(RM) -f $(generated_files)
 
-apache_confd = $(DESTDIR)$(sysconfdir)/apache2/conf.d
+apache_confd = $(DESTDIR)$(pkgdatadir)/etc/apache2
 
 node_module_names = most-xml tmp node-minify
 
@@ -69,7 +69,7 @@ if acond_NPM_PKGS_AVAIL
 	cd $(instdir) $(foreach f, $(node_module_names), && npm link $(f))
 endif
 	$(INSTALL) -d $(apache_confd)
-	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2x-js.conf
+	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2xjs.conf
 
 #install-data-local:
 #	cp -r node_modules $(instdir)/node_modules
