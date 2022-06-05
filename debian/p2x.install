@@ -1,3 +1,4 @@
 usr/bin/p2x
-usr/share/p2x/*
+usr/share/p2x/code-xml.rnc
+usr/share/p2x/code-xml.rng
 usr/share/doc/p2x/*

@@ -4,5 +4,5 @@ cd /usr/share/p2x/js
 
 for i in *.min.js; do
     echo rm $i
-    rm $i
+    rm -f $i
 done
