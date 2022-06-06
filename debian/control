@@ -20,7 +20,8 @@ Description: Flexible text parser with XML and JSON output
 
 Package: node-p2x
 Architecture: all
-Depends: ${misc:Depends}, p2x, npm
+Depends: ${misc:Depends}, npm
+Suggests: p2x
 Description: Flexible text parser with XML and JSON output
  P2X can parse structured text into trees with XML output. Flexible
  configuration allows definition of parenthesisation, unary or binary
