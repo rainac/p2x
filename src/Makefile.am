@@ -24,6 +24,7 @@ p2x_DEPENDENCIES =
 
 p2xtests_LDADD = -lcppunit
 
+schemas = code-xml.rnc
 
 generated_files = namespaces.hh code-xml.rnc scanner2.ll
 if acond_GENGETOPT_AVAIL
@@ -31,6 +32,7 @@ generated_files += p2x-opts.hh p2x-opts.cc
 endif
 if acond_TRANG_AVAIL
 generated_files += code-xml.rng
+schemas += code-xml.rng
 endif
 if acond_FLEX_AVAIL
 generated_files += $(patsubst %.ll,%.cc,$(p2x_FLEX_SRCS))
@@ -89,7 +91,7 @@ code-xml.rnc: code-xml.rnc.in
 instbasedir=$(pkgdatadir)
 instdir= $(instbasedir)
 
-inst_DATA = code-xml.rnc code-xml.rng
+inst_DATA = $(schemas)
 
 clean-local:
 	$(RM) -f $(generated_files)
