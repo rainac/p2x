@@ -1708,7 +1708,7 @@ struct TreeXMLWriter {
     }
 
     void setupNode(Token const *t) {
-      merged = m_xmlWriter.tokenInfo.canMerge(t, m_xmlWriter.options.merged);;
+      merged = m_xmlWriter.tokenInfo.canMerge(t, m_xmlWriter.options.merged);
     }
 
     int onEnter(Token const *t, Token const *parent) {
