@@ -77,7 +77,7 @@ testP2_indent_not_too_bad() {
 testP2X_indentation_logoff() {
 
     for kb in 1 2 3; do
-
+	:
     done
 
 }

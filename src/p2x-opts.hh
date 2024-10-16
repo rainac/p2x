@@ -126,8 +126,8 @@ struct gengetopt_args_info
   char * null_arg;	/**< @brief Null element name.  */
   char * null_orig;	/**< @brief Null element name original value given at command line.  */
   const char *null_help; /**< @brief Null element name help description.  */
-  int sparse_flag;	/**< @brief Safe some non-essential attributes, newlines and indents (default=off).  */
-  const char *sparse_help; /**< @brief Safe some non-essential attributes, newlines and indents help description.  */
+  int sparse_flag;	/**< @brief Save some non-essential attributes, newlines and indents (default=off).  */
+  const char *sparse_help; /**< @brief Save some non-essential attributes, newlines and indents help description.  */
   int write_xml_declaration_flag;	/**< @brief Emit XML declaration (with encoding) (default=off).  */
   const char *write_xml_declaration_help; /**< @brief Emit XML declaration (with encoding) help description.  */
   int write_bom_flag;	/**< @brief Emit byte order mark (BOM) character (default=off).  */

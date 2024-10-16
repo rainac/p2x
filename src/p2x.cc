@@ -32,7 +32,7 @@ Sie sollten eine Kopie der GNU Lesser General Public License zusammen
 mit diesem Programm erhalten haben. Wenn nicht, siehe
 <http://www.gnu.org/licenses/>.
 
-Copyright (C) 2011-2020 Johannes Willkomm
+Copyright (C) 2011-2024 Johannes Willkomm
 
 */
 
@@ -240,6 +240,24 @@ void TokenProto::print(std::ostream &aus) const {
   Token::print(aus);
   aus << "," << precedence << "," << mode << "," << associativity << ", " << endList << ")";
 }
+
+struct LiveArity {
+  Token const *m_s;
+  LiveArity(Token const *s) : m_s(s) {}
+  int operator()(Token const *s) const {
+    if (s->left == 0 and s->right == 0) return 0;
+    else if (s->left and s->right == 0) return 1;
+    else if (s->left and s->right) return 2;
+    else if (s->left == 0 and s->right) return 3;
+    return -1;
+  }
+  operator int() const {
+    return this->operator()(m_s);
+  }
+  bool operator ==(LiveArity const &o) const {
+    return this->operator()(m_s) == o;
+  }
+};
 
 struct TokenInfo {
   typedef std::map<std::string, unsigned> OpCodes;
@@ -511,11 +529,19 @@ struct TokenInfo {
   }
 
   TokenProto const *getProto(Token const * const t) const {
+#ifdef P2X_SAVE_PROTO_PTR
+    TokenProto const *res = t->proto;
+    if (not res) {
+#else
     TokenProto const *res = 0;
-    OpPrototypes::const_iterator it = opPrototypes.find(getOpCode(t));
-    if (it != opPrototypes.end()) {
-      res = &it->second;
+#endif
+      OpPrototypes::const_iterator it = opPrototypes.find(getOpCode(t));
+      if (it != opPrototypes.end()) {
+	res = &it->second;
+      }
+#ifdef P2X_SAVE_PROTO_PTR
     }
+#endif
     return res;
   }
   
@@ -648,6 +674,16 @@ struct TokenInfo {
     TokenProto const *proto = getProto(t);
     if (proto) {
       res = proto->endList;
+    }
+    return res;
+  }
+
+  bool canMerge(Token const * const t, bool globalMerge) const {
+    bool res = false;
+    TokenProto const *proto = getProto(t);
+    if (proto) {
+      res = (globalMerge or proto->outputMode == OUTPUT_MODE_MERGED)
+        and (proto->mode == MODE_BINARY or (proto->mode == MODE_UNARY_BINARY and LiveArity(t) == 2));
     }
     return res;
   }
@@ -873,24 +909,6 @@ struct Lexer : public P2XLexer {
   void setStream(std::istream &ins) { m_p2xLexer->setStream(ins); }
   ParserToken yylex() { return m_p2xLexer->yylex(); }
   std::string text() const { return m_p2xLexer->text(); }
-};
-
-struct LiveArity {
-  Token const *m_s;
-  LiveArity(Token const *s) : m_s(s) {}
-  int operator()(Token const *s) const {
-    if (s->left == 0 and s->right == 0) return 0;
-    else if (s->left and s->right == 0) return 1;
-    else if (s->left and s->right) return 2;
-    else if (s->left == 0 and s->right) return 3;
-    return -1;
-  }
-  operator int() const {
-    return this->operator()(m_s);
-  }
-  bool operator ==(LiveArity const &o) const {
-    return this->operator()(m_s) == o;
-  }
 };
 
 struct TokenTypeEqual {
@@ -1188,6 +1206,7 @@ struct Parser {
 
   Token *parse() {
     Token *first = 0;
+    TokenProto const* proto = 0;
     root = mkRoot();
     leastMap[tokenInfo.prec(root)] = root;
     bool endFound = false;
@@ -1200,6 +1219,10 @@ struct Parser {
         exit(4);
       }
 
+#ifdef P2X_SAVE_PROTO_PTR
+      proto = tokenInfo.getProto(first);
+      first->proto = proto;
+#endif
 
       Log(LS::DEBUG|LS::PARSE,  "Parser: next: " << *first
 	  << ": mode: " << tokenInfo.mode(first)
@@ -1263,25 +1286,48 @@ struct Parser {
         parser.endList = tokenInfo.endList(first);
         Token *last = parser.parse();
 
-        if (last->token == TOKEN_EOF) {
-          endFound = true;
-          first->right = parser.root->right;
-        } else {
-          first->right = last;
-          last->left = parser.root->right;
-        }
-        insertToken(first);
+        if (tokenInfo.assoc(first) != ASSOC_RIGHT) {
+          if (last->token == TOKEN_EOF) {
+            endFound = true;
+            first->right = parser.root->right;
+          } else {
+            first->right = last;
+            last->left = parser.root->right;
+          }
 
-        if (first->right) {
-          leastMap[tokenInfo.prec(first)] = first->right;
+          insertToken(first);
+
+          if (first->right) {
+            leastMap[tokenInfo.prec(first)] = first->right;
+          }
+
+          assert(last->right == 0);
+
+        } else {
+
+          if (last->token == TOKEN_EOF) {
+            endFound = true;
+            insertToken(first);
+            first->right = parser.root->right;
+            leastMap[tokenInfo.prec(first)] = first;
+          } else {
+            last->proto = proto;
+            insertToken(last);
+
+            assert(last->right == 0);
+
+            first->left = last->left;
+            last->left = first;
+            first->right = parser.root->right;
+            leastMap[tokenInfo.prec(first)] = last;
+          }
+
         }
 
         if (parser.root->ignore) {
           assert(first->ignore == 0);
           first->ignore = parser.root->ignore;
         }
-
-        assert(last->right == 0);
 
         first = last;
 
@@ -1478,6 +1524,7 @@ struct TreeXMLWriter {
       treewriterConf(),
       caSteps(false),
       caVersion(false),
+      commentVersion(false),
       writeRec(true),
       minStraightIndentLevel(135),
       encoding("default is in .ggo"),
@@ -1486,7 +1533,7 @@ struct TreeXMLWriter {
       textTagName("text"),
       nullName("null")
     {}
-    bool id, line, col, _char, prec, mode, type, code, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, loose, sparse, xmlDecl, bom, scanConf, parseConf, treewriterConf, caSteps, caVersion, writeRec;
+    bool id, line, col, _char, prec, mode, type, code, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, loose, sparse, xmlDecl, bom, scanConf, parseConf, treewriterConf, caSteps, caVersion, commentVersion, writeRec;
     unsigned minStraightIndentLevel;
     std::string encoding;
     std::string prefix_ca;
@@ -1661,9 +1708,7 @@ struct TreeXMLWriter {
     }
 
     void setupNode(Token const *t) {
-      merged = (m_xmlWriter.options.merged
-                or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED)
-        and (m_xmlWriter.tokenInfo.mode(t) == MODE_BINARY or (m_xmlWriter.tokenInfo.mode(t) == MODE_UNARY_BINARY and LiveArity(t) == 2));
+      merged = m_xmlWriter.tokenInfo.canMerge(t, m_xmlWriter.options.merged);
     }
 
     int onEnter(Token const *t, Token const *parent) {
@@ -1852,9 +1897,7 @@ struct TreeXMLWriter {
     }
 
     void setupNode(Token const *t) {
-      merged = (m_xmlWriter.options.merged
-                or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED)
-        and (m_xmlWriter.tokenInfo.mode(t) == MODE_BINARY or (m_xmlWriter.tokenInfo.mode(t) == MODE_UNARY_BINARY and LiveArity(t) == 2));
+      merged = m_xmlWriter.tokenInfo.canMerge(t, m_xmlWriter.options.merged);
     }
 
     int onEnter(Token const *t, Token const *parent) {
@@ -2021,8 +2064,7 @@ struct TreeXMLWriter {
       elemName = "op";
     }
 
-    bool const merged = options.merged 
-      or tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
+    bool const merged = tokenInfo.canMerge(t, options.merged);
     bool const tags = not(parent
                           and TokenTypeEqual(tokenInfo)(parent, t)
                           and merged);
@@ -2045,11 +2087,7 @@ struct TreeXMLWriter {
       aus << linebreak;
     }
     if (t->left != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML_Rec(t->left, aus, subindent, passParent, level+1);
+      writeXML_Rec(t->left, aus, subindent, t, level+1);
     } else if (t->right != 0 and not options.loose) {
       aus << indent << indentUnit << "<" << options.nullName << "/>" << linebreak;
     }
@@ -2066,12 +2104,11 @@ struct TreeXMLWriter {
       writeIgnoreXML(t->ignore, aus, subindent);
     }
     if (t->right != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) == ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML_Rec(t->right, aus, subindent, passParent, level+1);
-    } 
+      writeXML_Rec(t->right, aus, subindent, t, level+1);
+    } else if (not tags or (options.strict and
+			    t->left != 0 and merged and TokenTypeEqual(tokenInfo)(t, t->left))) {
+      aus << indent << "<" << options.nullName << "/>" << linebreak;
+    }
     if (tags) {
       if (caTextOnNewLine) {
         aus << indent;
@@ -2156,6 +2193,7 @@ struct TreeXMLWriter {
     aus << " loose='" << t.options.loose << "'";
     aus << " sparse='" << t.options.sparse << "'";
     aus << " type='" << t.options.type << "'";
+    aus << " xml-decl='" << t.options.xmlDecl << "'";
     aus << "/>" << linebreak;
   }
 
@@ -2169,7 +2207,7 @@ struct TreeXMLWriter {
 };
 
 static std::string getCopyright() {
-  return "Copyright (C) 2011-2020 Johannes Willkomm <johannes@johannes-willkomm.de>";
+  return "Copyright (C) 2011-2024 Johannes Willkomm <johannes@johannes-willkomm.de>";
 }
 
 char const *vcs_version = VCS_REVISION;
@@ -2182,16 +2220,22 @@ void writeVersionInfoXMLComment(TreeXMLWriter::Options const &, std::string cons
 void writeVersionInfoXML(TreeXMLWriter::Options const &opts, std::string const &indent, std::ostream &out) {
   if (opts.indent)
     out << indent;
+  std::string vs = PACKAGE_VERSION, major, minor, patch;
+  size_t pos = 0;
+  if ((pos = vs.find(".")) != std::string::npos) {
+    major = vs.substr(0, pos);
+    vs.erase(0, pos + 1);
+  }
+  if ((pos = vs.find(".")) != std::string::npos) {
+    minor = vs.substr(0, pos);
+    vs.erase(0, pos + 1);
+  }
+  patch = vs;
   out << "<" << opts.prefix_ca << ":version"
       << " name='P2X'"
       << " id='" << std::string(vcs_version).substr(0,8) << "'"
-      << " major='" << std::string(PACKAGE_VERSION).substr(0,1) << "'"
-      << " minor='" << std::string(PACKAGE_VERSION).substr(2,1) << "'"
-      << " patch='" << std::string(PACKAGE_VERSION).substr(4,1) << "'"
-      << ">";
-  out << "<!--";
-  out << "P2X version " << PACKAGE_VERSION << " (" << std::string(vcs_version).substr(0,8) << ")";
-  out << "-->";
+      << " major='" << major << "' minor='" << minor << "' patch='" << patch << "'>";
+  writeVersionInfoXMLComment(opts, indent, out);
   out << "</" << opts.prefix_ca << ":version>";
 }
 
@@ -2199,9 +2243,13 @@ void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
                   TreeXMLWriter::Options const &options, std::string const &indentUnit,
                   std::ostream &out, ScannerType scannerType) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
-  out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  writeVersionInfoXMLComment(options, indentUnit, out);
-  out << treeXMLWriter.linebreak;
+  if (options.xmlDecl) {
+    out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+  }
+  if (options.commentVersion) {
+    writeVersionInfoXMLComment(options, indentUnit, out);
+    out << treeXMLWriter.linebreak;
+  }
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "' ca:version='1.0'>" << treeXMLWriter.linebreak;
   if (options.caVersion) {
     writeVersionInfoXML(options, indentUnit, out);
@@ -2224,17 +2272,31 @@ void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
 }
 
 void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
-                     TreeXMLWriter::Options const &options, std::string const &indentUnit,
-                     std::ostream &out, ScannerType ) {
+		   TreeXMLWriter::Options const &options, std::string const &indentUnit,
+		   std::ostream &out, ScannerType scannerType) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
-  out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  writeVersionInfoXMLComment(options, indentUnit, out);
-  out << treeXMLWriter.linebreak;
+  if (options.xmlDecl) {
+    out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+  }
+  if (options.commentVersion) {
+    writeVersionInfoXMLComment(options, indentUnit, out);
+    out << treeXMLWriter.linebreak;
+  }
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:" << options.prefix_ca << "='" NAMESPACE_CA "'"
     " xmlns:" << options.prefix_ci << "='" NAMESPACE_CX "ignore/'>" << treeXMLWriter.linebreak;
   if (options.caVersion) {
     writeVersionInfoXML(options, indentUnit, out);
     out << treeXMLWriter.linebreak;
+  }
+  if (options.scanConf) {
+    out << treeXMLWriter.indentUnit << "<ca:scanner type='"
+        << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
+  }
+  if (options.treewriterConf) {
+    treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
+  }
+  if (options.parseConf) {
+    treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
   }
   treeXMLWriter.writeXML2_Stack(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
@@ -2773,12 +2835,18 @@ int main(int argc, char *argv[]) {
     indentUnit = args.indent_unit_arg[args.indent_unit_given -1];
   }
 
+  bool xmlDeclDefault = false;
   if (args.input_encoding_given>0) {
     options.encoding = args.input_encoding_arg[args.input_encoding_given -1];
-    options.xmlDecl = true;
+    xmlDeclDefault = true;
   } else {
     options.encoding = args.input_encoding_arg[0];
+  }
+
+  if (args.write_xml_declaration_given) {
     options.xmlDecl = args.write_xml_declaration_flag;
+  } else {
+    options.xmlDecl = xmlDeclDefault;
   }
 
   if (args.include_config_flag || args.element_scanner_flag) {
@@ -2793,9 +2861,14 @@ int main(int argc, char *argv[]) {
   if (args.element_ca_steps_flag) {
     options.caSteps = true;
   }
-  //  if (args.element_ca_version_flag) {
-    options.caVersion = true;
-    //}
+  // if (args.element_ca_version_given) {
+    // options.caVersion = args.element_ca_version_flag;
+  // }
+  // if (args.comment_version_given) {
+    // options.commentVersion = args.comment_version_flag;
+  // }
+  options.caVersion = true;
+  options.commentVersion = true;
   options.bom = args.write_bom_flag;
 
   std::ostream *_out = &std::cout;

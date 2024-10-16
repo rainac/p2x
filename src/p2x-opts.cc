@@ -63,7 +63,7 @@ const char *gengetopt_args_info_full_help[] = {
   "      --strict                  Strict output mode: paren children always\n                                  indicated by null elements  (default=off)",
   "  -l, --loose                   Loose output mode: never write null elements\n                                  (default=off)",
   "      --null=XML-Name           Null element name",
-  "  -w, --sparse                  Safe some non-essential attributes, newlines\n                                  and indents  (default=off)",
+  "  -w, --sparse                  Save some non-essential attributes, newlines\n                                  and indents  (default=off)",
   "      --write-xml-declaration   Emit XML declaration (with encoding)\n                                  (default=off)",
   "      --write-bom               Emit byte order mark (BOM) character\n                                  (default=off)",
   "  -O, --output-mode=Mode        Write output as normal (x) or alternative (y)\n                                  XML, or (J)SON or (M)ATLAB code\n                                  (default=`y')",
@@ -1464,7 +1464,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'w':	/* Safe some non-essential attributes, newlines and indents.  */
+        case 'w':	/* Save some non-essential attributes, newlines and indents.  */
         
         
           if (update_arg((void *)&(args_info->sparse_flag), 0, &(args_info->sparse_given),

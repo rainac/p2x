@@ -2,13 +2,14 @@
 generated_files = all_tests.sh test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh test_output_stability.sh forall_tests.sh
 
 good = val_tests test_reproduce_strict test_reproduce test_reparse	\
-parse_tests merge_tests p2x_tests test_output_stability indent_tests	\
-valgrind_tests output_mode_json_merged output_mode_json			\
-output_mode_matlab_merged output_mode_matlab cdecls p2xjs_mocha_tests	\
-test_cmp_js
+parse_tests parse_tests_merged parse_tests_merged_parens merge_tests	\
+p2x_tests test_output_stability indent_tests valgrind_tests		\
+output_mode_json_merged output_mode_json output_mode_matlab_merged	\
+output_mode_matlab cdecls
 
-# js tests
-# reproduce_ign test_cmp_js p2xjs_mocha_tests
+if acond_NPM_AVAIL
+good += p2xjs_mocha_tests test_cmp_js reproduce_ign
+endif
 
 bad = false_test
 

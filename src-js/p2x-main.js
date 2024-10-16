@@ -145,7 +145,7 @@ function readScannerConfig() {
         var configFile = options['scanner-config'][0]
         var homePath = process.env.P2X_HOME
         if (!homePath) throw('P2X_HOME must be set')
-        fs.readFile(homePath + '/share/p2x/scanner-' + configFile + '.xml', function(err, data) {
+        fs.readFile(homePath + '/share/p2x/js/scanner-' + configFile + '.json', function(err, data) {
             if (!err) {
                 loadScannerConfig('' + data)
             } else {

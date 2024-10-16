@@ -13,6 +13,9 @@ Token::Token() :
   left(), 
   right(),
   ignore(), 
+#ifdef P2X_SAVE_PROTO_PTR
+  proto(),
+#endif
   id(++count),
   line(), 
   column(),
@@ -21,7 +24,15 @@ Token::Token() :
 { }
 
 Token::Token(ParserToken token, std::string text, int line, int column, int character) : 
-  text(text), left(), right(), ignore(), id(++count), line(line), column(column), character(character), token(token)
+  text(text),
+  left(),
+  right(),
+  ignore(),
+#ifdef P2X_SAVE_PROTO_PTR
+  proto(),
+#endif
+  id(++count),
+  line(line), column(column), character(character), token(token)
 {}
 
 #ifdef DEBUG

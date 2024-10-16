@@ -83,6 +83,7 @@ NEWLINE binary 10
 "begin" paren "endblock"
 
 "bopen" paren "bclose" binary 2023
+"bropen" paren "brclose" binary 2023 right
 "uopen" paren "uclose" unary 2023
 "popen" paren "pclose" postfix 2023
 "ubopen" paren "ubclose" unary_binary 2023 3000
@@ -93,6 +94,7 @@ NEWLINE binary 10
 
 space ignore 1
 tab ignore 1
+"ignore" ignore 1
 
 # a very high priority binary operator
 "H" binary 4000

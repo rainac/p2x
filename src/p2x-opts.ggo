@@ -43,7 +43,7 @@ option "merged" m  "Collect children of equal operator chains, output all binary
 option "strict" -  "Strict output mode: paren children always indicated by null elements" flag off
 option "loose"  l  "Loose output mode: never write null elements" flag off
 option "null"   -  "Null element name" string typestr="XML-Name" optional
-option "sparse" w  "Safe some non-essential attributes, newlines and indents" flag off
+option "sparse" w  "Save some non-essential attributes, newlines and indents" flag off
 option "write-xml-declaration" -  "Emit XML declaration (with encoding)" flag off hidden
 option "write-bom" -  "Emit byte order mark (BOM) character" flag off hidden
 option "output-mode" O "Write output as normal (x) or alternative (y) XML, or (J)SON or (M)ATLAB code" string typestr="Mode" optional default="y"

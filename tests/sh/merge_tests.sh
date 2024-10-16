@@ -1,6 +1,5 @@
-#! /bin/zsh
+#! /bin/bash
 
-export SHUNIT_PARENT=$0
 . ./setup.sh
 
 checkParseTreeEqualLocal() {
@@ -17,6 +16,5 @@ test_ParseTreeEqual_r_1() {
 test_ParseTreeEqual_r_2() {
     checkParseTreeEqualLocal right2.exp "[r]([s](1, 2, 3), 4, 5)"
 }
-
 
 . ./myshunit2
