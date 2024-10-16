@@ -1286,25 +1286,48 @@ struct Parser {
         parser.endList = tokenInfo.endList(first);
         Token *last = parser.parse();
 
-        if (last->token == TOKEN_EOF) {
-          endFound = true;
-          first->right = parser.root->right;
-        } else {
-          first->right = last;
-          last->left = parser.root->right;
-        }
-        insertToken(first);
+        if (tokenInfo.assoc(first) != ASSOC_RIGHT) {
+          if (last->token == TOKEN_EOF) {
+            endFound = true;
+            first->right = parser.root->right;
+          } else {
+            first->right = last;
+            last->left = parser.root->right;
+          }
 
-        if (first->right) {
-          leastMap[tokenInfo.prec(first)] = first->right;
+          insertToken(first);
+
+          if (first->right) {
+            leastMap[tokenInfo.prec(first)] = first->right;
+          }
+
+          assert(last->right == 0);
+
+        } else {
+
+          if (last->token == TOKEN_EOF) {
+            endFound = true;
+            insertToken(first);
+            first->right = parser.root->right;
+            leastMap[tokenInfo.prec(first)] = first;
+          } else {
+            last->proto = proto;
+            insertToken(last);
+
+            assert(last->right == 0);
+
+            first->left = last->left;
+            last->left = first;
+            first->right = parser.root->right;
+            leastMap[tokenInfo.prec(first)] = last;
+          }
+
         }
 
         if (parser.root->ignore) {
           assert(first->ignore == 0);
           first->ignore = parser.root->ignore;
         }
-
-        assert(last->right == 0);
 
         first = last;
 
