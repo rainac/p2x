@@ -35,13 +35,16 @@ AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
 
 if [test "x$NPM" != "x"]; then
    npm_packages="most-xml tmp node-minify"
+   npm_packages_avail=yes
    for pkg in $npm_packages; do
        if ! $NPM list -g $pkg > /dev/null; then
-	  AC_MSG_ERROR([mandatory program node-js module "$pkg" is not installed
+          npm_packages_avail=
+          AC_MSG_WARN([mandatory program node-js module "$pkg" is not installed
 			please do "$NPM install -g $pkg"])
        fi
    done
 fi
+AM_CONDITIONAL(acond_NPM_PKGS_AVAIL, [test "$npm_packages_avail" != ""])
 
 AC_CHECK_PROGS([TRANG], [trang])
 AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])
@@ -241,10 +244,15 @@ echo " re2c:           [$RE2C]"
 echo " trang:          [$TRANG]"
 echo " gengetopt:      [$GENGETOPT]"
 echo " emacs:          [$EMACS]"
+if test "$build_tests" = "yes"; then
 echo " xmlstarlet:     [$XMLSTARLET]"
 echo " shunit2:        [$SHUNIT2]"
 echo " valgrind:       [$VALGRIND]"
+fi
 echo ""
 echo " npm:            [$NPM]"
+echo " npm packages:   [$npm_packages_avail]"
+if test "$build_tests" = "yes"; then
 echo " mocha:          [$MOCHA]"
+fi
 echo ""

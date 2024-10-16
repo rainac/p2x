@@ -1,8 +1,8 @@
 
 json_files = scanner-c.json
 
-instbasedir=$(pkgdatadir)
-instdir= $(instbasedir)/js
+instbasedir = $(pkgdatadir)
+instdir = $(instbasedir)/js
 
 dist_bin_SCRIPTS = p2xjs
 
@@ -12,9 +12,14 @@ unmin_files = $(ncd_files) scanner.js hashmap.js parse-xml.js parse-opts.js p2x.
 
 min_files = $(addsuffix .min.js, $(basename $(unmin_files)))
 
-generated_files = $(min_files) $(json_files)
+generated_files = $(json_files) node_modules_updated.txt
 
-project_files = $(generated_files) $(unmin_files)
+project_files = $(json_files) $(unmin_files)
+
+if acond_NPM_PKGS_AVAIL
+generated_files += $(min_files)
+project_files += $(min_files)
+endif
 
 inst_DATA = $(project_files)
 
@@ -23,10 +28,10 @@ gennc-common.js: token.ncd.js
 %.ncd.js: $(top_srcdir)/src/xml/%.ncd.xml
 	gennc -m JavaScript $^
 
-%.json: $(top_srcdir)/src/xml/%.xml $(node_modules) scanconf-xml2json.min.js
-	./p2xjs scanconf-xml2json -S $< -o $@
+%.json: ../examples/configs/%.json
+	cp $< $@
 
-%.min.js: %.js  compress.js $(node_modules)
+%.min.js: %.js compress.js node_modules_updated.txt
 	sed -e '/require/ s/.js/.min.js/' $< > $<.tmp
 	nodejs compress.js -o $@ $<.tmp
 	rm $<.tmp
@@ -40,7 +45,7 @@ scanner-setup.js: $(top_srcdir)/src/xsl/gen-js-scanner.xsl $(top_srcdir)/src/sca
 clean-local:
 	$(RM) -f $(generated_files)
 
-apache_confd=$(sysconfdir)/apache2/conf.d
+apache_confd = $(DESTDIR)$(sysconfdir)/apache2/conf.d
 
 node_module_names = most-xml tmp node-minify
 
@@ -48,14 +53,21 @@ node_modules = $(addprefix node_modules/, $(node_module_names))
 
 .PRECIOUS: node_modules/%
 
-node_modules/%:
-	npm link $*
+node_modules/%: node_modules_updated.txt
 
-$(instdir):
-	$(INSTALL) -d $@
+node_modules:
+	mkdir $@
 
-install-data-local: $(instdir)
+$(node_modules) node_modules_updated.txt: node_modules Makefile.am
+	touch node_modules_updated.txt
+if acond_NPM_PKGS_AVAIL
+	npm link $(node_module_names)
+endif
+
+install-data-local:
+if acond_NPM_PKGS_AVAIL
 	cd $(instdir) $(foreach f, $(node_module_names), && npm link $(f))
+endif
 	$(INSTALL) -d $(apache_confd)
 	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2x-js.conf
 

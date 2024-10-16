@@ -32,7 +32,11 @@ srcdir=$(dirname $BASH_SOURCE)
 P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $BASH_SOURCE)/..)}
 export P2X_HOME
 
-main_src=$mode.min.js
+if [[ "$@" == *"--unmin"* ]]; then
+    main_src=$mode.js
+else
+    main_src=$mode.min.js
+fi
 
 if test -r $srcdir/$main_src; then
     jsdir=$srcdir
@@ -47,8 +51,6 @@ file=$jsdir/$main_src
 
 if [[ "$@" == *"--debug"* ]]; then
     NODEOPTS=--inspect
-    file=$(dirname $file)/$(basename $file .min.js).js
-elif [[ "$@" == *"--unmin"* ]]; then
     file=$(dirname $file)/$(basename $file .min.js).js
 elif [[ "$@" == *"--inspect"* ]]; then
     NODEOPTS=--inspect
