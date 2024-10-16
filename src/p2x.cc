@@ -1206,7 +1206,9 @@ struct Parser {
 
   Token *parse() {
     Token *first = 0;
+#ifdef P2X_SAVE_PROTO_PTR
     TokenProto const* proto = 0;
+#endif
     root = mkRoot();
     leastMap[tokenInfo.prec(root)] = root;
     bool endFound = false;
