@@ -7,7 +7,7 @@ Subject: Also install compress.js
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 2ebb0e7..7892b18 100644
+index 76ac9b9..597431e 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
 @@ -8,7 +8,7 @@ dist_bin_SCRIPTS = p2xjs

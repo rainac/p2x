@@ -1,8 +1,8 @@
 0004-Octave-does-not-exit-cleanly-when-run-in-cowrunner.patch
 0006-Adapt-script-to-install-pkgs-in-cowbuilders.patch
 0007-Can-give-VCS-version-by-configure-flag.patch
-0003-Do-not-rely-on-NPM-packages-or-running-P2X-JS-when-b.patch
 0005-Also-install-compress.js.patch
+0003-Do-not-rely-on-NPM-packages-or-running-P2X-JS-when-b.patch
 0006-configure-switch-for-js-version.patch
 0007-Cleanup-configure.patch
 0008-Install-Apache-config-to-share-dir.patch

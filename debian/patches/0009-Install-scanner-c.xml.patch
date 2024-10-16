@@ -1,5 +1,5 @@
 From: Johannes Willkomm <johannes@johannes-willkomm.de>
-Date: Mon, 6 Jun 2022 00:01:36 +0200
+Date: Wed, 16 Oct 2024 22:59:49 +0200
 Subject: Install scanner-c.xml
 
 ---
@@ -7,15 +7,15 @@ Subject: Install scanner-c.xml
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/Makefile.am b/src/Makefile.am
-index 744aeb4..e6d0739 100644
+index 706454e..dae527e 100644
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
-@@ -89,7 +89,7 @@ code-xml.rnc: code-xml.rnc.in
+@@ -91,7 +91,7 @@ code-xml.rnc: code-xml.rnc.in
  instbasedir=$(pkgdatadir)
  instdir= $(instbasedir)
  
--inst_DATA = code-xml.rnc code-xml.rng
-+inst_DATA = code-xml.rnc code-xml.rng xml/scanner-c.xml
+-inst_DATA = $(schemas)
++inst_DATA = $(schemas) xml/scanner-c.xml
  
  clean-local:
  	$(RM) -f $(generated_files)

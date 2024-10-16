@@ -7,7 +7,7 @@ Subject: configure switch for js version
  1 file changed, 12 insertions(+)
 
 diff --git a/configure.ac b/configure.ac
-index 5c10189..00f1ec0 100644
+index 7f20fd0..ede883e 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -33,6 +33,15 @@ AM_CONDITIONAL(acond_GENGETOPT_AVAIL, [test "x$GENGETOPT" != "x"])
@@ -34,7 +34,7 @@ index 5c10189..00f1ec0 100644
  AM_CONDITIONAL(acond_NPM_PKGS_AVAIL, [test "$npm_packages_avail" != ""])
  
  AC_CHECK_PROGS([TRANG], [trang])
-@@ -243,9 +253,11 @@ echo " shunit2:        [$SHUNIT2]"
+@@ -255,9 +265,11 @@ echo " shunit2:        [$SHUNIT2]"
  echo " valgrind:       [$VALGRIND]"
  fi
  echo ""

@@ -1,16 +1,17 @@
 From: Johannes Willkomm <johannes@johannes-willkomm.de>
-Date: Mon, 30 May 2022 12:26:50 +0200
+Date: Wed, 16 Oct 2024 22:56:43 +0200
 Subject: Do not rely on NPM packages or running P2X JS when building
 
+# Conflicts:
+#	tests/sh/Makefile.am
 ---
- configure.ac         | 10 +++++++++-
- src-js/Makefile.am   | 38 +++++++++++++++++++++++++-------------
- src-js/p2xjs         |  8 +++++---
- tests/sh/Makefile.am |  7 +++++--
- 4 files changed, 44 insertions(+), 19 deletions(-)
+ configure.ac       | 10 +++++++++-
+ src-js/Makefile.am | 38 +++++++++++++++++++++++++-------------
+ src-js/p2xjs       |  8 +++++---
+ 3 files changed, 39 insertions(+), 17 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 621b643..5c10189 100644
+index 3d4374c..7f20fd0 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -35,13 +35,16 @@ AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
@@ -31,7 +32,7 @@ index 621b643..5c10189 100644
  
  AC_CHECK_PROGS([TRANG], [trang])
  AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])
-@@ -234,10 +237,15 @@ echo " re2c:           [$RE2C]"
+@@ -246,10 +249,15 @@ echo " re2c:           [$RE2C]"
  echo " trang:          [$TRANG]"
  echo " gengetopt:      [$GENGETOPT]"
  echo " emacs:          [$EMACS]"
@@ -48,7 +49,7 @@ index 621b643..5c10189 100644
 +fi
  echo ""
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 76ac9b9..2ebb0e7 100644
+index 597431e..7892b18 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
 @@ -1,8 +1,8 @@
@@ -130,7 +131,7 @@ index 76ac9b9..2ebb0e7 100644
  	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2x-js.conf
  
 diff --git a/src-js/p2xjs b/src-js/p2xjs
-index c77b0d8..83dd40c 100755
+index e0a4457..f2242e3 100755
 --- a/src-js/p2xjs
 +++ b/src-js/p2xjs
 @@ -32,7 +32,11 @@ srcdir=$(dirname $BASH_SOURCE)
@@ -145,8 +146,8 @@ index c77b0d8..83dd40c 100755
 +fi
  
  if test -r $srcdir/$main_src; then
-     file=$srcdir/$main_src
-@@ -46,8 +50,6 @@ fi
+     jsdir=$srcdir
+@@ -48,8 +52,6 @@ file=$jsdir/$main_src
  if [[ "$@" == *"--debug"* ]]; then
      NODEOPTS=--inspect
      file=$(dirname $file)/$(basename $file .min.js).js
@@ -155,21 +156,3 @@ index c77b0d8..83dd40c 100755
  elif [[ "$@" == *"--inspect"* ]]; then
      NODEOPTS=--inspect
  fi
-diff --git a/tests/sh/Makefile.am b/tests/sh/Makefile.am
-index ea7fcc8..d40b8fa 100644
---- a/tests/sh/Makefile.am
-+++ b/tests/sh/Makefile.am
-@@ -4,8 +4,11 @@ generated_files = all_tests.sh test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh te
- good = val_tests test_reproduce_strict test_reproduce test_reparse	\
- parse_tests merge_tests p2x_tests test_output_stability indent_tests	\
- valgrind_tests output_mode_json_merged output_mode_json			\
--output_mode_matlab_merged output_mode_matlab cdecls p2xjs_mocha_tests	\
--test_cmp_js
-+output_mode_matlab_merged output_mode_matlab cdecls
-+
-+if acond_NPM_PKGS_AVAIL
-+good += p2xjs_mocha_tests test_cmp_js
-+endif
- 
- # js tests
- # reproduce_ign test_cmp_js p2xjs_mocha_tests
