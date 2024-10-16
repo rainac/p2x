@@ -1,5 +1,8 @@
 
-set -o shwordsplit
+if [[ "$ZSH_NAME" == zsh ]]; then
+    echo "is zsh"
+    set -o shwordsplit
+fi
 
 export LANG=C # for grep used in shunit2 when running with zsh, depends on english output
 

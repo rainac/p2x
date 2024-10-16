@@ -1,17 +1,12 @@
-#! /bin/zsh
+#! /bin/bash
 
 # P2X shunit2 test suite: installation scripts
 #
 # This suite tries to checkout the source and install P2X.
 
-zmodload zsh/mathfunc
-set -o shwordsplit
-echo $0
-export SHUNIT_PARENT=$0
 export LANG=C # for grep used in shunit2, depends on english output
 export TMP=${TMP:-/tmp}
 
-#P2X_SOURCE=${P2X_SOURCE:-https://github.com/rainac/p2x.git}
 P2X_SOURCE=${P2X_SOURCE:-$(readlink -f ../..)}
 
 runInstallation() {
@@ -41,6 +36,9 @@ runInstallation() {
 
     test -x $TMP/p2x-build-test/bin/p2x
     assertEquals "P2X executable must be installed" 0 $?
+
+    $TMP/p2x-build-test/bin/p2x --version
+    assertEquals "P2X executable must run" 0 $?
 
     cd ..
     rm -rf p2x-tmp

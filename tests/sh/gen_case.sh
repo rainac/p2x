@@ -1,4 +1,4 @@
-#! /bin/zsh
+#! /bin/bash
 
 #set -x
 
@@ -15,4 +15,3 @@ P2X=${P2X:-p2x}
 yes "$WORD" | dd of=$infile ibs=$(( ${#WORD} + 1))c cbs=${#WORD}c count=$(($IN_KB*1024/${#WORD})) conv=block 2> /dev/null
 
 echo "1" >> $infile
-
