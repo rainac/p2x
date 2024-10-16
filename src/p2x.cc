@@ -2195,16 +2195,22 @@ void writeVersionInfoXMLComment(TreeXMLWriter::Options const &, std::string cons
 void writeVersionInfoXML(TreeXMLWriter::Options const &opts, std::string const &indent, std::ostream &out) {
   if (opts.indent)
     out << indent;
+  std::string vs = PACKAGE_VERSION, major, minor, patch;
+  size_t pos = 0;
+  if ((pos = vs.find(".")) != std::string::npos) {
+    major = vs.substr(0, pos);
+    vs.erase(0, pos + 1);
+  }
+  if ((pos = vs.find(".")) != std::string::npos) {
+    minor = vs.substr(0, pos);
+    vs.erase(0, pos + 1);
+  }
+  patch = vs;
   out << "<" << opts.prefix_ca << ":version"
       << " name='P2X'"
       << " id='" << std::string(vcs_version).substr(0,8) << "'"
-      << " major='" << std::string(PACKAGE_VERSION).substr(0,1) << "'"
-      << " minor='" << std::string(PACKAGE_VERSION).substr(2,1) << "'"
-      << " patch='" << std::string(PACKAGE_VERSION).substr(4,1) << "'"
-      << ">";
-  out << "<!--";
-  out << "P2X version " << PACKAGE_VERSION << " (" << std::string(vcs_version).substr(0,8) << ")";
-  out << "-->";
+      << " major='" << major << "' minor='" << minor << "' patch='" << patch << "'>";
+  writeVersionInfoXMLComment(opts, indent, out);
   out << "</" << opts.prefix_ca << ":version>";
 }
 
