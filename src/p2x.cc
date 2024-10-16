@@ -32,7 +32,7 @@ Sie sollten eine Kopie der GNU Lesser General Public License zusammen
 mit diesem Programm erhalten haben. Wenn nicht, siehe
 <http://www.gnu.org/licenses/>.
 
-Copyright (C) 2011-2020 Johannes Willkomm
+Copyright (C) 2011-2024 Johannes Willkomm
 
 */
 
@@ -2184,7 +2184,7 @@ struct TreeXMLWriter {
 };
 
 static std::string getCopyright() {
-  return "Copyright (C) 2011-2020 Johannes Willkomm <johannes@johannes-willkomm.de>";
+  return "Copyright (C) 2011-2024 Johannes Willkomm <johannes@johannes-willkomm.de>";
 }
 
 char const *vcs_version = VCS_REVISION;
