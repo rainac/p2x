@@ -4,7 +4,10 @@
 # See the file p2x.cc for copying conditions.  
 #
 
-SUBDIRS = src examples tests
+SUBDIRS = examples tests
+if acond_CPLUSPLUS_ENABLED
+SUBDIRS += src
+endif
 if acond_NPM_AVAIL
 SUBDIRS += src-js
 endif

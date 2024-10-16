@@ -20,19 +20,6 @@ AC_PROG_LN_S
 AC_PROG_RANLIB
 AC_PROG_LEX([yywrap])
 
-AC_CHECK_TOOL([STRIP], [strip], [strip-for-host-system-was-not-found])
-AC_CHECK_PROGS([CP], [cp copy])
-AC_CHECK_PROGS([RM], [rm del])
-AC_CHECK_PROGS([MV], [mv rename])
-AC_CHECK_PROGS([BASENAME], [basename])
-AC_CHECK_PROGS([GHEAD], [ghead head])
-
-AC_CHECK_PROGS([GENGETOPT], [gengetopt])
-AM_CONDITIONAL(acond_GENGETOPT_AVAIL, [test "x$GENGETOPT" != "x"])
-
-AC_CHECK_PROGS([NPM], [npm])
-AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
-
 AC_ARG_ENABLE([js], [  --enable-js    Enable install of P2X JS implementation.
   --disable-js   No VCS version file.], [
       js_enabled=$enableval
@@ -42,6 +29,9 @@ AC_ARG_ENABLE([js], [  --enable-js    Enable install of P2X JS implementation.
 AM_CONDITIONAL(acond_JS_ENABLED, [test "$js_enabled" = "yes"])
 
 if [test "$js_enabled" = "yes"]; then
+
+AC_CHECK_PROGS([NPM], [npm])
+
 if [test "x$NPM" != "x"]; then
    npm_packages="most-xml tmp node-minify"
    npm_packages_avail=yes
@@ -54,13 +44,25 @@ if [test "x$NPM" != "x"]; then
    done
 fi
 fi
+AM_CONDITIONAL(acond_NPM_AVAIL, [test "x$NPM" != "x"])
 AM_CONDITIONAL(acond_NPM_PKGS_AVAIL, [test "$npm_packages_avail" != ""])
 
 AC_CHECK_PROGS([TRANG], [trang])
 AM_CONDITIONAL(acond_TRANG_AVAIL, [test "x$TRANG" != "x"])
 
+
+AC_ARG_ENABLE([cplusplus], [  --enable-cplusplus    Enable install of P2X CPLUSPLUS implementation.
+  --disable-cplusplus   No VCS version file.], [
+      cplusplus_enabled=$enableval
+], [
+      cplusplus_enabled=yes
+])
+AM_CONDITIONAL(acond_CPLUSPLUS_ENABLED, [test "$cplusplus_enabled" = "yes"])
+
+if [test "$cplusplus_enabled" = "yes"]; then
+AC_CHECK_PROGS([GENGETOPT], [gengetopt])
+
 AC_CHECK_PROGS([FLEX], [flex])
-AM_CONDITIONAL(acond_FLEX_AVAIL, [test "x$FLEX" != "x"])
 if test "x$FLEX" = "x"; then
   AC_MSG_ERROR([mandatory program flex was not found])
 fi
@@ -86,7 +88,6 @@ else
    defval_STATIC_BUILD=0
 fi
 AC_DEFINE_UNQUOTED([P2X_STATIC_BUILD], [$defval_STATIC_BUILD], [1: static build])
-AM_CONDITIONAL(acond_STATIC_BUILD, [test "x$static_build" = "xyes"])
 
 AC_ARG_ENABLE([debug], [  --enable-debug         Build debugally linked executables.
   --disable-debug        Build dynamically linked executables.], [
@@ -104,7 +105,17 @@ else
    defval_DEBUG_BUILD=0
 fi
 AC_DEFINE_UNQUOTED([P2X_DEBUG_BUILD], [$defval_DEBUG_BUILD], [1: debug build])
-AM_CONDITIONAL(acond_DEBUG_BUILD, [test "x$debug_build" = "xyes"])
+
+fi
+
+AM_CONDITIONAL(acond_GENGETOPT_AVAIL, [test "$GENGETOPT" != ""])
+AM_CONDITIONAL(acond_FLEX_AVAIL, [test "$FLEX" != ""])
+AM_CONDITIONAL(acond_RE2C_AVAIL, [test "$FLEX" != ""])
+AM_CONDITIONAL(acond_STATIC_BUILD, [test "$static_build" = "yes"])
+AM_CONDITIONAL(acond_DEBUG_BUILD, [test "$debug_build" = "yes"])
+
+AC_CHECK_PROGS([EMACS], [emacs])
+AM_CONDITIONAL(acond_EMACS_AVAIL, [test "x$EMACS" != "x"])
 
 AC_ARG_ENABLE([saveprotoptr], [  --enable-saveprotoptr         Store ptr to prototype in each token.
   --disable-static        Do not store ptr to prototype in each token.], [
