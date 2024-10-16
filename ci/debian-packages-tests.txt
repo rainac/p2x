@@ -1,0 +1,14 @@
+g++
+flex
+xsltproc
+make
+autoconf
+automake
+zsh
+shunit2
+xmlstarlet
+python3
+octave
+libcppunit-dev
+trang
+valgrind
