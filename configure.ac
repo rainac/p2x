@@ -53,7 +53,7 @@ if test "x$FLEX" = "x"; then
 fi
 
 AC_CHECK_PROGS([RE2C], [re2c])
-AM_CONDITIONAL(acond_RE2C_AVAIL, [test "x$FLEX" != "x"])
+AM_CONDITIONAL(acond_RE2C_AVAIL, [test "x$RE2C" != "x"])
 
 AC_CHECK_PROGS([EMACS], [emacs])
 AM_CONDITIONAL(acond_EMACS_AVAIL, [test "x$EMACS" != "x"])
