@@ -1501,6 +1501,7 @@ struct TreeXMLWriter {
       treewriterConf(),
       caSteps(false),
       caVersion(false),
+      commentVersion(false),
       writeRec(true),
       minStraightIndentLevel(135),
       encoding("default is in .ggo"),
@@ -1509,7 +1510,7 @@ struct TreeXMLWriter {
       textTagName("text"),
       nullName("null")
     {}
-    bool id, line, col, _char, prec, mode, type, code, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, loose, sparse, xmlDecl, bom, scanConf, parseConf, treewriterConf, caSteps, caVersion, writeRec;
+    bool id, line, col, _char, prec, mode, type, code, indent, indentLogarithmic, newlineAsBr, newlineAsEntity, merged, strict, loose, sparse, xmlDecl, bom, scanConf, parseConf, treewriterConf, caSteps, caVersion, commentVersion, writeRec;
     unsigned minStraightIndentLevel;
     std::string encoding;
     std::string prefix_ca;
@@ -2169,6 +2170,7 @@ struct TreeXMLWriter {
     aus << " loose='" << t.options.loose << "'";
     aus << " sparse='" << t.options.sparse << "'";
     aus << " type='" << t.options.type << "'";
+    aus << " xml-decl='" << t.options.xmlDecl << "'";
     aus << "/>" << linebreak;
   }
 
@@ -2218,9 +2220,13 @@ void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
                   TreeXMLWriter::Options const &options, std::string const &indentUnit,
                   std::ostream &out, ScannerType scannerType) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
-  out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  writeVersionInfoXMLComment(options, indentUnit, out);
-  out << treeXMLWriter.linebreak;
+  if (options.xmlDecl) {
+    out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+  }
+  if (options.commentVersion) {
+    writeVersionInfoXMLComment(options, indentUnit, out);
+    out << treeXMLWriter.linebreak;
+  }
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:ca='" NAMESPACE_CA "' ca:version='1.0'>" << treeXMLWriter.linebreak;
   if (options.caVersion) {
     writeVersionInfoXML(options, indentUnit, out);
@@ -2243,17 +2249,31 @@ void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
 }
 
 void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
-                     TreeXMLWriter::Options const &options, std::string const &indentUnit,
-                     std::ostream &out, ScannerType ) {
+		   TreeXMLWriter::Options const &options, std::string const &indentUnit,
+		   std::ostream &out, ScannerType scannerType) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
-  out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
-  writeVersionInfoXMLComment(options, indentUnit, out);
-  out << treeXMLWriter.linebreak;
+  if (options.xmlDecl) {
+    out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
+  }
+  if (options.commentVersion) {
+    writeVersionInfoXMLComment(options, indentUnit, out);
+    out << treeXMLWriter.linebreak;
+  }
   out << "<code-xml xmlns='" NAMESPACE_CX "' xmlns:" << options.prefix_ca << "='" NAMESPACE_CA "'"
     " xmlns:" << options.prefix_ci << "='" NAMESPACE_CX "ignore/'>" << treeXMLWriter.linebreak;
   if (options.caVersion) {
     writeVersionInfoXML(options, indentUnit, out);
     out << treeXMLWriter.linebreak;
+  }
+  if (options.scanConf) {
+    out << treeXMLWriter.indentUnit << "<ca:scanner type='"
+        << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
+  }
+  if (options.treewriterConf) {
+    treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
+  }
+  if (options.parseConf) {
+    treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
   }
   treeXMLWriter.writeXML2_Stack(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
@@ -2792,12 +2812,18 @@ int main(int argc, char *argv[]) {
     indentUnit = args.indent_unit_arg[args.indent_unit_given -1];
   }
 
+  bool xmlDeclDefault = false;
   if (args.input_encoding_given>0) {
     options.encoding = args.input_encoding_arg[args.input_encoding_given -1];
-    options.xmlDecl = true;
+    xmlDeclDefault = true;
   } else {
     options.encoding = args.input_encoding_arg[0];
+  }
+
+  if (args.write_xml_declaration_given) {
     options.xmlDecl = args.write_xml_declaration_flag;
+  } else {
+    options.xmlDecl = xmlDeclDefault;
   }
 
   if (args.include_config_flag || args.element_scanner_flag) {
@@ -2812,9 +2838,14 @@ int main(int argc, char *argv[]) {
   if (args.element_ca_steps_flag) {
     options.caSteps = true;
   }
-  //  if (args.element_ca_version_flag) {
-    options.caVersion = true;
-    //}
+  // if (args.element_ca_version_given) {
+    // options.caVersion = args.element_ca_version_flag;
+  // }
+  // if (args.comment_version_given) {
+    // options.commentVersion = args.comment_version_flag;
+  // }
+  options.caVersion = true;
+  options.commentVersion = true;
   options.bom = args.write_bom_flag;
 
   std::ostream *_out = &std::cout;
