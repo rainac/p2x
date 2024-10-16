@@ -25,4 +25,38 @@ testParseTreeEqual_double_par_binary_right() {
     checkParseTreeEqual brparbrpar.exp "[brclose]([bropen](A, 1), [bropen](B, 2), C)" "-m"
 }
 
+
+testParseTreeEqual_double_par_binary_br1() {
+    checkParseTreeEqual bparbpar-br.exp "[bopen]([bopen](A, [bclose](1, B)), [JUXTA](2, C))"
+    checkParseTreeEqual bparbpar-br.exp "[bopen](A, [bclose](1, B), [JUXTA](2, C))" "-m"
+}
+
+testParseTreeEqual_double_par_binary_right_br1() {
+    checkParseTreeEqual brparbrpar-br.exp "[bropen](A, [JUXTA](1, [brclose]([bropen](B, 2), C)))"
+    checkParseTreeEqual brparbrpar-br.exp "[bropen](A, [JUXTA](1, [brclose]([bropen](B, 2), C)))" "-m"
+}
+
+
+
+testParseTreeEqual_double_par_binary_br2() {
+    checkParseTreeEqual bparbpar-br2.exp "[bopen]([bopen](A, [bclose](1, B)), 2)"
+    checkParseTreeEqual bparbpar-br2.exp "[bopen](A, [bclose](1, B), 2)" "-m"
+}
+
+testParseTreeEqual_double_par_binary_right_br2() {
+    checkParseTreeEqual brparbrpar-br2.exp "[brclose]([bropen](A, 1), [bropen](B, [JUXTA](2, C)))"
+    checkParseTreeEqual brparbrpar-br2.exp "[brclose]([bropen](A, 1), [bropen](B, [JUXTA](2, C)))" "-m"
+}
+
+
+testParseTreeEqual_double_par_binary_br3() {
+    checkParseTreeEqual bparbpar-br3.exp "[bopen]([bopen](A, [bclose](1, B)), 2)"
+    checkParseTreeEqual bparbpar-br3.exp "[bopen](A, [bclose](1, B), 2)" "-m"
+}
+
+testParseTreeEqual_double_par_binary_right_br3() {
+    checkParseTreeEqual brparbrpar-br3.exp "[bropen](A, [JUXTA](1, [brclose]([bropen](B, 2), C)))"
+    checkParseTreeEqual brparbrpar-br3.exp "[bropen](A, [JUXTA](1, [brclose]([bropen](B, 2), C)))" "-m"
+}
+
 . ./myshunit2

@@ -94,6 +94,7 @@ NEWLINE binary 10
 
 space ignore 1
 tab ignore 1
+"ignore" ignore 1
 
 # a very high priority binary operator
 "H" binary 4000
