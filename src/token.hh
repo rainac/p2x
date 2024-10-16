@@ -8,6 +8,7 @@ See the file p2x.cc for copying conditions.
 #include <iostream>
 #include <string>
 #include <stdio.h>
+#include "config.h"
 #include "token.ncd.enum.hh"
 
 struct Token {
@@ -15,6 +16,10 @@ struct Token {
   std::string text, fullText;
 
   Token *left, *right, *ignore;
+
+#ifdef P2X_SAVE_PROTO_PTR
+  struct TokenProto const* proto;
+#endif
 
   int id, line, column, character;
 

@@ -511,11 +511,19 @@ struct TokenInfo {
   }
 
   TokenProto const *getProto(Token const * const t) const {
+#ifdef P2X_SAVE_PROTO_PTR
+    TokenProto const *res = t->proto;
+    if (not res) {
+#else
     TokenProto const *res = 0;
-    OpPrototypes::const_iterator it = opPrototypes.find(getOpCode(t));
-    if (it != opPrototypes.end()) {
-      res = &it->second;
+#endif
+      OpPrototypes::const_iterator it = opPrototypes.find(getOpCode(t));
+      if (it != opPrototypes.end()) {
+	res = &it->second;
+      }
+#ifdef P2X_SAVE_PROTO_PTR
     }
+#endif
     return res;
   }
   
@@ -1188,6 +1196,7 @@ struct Parser {
 
   Token *parse() {
     Token *first = 0;
+    TokenProto const* proto = 0;
     root = mkRoot();
     leastMap[tokenInfo.prec(root)] = root;
     bool endFound = false;
@@ -1200,6 +1209,10 @@ struct Parser {
         exit(4);
       }
 
+#ifdef P2X_SAVE_PROTO_PTR
+      proto = tokenInfo.getProto(first);
+      first->proto = proto;
+#endif
 
       Log(LS::DEBUG|LS::PARSE,  "Parser: next: " << *first
 	  << ": mode: " << tokenInfo.mode(first)

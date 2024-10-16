@@ -93,6 +93,18 @@ fi
 AC_DEFINE_UNQUOTED([P2X_DEBUG_BUILD], [$defval_DEBUG_BUILD], [1: debug build])
 AM_CONDITIONAL(acond_DEBUG_BUILD, [test "x$debug_build" = "xyes"])
 
+AC_ARG_ENABLE([saveprotoptr], [  --enable-saveprotoptr         Store ptr to prototype in each token.
+  --disable-static        Do not store ptr to prototype in each token.], [
+      saveprotoptr=$enableval
+], [
+      saveprotoptr=yes
+])
+AC_MSG_CHECKING([setting saveprotoptr])
+AC_MSG_RESULT([saveprotoptr=$saveprotoptr])
+if test "$saveprotoptr" = "yes"; then
+   AC_DEFINE_UNQUOTED([P2X_SAVE_PROTO_PTR], [1], [1: static build])
+fi
+
 AC_ARG_ENABLE([tests], [  --enable-tests         Build test code.], [
       build_tests=$enableval
 ], [ 
