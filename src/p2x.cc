@@ -2063,11 +2063,7 @@ struct TreeXMLWriter {
       aus << linebreak;
     }
     if (t->left != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) != ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML_Rec(t->left, aus, subindent, passParent, level+1);
+      writeXML_Rec(t->left, aus, subindent, t, level+1);
     } else if (t->right != 0 and not options.loose) {
       aus << indent << indentUnit << "<" << options.nullName << "/>" << linebreak;
     }
@@ -2084,12 +2080,11 @@ struct TreeXMLWriter {
       writeIgnoreXML(t->ignore, aus, subindent);
     }
     if (t->right != 0) {
-      Token const *passParent = 0;
-      if (merged and tokenInfo.assoc(t) == ASSOC_RIGHT) {
-        passParent = t;
-      }
-      writeXML_Rec(t->right, aus, subindent, passParent, level+1);
-    } 
+      writeXML_Rec(t->right, aus, subindent, t, level+1);
+    } else if (not tags or (options.strict and
+			    t->left != 0 and merged and TokenTypeEqual(tokenInfo)(t, t->left))) {
+      aus << indent << "<" << options.nullName << "/>" << linebreak;
+    }
     if (tags) {
       if (caTextOnNewLine) {
         aus << indent;
