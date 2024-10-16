@@ -1,3 +1,9 @@
+p2x (0.6.12-1) aiandit-unstable; urgency=medium
+
+  * Just suggest
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Wed, 16 Oct 2024 22:43:42 +0200
+
 p2x (0.6.11-2) aiandit-unstable; urgency=medium
 
   * Multi pkg version
