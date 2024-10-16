@@ -91,7 +91,7 @@ code-xml.rnc: code-xml.rnc.in
 instbasedir=$(pkgdatadir)
 instdir= $(instbasedir)
 
-inst_DATA = $(schemas)
+inst_DATA = $(schemas) xml/scanner-c.xml
 
 clean-local:
 	$(RM) -f $(generated_files)
