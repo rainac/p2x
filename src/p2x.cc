@@ -1311,7 +1311,6 @@ struct Parser {
             first->right = parser.root->right;
             leastMap[tokenInfo.prec(first)] = first;
           } else {
-            last->proto = proto;
             insertToken(last);
 
             assert(last->right == 0);
