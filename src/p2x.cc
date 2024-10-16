@@ -241,6 +241,24 @@ void TokenProto::print(std::ostream &aus) const {
   aus << "," << precedence << "," << mode << "," << associativity << ", " << endList << ")";
 }
 
+struct LiveArity {
+  Token const *m_s;
+  LiveArity(Token const *s) : m_s(s) {}
+  int operator()(Token const *s) const {
+    if (s->left == 0 and s->right == 0) return 0;
+    else if (s->left and s->right == 0) return 1;
+    else if (s->left and s->right) return 2;
+    else if (s->left == 0 and s->right) return 3;
+    return -1;
+  }
+  operator int() const {
+    return this->operator()(m_s);
+  }
+  bool operator ==(LiveArity const &o) const {
+    return this->operator()(m_s) == o;
+  }
+};
+
 struct TokenInfo {
   typedef std::map<std::string, unsigned> OpCodes;
   OpCodes opCodes;
@@ -660,6 +678,16 @@ struct TokenInfo {
     return res;
   }
 
+  bool canMerge(Token const * const t, bool globalMerge) const {
+    bool res = false;
+    TokenProto const *proto = getProto(t);
+    if (proto) {
+      res = (globalMerge or proto->outputMode == OUTPUT_MODE_MERGED)
+        and (proto->mode == MODE_BINARY or (proto->mode == MODE_UNARY_BINARY and LiveArity(t) == 2));
+    }
+    return res;
+  }
+
 };
 
 struct P2XLexer {
@@ -881,24 +909,6 @@ struct Lexer : public P2XLexer {
   void setStream(std::istream &ins) { m_p2xLexer->setStream(ins); }
   ParserToken yylex() { return m_p2xLexer->yylex(); }
   std::string text() const { return m_p2xLexer->text(); }
-};
-
-struct LiveArity {
-  Token const *m_s;
-  LiveArity(Token const *s) : m_s(s) {}
-  int operator()(Token const *s) const {
-    if (s->left == 0 and s->right == 0) return 0;
-    else if (s->left and s->right == 0) return 1;
-    else if (s->left and s->right) return 2;
-    else if (s->left == 0 and s->right) return 3;
-    return -1;
-  }
-  operator int() const {
-    return this->operator()(m_s);
-  }
-  bool operator ==(LiveArity const &o) const {
-    return this->operator()(m_s) == o;
-  }
 };
 
 struct TokenTypeEqual {
@@ -1674,9 +1684,7 @@ struct TreeXMLWriter {
     }
 
     void setupNode(Token const *t) {
-      merged = (m_xmlWriter.options.merged
-                or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED)
-        and (m_xmlWriter.tokenInfo.mode(t) == MODE_BINARY or (m_xmlWriter.tokenInfo.mode(t) == MODE_UNARY_BINARY and LiveArity(t) == 2));
+      merged = m_xmlWriter.tokenInfo.canMerge(t, m_xmlWriter.options.merged);;
     }
 
     int onEnter(Token const *t, Token const *parent) {
@@ -1865,9 +1873,7 @@ struct TreeXMLWriter {
     }
 
     void setupNode(Token const *t) {
-      merged = (m_xmlWriter.options.merged
-                or m_xmlWriter.tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED)
-        and (m_xmlWriter.tokenInfo.mode(t) == MODE_BINARY or (m_xmlWriter.tokenInfo.mode(t) == MODE_UNARY_BINARY and LiveArity(t) == 2));
+      merged = m_xmlWriter.tokenInfo.canMerge(t, m_xmlWriter.options.merged);
     }
 
     int onEnter(Token const *t, Token const *parent) {
@@ -2034,8 +2040,7 @@ struct TreeXMLWriter {
       elemName = "op";
     }
 
-    bool const merged = options.merged 
-      or tokenInfo.outputMode(t) == OUTPUT_MODE_MERGED;
+    bool const merged = tokenInfo.canMerge(t, options.merged);
     bool const tags = not(parent
                           and TokenTypeEqual(tokenInfo)(parent, t)
                           and merged);
