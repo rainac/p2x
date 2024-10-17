@@ -1020,15 +1020,33 @@ P2X.Parser = function(tokenInfo) {
                     })
 
                     var last = parser.parse(this.input)
-                    if (typeof last == "undefined" || last.token == P2X.TOKEN_EOF) {
-                        first.right = parser.root.right;
-                    } else {
-                        first.right = last;
-                        last.left = parser.root.right;
-                    }
-                    this.insertToken(first)
 
-                    this.leastMap.insert(this.tokenInfo.prec(first), first.right);
+                    if (this.tokenInfo.assoc(first) != P2X.ASSOC_RIGHT) {
+
+                        if (typeof last == "undefined" || last.token == P2X.TOKEN_EOF) {
+                            first.right = parser.root.right;
+                        } else {
+                            first.right = last;
+                            last.left = parser.root.right;
+                        }
+                        this.insertToken(first)
+
+                        this.leastMap.insert(this.tokenInfo.prec(first), first.right);
+                    } else {
+
+                        if (typeof last == "undefined" || last.token == P2X.TOKEN_EOF) {
+                            this.insertToken(first);
+                            first.right = parser.root.right;
+                            this.leastMap.insert(this.tokenInfo.prec(first), first);
+                        } else {
+                            this.insertToken(last);
+                            first.left = last.left;
+                            last.left = first;
+                            first.right = parser.root.right;
+                            this.leastMap.insert(this.tokenInfo.prec(first), last);
+                        }
+
+                    }
 
                     if (parser.root.ignore) {
                         first.ignore = parser.root.ignore;
