@@ -1,0 +1,21 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Fri, 18 Oct 2024 21:04:52 +0200
+Subject: Fix p2x command
+
+---
+ tests/sh/indent_tests.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/sh/indent_tests.sh b/tests/sh/indent_tests.sh
+index c4a46a1..f87bdbd 100755
+--- a/tests/sh/indent_tests.sh
++++ b/tests/sh/indent_tests.sh
+@@ -98,7 +98,7 @@ EOF
+  ( * * 5 * 6 )
+ EOF
+ 
+-    p2x -c -n -l -Oy -m -p config.p2x input.txt -o out.xml
++    $P2X -c -n -l -Oy -m -p config.p2x input.txt -o out.xml
+ 
+     xsltproc check-indent.xsl out.xml
+     assertEquals "XSLT error code must be 0" "0" "$?"
