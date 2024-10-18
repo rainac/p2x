@@ -1777,8 +1777,8 @@ struct TreeXMLWriter {
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
       if (t->right == 0) {
-        if (not tags or (m_xmlWriter.options.strict and
-                         t->left != 0 and merged and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left))) {
+        if ((not tags or (m_xmlWriter.options.strict and
+			  t->left != 0 and merged and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left))) and not m_xmlWriter.options.loose) {
           aus << indent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
         }
       }
@@ -1956,8 +1956,8 @@ struct TreeXMLWriter {
                  and TokenTypeEqual(m_xmlWriter.tokenInfo)(parent, t)
                  and merged);
       if (t->right == 0) {
-        if (not tags or (m_xmlWriter.options.strict and
-                         t->left != 0 and merged and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left))) {
+        if ((not tags or (m_xmlWriter.options.strict and
+			  t->left != 0 and merged and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left))) and not m_xmlWriter.options.loose) {
           aus << indent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
         }
       }
@@ -2106,8 +2106,8 @@ struct TreeXMLWriter {
     }
     if (t->right != 0) {
       writeXML_Rec(t->right, aus, subindent, t, level+1);
-    } else if (not tags or (options.strict and
-			    t->left != 0 and merged and TokenTypeEqual(tokenInfo)(t, t->left))) {
+    } else if ((not tags or (options.strict and
+			     t->left != 0 and merged and TokenTypeEqual(tokenInfo)(t, t->left))) and not options.loose) {
       aus << indent << "<" << options.nullName << "/>" << linebreak;
     }
     if (tags) {
