@@ -81,5 +81,29 @@ testP2X_indentation_logoff() {
     done
 
 }
-        
+
+testP2_indent_glitch() {
+
+    cat > config.p2x <<EOF
+"(" paren ")" binary 10 right
+EQUAL binary 20
+"[" paren "]" binary 25 right
+PLUS binary  30
+MULT binary  40
+DIV binary  50
+SPACE ignore 1
+EOF
+
+    cat > input.txt <<EOF
+ ( * * 5 * 6 )
+EOF
+
+    p2x -c -n -l -Oy -m -p config.p2x input.txt -o out.xml
+
+    xsltproc check-indent.xsl out.xml
+    assertEquals "XSLT error code must be 0" "0" "$?"
+
+    rm out.xml config.p2x input.txt
+}
+
 . shunit2
