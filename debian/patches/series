@@ -1,3 +1,1 @@
-0004-Octave-does-not-exit-cleanly-when-run-in-cowrunner.patch
-0006-Adapt-script-to-install-pkgs-in-cowbuilders.patch
-0003-npm-link-in-DESTDIR.patch
+0001-Do-we-need-this.patch
