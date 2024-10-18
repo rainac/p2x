@@ -1,0 +1,20 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Fri, 18 Oct 2024 20:09:10 +0200
+Subject: create instdir
+
+---
+ src-js/Makefile.am | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src-js/Makefile.am b/src-js/Makefile.am
+index b13f9b1..79a6cce 100644
+--- a/src-js/Makefile.am
++++ b/src-js/Makefile.am
+@@ -66,6 +66,7 @@ endif
+ 
+ install-data-local:
+ if acond_NPM_PKGS_AVAIL
++	install -d $(DESTDIR)$(instdir)
+ 	cd $(instdir) $(foreach f, $(node_module_names), && npm link $(f))
+ endif
+ 	$(INSTALL) -d $(apache_confd)
