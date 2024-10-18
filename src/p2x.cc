@@ -2132,16 +2132,16 @@ struct TreeXMLWriter {
     aus << "</ca:ignore>" << linebreak;
   }
 
-  void writeXML(EndList const &endList, std::ostream &aus, std::string const &indent = "") const {
-    aus << indent << "<ca:closing-list>" << linebreak;
+  void writeXML(EndList const &endList, std::ostream &aus, std::string const &indent = "", std::string const &ns = "ca") const {
+    aus << indent << "<" << ns << ":closing-list>" << linebreak;
     for (EndList::const_iterator eit = endList.begin(); eit != endList.end(); ++eit) {
-      writeXML(eit->second, aus, indent + indentUnit);
+    writeXML(eit->second, aus, indent + indentUnit, ns);
     }
-    aus << indent << "</ca:closing-list>" << linebreak;
+    aus << indent << "</" << ns << ":closing-list>" << linebreak;
   }
 
-  void writeXML(TokenProto const &tp, std::ostream &aus, std::string const &indent = "") const {
-    aus << indent << "<ca:op";
+  void writeXML(TokenProto const &tp, std::ostream &aus, std::string const &indent = "", std::string const &ns = "ca") const {
+    aus << indent << "<" << ns << ":op";
     writeXMLTypeAttrs(&tp, aus);
     aus << " mode='" << tp.mode << "'";
     if (Parser::isOp(tp.mode)) {
@@ -2161,24 +2161,24 @@ struct TreeXMLWriter {
     if (tp.isParen) {
       aus << " is-paren='1'";
       aus << ">" << linebreak;
-      writeXML(tp.endList, aus, indent + indentUnit);
-      aus << indent << "</ca:op>" << linebreak;
+      writeXML(tp.endList, aus, indent + indentUnit, ns);
+      aus << indent << "</" << ns << ":op>" << linebreak;
     } else {
       aus << "/>" << linebreak;
     }
   }
 
-  void writeXML(TokenInfo const &t, std::ostream &aus, std::string const &indent = "") const {
-    aus << indent << "<ca:parser>" << linebreak;
+  void writeXML(TokenInfo const &t, std::ostream &aus, std::string const &indent = "", std::string const &ns = "ca") const {
+    aus << indent << "<" << ns << ":parser>" << linebreak;
     TokenInfo::OpPrototypes::const_iterator it = t.opPrototypes.begin();
     for(; it != t.opPrototypes.end(); ++it) {
-      writeXML(it->second, aus, indent + indentUnit);
+    writeXML(it->second, aus, indent + indentUnit, ns);
     }
-    aus << indent << "</ca:parser>" << linebreak;
+    aus << indent << "</" << ns << ":parser>" << linebreak;
   }
 
-  void writeXML(TreeXMLWriter const &t, std::ostream &aus, std::string const &indent = "") const {
-    aus << indent << "<ca:tree-writer";
+  void writeXML(TreeXMLWriter const &t, std::ostream &aus, std::string const &indent = "", std::string const &ns = "ca") const {
+    aus << indent << "<" << ns << ":tree-writer";
     aus << " col='" << t.options.col << "'";
     aus << " merged='" << t.options.merged << "'";
     aus << " encoding='" << t.options.encoding << "'";
@@ -2290,14 +2290,14 @@ void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
     out << treeXMLWriter.linebreak;
   }
   if (options.scanConf) {
-    out << treeXMLWriter.indentUnit << "<ca:scanner type='"
+    out << treeXMLWriter.indentUnit << "<c:scanner type='"
         << getScannerTypeName(scannerType) << "'/>" << treeXMLWriter.linebreak;
   }
   if (options.treewriterConf) {
-    treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit);
+    treeXMLWriter.writeXML(treeXMLWriter, out, treeXMLWriter.indentUnit, "c");
   }
   if (options.parseConf) {
-    treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit);
+    treeXMLWriter.writeXML(tokenInfo, out, treeXMLWriter.indentUnit, "c");
   }
   treeXMLWriter.writeXML2_Stack(root, out, treeXMLWriter.indentUnit);
   out << "</code-xml>\n";
