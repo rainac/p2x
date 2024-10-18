@@ -53,20 +53,16 @@ node_modules = $(addprefix node_modules/, $(node_module_names))
 
 .PRECIOUS: node_modules/%
 
-node_modules/%: node_modules_updated.txt
-
-node_modules:
-	mkdir $@
-
-$(node_modules) node_modules_updated.txt: node_modules Makefile.am
+$(node_modules) node_modules_updated.txt:
 	touch node_modules_updated.txt
 if acond_NPM_PKGS_AVAIL
-	npm link $(node_module_names)
+	true $(foreach f, $(node_module_names), && npm link $(f))
 endif
 
 install-data-local:
 if acond_NPM_PKGS_AVAIL
-	cd $(instdir) $(foreach f, $(node_module_names), && npm link $(f))
+	install -d $(DESTDIR)$(instdir)
+	cd $(DESTDIR)$(instdir) $(foreach f, $(node_module_names), && npm link $(f))
 endif
 	$(INSTALL) -d $(apache_confd)
 	echo "Alias $(server_base)/p2x $(prefix)/share/p2x/js/" > $(apache_confd)/p2xjs.conf
