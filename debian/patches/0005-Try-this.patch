@@ -3,23 +3,19 @@ Date: Fri, 18 Oct 2024 20:40:02 +0200
 Subject: Try this
 
 ---
- src-js/Makefile.am | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ src-js/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 47107dc..43a9161 100644
+index 47107dc..15fef2b 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
-@@ -60,9 +60,9 @@ node_modules:
- 
+@@ -61,7 +61,7 @@ node_modules:
  $(node_modules) node_modules_updated.txt: node_modules Makefile.am
  	touch node_modules_updated.txt
--if acond_NPM_PKGS_AVAIL
+ if acond_NPM_PKGS_AVAIL
 -	npm link $(node_module_names)
--endif
-+#if acond_NPM_PKGS_AVAIL
-+#	npm link $(node_module_names)
-+#endif
++	true $(foreach f, $(node_module_names), && npm link $(f))
+ endif
  
  install-data-local:
- if acond_NPM_PKGS_AVAIL
