@@ -1,3 +1,4 @@
 0001-Do-we-need-this.patch
 0002-create-instdir.patch
 0003-No-install-modules.patch
+0004-Set-HOME-correctly.patch

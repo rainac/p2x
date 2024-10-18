@@ -1,0 +1,21 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Fri, 18 Oct 2024 20:14:09 +0200
+Subject: Set HOME correctly
+
+---
+ tests/sh/p2xjs_mocha_tests.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/sh/p2xjs_mocha_tests.sh b/tests/sh/p2xjs_mocha_tests.sh
+index bfd62b0..d07094d 100755
+--- a/tests/sh/p2xjs_mocha_tests.sh
++++ b/tests/sh/p2xjs_mocha_tests.sh
+@@ -3,7 +3,7 @@
+ #set -x
+ 
+ testP2JS_Mocha() {
+-    export P2X_HOME=$(DESTDIR)/usr/local
++    export P2X_HOME=$(readlink -f $(dirname $(which p2xjs))/..)
+     (cd ../../src-js && mocha)
+     assertEquals "P2XJS mocha tests should pass" $? 0
+ }
