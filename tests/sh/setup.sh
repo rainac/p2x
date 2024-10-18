@@ -10,15 +10,17 @@ export P2XFLAGS="$P2XFLAGS --output-mode=x"
 
 top_srcdir=../..
 
-P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $(which p2x))/..)}
-
 if [[ -x $top_srcdir/src/p2x ]]; then
     P2X=${P2X:-$top_srcdir/src/p2x}
+    P2XJS=${P2XJS:-$top_srcdir/src-js/p2xjs}
     exdir=$top_srcdir/examples
 else
     P2X=p2x
+    P2XJS=p2xjs
     exdir=$P2X_HOME/share/doc/p2x/examples
 fi
+
+P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $(which $P2X))/..)}
 
 tmpdir=${TMP:-/tmp}/shunit2-test-$$
 mkdir $tmpdir
