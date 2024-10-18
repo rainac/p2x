@@ -3,8 +3,10 @@ Date: Fri, 18 Oct 2024 21:04:52 +0200
 Subject: Fix p2x command
 
 ---
- tests/sh/indent_tests.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tests/sh/indent_tests.sh      | 2 +-
+ tests/sh/p2xjs_mocha_tests.sh | 2 +-
+ tests/sh/setup.sh             | 2 ++
+ 3 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/tests/sh/indent_tests.sh b/tests/sh/indent_tests.sh
 index c4a46a1..f87bdbd 100755
@@ -19,3 +21,32 @@ index c4a46a1..f87bdbd 100755
  
      xsltproc check-indent.xsl out.xml
      assertEquals "XSLT error code must be 0" "0" "$?"
+diff --git a/tests/sh/p2xjs_mocha_tests.sh b/tests/sh/p2xjs_mocha_tests.sh
+index d07094d..8390066 100755
+--- a/tests/sh/p2xjs_mocha_tests.sh
++++ b/tests/sh/p2xjs_mocha_tests.sh
+@@ -3,7 +3,7 @@
+ #set -x
+ 
+ testP2JS_Mocha() {
+-    export P2X_HOME=$(readlink -f $(dirname $(which p2xjs))/..)
++    export P2X_HOME=$(readlink -f $(dirname $(which $P2XJS))/..)
+     (cd ../../src-js && mocha)
+     assertEquals "P2XJS mocha tests should pass" $? 0
+ }
+diff --git a/tests/sh/setup.sh b/tests/sh/setup.sh
+index a99454a..aec1c3a 100644
+--- a/tests/sh/setup.sh
++++ b/tests/sh/setup.sh
+@@ -14,9 +14,11 @@ P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $(which p2x))/..)}
+ 
+ if [[ -x $top_srcdir/src/p2x ]]; then
+     P2X=${P2X:-$top_srcdir/src/p2x}
++    P2XJS=${P2X:-$top_srcdir/src-js/p2x}
+     exdir=$top_srcdir/examples
+ else
+     P2X=p2x
++    P2XJS=p2xjs
+     exdir=$P2X_HOME/share/doc/p2x/examples
+ fi
+ 
