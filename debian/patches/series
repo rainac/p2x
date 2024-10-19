@@ -10,3 +10,4 @@
 0010-P2Xjs-needs-p2x-sometimes-pass-by-env.patch
 0011-Pick-correct-executable-for-tests.patch
 0012-Octave-does-not-exit-cleanly-in-cowbuild.patch
+0013-Fix-loc.patch
