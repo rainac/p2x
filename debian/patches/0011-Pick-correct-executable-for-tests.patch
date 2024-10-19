@@ -3,21 +3,77 @@ Date: Sat, 19 Oct 2024 10:21:44 +0200
 Subject: Pick correct executable for tests
 
 ---
- tests/sh/head_cmp_js.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+ tests/sh/head_cmp_js.sh   | 5 +++++
+ tests/sh/reproduce_ign.sh | 4 +++-
+ tests/sh/setup.sh         | 6 +++---
+ 3 files changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/tests/sh/head_cmp_js.sh b/tests/sh/head_cmp_js.sh
-index ccea633..4c271e4 100644
+index ccea633..771a692 100644
 --- a/tests/sh/head_cmp_js.sh
 +++ b/tests/sh/head_cmp_js.sh
-@@ -10,6 +10,10 @@ mkParseTree() {
+@@ -2,6 +2,8 @@
+ 
+ . setup.sh
+ 
++export P2X
++
+ mkParseTree() {
+     infile="$1"
+     outfile="$2"
+@@ -10,6 +12,9 @@ mkParseTree() {
      xmltmp=$tmpdir/$(basename $outfile .txt).xml
      if test "$p2x" = "p2xjs"; then
          _opts="$_opts -S  ../../examples/configs/scanner-c.json"
-+        p2x=../../src-js/p2xjs
-+        export P2X=../../src/p2x
++        p2x=$P2XJS
 +    else
-+        p2x=../../src/p2x
++        p2x=$P2X
      fi
      _opts="$_opts -o $xmltmp"
      cmd="$p2x $_opts -p ../../examples/configs/default ../../examples/in/$infile"
+diff --git a/tests/sh/reproduce_ign.sh b/tests/sh/reproduce_ign.sh
+index c5f9cea..902a043 100755
+--- a/tests/sh/reproduce_ign.sh
++++ b/tests/sh/reproduce_ign.sh
+@@ -4,12 +4,14 @@ mydir=$(dirname $BASH_SOURCE)
+ 
+ . $mydir/setup.sh
+ 
++export P2X
++
+ checkExpFile() {
+     i=$1
+     echo "Parse file $i"
+     opts=""
+     reprxsl=reproduce.xsl
+-    p2xjs $opts -S $mydir/../../examples/configs/scanner-c.json -p $tmpdir/conf-with-ignores $mydir/../../examples/in/$i > $tmpdir/res.xml
++    $P2XJS $opts -S $mydir/../../examples/configs/scanner-c.json -p $tmpdir/conf-with-ignores $mydir/../../examples/in/$i > $tmpdir/res.xml
+     xsltproc $mydir/../../src/xsl/$reprxsl $tmpdir/res.xml > $tmpdir/res.txt
+     diff $mydir/../../examples/in/$i $tmpdir/res.txt > /dev/null
+     assertEquals "Reproduce test $i did not return same result" 0 $?
+diff --git a/tests/sh/setup.sh b/tests/sh/setup.sh
+index aec1c3a..12c4c46 100644
+--- a/tests/sh/setup.sh
++++ b/tests/sh/setup.sh
+@@ -10,11 +10,9 @@ export P2XFLAGS="$P2XFLAGS --output-mode=x"
+ 
+ top_srcdir=../..
+ 
+-P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $(which p2x))/..)}
+-
+ if [[ -x $top_srcdir/src/p2x ]]; then
+     P2X=${P2X:-$top_srcdir/src/p2x}
+-    P2XJS=${P2X:-$top_srcdir/src-js/p2x}
++    P2XJS=${P2XJS:-$top_srcdir/src-js/p2xjs}
+     exdir=$top_srcdir/examples
+ else
+     P2X=p2x
+@@ -22,6 +20,8 @@ else
+     exdir=$P2X_HOME/share/doc/p2x/examples
+ fi
+ 
++P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $(which $P2X))/..)}
++
+ tmpdir=${TMP:-/tmp}/shunit2-test-$$
+ mkdir $tmpdir
+ 
