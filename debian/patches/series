@@ -7,3 +7,5 @@
 0007-Need-to-try-twice.patch
 0008-Fix-p2x-command.patch
 0009-Fix-JS-tests.patch
+0010-P2Xjs-needs-p2x-sometimes-pass-by-env.patch
+0011-Pick-correct-executable-for-tests.patch

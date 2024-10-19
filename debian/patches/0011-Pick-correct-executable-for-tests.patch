@@ -1,0 +1,23 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Sat, 19 Oct 2024 10:21:44 +0200
+Subject: Pick correct executable for tests
+
+---
+ tests/sh/head_cmp_js.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tests/sh/head_cmp_js.sh b/tests/sh/head_cmp_js.sh
+index ccea633..4c271e4 100644
+--- a/tests/sh/head_cmp_js.sh
++++ b/tests/sh/head_cmp_js.sh
+@@ -10,6 +10,10 @@ mkParseTree() {
+     xmltmp=$tmpdir/$(basename $outfile .txt).xml
+     if test "$p2x" = "p2xjs"; then
+         _opts="$_opts -S  ../../examples/configs/scanner-c.json"
++        p2x=../../src-js/p2xjs
++        export P2X=../../src/p2x
++    else
++        p2x=../../src/p2x
+     fi
+     _opts="$_opts -o $xmltmp"
+     cmd="$p2x $_opts -p ../../examples/configs/default ../../examples/in/$infile"

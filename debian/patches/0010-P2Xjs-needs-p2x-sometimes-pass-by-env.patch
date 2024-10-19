@@ -1,0 +1,39 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Sat, 19 Oct 2024 10:21:23 +0200
+Subject: P2Xjs needs p2x sometimes, pass by env
+
+---
+ src-js/p2x-main.js            | 3 ++-
+ src-js/parseconf-text2json.js | 5 +++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src-js/p2x-main.js b/src-js/p2x-main.js
+index 70dfc41..1a0faa6 100644
+--- a/src-js/p2x-main.js
++++ b/src-js/p2x-main.js
+@@ -114,7 +114,8 @@ function interpretParserConfigText(pconf, callback) {
+             fs.writeFile(cnfFileName, pconf, function(err) {
+                 if (err) throw(err)
+ 
+-                var cmd = 'p2x' + ' ' + '-T' + ' ' + '-p ' + cnfFileName
++                var p2x = process.env.P2X || 'p2x'
++                var cmd = p2x + ' -T -p ' + cnfFileName
+                 var cnfXML
+                 // system(cmd)
+                 var child = child_process.exec(cmd, { stdio: 'inherit' },
+diff --git a/src-js/parseconf-text2json.js b/src-js/parseconf-text2json.js
+index 30dca23..43fdacc 100644
+--- a/src-js/parseconf-text2json.js
++++ b/src-js/parseconf-text2json.js
+@@ -60,8 +60,9 @@ readParserConfigFile()
+ function readParserConfigFile() {
+     if ('prec-list' in options) {
+         configFile = options['prec-list'][0]
+-        
+-        var cmd = 'p2x -T -p ' + configFile
++
++        var p2x = process.env.P2X || 'p2x'
++        var cmd = p2x + ' -T -p ' + configFile
+         // console.log('run ' + cmd)
+         var cnfXML
+         // system(cmd)
