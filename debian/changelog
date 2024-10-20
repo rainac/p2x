@@ -1,3 +1,10 @@
+p2x (0.6.12-3) aiandit-unstable; urgency=medium
+
+  * Fix: version tag not shown
+  * JS tests only work when most-xml is installed
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Sun, 20 Oct 2024 18:38:36 +0200
+
 p2x (0.6.12-2) aiandit-unstable; urgency=medium
 
   * JS version depends on p2x
