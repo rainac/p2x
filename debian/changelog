@@ -1,3 +1,9 @@
+p2x (0.6.12-4) aiandit-unstable; urgency=medium
+
+  * Ensure distrib test cases run
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Sun, 20 Oct 2024 19:01:11 +0200
+
 p2x (0.6.12-3) aiandit-unstable; urgency=medium
 
   * Fix: version tag not shown
