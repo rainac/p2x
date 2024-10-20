@@ -3,3 +3,4 @@
 0003-create-instdir-use-DESTDIR.patch
 0004-Need-to-try-npm-command-twice.patch
 0011-Pick-correct-executable-for-tests.patch
+0006-Print-bad-test-logs.patch
