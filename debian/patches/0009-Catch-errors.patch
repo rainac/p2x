@@ -1,0 +1,20 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Sun, 20 Oct 2024 19:00:55 +0200
+Subject: Catch errors
+
+---
+ tests/run-unit-test | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tests/run-unit-test b/tests/run-unit-test
+index d87cef3..d455ef0 100644
+--- a/tests/run-unit-test
++++ b/tests/run-unit-test
+@@ -1,5 +1,7 @@
+ #!/bin/sh -e
+ 
++set -e -x
++
+ debname=p2x
+ 
+ P2X_HOME=${P2X_HOME:-/usr}

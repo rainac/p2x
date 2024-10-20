@@ -1,0 +1,20 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Sun, 20 Oct 2024 19:00:20 +0200
+Subject: P2X_HOME must be set here
+
+---
+ tests/sh/setup.sh | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tests/sh/setup.sh b/tests/sh/setup.sh
+index 12c4c46..e4bbfd2 100644
+--- a/tests/sh/setup.sh
++++ b/tests/sh/setup.sh
+@@ -17,6 +17,7 @@ if [[ -x $top_srcdir/src/p2x ]]; then
+ else
+     P2X=p2x
+     P2XJS=p2xjs
++    P2X_HOME=${P2X_HOME:-$(readlink -f $(dirname $(which p2x))/..)}
+     exdir=$P2X_HOME/share/doc/p2x/examples
+ fi
+ 
