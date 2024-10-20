@@ -21,7 +21,7 @@ good_test_results = $(addprefix result_suite_good_,$(good))
 bad_test_results = $(addprefix result_suite_bad_,$(bad))
 
 result_suite_good_%: %.sh
-	./$< > log_$*.txt 2>&1
+	./$< > log_$*.txt 2>&1 || ( if [[ $$? != 0 ]]; then cat log_$*.txt; false; fi )
 
 result_suite_bad_%: %.sh
 	! ./$< > log_$*.txt 2>&1
