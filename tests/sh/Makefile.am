@@ -11,7 +11,7 @@ good += val_tests test_reproduce_strict test_reproduce test_reparse	\
  output_mode_matlab cdecls
 endif
 
-if acond_NPM_AVAIL
+if acond_NPM_PKGS_AVAIL
 good += p2xjs_mocha_tests test_cmp_js reproduce_ign
 endif
 
