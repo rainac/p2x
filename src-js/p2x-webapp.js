@@ -112,4 +112,3 @@ function init() {
 }
 function monmouse(x, ev) {
 }
-

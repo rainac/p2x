@@ -1,6 +1,5 @@
-
 if (typeof window == 'undefined') {
-    
+
     var fs = require('fs')
     var pXML = require('./parse-xml.js')
     // console.log('pXML:')
@@ -82,4 +81,3 @@ console.log('Parse result: ')
 console.dir(p2xparser.root)
 tp = P2X.TreePrinter(tt)
 console.log(tp.asxml(p2xparser.root))
-

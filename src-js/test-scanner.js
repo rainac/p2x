@@ -1,6 +1,5 @@
-
 if (typeof window == 'undefined') {
-    
+
     var fs = require('fs')
     var pXML = require('./parse-xml.js')
     // console.log('pXML:')
@@ -24,7 +23,7 @@ if (typeof window == 'undefined') {
     var optDefs = [
         { short: 'p', long: 'prec-list' }
     ]
-    
+
     console.dir(argv)
     options = POpts.parseOptions(argv, optDefs)
 }
@@ -55,7 +54,7 @@ if ('prec-list' in options) {
         console.log(cnfXML)
     }
     console.dir(child)
-    
+
 //    system(cmd)
 }
 
@@ -86,4 +85,3 @@ var tl = scanner.lexall()
 
 var scanListXML = tl.asxml()
 console.log(scanListXML)
-

@@ -1,4 +1,3 @@
-
 var P2X = P2X || {};
 
 if (typeof window == 'undefined') {
@@ -220,7 +219,7 @@ P2X.ScannerConfig = function(x) {
             return re
         }
     }
-        
+
     function getREStringQ(re) {
         var s = getREString(re)
         if (s.indexOf('\'') > -1) {
@@ -229,7 +228,7 @@ P2X.ScannerConfig = function(x) {
         }
         return '\'' + s + '\''
     }
-        
+
     res.asjson = function(indent) {
 
         if (typeof indent == 'undefined') indent = ''
@@ -262,7 +261,7 @@ P2X.ScannerConfig = function(x) {
                 return re
             }
         }
-        
+
         if (typeof indent == 'undefined') indent = ' '
         var res = indent + '<ca:scanner'
         if (this.type)
@@ -300,7 +299,7 @@ P2X.ScannerConfig = function(x) {
             Object.defineProperty(res, k, { enumerable: false, value: val })
         }
     }
-    
+
     return res
 }
 
@@ -426,7 +425,7 @@ P2X.JScanner = function(name) {
             hit = atStart[first];
 
             ++this.actions[first].count
-            
+
             var tt = P2X.ParserToken
             tt.act = this.actions[first][1];
 
@@ -447,7 +446,7 @@ P2X.JScanner = function(name) {
             }
 
             res = P2X.Token(tt.act, atStart[first][0], self.yyindex, self.yyline, self.yycol, first)
-            
+
             this.yytext = atStart[first][0]
             // this.yyindex = atStart[first].index + atStart[first][0].length
             this.yyindex += this.yytext.length
@@ -499,8 +498,8 @@ P2X.JScanner = function(name) {
         }
     }
 }
-  
-var isOp = function(mode) { 
+
+var isOp = function(mode) {
     return (mode == P2X.MODE_BINARY
             || mode == P2X.MODE_UNARY_BINARY
             || mode == P2X.MODE_UNARY
@@ -607,7 +606,7 @@ P2X.TokenInfo = function() {
             }
             return res
         },
-        isOp: function(t) { 
+        isOp: function(t) {
             return isOp(this.mode(t));
         },
         tagName: function (tl) {
@@ -932,7 +931,7 @@ P2X.Parser = function(tokenInfo) {
             return this
         },
         parse: function(tlist) {
-            if (typeof (this.endList) == "undefined") 
+            if (typeof (this.endList) == "undefined")
                 this.endList = [this.tokenInfo.getOpCode(P2X.TOKEN_EOF)]
             this.result = {}
             this.result.parser = this
@@ -1053,7 +1052,7 @@ P2X.Parser = function(tokenInfo) {
                     }
 
                     first = last;
-                    
+
                 } else {
                     this.insertToken(first)
                 }
@@ -1230,7 +1229,7 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
                     } else {
                         ttext = t.token
                     }
-                } else 
+                } else
                     ttext = typeof t
                 res += ' type="' + ttext + '"'
             }
@@ -1322,7 +1321,7 @@ P2X.p2xj = function(input, p2xConf, result) {
     if (p2xConf.debug) {
         result.scanconf = scanner.get()
     }
-    
+
     var parseConf = p2xConf.parser
     if (typeof parseConf != "object") {
         parseConf = P2X.parseJSON(parseConf)
@@ -1340,7 +1339,7 @@ P2X.p2xj = function(input, p2xConf, result) {
         result.parseconf = parseConf
 //        result.parseconf = parser.getconfig()
     }
-    
+
     scanner.str(input)
     var tl = scanner.lexall().mkeof()
 
@@ -1379,7 +1378,7 @@ P2X.p2xj = function(input, p2xConf, result) {
         result.parser = parser
         result.treewriter = tp
     }
-    
+
     return result.xmlres
 }
 

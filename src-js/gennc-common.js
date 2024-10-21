@@ -1,4 +1,4 @@
-// -*- javascript -*- 
+// -*- javascript -*-
 // This file is part of Named Constant Generator.
 // Copyright © 2016,2017 Johannes Willkomm
 // See the file gennc for copying conditions.
@@ -22,7 +22,7 @@ ENUM.createENUM = function(index, prefix, comments) {
     }
     res.names = Object.keys(index)
     res.names_l = res.names.map(function (n) { return n.toLowerCase(); })
-    
+
     res.getName = function(code) {
         return this.names_index[code]
     }
@@ -30,7 +30,7 @@ ENUM.createENUM = function(index, prefix, comments) {
         var name = this.getName(code)
         return this.comments[name]
     }
-  
+
     res.getValue = function(name) {
         if (name in this.index) {
             return this.index[name];
@@ -45,7 +45,7 @@ ENUM.createENUM = function(index, prefix, comments) {
             }
           }
     }
-    
+
     res.get = function(k) {
         var name = this.names[k]
         return this.getValue(name)
@@ -56,7 +56,7 @@ ENUM.createENUM = function(index, prefix, comments) {
     }
     return res
 }
-   
+
 if (typeof window == 'undefined') {
     exports.createENUM = ENUM.createENUM
 }

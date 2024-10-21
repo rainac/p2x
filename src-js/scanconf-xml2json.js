@@ -1,6 +1,5 @@
-
 if (typeof window == 'undefined') {
-    
+
     var fs = require('fs')
     // console.log('load scanner script')
     var P2X = require('./scanner.js')
@@ -27,16 +26,16 @@ if (typeof window == 'undefined') {
         { short: 'i', long: 'arguments' },
         { short: 'o', long: 'outfile' },
     ]
-    
+
     options = POpts.parseOptions(argv, optDefs)
 
     var emitter = new events.EventEmitter()
-    
+
     emitter.on('parserConfigOK', function(next) {
         // console.log('event parserConfigOK was triggered:')
         next()
     })
-    
+
     emitter.on('scannerConfigOK', function(next) {
         // console.log('event scannerConfigOK was triggered:')
         next()
@@ -47,13 +46,13 @@ if (typeof window == 'undefined') {
         // console.dir(ev)
         next()
     })
-    
+
     emitter.on('p2xerror', function(next, ev) {
         // console.log('event "p2xerror" was triggered by:')
         // console.dir(ev)
         next()
     })
-    
+
 }
 
 readScannerConfig();

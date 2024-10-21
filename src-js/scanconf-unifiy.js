@@ -1,6 +1,5 @@
-
 if (typeof window == 'undefined') {
-    
+
     var fs = require('fs')
     // console.log('load scanner script')
     var P2X = require('./scanner.js')
@@ -25,13 +24,13 @@ if (typeof window == 'undefined') {
         { short: 'S', long: 'scanner-config' },
         { short: 'o', long: 'outfile' },
     ]
-    
+
     options = POpts.parseOptions(argv, optDefs)
 
     var emitter = P2X.emitter
 
     var conf = {}
-    
+
     emitter.on('start', function(next) {
         if (next) { next() }
         P2X.readScannerConfigFile(options['scanner-config'][0])
@@ -51,13 +50,13 @@ if (typeof window == 'undefined') {
         var uni = unifyConfigs(conf)
         writeOutput(uni)
     })
-    
+
     emitter.on('p2xerror', function(next, ev) {
         console.log('event "p2xerror" was triggered by:')
         console.dir(ev)
         next()
     })
-    
+
 }
 
 emitter.emit('start', function() {})
@@ -68,7 +67,7 @@ function unifyConfigs(conf) {
     console.log('sconf', P2X.JScanner().set(conf.sConf))
     console.log('sconf', P2X.JScanner().set(conf.sConf).get())
     var pctxt = P2X.Parser().setconfig(conf.pConf).tokenInfo.getconfig()
-    
+
     var uni = []
 
     var mergePConfItem = function(pConfItem) {
@@ -95,7 +94,7 @@ function unifyConfigs(conf) {
         }
         return res
     }
-    
+
     for (var j in pctxt) {
         var merged = mergePConfItem(pctxt[j])
         if (merged) {
