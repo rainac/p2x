@@ -1,7 +1,7 @@
 #
 # This file is part of P2X.
-# Copyright © 2013 Johannes Willkomm 
-# See the file p2x.cc for copying conditions.  
+# Copyright © 2013 Johannes Willkomm
+# See the file p2x.cc for copying conditions.
 #
 
 SUBDIRS = xsl
@@ -18,7 +18,7 @@ p2x_SOURCES = p2x.cc $(p2x_FLEX_SRCS) $(p2x_RE2C_SRCS_CC) p2x-opts.cc token.cc l
 p2xtests_SOURCES = p2xtests.cc scanner.ll scanner-no-strings.ll p2x-opts.cc token.cc logger.cc
 
 p2x_CXXFLAGS =
-p2x_LDADD = 
+p2x_LDADD =
 p2x_LDFLAGS =
 p2x_DEPENDENCIES =
 
@@ -50,7 +50,7 @@ if acond_GENGETOPT_AVAIL
 p2x-opts.hh: p2x-opts.cc
 p2x-opts.cc: p2x-opts.ggo
 	$(GENGETOPT) -F $(*F) -c cc -H hh -C --no-handle-version \
-               --no-handle-help --no-handle-error -i $< --unamed-opts
+	       --no-handle-help --no-handle-error -i $< --unamed-opts
 endif
 
 code-xml.rng: code-xml.rnc

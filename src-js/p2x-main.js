@@ -114,7 +114,8 @@ function interpretParserConfigText(pconf, callback) {
             fs.writeFile(cnfFileName, pconf, function(err) {
                 if (err) throw(err)
 
-                var cmd = 'p2x' + ' ' + '-T' + ' ' + '-p ' + cnfFileName
+                var p2x = process.env.P2X || 'p2x'
+                var cmd = p2x + ' -T -p ' + cnfFileName
                 var cnfXML
                 // system(cmd)
                 var child = child_process.exec(cmd, { stdio: 'inherit' },

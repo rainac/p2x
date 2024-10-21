@@ -1,4 +1,3 @@
-
 var nodejs = false
 if (typeof window == 'undefined') {
     var MostXML = require('most-xml')

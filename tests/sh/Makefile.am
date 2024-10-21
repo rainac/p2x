@@ -1,4 +1,3 @@
-
 generated_files = all_tests.sh test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh test_output_stability.sh forall_tests.sh
 
 good =
@@ -11,7 +10,7 @@ good += val_tests test_reproduce_strict test_reproduce test_reparse	\
  output_mode_matlab cdecls
 endif
 
-if acond_NPM_AVAIL
+if acond_NPM_PKGS_AVAIL
 good += p2xjs_mocha_tests test_cmp_js reproduce_ign
 endif
 
@@ -21,7 +20,7 @@ good_test_results = $(addprefix result_suite_good_,$(good))
 bad_test_results = $(addprefix result_suite_bad_,$(bad))
 
 result_suite_good_%: %.sh
-	./$< > log_$*.txt 2>&1
+	./$< > log_$*.txt 2>&1 || ( if [[ $$? != 0 ]]; then cat log_$*.txt; false; fi )
 
 result_suite_bad_%: %.sh
 	! ./$< > log_$*.txt 2>&1

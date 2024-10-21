@@ -1,7 +1,7 @@
-/* 
+/*
 This file is part of P2X.
-Copyright © 2013 Johannes Willkomm 
-See the file p2x.cc for copying conditions.  
+Copyright © 2013 Johannes Willkomm
+See the file p2x.cc for copying conditions.
 */
 
 #ifndef logger_idp640_hh

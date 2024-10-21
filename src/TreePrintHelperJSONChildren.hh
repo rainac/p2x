@@ -25,4 +25,3 @@ struct TreePrintHelperJSONChildren : public TreePrintHelperMATLABChildren {
   }
 
 };
-

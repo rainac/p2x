@@ -1,6 +1,5 @@
-
 if (typeof window == 'undefined') {
-    
+
     var fs = require('fs')
     var pXML = require('./parse-xml.js')
     // console.log('pXML:')
@@ -19,4 +18,3 @@ if (typeof window == 'undefined') {
 
 console.dir(global.process.argv)
 console.dir(global.process.execArgv)
-

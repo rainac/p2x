@@ -1,6 +1,5 @@
-
 if (typeof window == 'undefined') {
-    
+
     var fs = require('fs')
     var pXML = require('./parse-xml.js')
     // console.log('pXML:')
@@ -30,18 +29,18 @@ if (typeof window == 'undefined') {
         { short: 'S', long: 'scanner-config' },
         { short: 'i', long: 'arguments' },
     ]
-    
+
     console.dir(argv)
     options = POpts.parseOptions(argv, optDefs)
     console.dir(options)
 
     var emitter = new events.EventEmitter()
-    
+
     emitter.on('parserConfigOK', function(next) {
         console.log('event parserConfigOK was triggered:')
         next()
     })
-    
+
     emitter.on('scannerConfigOK', function(next) {
         console.log('event scannerConfigOK was triggered:')
         next()
@@ -52,7 +51,7 @@ if (typeof window == 'undefined') {
         console.dir(ev)
         next()
     })
-    
+
     emitter.on('p2xerror', function(next, ev) {
         console.log('event "p2xerror" was triggered by:')
         console.dir(ev)
@@ -60,7 +59,7 @@ if (typeof window == 'undefined') {
             next()
         }
     })
-    
+
 }
 
 readParserConfigFile()
@@ -68,7 +67,7 @@ readParserConfigFile()
 function readParserConfigFile() {
     if ('prec-list' in options) {
         configFile = options['prec-list'][0]
-        
+
         var cmd = 'p2x -T -p ' + configFile
         console.log('run ' + cmd)
         var cnfXML
@@ -99,7 +98,7 @@ function parseConfig(cnfXML) {
     var pc = pcrw.loadXML(cnfXML)
     // console.dir(pc)
     // console.log(pcrw.asxml(pc))
-    
+
     parser.setconfig(pc)
     console.log('Parser config loaded:')
     console.log(pcrw.asJSON(parser.getconfig()))
@@ -156,4 +155,3 @@ function parseInput(data) {
 }
 
 console.log('in script2')
-

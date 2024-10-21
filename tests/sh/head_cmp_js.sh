@@ -2,6 +2,8 @@
 
 . setup.sh
 
+export P2X
+
 mkParseTree() {
     infile="$1"
     outfile="$2"
@@ -10,6 +12,9 @@ mkParseTree() {
     xmltmp=$tmpdir/$(basename $outfile .txt).xml
     if test "$p2x" = "p2xjs"; then
         _opts="$_opts -S  ../../examples/configs/scanner-c.json"
+        p2x=$P2XJS
+    else
+        p2x=$P2X
     fi
     _opts="$_opts -o $xmltmp"
     cmd="$p2x $_opts -p ../../examples/configs/default ../../examples/in/$infile"

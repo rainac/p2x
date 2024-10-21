@@ -1,1 +1,0 @@
-flex libfl-dev shunit2 xsltproc xmlstarlet libcppunit-dev trang valgrind re2c python3 octave zsh autoconf automake make g++ libxslt1-dev libxml2-dev

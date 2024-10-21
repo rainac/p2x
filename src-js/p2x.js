@@ -1,4 +1,3 @@
-
 var opxCreateRequest = function() {
     var req = null;
     try{
@@ -49,7 +48,7 @@ var getdata = function(url, callback) {
     if (typeof callback == 'undefined') {
         callback = this.callback
     }
-    
+
     var d = {
         request: opxCreateRequest(),
         callback: callback
@@ -75,7 +74,7 @@ var require = function(url, callback) {
     if (callback) {
         callback()
     }
-    
+
 }
 
 var dummyThis = {}

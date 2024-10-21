@@ -98,7 +98,7 @@ EOF
  ( * * 5 * 6 )
 EOF
 
-    p2x -c -n -l -Oy -m -p config.p2x input.txt -o out.xml
+    $P2X -c -n -l -Oy -m -p config.p2x input.txt -o out.xml
 
     xsltproc check-indent.xsl out.xml
     assertEquals "XSLT error code must be 0" "0" "$?"

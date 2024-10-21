@@ -1,6 +1,5 @@
-
 if (typeof window == 'undefined') {
-    
+
     var fs = require('fs')
     var assert = require('assert')
     var pXML = require('./parse-xml.js')
@@ -116,4 +115,3 @@ assert(tl.list[10].text == '1.2e-122')
 assert(tl.list[10].index == 10)
 assert(tl.list[10].line == 2)
 assert(tl.list[10].col == 1)
-

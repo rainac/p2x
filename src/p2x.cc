@@ -451,7 +451,7 @@ struct TokenInfo {
     if (it != opPrototypes.end()) {
       if (not it->second.isParen) {
         Log(LS::CONFIG|LS::ERROR, "Overriding declaration of " << name << " as mode " << it->second.mode
-	    << " with mode " << MODE_PAREN << "\n")
+            << " with mode " << MODE_PAREN << "\n")
         exit(EXIT_FAILURE);
         //        opPrototypes[code] = tp;
       } else {
@@ -517,14 +517,14 @@ struct TokenInfo {
     return it != opPrototypes.end() && it->second.mode == MODE_UNARY_BINARY;
   }
 
-  static bool isOp(ParserMode mode) { 
+  static bool isOp(ParserMode mode) {
     return (mode == MODE_BINARY
             or mode == MODE_UNARY_BINARY
             or mode == MODE_UNARY
             or mode == MODE_POSTFIX);
   }
 
-  bool isOp(Token *t) const { 
+  bool isOp(Token *t) const {
     return isOp(this->mode(t));
   }
 
@@ -537,18 +537,18 @@ struct TokenInfo {
 #endif
       OpPrototypes::const_iterator it = opPrototypes.find(getOpCode(t));
       if (it != opPrototypes.end()) {
-	res = &it->second;
+        res = &it->second;
       }
 #ifdef P2X_SAVE_PROTO_PTR
     }
 #endif
     return res;
   }
-  
+
   TokenProto *getProto(Token const * const t) {
     return const_cast<TokenProto*>(const_cast<TokenInfo const *>(this)->getProto(t));
   }
-  
+
   int prec(Token const * const t) const {
     int res = INT_MAX;
     ParserMode m = mode(t);
@@ -567,7 +567,7 @@ struct TokenInfo {
           } else {
             res = proto->precedence;
           }
-        } 
+        }
       }
     }
     return res;
@@ -784,7 +784,7 @@ struct P2XFlexLexer : public P2XLexer {
   FlexLexer *m_flexLexer;
 
   P2XFlexLexer(ScannerType type = SCANNER_STRINGS) :
-    m_type(type), m_flexLexer() 
+    m_type(type), m_flexLexer()
   {
     Log(LS::CONFIG, "Creating Flex lexer of type " << getScannerTypeName(m_type) << "\n");
     switch(type) {
@@ -917,7 +917,7 @@ struct TokenTypeEqual {
 
   TokenTypeEqual(TokenInfo const &tokenInfo) : tokenInfo(tokenInfo) {}
 
-  bool operator()(Token const *s, Token const *t) const { 
+  bool operator()(Token const *s, Token const *t) const {
     return s->token == t->token
       and (not (tokenInfo.isNamedType(s) or tokenInfo.isNamedType(t)) or s->text == t->text)
       and (!(tokenInfo.isAmbiguous(s) or tokenInfo.isAmbiguous(t)) or LiveArity(s) == LiveArity(t));
@@ -931,7 +931,7 @@ struct Scanner {
   ScannerType m_type;
   std::vector<Token*> tokenList;
 
-  Scanner(ScannerType type = SCANNER_STRINGS) : 
+  Scanner(ScannerType type = SCANNER_STRINGS) :
     m_type(type)
   {}
 
@@ -1017,10 +1017,10 @@ struct Parser {
     --it;
     return it->second;
   }
-  static bool isOp(ParserMode mode) { 
+  static bool isOp(ParserMode mode) {
     return TokenInfo::isOp(mode);
   }
-  bool isOp(Token *t) const { 
+  bool isOp(Token *t) const {
     return tokenInfo.isOp(t);
   }
   Token *getRMOp() const {
@@ -1039,7 +1039,7 @@ struct Parser {
     return rm->right == 0 and tokenInfo.mode(rm) != MODE_POSTFIX;
   }
 
-  bool tokenTypeEqual(Token const *s, Token const *t) const { 
+  bool tokenTypeEqual(Token const *s, Token const *t) const {
     return TokenTypeEqual(tokenInfo)(s, t);
   }
 
@@ -1227,64 +1227,64 @@ struct Parser {
 #endif
 
       Log(LS::DEBUG|LS::PARSE,  "Parser: next: " << *first
-	  << ": mode: " << tokenInfo.mode(first)
-	  << ": prec: " << tokenInfo.prec(first)
-	  << "\n");
+          << ": mode: " << tokenInfo.mode(first)
+          << ": prec: " << tokenInfo.prec(first)
+          << "\n");
       if (endList.find(tokenInfo.getOpCode(first)) != endList.end()) {
         endFound = true;
       } else if (first->token == TOKEN_EOF) {
-	Log(LS::WARNING,  FileLineAndCol(*this, first) << ": Unexpected end of input in block "
-	    << TextLineAndCol(options.rootNode)
-	    << " while searching for " << endList << "\n");
+        Log(LS::WARNING,  FileLineAndCol(*this, first) << ": Unexpected end of input in block "
+            << TextLineAndCol(options.rootNode)
+            << " while searching for " << endList << "\n");
         endFound = true;
       } else if (tokenInfo.mode(first) == MODE_LINE_COMMENT) {
-	Token *next = 0;
-	std::string lncText;
-	while(true) {
-	  next = tokenList.next();
+        Token *next = 0;
+        std::string lncText;
+        while(true) {
+          next = tokenList.next();
           if (next->token == TOKEN_NEWLINE or next->token == TOKEN_EOF)
             break;
-	  lncText += next->text;
-	}
+          lncText += next->text;
+        }
         insertToken(first);
-	Token * const inserted = first;
+        Token * const inserted = first;
         if (next->token == TOKEN_NEWLINE) {
           insertToken(next);
         } else if (next->token == TOKEN_EOF) {
-	  Log(LS::PARSE,  FileLineAndCol(*this, next) << ": Unexpected end of input in line comment "
-	      << TextLineAndCol(first) << " while searching for " << TOKEN_NEWLINE << "\n");
-	  endFound = true;
-	  first = next;
-	}
-	inserted->text += lncText;
+          Log(LS::PARSE,  FileLineAndCol(*this, next) << ": Unexpected end of input in line comment "
+              << TextLineAndCol(first) << " while searching for " << TOKEN_NEWLINE << "\n");
+          endFound = true;
+          first = next;
+        }
+        inserted->text += lncText;
       } else if (tokenInfo.mode(first) == MODE_BLOCK_COMMENT and tokenInfo.isLParen(first)) {
-	Token *next = 0;
+        Token *next = 0;
         auto pcommentEndList = tokenInfo.endList(first);
-	std::string ctext = first->text;
-	while(true) {
-	  next = tokenList.next();
-	  if (next->token == TOKEN_EOF)
-	    break;
-	  ctext += next->text;
-	  if (pcommentEndList.find(tokenInfo.getOpCode(next)) != pcommentEndList.end())
-	    break;
-	  if (tokenInfo.mode(next) == MODE_BLOCK_COMMENT) {
-	    Log(LS::WARNING,  FileLineAndCol(*this, next) << ": Block comment start inside block comment "
-		<< TextLineAndCol(first) << ", but nesting is not allowed\n");
-	  }
-	}
+        std::string ctext = first->text;
+        while(true) {
+          next = tokenList.next();
+          if (next->token == TOKEN_EOF)
+            break;
+          ctext += next->text;
+          if (pcommentEndList.find(tokenInfo.getOpCode(next)) != pcommentEndList.end())
+            break;
+          if (tokenInfo.mode(next) == MODE_BLOCK_COMMENT) {
+            Log(LS::WARNING,  FileLineAndCol(*this, next) << ": Block comment start inside block comment "
+                << TextLineAndCol(first) << ", but nesting is not allowed\n");
+          }
+        }
         insertToken(first);
-	Token * const inserted = first;
-	if (next->token == TOKEN_EOF) {
-	  Log(LS::WARNING,  FileLineAndCol(*this, next) << ": Unexpected end of input in block comment "
-	      << TextLineAndCol(first) << " while searching for " << pcommentEndList << "\n");
-	  endFound = true;
-	  first = next;
-	}
-	inserted->fullText = ctext;
+        Token * const inserted = first;
+        if (next->token == TOKEN_EOF) {
+          Log(LS::WARNING,  FileLineAndCol(*this, next) << ": Unexpected end of input in block comment "
+              << TextLineAndCol(first) << " while searching for " << pcommentEndList << "\n");
+          endFound = true;
+          first = next;
+        }
+        inserted->fullText = ctext;
       } else if (tokenInfo.isLParen(first)) {
         Parser parser(tokenInfo, options, tokenList);
-	parser.options.rootNode = first;
+        parser.options.rootNode = first;
         parser.endList = tokenInfo.endList(first);
         Token *last = parser.parse();
 
@@ -1334,7 +1334,7 @@ struct Parser {
 
       } else {
         insertToken(first);
-      } 
+      }
     } while(not endFound);
 
     return first;
@@ -1348,7 +1348,7 @@ struct FPParser {
   Parser::Options options;
   Scanner scanner;
 
-  FPParser(ScannerType scannerType): 
+  FPParser(ScannerType scannerType):
     scanner(scannerType)
   { }
 
@@ -1639,21 +1639,21 @@ struct TreeXMLWriter {
       XMLOstream x(aus);
       // ignore may end with NEWLINE, either because it is TOKEN_NEWLINE or it is a line comment
       if (t->text.back() == '\n') {
-	x << t->text.substr(0, t->text.size()-1);
-	if (options.newlineAsEntity)
-	  aus << "&#xa;";
-	else if (options.newlineAsBr)
-	  ; // handled below
-	else
-	  aus << "\n";
+        x << t->text.substr(0, t->text.size()-1);
+        if (options.newlineAsEntity)
+          aus << "&#xa;";
+        else if (options.newlineAsBr)
+          ; // handled below
+        else
+          aus << "\n";
       } else if (t->fullText.size()) {
-	x << t->fullText;
+        x << t->fullText;
       } else {
-	x << t->text;
+        x << t->text;
       }
       aus << "</" << textTag << ">";
       if (options.newlineAsBr and t->text.back() == '\n')
-	aus << "<ca:br/>";
+        aus << "<ca:br/>";
       res = 1;
     }
     return res;
@@ -1778,7 +1778,7 @@ struct TreeXMLWriter {
                  and merged);
       if (t->right == 0) {
         if ((not tags or (m_xmlWriter.options.strict and
-			  t->left != 0 and merged and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left))) and not m_xmlWriter.options.loose) {
+                          t->left != 0 and merged and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left))) and not m_xmlWriter.options.loose) {
           aus << indent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
         }
       }
@@ -1934,11 +1934,11 @@ struct TreeXMLWriter {
       setIndent();
 
       if (not t->text.empty()) {
-	bool const ownLine = t->left || t->right || t->ignore || !tags;
-	if (ownLine)
-	  aus << indent;
-	writeXMLTextElem(t);
-	if (ownLine) aus << m_xmlWriter.linebreak;
+        bool const ownLine = t->left || t->right || t->ignore || !tags;
+        if (ownLine)
+          aus << indent;
+        writeXMLTextElem(t);
+        if (ownLine) aus << m_xmlWriter.linebreak;
       }
       if (t->ignore) {
         writeIgnoreXML(t->ignore, indent);
@@ -1955,7 +1955,7 @@ struct TreeXMLWriter {
 
       if (t->right == 0) {
         if ((not tags or (m_xmlWriter.options.strict and
-			  t->left != 0 and merged and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left))) and not m_xmlWriter.options.loose) {
+                          t->left != 0 and merged and TokenTypeEqual(m_xmlWriter.tokenInfo)(t, t->left))) and not m_xmlWriter.options.loose) {
           aus << indent << "<" << m_xmlWriter.options.nullName << "/>" << m_xmlWriter.linebreak;
         }
       }
@@ -1975,7 +1975,7 @@ struct TreeXMLWriter {
   #include "TreePrintHelperMatlabChildren.hh"
   #include "TreePrintHelperJSONChildren.hh"
 
-  void writeXML(Token const *t, std::ostream &aus, 
+  void writeXML(Token const *t, std::ostream &aus,
                 std::string const &v = "", Token const *w = 0,
                 int level = 0) const {
     if (options.writeRec) {
@@ -2105,7 +2105,7 @@ struct TreeXMLWriter {
     if (t->right != 0) {
       writeXML_Rec(t->right, aus, subindent, t, level+1);
     } else if ((not tags or (options.strict and
-			     t->left != 0 and merged and TokenTypeEqual(tokenInfo)(t, t->left))) and not options.loose) {
+                             t->left != 0 and merged and TokenTypeEqual(tokenInfo)(t, t->left))) and not options.loose) {
       aus << indent << "<" << options.nullName << "/>" << linebreak;
     }
     if (tags) {
@@ -2271,8 +2271,8 @@ void writeTreeXML(Token *root, TokenInfo const &tokenInfo,
 }
 
 void writeTreeXML2(Token *root, TokenInfo const &tokenInfo,
-		   TreeXMLWriter::Options const &options, std::string const &indentUnit,
-		   std::ostream &out, ScannerType scannerType) {
+                   TreeXMLWriter::Options const &options, std::string const &indentUnit,
+                   std::ostream &out, ScannerType scannerType) {
   TreeXMLWriter treeXMLWriter(tokenInfo, options, indentUnit);
   if (options.xmlDecl) {
     out << "<?xml version=\"1.0\" encoding=\"" << treeXMLWriter.options.encoding << "\"?>\n";
@@ -2348,7 +2348,7 @@ bool parseOpCodeText(Lexer &lexer, Token const *t, ParserToken &opCode, std::str
     Log(LS::DEBUG|LS::CONFIG, "config: opdef text " << ot << "\n");
     if (ot != name) {
       Log(LS::ERROR|LS::CONFIG, "config: error: failed to parse the token completely: "
-	  << name << " != " << oc << "(" << ot << ")\n")
+          << name << " != " << oc << "(" << ot << ")\n")
       exit(EXIT_FAILURE);
     }
     opCode = oc;
@@ -2360,7 +2360,7 @@ bool parseOpCodeText(Lexer &lexer, Token const *t, ParserToken &opCode, std::str
     // opText = name;
   } else {
     Log(LS::ERROR|LS::CONFIG, "config: error: invalid token type field"
-	<< t->token << " (not an identifier or string)\n")
+        << t->token << " (not an identifier or string)\n")
     exit(EXIT_FAILURE);
   }
   return true;
@@ -2424,11 +2424,11 @@ void parseOperOptions(std::vector<Token const*> const &itemList,
 
       if (valid != 0) {
         Log(LS::ERROR|LS::CONFIG, "config: error: invalid operator option string key '" << modeName << "'\n");
-	  }
+          }
 
     } else {
       Log(LS::ERROR|LS::CONFIG, "error: config: invalid operator option field type '"
-	  << itemList[k]->token << "' (not an integer or an identifier)\n")
+          << itemList[k]->token << "' (not an integer or an identifier)\n")
     }
   }
 }
@@ -2477,7 +2477,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
       itemList.push_back(defHead);
       if (itemList.size() < 3) {
         Log(LS::ERROR|LS::CONFIG, "config: error: line "
-	    << itemList.front()->line << " is too short (three items at least)\n")
+            << itemList.front()->line << " is too short (three items at least)\n")
       } else {
 
         // parse operator field
@@ -2507,7 +2507,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
         ParserMode mode = parseModeField(itemList[1]);
 
         if (mode != MODE_PAREN and mode != MODE_BLOCK_COMMENT) {
-          
+
           Log(LS::DEBUG|LS::CONFIG, "config: token:  " << token << "\n");
 
           // parse precedence field
@@ -2518,9 +2518,9 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
           bool ignoreIfStray = false;
 
           parseOperOptions(itemList, assoc, outputMode, ignoreIfStray, precedence, unary_precedence);
-          
+
           Log(LS::DEBUG|LS::CONFIG, "config: options:  " << assoc << ", " << outputMode << ", " << precedence
-	      << ", " << unary_precedence << "\n")
+              << ", " << unary_precedence << "\n")
 
           TokenProto p(token, precedence, mode, assoc);
           if (mode == MODE_UNARY_BINARY) {
@@ -2539,7 +2539,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
           }
 
         } else {
-          
+
           ParserToken eopCode = TOKEN_EOF;
           std::string eopText;
           parseOpCodeText(lexer, itemList[2], eopCode, eopText);
@@ -2558,7 +2558,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
 
             // shift list by two (FIXME: hack)
             std::vector<Token const*> subItemList(++ ++itemList.begin(), itemList.end());
-            
+
             // parse sub mode field
             ParserMode subMode = parseModeField(subItemList[1]);
             Log(LS::DEBUG|LS::CONFIG, "config: paren sub mode field:  " << subMode << "\n");
@@ -2569,7 +2569,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
             int precedence = 100;
             int unary_precedence = 100;
             bool ignoreIfStray = false;
-            
+
             parseOperOptions(subItemList, assoc, outputMode, ignoreIfStray, precedence, unary_precedence);
 
             TokenProto *tp = tokenInfo.getProto(&token);
@@ -2590,14 +2590,14 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
 
           } else if (mode == MODE_BLOCK_COMMENT) {
             TokenProto *tp = tokenInfo.getProto(&token);
-	    tp->mode = MODE_BLOCK_COMMENT;
-	    assert(tp->isParen);
+            tp->mode = MODE_BLOCK_COMMENT;
+            assert(tp->isParen);
             for (auto it = tp->endList.begin(); it != tp->endList.end(); ++it) {
               TokenProto *etp = tokenInfo.getProto(&it->second);
               etp->mode = MODE_BLOCK_COMMENT;
-	      assert(etp->isRParen);
-	    }
-	  }
+              assert(etp->isRParen);
+            }
+          }
         }
 
       }
@@ -2766,7 +2766,7 @@ int main(int argc, char *argv[]) {
               vLevel |= code;
             } else {
               Log(LS::ERROR, "Arg of " << i << "-th -v flag is not an integer"
-		  " and not a valid log level name: " << args.verbose_arg[i] << "\n");
+                  " and not a valid log level name: " << args.verbose_arg[i] << "\n");
               exit(1);
             }
           }
@@ -2898,7 +2898,7 @@ int main(int argc, char *argv[]) {
       scannerType = s;
     } else {
       Log(LS::ERROR,  "error: Invalid scanner name '" << scannerTypeName << "', using default scanner "
-	  << getScannerTypeName(scannerType) << "\n")
+          << getScannerTypeName(scannerType) << "\n")
     }
   }
 
@@ -2943,7 +2943,7 @@ int main(int argc, char *argv[]) {
         TreeXMLWriter treeXMLWriter(configParser.tokenInfo, options);
         // LS::mask |= LS::DEBUG;
         Log(LS::DEBUG|LS::CONFIG, "Dumping XML of config file\n");
-	IfLog(LS::DEBUG|LS::CONFIG, treeXMLWriter.writeXML(croot, getls(), ""););
+        IfLog(LS::DEBUG|LS::CONFIG, treeXMLWriter.writeXML(croot, getls(), ""););
         Lexer lexer(scannerType);
         parseConfig(lexer, precPath, croot, tokenInfo);
         Log(LS::IO, "Read " << configFile.tellg() << " B from config file '" << precPath << "'\n");
