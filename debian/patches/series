@@ -1,9 +1,3 @@
 0012-Octave-does-not-exit-cleanly-in-cowbuild.patch
-0010-P2Xjs-needs-p2x-sometimes-pass-by-env.patch
-0003-create-instdir-use-DESTDIR.patch
 0004-Need-to-try-npm-command-twice.patch
-0011-Pick-correct-executable-for-tests.patch
-0006-Print-bad-test-logs.patch
-0007-JS-tests-only-work-when-most-xml-is-installed.patch
 0008-P2X_HOME-must-be-set-here.patch
-0009-Catch-errors.patch

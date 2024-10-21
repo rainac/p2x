@@ -7,10 +7,10 @@ Subject: Need to try npm command twice
  1 file changed, 2 insertions(+)
 
 diff --git a/src-js/Makefile.am b/src-js/Makefile.am
-index 400c352..cb9ad73 100644
+index 8846e0b..9839657 100644
 --- a/src-js/Makefile.am
 +++ b/src-js/Makefile.am
-@@ -56,12 +56,14 @@ node_modules = $(addprefix node_modules/, $(node_module_names))
+@@ -55,12 +55,14 @@ node_modules = $(addprefix node_modules/, $(node_module_names))
  $(node_modules) node_modules_updated.txt:
  	touch node_modules_updated.txt
  if acond_NPM_PKGS_AVAIL
