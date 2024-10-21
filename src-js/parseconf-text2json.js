@@ -60,7 +60,8 @@ function readParserConfigFile() {
     if ('prec-list' in options) {
         configFile = options['prec-list'][0]
 
-        var cmd = 'p2x -T -p ' + configFile
+        var p2x = process.env.P2X || 'p2x'
+        var cmd = p2x + ' -T -p ' + configFile
         // console.log('run ' + cmd)
         var cnfXML
         // system(cmd)
