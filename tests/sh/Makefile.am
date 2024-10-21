@@ -1,4 +1,3 @@
-
 generated_files = all_tests.sh test_cmp_js.sh test_cmp_jsy.sh test_reparse.sh test_reproduce_strict.sh test_reproduce.sh test_output_stability.sh forall_tests.sh
 
 good =

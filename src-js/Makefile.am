@@ -1,4 +1,3 @@
-
 json_files = scanner-c.json
 
 instbasedir = $(pkgdatadir)
