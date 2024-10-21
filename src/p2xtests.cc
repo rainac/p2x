@@ -1,7 +1,7 @@
-/* 
+/*
 This file is part of P2X.
-Copyright © 2014 Johannes Willkomm 
-See the file p2x.cc for copying conditions.  
+Copyright © 2014 Johannes Willkomm
+See the file p2x.cc for copying conditions.
 */
 
 #define P2X_NO_MAIN
@@ -18,7 +18,7 @@ struct TokenTests  : public CppUnit::TestFixture {
   void setUp()
   {
   }
-  void tearDown() 
+  void tearDown()
   {
   }
 
@@ -34,13 +34,13 @@ struct TokenTests  : public CppUnit::TestFixture {
     CPPUNIT_ASSERT(t.character == 0);
     CPPUNIT_ASSERT(t.text == "");
   }
-  
+
   void testTokenEqual() {
     TokenInfo tokenInfo;
     std::vector<Token*> tv;
     TokenList tl(tv);
     Parser p(tokenInfo, Parser::Options(), tl);
-    
+
     tokenInfo.addBinary("and", 11);
     tokenInfo.addBinary("or", 11);
 
@@ -101,14 +101,14 @@ struct ParseTests  : public CppUnit::TestFixture {
   void setUp()
   {
   }
-  void tearDown() 
+  void tearDown()
   {
   }
 
   void doParseTest1(std::string exname, std::string flags = "") {
     // Test whether the parser still returns the same tree as those
     // created with older versions, and saved in examples/out
-    std::string genCommand = "p2x " + flags + " -p ../examples/configs/default < ../examples/in/" 
+    std::string genCommand = "p2x " + flags + " -p ../examples/configs/default < ../examples/in/"
       + exname + ".exp > /tmp/" + exname + ".xml";
     std::cout << genCommand << "\n";
     std::string ppCommand = "xsltproc -o /tmp/" + exname + "2.xml ../src/xsl/but-root.xsl /tmp/" + exname + ".xml";
@@ -123,7 +123,7 @@ struct ParseTests  : public CppUnit::TestFixture {
   void doParseTest1latin1(std::string exname) {
     doParseTest1(exname, "-e iso88591");
   }
-  
+
   void testParse0() {
     doParseTest1("1l1l1l1l1");
   }
@@ -445,7 +445,7 @@ struct ParseTests  : public CppUnit::TestFixture {
     // Test whether the "merged" output for a node yields identical
     // results to merging that node a posteriori
 
-    std::string genCommand = "p2x --indent " + flags + " -p ../examples/configs/default < ../examples/in/" 
+    std::string genCommand = "p2x --indent " + flags + " -p ../examples/configs/default < ../examples/in/"
       + exname + ".exp > /tmp/" + exname + ".xml";
     std::string ppCommand = "xsltproc -o /tmp/" + exname + "2.xml ../src/xsl/but-root.xsl /tmp/" + exname + ".xml";
     std::string ppCommand2 = "xsltproc -o /tmp/" + exname + "3.xml ../src/xsl/merge-newlines.xsl /tmp/" + exname + "2.xml";
@@ -457,7 +457,7 @@ struct ParseTests  : public CppUnit::TestFixture {
     CPPUNIT_ASSERT(0 == system(ppCommand.c_str()));
     CPPUNIT_ASSERT(0 == system(ppCommand2.c_str()));
 
-    genCommand = "p2x --indent " + flags + " -p ../examples/configs/newline-merged < ../examples/in/" 
+    genCommand = "p2x --indent " + flags + " -p ../examples/configs/newline-merged < ../examples/in/"
       + exname + ".exp > /tmp/" + exname + ".xml";
     ppCommand = "xsltproc -o /tmp/" + exname + "2.xml ../src/xsl/but-root.xsl /tmp/" + exname + ".xml";
 
@@ -475,7 +475,7 @@ struct ParseTests  : public CppUnit::TestFixture {
     CPPUNIT_ASSERT(0 == system(diffCommand.c_str()));
     CPPUNIT_ASSERT(0 == system(delCommand.c_str()));
   }
-  
+
   void testParse200() {
     doParseMergedNewline("unary-minus2");
   }
@@ -592,7 +592,7 @@ struct ParseTests  : public CppUnit::TestFixture {
   CPPUNIT_TEST( testParse103 );
   CPPUNIT_TEST( testParse104 );
   */
-  
+
   CPPUNIT_TEST( testParse200 );
   CPPUNIT_TEST( testParse201 );
   CPPUNIT_TEST_SUITE_END();
@@ -606,7 +606,7 @@ struct ConfigTests  : public CppUnit::TestFixture {
 
   void doConfigTestFail(std::string const &configFile, std::string const &exname = "one", std::string flags = "") {
     // Test whether p2x exists with error upon reading configFile
-    std::string genCommand = "p2x " + flags + " -p ../examples/configs/" + configFile + " < ../examples/in/" 
+    std::string genCommand = "p2x " + flags + " -p ../examples/configs/" + configFile + " < ../examples/in/"
       + exname + ".exp > /tmp/" + exname + ".xml 2> /tmp/" + exname + ".err";
     std::string delCommand = "rm /tmp/" + exname + ".xml /tmp/" + exname + ".err";
     CPPUNIT_ASSERT(0 != system(genCommand.c_str()));

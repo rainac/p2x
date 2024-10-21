@@ -1,7 +1,7 @@
-/* 
+/*
 This file is part of P2X.
-Copyright © 2013 Johannes Willkomm 
-See the file p2x.cc for copying conditions.  
+Copyright © 2013 Johannes Willkomm
+See the file p2x.cc for copying conditions.
 */
 
 #ifndef jw_util_teestream_hh
@@ -13,7 +13,7 @@ See the file p2x.cc for copying conditions.
 // $Id: xmlOstream.hh 3231 2011-04-19 16:48:54Z willkomm $
 //
 // see http://wordaligned.org/articles/cpp-streambufs
-// 
+//
 
 struct XMLBuf : public std::streambuf {
 
@@ -21,7 +21,7 @@ struct XMLBuf : public std::streambuf {
 
   bool escapeQuote;
 
-  XMLBuf(std::streambuf *sb1) : 
+  XMLBuf(std::streambuf *sb1) :
     m_sb1(sb1),
     escapeQuote()
   {}
@@ -72,7 +72,7 @@ struct XMLBuf : public std::streambuf {
   int sync() {
     int const r1 = m_sb1->pubsync();
     return r1 == 0 ? 0 : -1;
-  }   
+  }
 
 private:
   XMLBuf(XMLBuf const &) : std::streambuf(), m_sb1() {}

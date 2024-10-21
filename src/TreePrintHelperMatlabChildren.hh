@@ -178,13 +178,13 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
       std::string rtIgnore = getIgnore(t);
       bool const anySpecial = check(rtIgnore);
       if (anySpecial and stringconcat) {
-	aus << "[";
+        aus << "[";
       }
       aus << namequote;
       *textout << rtIgnore;
       aus << namequote;
       if (anySpecial and stringconcat) {
-	aus << "]";
+        aus << "]";
       }
 
       aus << comma << namequote << "c" << namequote << nvsep << childStart;
@@ -267,4 +267,3 @@ struct TreePrintHelperMATLABChildren : public TreePrintHelperMATLABLR {
   }
 
 };
-
