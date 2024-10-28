@@ -17,12 +17,12 @@ option "debug" - "Enable debugging" flag off
 
 option "prec-list" p "Precedence file list" string typestr="filename" optional
 
-option "ignore" i "Add an item to ignore" string typestr="TokenList" multiple optional
-option "binary" b "Add a binary operator" string typestr="TokenList" multiple optional
-option "right" r "Add a right associative operator" string typestr="TokenList" multiple optional
-option "unary"  u "Add a unary operator" string typestr="TokenList" multiple optional
-option "postfix"  - "Add a postfix operator" string typestr="TokenList" multiple optional
-option "item"  I "Add an item" string typestr="TokenList" multiple optional
+option "ignore" i "Add an item to ignore" string typestr="Token" multiple optional
+option "binary" b "Add a binary operator" string typestr="Token[=prec]" multiple optional
+option "right" r "Add a right associative operator" string typestr="Token[=prec]" multiple optional
+option "unary"  u "Add a unary operator" string typestr="Token[=prec]" multiple optional
+option "postfix"  - "Add a postfix operator" string typestr="Token[=prec]" multiple optional
+option "item"  I "Add an item" string typestr="Token" multiple optional
 option "brace" B  "Scope start and end token" string typestr="TokenPair" multiple optional
 
 option "list-token" L "List token types" flag off
