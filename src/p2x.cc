@@ -74,6 +74,7 @@ Copyright (C) 2011-2024 Johannes Willkomm
 #include <math.h>
 #include <errno.h>
 #include <assert.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <time.h>
 #ifndef __WIN32
@@ -2556,7 +2557,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
 
           if (itemList.size() > 3 and mode != MODE_BLOCK_COMMENT) {
 
-            // shift list by two (FIXME: hack)
+            // shift list by two
             std::vector<Token const*> subItemList(++ ++itemList.begin(), itemList.end());
 
             // parse sub mode field
@@ -2586,6 +2587,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
               etp->precedence = precedence;
               etp->outputMode = outputMode;
               etp->associativity = assoc;
+              etp->ignoreIfStray = ignoreIfStray;
             }
 
           } else if (mode == MODE_BLOCK_COMMENT) {
@@ -2955,122 +2957,105 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  int precedence = 10;
+
+  struct OpInfo {
+    ParserToken token;
+    std::string name;
+    int precedence;
+    bool isToken() const {
+      return token != TOKEN_EOF and token != TOKEN_ROOT;
+    }
+  };
+
+  auto isToken = [](OpInfo const& name) -> bool {
+    return name.isToken();
+  };
+
+  auto getarg = [&precedence](std::string name) -> OpInfo {
+    size_t eqind = name.find('=');
+    int prec = precedence;
+    if (eqind != name.npos) {
+      std::istringstream str(name.substr(eqind+1));
+      str >> prec;
+      name = name.substr(0, eqind);
+    }
+    int ok;
+    ParserToken tok = Token::getParserTokenValue(name, &ok);
+    OpInfo info = {tok, name, prec};
+    if (!info.isToken()) {
+      info.token = TOKEN_EOF;
+      if ((name[0] == '\'' and name[name.size()-1] == '\'')
+          or (name[0] == '"' and name[name.size()-1] == '"')) {
+        info.name = name.substr(1, name.size()-2);
+      }
+    }
+    return info;
+  };
+
   if (args.binary_given>0) {
-    int precedence = 1000;
     for (unsigned i = 0; i < args.binary_given; ++i) {
       std::string name = args.binary_arg[i];
-      int ok;
-      ParserToken tok = Token::getParserTokenValue(name, &ok);
-      if (ok == 0) {
-        switch(tok) {
-        case TOKEN_EOF:
-        case TOKEN_ROOT:
-          break;
-        default:
-          tokenInfo.addBinary(tok, precedence+i);
-          break;
-        }
+      auto args = getarg(name);
+      if (args.token != TOKEN_EOF) {
+        tokenInfo.addBinary(args.token, args.precedence);
       } else {
-        if ((name[0] == '\'' and name[name.size()-1] == '\'')
-            or (name[0] == '"' and name[name.size()-1] == '"')) {
-          name = name.substr(1, name.size()-2);
-        }
-        tokenInfo.addBinary(name, precedence+i);
+        tokenInfo.addBinary(args.name, args.precedence);
       }
+      ++precedence;
     }
   }
 
   if (args.right_given>0) {
-    int precedence = 800;
+    precedence = 1000;
     for (unsigned i = 0; i < args.right_given; ++i) {
       std::string name = args.right_arg[i];
-      int ok;
-      ParserToken tok = Token::getParserTokenValue(name, &ok);
-      if (ok == 0) {
-        switch(tok) {
-        case TOKEN_EOF:
-        case TOKEN_ROOT:
-          break;
-        default:
-          tokenInfo.addBinary(tok, precedence+i, ASSOC_RIGHT);
-          break;
-        }
+      auto args = getarg(name);
+      if (args.token != TOKEN_EOF) {
+        tokenInfo.addBinary(args.token, args.precedence, ASSOC_RIGHT);
       } else {
-        if ((name[0] == '\'' and name[name.size()-1] == '\'')
-            or (name[0] == '"' and name[name.size()-1] == '"')) {
-          name = name.substr(1, name.size()-2);
-        }
-        tokenInfo.addBinary(name, precedence+i, ASSOC_RIGHT);
+        tokenInfo.addBinary(args.name, args.precedence, ASSOC_RIGHT);
       }
+      ++precedence;
     }
   }
 
   if (args.unary_given>0) {
-    int precedence = 2000;
+    precedence = 2000;
     for (unsigned i = 0; i < args.unary_given; ++i) {
       std::string name = args.unary_arg[i];
-      int ok;
-      ParserToken tok = Token::getParserTokenValue(name, &ok);
-      if (ok == 0) {
-        switch(tok) {
-        case TOKEN_EOF:
-        case TOKEN_ROOT:
-          break;
-        default:
-          tokenInfo.addUnary(tok, precedence+i);
-          break;
-        }
+      auto args = getarg(name);
+      if (args.token != TOKEN_EOF) {
+        tokenInfo.addUnary(args.token, args.precedence);
       } else {
-        if ((name[0] == '\'' and name[name.size()-1] == '\'')
-            or (name[0] == '"' and name[name.size()-1] == '"')) {
-          name = name.substr(1, name.size()-2);
-        }
-        tokenInfo.addUnary(name, precedence+i);
+        tokenInfo.addUnary(args.name, args.precedence);
       }
+      ++precedence;
     }
   }
 
   if (args.postfix_given>0) {
-    int precedence = 3000;
+    precedence = 3000;
     for (unsigned i = 0; i < args.postfix_given; ++i) {
       std::string name = args.postfix_arg[i];
-      int ok;
-      ParserToken tok = Token::getParserTokenValue(name, &ok);
-      if (ok == 0) {
-        switch(tok) {
-        case TOKEN_EOF:
-        case TOKEN_ROOT:
-          break;
-        default:
-          tokenInfo.addPostfix(tok, precedence+i);
-          break;
-        }
+      auto args = getarg(name);
+      if (args.token != TOKEN_EOF) {
+        tokenInfo.addPostfix(args.token, args.precedence);
       } else {
-        tokenInfo.addPostfix(name, precedence+i);
+        tokenInfo.addPostfix(args.name, args.precedence);
       }
+      ++precedence;
     }
   }
 
   if (args.ignore_given>0) {
     for (unsigned i = 0; i < args.ignore_given; ++i) {
       std::string name = args.ignore_arg[i];
-      int ok;
-      ParserToken tok = Token::getParserTokenValue(name, &ok);
-      if (ok == 0) {
-        switch(tok) {
-        case TOKEN_EOF:
-        case TOKEN_ROOT:
-          break;
-        default:
-          tokenInfo.addIgnore(tok);
-          break;
-        }
+      auto args = getarg(name);
+      if (args.token != TOKEN_EOF) {
+        tokenInfo.addIgnore(args.token);
       } else {
-        if ((name[0] == '\'' and name[name.size()-1] == '\'')
-            or (name[0] == '"' and name[name.size()-1] == '"')) {
-          name = name.substr(1, name.size()-2);
-        }
-        tokenInfo.addIgnore(name);
+        tokenInfo.addIgnore(args.name);
       }
     }
   }
@@ -3078,23 +3063,11 @@ int main(int argc, char *argv[]) {
   if (args.item_given>0) {
     for (unsigned i = 0; i < args.item_given; ++i) {
       std::string name = args.item_arg[i];
-      int ok;
-      ParserToken tok = Token::getParserTokenValue(name, &ok);
-      if (ok == 0) {
-        switch(tok) {
-        case TOKEN_EOF:
-        case TOKEN_ROOT:
-          break;
-        default:
-          tokenInfo.addItem(tok);
-          break;
-        }
+      auto args = getarg(name);
+      if (args.token != TOKEN_EOF) {
+        tokenInfo.addItem(args.token);
       } else {
-        if ((name[0] == '\'' and name[name.size()-1] == '\'')
-            or (name[0] == '"' and name[name.size()-1] == '"')) {
-          name = name.substr(1, name.size()-2);
-        }
-        tokenInfo.addItem(name);
+        tokenInfo.addItem(args.name);
       }
     }
   }
@@ -3109,37 +3082,16 @@ int main(int argc, char *argv[]) {
       }
       std::string name1 = astr.substr(0, pc);
       std::string name2 = astr.substr(pc+1);
-      int ok1, ok2;
-      ParserToken tok1 = Token::getParserTokenValue(name1, &ok1);
-      if (ok1 == 0) {
-        switch(tok1) {
-        case TOKEN_EOF:
-        case TOKEN_ROOT:
-          exit(5);
-          break;
-        default:
-          break;
-        }
-      }
-      ParserToken tok2 = Token::getParserTokenValue(name2, &ok2);
-      if (ok2 == 0) {
-        switch(tok2) {
-        case TOKEN_EOF:
-        case TOKEN_ROOT:
-          exit(5);
-          break;
-        default:
-          break;
-        }
-      }
-      if (ok1 == 0 and ok2 == 0) {
-        tokenInfo.addBrace(tok1, tok2);
-      } else if (ok1 == 0) {
-        tokenInfo.addBrace(tok1, name2);
-      } else if (ok2 == 0) {
-        tokenInfo.addBrace(name1, tok2);
+      auto args1 = getarg(name1);
+      auto args2 = getarg(name2);
+      if (isToken(args1) and isToken(args2)) {
+        tokenInfo.addBrace(args1.token, args2.token);
+      } else if (isToken(args1)) {
+        tokenInfo.addBrace(args1.token, args2.name);
+      } else if (isToken(args2)) {
+        tokenInfo.addBrace(args1.name, args2.token);
       } else {
-        tokenInfo.addBrace(name1, name2);
+        tokenInfo.addBrace(args1.name, args2.name);
       }
     }
   }

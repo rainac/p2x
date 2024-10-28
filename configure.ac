@@ -1,10 +1,10 @@
 # Process this file with autoconf to produce a configure script.
 #
 # This file is part of P2X.
-# Copyright © 2013 Johannes Willkomm 
-# See the file p2x.cc for copying conditions.  
+# Copyright © 2013-2024 Johannes Willkomm
+# See the file p2x.cc for copying conditions.
 #
-AC_INIT([p2x],[0.6.14],[johannes@johannes-willkomm.de],[p2x],[http://github.com/rainac/p2x])
+AC_INIT([p2x],[0.7.0],[johannes@johannes-willkomm.de],[p2x],[http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
@@ -39,7 +39,7 @@ if [test "x$NPM" != "x"]; then
        if ! $NPM list -g $pkg > /dev/null; then
           npm_packages_avail=
           AC_MSG_WARN([mandatory program node-js module "$pkg" is not installed
-			please do "$NPM install -g $pkg"])
+                        please do "$NPM install -g $pkg"])
        fi
    done
 fi
@@ -76,7 +76,7 @@ AM_CONDITIONAL(acond_EMACS_AVAIL, [test "x$EMACS" != "x"])
 AC_ARG_ENABLE([static], [  --enable-static         Build statically linked executables.
   --disable-static        Build dynamically linked executables.], [
       static_build=$enableval
-], [ 
+], [
       static_build=no
 ])
 AC_MSG_CHECKING([setting static_build])
@@ -131,7 +131,7 @@ fi
 
 AC_ARG_ENABLE([tests], [  --enable-tests         Build test code.], [
       build_tests=$enableval
-], [ 
+], [
       build_tests=no
 ])
 AC_MSG_CHECKING([setting build_tests])
@@ -160,7 +160,7 @@ if test "$build_tests" = "yes"; then
    if [test "x$NPM" != "x"]; then
       AC_CHECK_PROGS([MOCHA], [mocha])
       if test "x$MOCHA" = "x"; then
-	 AC_MSG_ERROR([mandatory program mocha was not found])
+         AC_MSG_ERROR([mandatory program mocha was not found])
       fi
    fi
 else
