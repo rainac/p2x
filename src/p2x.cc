@@ -2556,7 +2556,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
 
           if (itemList.size() > 3 and mode != MODE_BLOCK_COMMENT) {
 
-            // shift list by two (FIXME: hack)
+            // shift list by two
             std::vector<Token const*> subItemList(++ ++itemList.begin(), itemList.end());
 
             // parse sub mode field
@@ -2586,6 +2586,7 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
               etp->precedence = precedence;
               etp->outputMode = outputMode;
               etp->associativity = assoc;
+              etp->ignoreIfStray = ignoreIfStray;
             }
 
           } else if (mode == MODE_BLOCK_COMMENT) {
