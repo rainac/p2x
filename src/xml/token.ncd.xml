@@ -4,7 +4,7 @@
  See the file p2x.cc for copying conditions.  
 -->
 <ncdef name="ParserToken" c-prefix="TOKEN_">
-  <c name="EOF" val="0"/>
+  <c name="EOF"/>
 
   <c name="KEYW_FOR"/>
   <c name="KEYW_IF"/>

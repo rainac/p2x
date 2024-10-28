@@ -74,6 +74,7 @@ Copyright (C) 2011-2024 Johannes Willkomm
 #include <math.h>
 #include <errno.h>
 #include <assert.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <time.h>
 #ifndef __WIN32
