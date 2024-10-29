@@ -1,4 +1,4 @@
-p2x (0.7.2-1) aiandit-unstable; urgency=medium
+p2x (0.7.2-1) unstable; urgency=medium
 
   * Example updated
   * p2x-show-tree: script to show tree

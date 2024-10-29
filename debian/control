@@ -1,5 +1,5 @@
 Source: p2x
-Section: misc
+Section: contrib/aiandit
 Priority: optional
 Maintainer: Johannes Willkomm <johannes.willkomm@googlemail.com>
 Build-Depends: debhelper-compat (= 12), libfl-dev, shunit2, xsltproc,
