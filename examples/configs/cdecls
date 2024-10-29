@@ -4,8 +4,8 @@
 # Token  Class         Precedence  Unary Prec.  Associativity
 
 ","      binary           4
-"="      binary           5                     right
 ";"      binary           6
+"="      binary           7                     right
 
 "+"      unary_binary    10         110
 "-"      unary_binary    10         110
@@ -26,5 +26,6 @@ TAB      ignore           1
 #
 # Start  "paren" End  Class    Precedence  Unary Prec.  Associativity
 
+"{"      paren   "}"
 "("      paren   ")"
 "["      paren   "]"  postfix  160
