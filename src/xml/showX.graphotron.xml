@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="latin1"?>
+<graphotron version="1.0"
+  xmlns="http://zvon.org/graphotron"
+  xmlns:cx='http://johannes-willkomm.de/xml/code-xml/'
+  xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'
+  xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore/'
+  xmlns:dot="http://zvon.org/graphotron/dot"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<!-- <global-settings>
+<dot:fontsize>44</dot:fontsize>
+<dot:size>16,9</dot:size>
+<dot:ratio>fill</dot:ratio>
+<dot:rank>min</dot:rank>
+</global-settings> -->
+
+<global-settings>
+  <dot:rankdir>BT</dot:rankdir>
+<!--  <dot:stylesheet>cx.css</dot:stylesheet> -->
+</global-settings>
+<variable name="apos">'</variable>
+<variable name="quot">"</variable>
+
+<!--
+<vertex match="/">
+<name select="'root'"/>
+<dot:id select="'root'"/>
+<dot:color select="'black'"/>
+<dot:fillcolor select="'lightgrey'"/>
+<dot:fontcolor select="'black'"/>
+<dot:fontsize select="'32'"/>
+<dot:style>filled</dot:style>
+</vertex>
+-->
+
+<vertex match="ci:*">
+  <name select="concat('[', ., ']')"/>
+  <dot:color select="'blue'"/>
+  <dot:fillcolor select="'white'"/>
+  <dot:fontcolor select="'black'"/>
+  <dot:fontsize select="'16'"/>
+  <dot:style>filled</dot:style>
+</vertex>
+
+<vertex match="ca:t">
+  <name select="."/>
+  <dot:color select="'black'"/>
+  <dot:fillcolor select="'lightgrey'"/>
+  <dot:fontcolor select="'black'"/>
+  <dot:fontsize select="'16'"/>
+  <dot:style>filled</dot:style>
+  <dot:shape>rect</dot:shape>
+</vertex>
+<vertex match="ca:br|ca:cr|ca:tab">
+  <name select="local-name()"/>
+  <dot:color select="'black'"/>
+  <dot:fillcolor select="'lightblue'"/>
+  <dot:fontcolor select="'black'"/>
+  <dot:fontsize select="'16'"/>
+  <dot:style>filled</dot:style>
+  <dot:shape>rect</dot:shape>
+</vertex>
+
+<vertex match="cx:*">
+  <!--<name select="concat(name(), ' id=', @id, ',type=', @type, ',prec=', @precedence)"/> -->
+  <name select="name()"/>
+  <dot:color select="'black'"/>
+  <dot:fillcolor select="'white'"/>
+  <dot:fontcolor select="'black'"/>
+  <dot:fontsize select="'16'"/>
+  <dot:style>filled</dot:style>
+</vertex>
+
+<vertex match="cx:JUXTA">
+<!--<name select="concat(@id, ', prec=', @prec)"/> -->
+<name select="'J'"/>
+<dot:color select="'black'"/>
+<dot:fillcolor select="'lightblue'"/>
+<dot:fontcolor select="'black'"/>
+<dot:fontsize select="'16'"/>
+<dot:style>filled</dot:style>
+<dot:shape>diamond</dot:shape>
+</vertex>
+
+<vertex match="cx:null">
+<name select="''"/>
+<dot:color select="'black'"/>
+<dot:fillcolor select="'black'"/>
+<dot:fontcolor select="'black'"/>
+<dot:fontsize select="'11'"/>
+<dot:style>filled</dot:style>
+<dot:shape></dot:shape>
+</vertex>
+
+<vertex match="cx:INTEGER">
+<!--<name select="concat(name(), ' id=', @id, ',prec=', @prec)"/> -->
+<name select="ca:text"/>
+<dot:color select="'black'"/>
+<dot:fillcolor select="'lightgreen'"/>
+<dot:fontcolor select="'black'"/>
+<dot:fontsize select="'16'"/>
+<dot:style>filled</dot:style>
+<dot:shape>rect</dot:shape>
+</vertex>
+
+<vertex match="cx:FLOAT">
+<!--<name select="concat(name(), ' id=', @id, ',prec=', @prec)"/> -->
+<name select="name()"/>
+<dot:color select="'black'"/>
+<dot:fillcolor select="'lightgreen'"/>
+<dot:fontcolor select="'black'"/>
+<dot:fontsize select="'16'"/>
+<dot:style>filled</dot:style>
+<dot:shape>rect</dot:shape>
+</vertex>
+
+<vertex match="cx:STRING">
+<name select="substring(ca:text, 2, string-length(ca:text)-2)"/>
+<dot:color select="'black'"/>
+<dot:fillcolor select="'#b02020'"/>
+<dot:fontcolor select="'black'"/>
+<dot:fontsize select="'16'"/>
+<dot:style>filled</dot:style>
+<dot:shape>rect</dot:shape>
+</vertex>
+
+<edge
+  match="cx:*[count(ancestor::*) &gt; 0 and count(preceding-sibling::cx:*) = 0]"
+  select="..">
+<dot:color value-of="'black'"/>
+<dot:dir>reverse</dot:dir>
+</edge>
+
+<edge
+  match="cx:*[count(preceding-sibling::cx:*) &gt; 0]"
+  select="..">
+<dot:color value-of="'red'"/>
+<dot:dir>reverse</dot:dir>
+</edge>
+
+<edge
+  match="ca:t|ca:br"
+  select="..">
+<dot:color value-of="'green'"/>
+<dot:dir>reverse</dot:dir>
+</edge>
+
+<edge match="ci:*" select="..">
+  <dot:color value-of="'grey'"/>
+  <dot:dir>reverse</dot:dir>
+</edge>
+
+</graphotron>

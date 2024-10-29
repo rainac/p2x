@@ -23,6 +23,8 @@ instdir = $(docdir)
 
 inst_DATA= $(project_files)
 
+bin_SCRIPTS = p2x-show-tree
+
 install-recursive all-recursive: vcs-version.txt
 
 if acond_EMACS_AVAIL
@@ -56,5 +58,8 @@ endif
 
 git-clean:
 	git clean -d
+
+p2x-show-tree-check-local:
+	echo -e "double x[3] = {1,2,3};" | P2X_XSL=src/xsl P2X_CONFIG=examples/configs ./p2x-show-tree -x -X -x -n -x -m -g src/xml/showX.graphotron.xml -
 
 METASOURCES = AUTO
