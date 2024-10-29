@@ -345,7 +345,7 @@ Token types in class Binary represent binary operators, which become
 binary nodes in the tree, that is, they will usually have two
 children. A Binary token type has the associated fields /associativiy/
 and /precedence/.
-
+n
 The class Binary is typically used for mathematical binary operators
 such as +, -, *, / etc. One might also declare identifiers such as
 ~and~ or ~or~ as Binary. Binary token play a crucial role in
@@ -624,10 +624,10 @@ NEWLINE    ignoreAfter "..."
 *** Example
 
 As an example consider the configuration file
-[[file:examples/configs-special/cfuncs.p2c]] and the input text file
+[[file:examples/configs/cdecls]] and the input text file
 [[file:examples/in/cexpr.exp]]:
 #+BEGIN_SRC sh :results output :exports both
-cat examples/configs-special/cfuncs.p2c
+cat examples/configs/cdecls
 #+END_SRC
 
 #+RESULTS:
@@ -635,36 +635,34 @@ cat examples/configs-special/cfuncs.p2c
 #
 # Operator definitions
 #
-# Token  Class         Precedence  Unary Prec.  Associativity  Options
-","      binary        3                                       merged
-";"      binary        3                                       merged
-"return" unary         4
-JUXTA    binary        5
-"="      binary        6                        right
-"=="     binary        7
+# Token  Class         Precedence  Unary Prec.  Associativity
 
-"+"      unary_binary  10          110
-"-"      unary_binary  10          110
+","      binary           4
+";"      binary           6
+"="      binary           7                     right
 
-"*"      unary_binary  20          120
+"+"      unary_binary    10         110
+"-"      unary_binary    10         110
 
-"/"      binary        30
-"%"      binary        30
+"*"      unary_binary    20         140
 
-"if"     unary        100
-"while"  unary        100
+"/"      binary          30
+"%"      binary          30
+
+JUXTA    binary         150
+
+" "      ignore           1
+NEWLINE  ignore           1
+TAB      ignore           1
 
 #
 # Parentheses definitions
 #
 # Start  "paren" End  Class    Precedence  Unary Prec.  Associativity
-"("      paren   ")"  postfix  101
-"["      paren   "]"  postfix  102
-"{"      paren   "}"
 
-" "      ignore        1
-NEWLINE  ignore        1
-TAB      ignore        1
+"{"      paren   "}"
+"("      paren   ")"
+"["      paren   "]"  postfix  160
 #+end_example
 
 #+BEGIN_SRC sh :results output :exports both
@@ -675,28 +673,37 @@ cat examples/in/cexpr.exp
 : f( a +	1)*2
 
 #+BEGIN_SRC sh :results output :exports both
-p2x -S c -lnX -p examples/configs-special/cfuncs.p2c examples/in/cexpr.exp
+p2x -X -p examples/configs/cdecls examples/in/cexpr.exp
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-<?xml version="1.0" encoding="utf-8"?>
-<!-- P2X version 0.6.4 (72b96eb2) -->
-<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>
+<!-- P2X version 0.7.0 (c4919887) -->
+<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:i='http://johannes-willkomm.de/xml/code-xml/ignore/'>
+ <c:version name='P2X' id='c4919887' major='0' minor='7' patch='0'><!-- P2X version 0.7.0 (c4919887) --></c:version>
  <ROOT>
+  <null/>
   <MULT>
-   <L_PAREN>
+   <JUXTA>
     <ID><c:t>f</c:t></ID>
-    <c:t>(</c:t>
-    <R_PAREN>
-     <PLUS>
-      <ID><c:t>a</c:t></ID>
-      <c:t>+</c:t>
-      <INT><c:t>1</c:t></INT>
-     </PLUS>
-     <c:t>)</c:t>
-    </R_PAREN>
-   </L_PAREN>
+    <L_PAREN>
+     <null/>
+     <c:t>(</c:t>
+     <i:SPACE> </i:SPACE>
+     <R_PAREN>
+      <PLUS>
+       <ID>
+        <c:t>a</c:t>
+        <i:SPACE> </i:SPACE>
+       </ID>
+       <c:t>+</c:t>
+       <i:TAB>	</i:TAB>
+       <INT><c:t>1</c:t></INT>
+      </PLUS>
+      <c:t>)</c:t>
+     </R_PAREN>
+    </L_PAREN>
+   </JUXTA>
    <c:t>*</c:t>
    <INT><c:t>2</c:t></INT>
   </MULT>
@@ -704,23 +711,26 @@ p2x -S c -lnX -p examples/configs-special/cfuncs.p2c examples/in/cexpr.exp
 </code-xml>
 #+end_example
 
-As a more complex example try parsing an entire program:
+As a more complex example try parsing an entire program, and some of
+the options:
 
 #+BEGIN_SRC sh :results output :exports code
-p2x -lnX -S c -p examples/configs-special/cfuncs.p2c examples/in/cfunc.exp
+p2x -lnX -S c -p examples/configs/cdecls examples/in/cfunc.exp
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-<?xml version="1.0" encoding="utf-8"?>
-<!-- P2X version 0.6.4 (72b96eb2) -->
-<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>
+<!-- P2X version 0.7.0 (c4919887) -->
+<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:i='http://johannes-willkomm.de/xml/code-xml/ignore/'>
+ <c:version name='P2X' id='c4919887' major='0' minor='7' patch='0'><!-- P2X version 0.7.0 (c4919887) --></c:version>
  <ROOT>
   <JUXTA>
    <JUXTA>
-    <ID><c:t>int</c:t></ID>
-    <L_PAREN>
+    <JUXTA>
+     <ID><c:t>int</c:t></ID>
      <ID><c:t>main</c:t></ID>
+    </JUXTA>
+    <L_PAREN>
      <c:t>(</c:t>
      <R_PAREN>
       <COMMA>
@@ -746,48 +756,52 @@ p2x -lnX -S c -p examples/configs-special/cfuncs.p2c examples/in/cfunc.exp
     <c:t>{</c:t>
     <R_BRACE>
      <SEMICOLON>
-      <JUXTA>
-       <if>
-        <c:t>if</c:t>
+      <SEMICOLON>
+       <JUXTA>
+        <JUXTA>
+         <JUXTA>
+          <ID><c:t>if</c:t></ID>
+          <L_PAREN>
+           <c:t>(</c:t>
+           <R_PAREN>
+            <JUXTA>
+             <JUXTA>
+              <ID><c:t>argc</c:t></ID>
+              <GREATER><c:t>&gt;</c:t></GREATER>
+             </JUXTA>
+             <INT><c:t>1</c:t></INT>
+            </JUXTA>
+            <c:t>)</c:t>
+           </R_PAREN>
+          </L_PAREN>
+         </JUXTA>
+         <ID><c:t>printf</c:t></ID>
+        </JUXTA>
         <L_PAREN>
          <c:t>(</c:t>
          <R_PAREN>
-          <JUXTA>
-           <JUXTA>
-            <ID><c:t>argc</c:t></ID>
-            <GREATER><c:t>&gt;</c:t></GREATER>
-           </JUXTA>
-           <INT><c:t>1</c:t></INT>
-          </JUXTA>
+          <COMMA>
+           <STRING><c:t>"Hello %s"</c:t></STRING>
+           <c:t>,</c:t>
+           <L_BRACKET>
+            <ID><c:t>argv</c:t></ID>
+            <c:t>[</c:t>
+            <R_BRACKET>
+             <INT><c:t>1</c:t></INT>
+             <c:t>]</c:t>
+            </R_BRACKET>
+           </L_BRACKET>
+          </COMMA>
           <c:t>)</c:t>
          </R_PAREN>
         </L_PAREN>
-       </if>
-       <L_PAREN>
-        <ID><c:t>printf</c:t></ID>
-        <c:t>(</c:t>
-        <R_PAREN>
-         <COMMA>
-          <STRING><c:t>"Hello %s"</c:t></STRING>
-          <c:t>,</c:t>
-          <L_BRACKET>
-           <ID><c:t>argv</c:t></ID>
-           <c:t>[</c:t>
-           <R_BRACKET>
-            <INT><c:t>1</c:t></INT>
-            <c:t>]</c:t>
-           </R_BRACKET>
-          </L_BRACKET>
-         </COMMA>
-         <c:t>)</c:t>
-        </R_PAREN>
-       </L_PAREN>
-      </JUXTA>
-      <c:t>;</c:t>
-      <return>
-       <c:t>return</c:t>
-       <INT><c:t>0</c:t></INT>
-      </return>
+       </JUXTA>
+       <c:t>;</c:t>
+       <JUXTA>
+        <ID><c:t>return</c:t></ID>
+        <INT><c:t>0</c:t></INT>
+       </JUXTA>
+      </SEMICOLON>
       <c:t>;</c:t>
      </SEMICOLON>
      <c:t>}</c:t>
