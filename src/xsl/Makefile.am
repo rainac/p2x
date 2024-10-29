@@ -7,4 +7,4 @@
 instbasedir=$(docdir)
 instdir= $(instbasedir)/examples/xsl
 
-inst_DATA = copy.xsl reproduce.xsl reproduce-latin1.xsl
+inst_DATA = copy.xsl reproduce.xsl reproduce-latin1.xsl but-root.xsl

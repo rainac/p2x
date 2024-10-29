@@ -1,0 +1,162 @@
+#! /bin/bash
+
+set -e
+
+instprefix=$(readlink -f $(dirname $BASH_SOURCE)/..)
+
+P2X=${P2X:-p2x}
+P2X_HOME=${P2X_HOME:-$instprefix}
+P2X_DATA=${P2X_DATA:-$instprefix/share/p2x}
+P2X_DOC=${P2X_DOC:-$instprefix/share/doc/p2x}
+P2X_XML=${P2X_XML:-$P2X_DATA}
+P2X_CONFIG=${P2X_CONFIG:-$P2X_DOC/examples/configs}
+P2X_XSL=${P2X_XSL:-$P2X_DOC/examples/xsl}
+TMP=${TMP:-/tmp}
+
+debug=${P2X_DEBUG:-}
+verbose=""
+showHelp=""
+media="image/png"
+outfile=a.png
+graphotronConfig=show.graphotron.xml
+p2xConfig=cdecls
+preproc_xsl=()
+p2xflags=()
+
+optstring="hVDm:o:p:P:g:t:T:x:-:"
+option=""
+
+result=0
+
+while getopts $optstring option; do
+    case $option in
+        (\?)
+        echo "illegal option specified, aborting";
+        exit 1
+        ;;
+        (-)
+        showHelp="yes"
+        ;;
+        (V)
+        verbose=1
+        ;;
+        (D)
+        set -x
+        debug=1
+        ;;
+        (h)
+        showHelp="yes"
+        ;;
+        (P)
+        preprocess=1
+        preproc_xsl+=($OPTARG)
+        ;;
+        (o)
+        outfile=$OPTARG
+        ;;
+        (m)
+        media=$OPTARG
+        ;;
+        (g)
+        graphotronConfig=$OPTARG
+        ;;
+        (p)
+        p2xConfig=$OPTARG
+        ;;
+        (x)
+        p2xflags+=($OPTARG)
+        ;;
+        (t)
+        user_tmpdir=$OPTARG
+        ;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+infile=$1
+
+if [[ -z "$infile" ]]; then
+    showHelp="yes"
+fi
+
+rev='1.0'
+
+if [[ -n "$showHelp" ]]; then
+    echo "$(basename $0) version $rev"
+    echo ""
+    echo "Parse with P2X and show XML tree as graph (PNG output)"
+    echo ""
+    echo "usage: $(basename $0) {options} indoc"
+    echo ""
+    echo " -h                  show help"
+    echo " -V                  verbose"
+    echo " -m <MIME-type>      output media ($media)"
+    echo " -o <name>           output file name"
+    echo " -g <file>           graphotron config file (default: $graphotronConfig)"
+    echo " -p <file>           p2x config file (default: $p2xConfig)"
+    echo " -P <XSL>            preprocess XML with stylesheet"
+    echo ""
+    exit
+fi
+
+if [[ -n "$debug" ]]; then
+    set -x
+fi
+
+if ! [[ -f "$graphotronConfig" ]]; then
+    graphotronConfig=$P2X_DATA/$graphotronConfig
+    if ! [[ -f "$graphotronConfig" ]]; then
+        echo -n "no graphotronConfig found: $graphotronConfig"
+    fi
+fi
+
+if ! [[ -f "$p2xConfig" ]]; then
+    p2xConfig=$P2X_CONFIG/$p2xConfig
+    if ! [[ -f "$p2xConfig" ]]; then
+        echo -n "no p2xConfig found: $p2xConfig"
+    fi
+fi
+
+PID=$$
+
+if [[ -z "$user_tmpdir" ]]; then
+    tmpdir=$TMP/p2x-show-tree-$PID
+    mkdir $tmpdir
+else
+    tmpdir=$user_tmpdir
+fi
+
+indata=$tmpdir/indata.txt
+tmpXML=$tmpdir/p2xout.xml
+tmpXML2=$tmpdir/p2xout2.xml
+
+cat $infile > $indata
+
+$P2X ${p2xflags[@]} -p $p2xConfig -o $tmpXML $indata
+
+preproc_xsl+=('but-root.xsl')
+
+cp $tmpXML $tmpXML2
+
+for i in ${preproc_xsl[@]}; do
+    xsltproc -o $tmpXML2 --path $P2X_XSL:$P2X_XML:. $i $tmpXML2
+done
+
+#xsltproc --path $P2X_XSL:$P2X_XML:. -o $tmpXML but-root.xsl $tmpXML
+
+graphotron -g $graphotronConfig -m $media -o $outfile $tmpXML2
+
+if [[ -n "$show" ]]; then
+    gwenview $outfile &
+fi
+
+if [[ -z "$debug" ]]; then
+    if [[ -z "$user_tmpdir" ]]; then
+        rm -r $tmpdir
+    fi
+fi
+
+# Local Variables:
+# mode: sh
+# End:

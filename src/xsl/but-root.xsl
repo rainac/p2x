@@ -19,7 +19,7 @@ See the file p2x.cc for copying conditions.
   </xsl:template>
 
   <xsl:template match="/">
-    <xsl:apply-templates select="(/*/cx:root|/*/cx:ROOT)/cx:*[2]"/>
+    <xsl:apply-templates select="(/*/cx:root|/*/cx:ROOT)/cx:*[local-name() != 'null'][1]"/>
   </xsl:template>
 
 </xsl:stylesheet>
