@@ -1,4 +1,6 @@
 usr/bin/p2x
+usr/bin/p2x-show-tree
 usr/share/p2x/code-xml.rnc
 usr/share/p2x/code-xml.rng
+usr/share/p2x/show*.xml
 usr/share/doc/p2x/*

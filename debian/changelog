@@ -1,3 +1,11 @@
+p2x (0.7.2-1) aiandit-unstable; urgency=medium
+
+  * Example updated
+  * p2x-show-tree: script to show tree
+  * Pkg deps: suggest graphotron
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Tue, 29 Oct 2024 22:55:25 +0100
+
 p2x (0.7-1) aiandit-unstable; urgency=medium
 
   * Option to give precedence on cmdline
