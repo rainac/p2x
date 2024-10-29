@@ -1,5 +1,7 @@
 #! /bin/sh
 
+#DEBHELPER#
+
 set -e
 
 cd /usr/share/p2x/js
