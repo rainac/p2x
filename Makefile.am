@@ -32,8 +32,11 @@ README.pdf: README.org
 	emacs -q --batch --file $< -f org-latex-export-to-pdf
 	rm -f README.tex
 
-README.html: README.org
+README.html: README.org src/xsl/remove-js.xsl
 	emacs -q --batch --file $< -f org-html-export-to-html
+	mv $@ $@.tmp
+	tidy -xml $@.tmp | xsltproc -o $@ src/xsl/remove-js.xsl -
+	rm $@.tmp
 
 README.txt: README.org
 	emacs -q --batch --file $< -f org-ascii-export-to-ascii
