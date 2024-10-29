@@ -14,8 +14,8 @@ endif
 
 generated_files = README.txt README.html README.pdf
 
-project_files= AUTHORS COPYING ChangeLog INSTALL TODO NEWS	\
-version.txt $(generated_files)
+project_files= AUTHORS COPYING ChangeLog version.txt	\
+ $(generated_files)
 
 EXTRA_DIST = aclocal.m4 configure.ac
 
@@ -32,8 +32,11 @@ README.pdf: README.org
 	emacs -q --batch --file $< -f org-latex-export-to-pdf
 	rm -f README.tex
 
-README.html: README.org
+README.html: README.org src/xsl/remove-js.xsl
 	emacs -q --batch --file $< -f org-html-export-to-html
+	mv $@ $@.tmp
+	tidy -xml $@.tmp | xsltproc -o $@ src/xsl/remove-js.xsl -
+	rm $@.tmp
 
 README.txt: README.org
 	emacs -q --batch --file $< -f org-ascii-export-to-ascii
