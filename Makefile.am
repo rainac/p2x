@@ -14,8 +14,8 @@ endif
 
 generated_files = README.txt README.html README.pdf
 
-project_files= AUTHORS COPYING ChangeLog INSTALL TODO NEWS	\
-version.txt $(generated_files)
+project_files= AUTHORS COPYING ChangeLog version.txt	\
+ $(generated_files)
 
 EXTRA_DIST = aclocal.m4 configure.ac
 
