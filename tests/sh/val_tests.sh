@@ -4,10 +4,7 @@
 
 mydir=$(dirname $BASH_SOURCE)
 
-grammar=$P2X_HOME/share/p2x/code-xml.rng
-if ! [[ -f $grammar ]]; then
-    grammar=$mydir/../../src/code-xml.rng
-fi
+grammar=$mydir/../../src/code-xml.rng
 
 testOutputValid() {
     for i in $mydir/../../examples/in/*.exp; do
