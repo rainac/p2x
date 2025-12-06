@@ -21,8 +21,11 @@ tmpdir=${P2X_TMP:-${TMP}/shunit2-test-$$}
 mkdir $tmpdir
 
 function mycleanup() {
-#    echo "CLEANUP"
-    rm -rf $tmpdir
+    if [[ -n "$P2X_TMP" ]]; then
+        echo "NO CLEANUP"
+    else
+        rm -rf $tmpdir
+    fi
 }
 
 export SHUNIT_EXIT=mycleanup

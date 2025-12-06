@@ -12,7 +12,11 @@ checkExpFile() {
     opts=""
     reprxsl=reproduce.xsl
     $P2XJS $opts -S $mydir/../../examples/configs/scanner-c.json -p $tmpdir/conf-with-ignores $mydir/../../examples/in/$i > $tmpdir/res.xml
+    assertEquals "P2XJS should not fail" 0 $?
+
     xsltproc $mydir/../../src/xsl/$reprxsl $tmpdir/res.xml > $tmpdir/res.txt
+    assertEquals "xsltproc should not fail" 0 $?
+
     diff $mydir/../../examples/in/$i $tmpdir/res.txt > /dev/null
     assertEquals "Reproduce test $i did not return same result" 0 $?
 }
