@@ -62,7 +62,7 @@ testP2X7() {
     $P2X $P2XFLAGS -S c --stdin-tty -T -p ../../examples/configs-special/cfuncs.p2c > $tmpdir/tmp.out
     assertEquals "P2X should not fail in this case" $? 0
     diff $tmpdir/tmp.out ../../examples/out/token-types.xml
-    assertEquals "$?" 0
+    assertEquals "output should be the same as in fixture" "$?" 0
 }
 
 testP2X8() {
