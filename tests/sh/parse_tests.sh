@@ -92,4 +92,16 @@ testParseTreeEqual_block_comment4() {
     checkParseTreeEqual word-paren-comment-unclosed.exp '[EQUAL]([JUXTA](char, [MULT](const, [s]())), "Hi")'
 }
 
+testParseTreeEqual_unary_without_op_under_binary1() {
+    checkParseTreeEqual unary-binary14.exp '[NEWLINE]([EQUAL]([ubd](), 120), [EQUAL]([ubd](., x), 120))'
+}
+
+testParseTreeEqual_unary_without_op_under_binary2() {
+    checkParseTreeEqual unary-binary15.exp '[NEWLINE]([EQUAL]([ub](), 120), [EQUAL]([ub](., x), 120))'
+}
+
+testParseTreeEqual_unary_without_op_under_binary3() {
+    checkParseTreeEqual unary-binary16.exp '[NEWLINE]([uB](., [EQUAL](., 120)), [uB](., [EQUAL](x, 120)))'
+}
+
 . ./myshunit2

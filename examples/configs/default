@@ -70,6 +70,7 @@ JUXTA_POST binary 2
 "Ub" unary_binary 100 left 3000
 "uB" unary_binary 3000 left 100
 
+"ubd" unary_binary 1000
 
 NEWLINE binary 10
 
