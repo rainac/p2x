@@ -1,4 +1,4 @@
-p2x (25.11-1) unstable; urgency=medium
+p2x (25.12-1) unstable; urgency=medium
 
   * New version 25.11 with slightly modified version output
   * When unary precedence of unary_binary is not given, defaukt to binary precedence, not 100
