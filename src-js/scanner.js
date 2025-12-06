@@ -127,7 +127,7 @@ P2X.TokenList.prototype.asxml = function(indent) {
         bindent = indent
         indent += ' '
     }
-    var s = bindent + "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
+    var s = bindent + "<scan-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/'>\n"
     if (this.scanner) {
         s += indent + '<input>' + escapeXML(this.scanner.input) + '</input>\n'
         s += this.scanner.get().asxml(indent)
@@ -1154,9 +1154,9 @@ P2X.TreePrinter = function(tokenInfo, tpOptions) {
             if (!metainfo) metainfo = {}
             if (metainfo && typeof metainfo != 'boolean') {
                 if (this.options.outputMode == 'x')
-                    res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
+                    res += "<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>\n"
                 else
-                    res += "<code-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:c='http://johannes-willkomm.de/xml/code-xml/attributes/' xmlns:ci='http://johannes-willkomm.de/xml/code-xml/ignore'>\n"
+                    res += "<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:c='http://ai-and-it.de/xml/code-xml/attributes/' xmlns:ci='http://ai-and-it.de/xml/code-xml/ignore'>\n"
                 if (this.options.caSteps) {
                     res += indent + "<ca:steps/>\n"
                 }
