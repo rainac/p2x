@@ -12,25 +12,21 @@ checkExpFile() {
     if test -f "$stored_out"; then
         echo "Parse file $i"
 
-        rm -f $tmpdir/res.xml $tmpdir/res2.xml
-        touch $tmpdir/res2.xml
-
-        $P2X $P2XFLAGS $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
+        $P2X $P2XFLAGS $opts -p ../../examples/configs/default -o $tmpdir/res.xml ../../examples/in/$i
         assertEquals "P2X command must succeed" 0 $?
 
-        xsltproc -o $tmpdir/res2.xml ../../src/xsl/but-root.xsl $tmpdir/res.xml
+        sed -e '/<ca:version/ d' $tmpdir/res.xml > $tmpdir/res2.xml
+        xsltproc -o $tmpdir/res3.xml ../../src/xsl/but-root.xsl $tmpdir/res2.xml
+        assertEquals "xsltproc must succeed" 0 $?
 
-        sed -e 's/ code="[^"]*"//' $tmpdir/res2.xml  > $tmpdir/res3.xml
 
-        sed -e 's/ code="[^"]*"//' $stored_out | \
-            sed -e 's/ line="[^"]*"//'  | \
-            sed -e 's/ col="[^"]*"//'  > $tmpdir/check.xml
+        sed -e '/<ca:version/ d' $stored_out > $tmpdir/check.xml
+        sed -e 's/johannes-willkomm/ai-and-it/g' $tmpdir/check.xml > $tmpdir/check2.xml
+        xsltproc -o $tmpdir/check3.xml ../../src/xsl/copy.xsl $tmpdir/check2.xml
+        assertEquals "xsltproc must succeed" 0 $?
 
-        diff $tmpdir/check.xml $tmpdir/res3.xml
+        diff $tmpdir/check3.xml $tmpdir/res3.xml
         assertEquals "Output has changed to the stored version" 0 $?
-    else
-        :
-        #echo "no stored output for $i: $stored_out"
     fi
 }
 
