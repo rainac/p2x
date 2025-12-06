@@ -2878,7 +2878,7 @@ int main(int argc, char *argv[]) {
     // options.commentVersion = args.comment_version_flag;
   // }
   options.caVersion = true;
-  options.commentVersion = true;
+  options.commentVersion = !options.caVersion;
   options.bom = args.write_bom_flag;
 
   std::ostream *_out = &std::cout;
