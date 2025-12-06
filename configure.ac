@@ -1,10 +1,10 @@
 # Process this file with autoconf to produce a configure script.
 #
 # This file is part of P2X.
-# Copyright © 2013-2024 Johannes Willkomm
+# Copyright © 2013-2025 Johannes Willkomm
 # See the file p2x.cc for copying conditions.
 #
-AC_INIT([p2x],[0.7.2],[johannes@johannes-willkomm.de],[p2x],[http://github.com/rainac/p2x])
+AC_INIT([p2x],[25.11],[jwillkomm@ai-and-it.de],[p2x],[http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
