@@ -995,7 +995,7 @@ describe('P2X.TokenList', function(){
     }),
     describe('#loadXML()', function(){
       it('should return XML rule list', function(){
-          xmlRes = "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
+          xmlRes = "<scan-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/'>\n"
               + '<token line="1" col="0" index="0" type="IDENTIFIER"><ca:text>a</ca:text></token>\n'
               + '<token line="1" col="1" index="1" type="SPACE"><ca:text> </ca:text></token>\n'
               + '<token line="1" col="2" index="2" type="PLUS"><ca:text>+</ca:text></token>\n'
@@ -1004,7 +1004,7 @@ describe('P2X.TokenList', function(){
           assert.equal(xmlRes, tl.asxml());
       })
       it('should return XML rule list', function(){
-          xmlRes = "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
+          xmlRes = "<scan-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/'>\n"
               + '<token line="1" col="0" index="0" type="IDENTIFIER"><ca:text>&lt;&gt;&amp;</ca:text></token>\n'
               + '<token line="1" col="1" index="1" type="NEWLINE"><ca:br/></token>\n'
               + '<token line="1" col="2" index="2" type="CRETURN"><ca:cr/></token>\n'
@@ -1021,8 +1021,8 @@ describe('P2X.JScanner', function(){
     it('it should return a token list, XML output option', function() {
         var scanner = P2X.JScanner();
         var tl = scanner.lexall();
-        var xmlRes = "<scan-xml xmlns='http://johannes-willkomm.de/xml/code-xml/' "
-            + "xmlns:ca='http://johannes-willkomm.de/xml/code-xml/attributes/'>\n"
+        var xmlRes = "<scan-xml xmlns='http://ai-and-it.de/xml/code-xml/' "
+            + "xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/'>\n"
             + '<input></input>\n'
             + '<ca:scanner>\n'
             + '</ca:scanner>\n'
@@ -1480,7 +1480,7 @@ describe('P2X.Parser', function(){
         var p2xConfig = {scanner: scConf, parser: parseConf, treewriter: TPOptions()}
         var res = P2X.p2xj(input, p2xConfig)
 
-        var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
+        var check = '<code-xml xmlns=\'http://ai-and-it\.de/xml/code-xml/\' xmlns:ca=\'http://ai-and-it\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
 +' <root type=\"ROOT\">\n'
 +'  <null/>\n'
 +'  <op line=\"1\" col=\"1\" type=\"PLUS\">\n'
@@ -1536,7 +1536,7 @@ describe('P2X.Parser', function(){
     })
 
     it('testing named postfix op', function() {
-        var xmlres = fs.readFileSync('../examples/out/ftp3.xml')+''
+        var xmlres = fs.readFileSync('../examples/xml/ftp3.xml')+''
         var scConf = [
             { re: '\\+',    action: P2X.TOKEN_PLUS },
             { re: '\\*',    action: P2X.TOKEN_MULT },
@@ -1610,7 +1610,7 @@ describe('P2X.Parser', function(){
         assert.equal(root.right.right.right.text, '2')
     })
 
-      var xmlres_un = '<code-xml xmlns=\'http://johannes-willkomm.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm.de/xml/code-xml/attributes/\' ca:version=\'1.0\'>\n'
+      var xmlres_un = '<code-xml xmlns=\'http://ai-and-it.de/xml/code-xml/\' xmlns:ca=\'http://ai-and-it.de/xml/code-xml/attributes/\' ca:version=\'1.0\'>\n'
 +' <root type="ROOT">\n'
 +'  <null/>\n'
 +'  <op line="1" col="3" type="MULT">\n'
@@ -1753,8 +1753,8 @@ describe('P2X.TreePrinter', function(){
         result.scanner = P2X.JScanner()
         result.parser = P2X.Parser()
 
-        var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\''
-            + ' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
+        var check = '<code-xml xmlns=\'http://ai-and-it\.de/xml/code-xml/\''
+            + ' xmlns:ca=\'http://ai-and-it\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
             +' <root type=\"ROOT\">\n'
             +'  <op type=\"PLUS\">\n'
             +'   <integer type=\"INTEGER\"><ca:text>1</ca:text></integer>\n'
@@ -1768,7 +1768,7 @@ describe('P2X.TreePrinter', function(){
             var tp = P2X.TreePrinter()
             var res = tp.asxml(undefined)
             // console.log(P2X.escapeBSQLines(res))
-            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
+            var check = '<code-xml xmlns=\'http://ai-and-it\.de/xml/code-xml/\' xmlns:ca=\'http://ai-and-it\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
 +'</code-xml>\n'
             assert.equal(res, check)
         })
@@ -1776,7 +1776,7 @@ describe('P2X.TreePrinter', function(){
             var tp = P2X.TreePrinter()
             var res = tp.asxml(1)
             // console.log(P2X.escapeBSQLines(res))
-            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
+            var check = '<code-xml xmlns=\'http://ai-and-it\.de/xml/code-xml/\' xmlns:ca=\'http://ai-and-it\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
 +' <op type=\"number\"><ca:text>1</ca:text></op>\n'
 +'</code-xml>\n'
             assert.equal(res, check)
@@ -1785,7 +1785,7 @@ describe('P2X.TreePrinter', function(){
             var tp = P2X.TreePrinter()
             var res = tp.asxml({token: P2X.TOKEN_ROOT})
             // console.log(P2X.escapeBSQLines(res))
-            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
+            var check = '<code-xml xmlns=\'http://ai-and-it\.de/xml/code-xml/\' xmlns:ca=\'http://ai-and-it\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
 +' <root type=\"ROOT\"></root>\n'
 +'</code-xml>\n'
             assert.equal(res, check)
@@ -1794,7 +1794,7 @@ describe('P2X.TreePrinter', function(){
             var tp = P2X.TreePrinter()
             var res = tp.asxml({token: P2X.TOKEN_ROOT, right: { token: P2X.TOKEN_INTEGER, text: '2'}})
             // console.log(P2X.escapeBSQLines(res))
-            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
+            var check = '<code-xml xmlns=\'http://ai-and-it\.de/xml/code-xml/\' xmlns:ca=\'http://ai-and-it\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
 +' <root type=\"ROOT\">\n'
 +'  <null/>\n'
 +'  <integer type=\"INTEGER\"><ca:text>2</ca:text></integer>\n'
@@ -1816,7 +1816,7 @@ describe('P2X.TreePrinter', function(){
         it('It prints an XML tree of the object', function(){
             var tp = P2X.TreePrinter()
             var res = tp.asxml(tree2)
-            var check = '<code-xml xmlns=\'http://johannes-willkomm\.de/xml/code-xml/\' xmlns:ca=\'http://johannes-willkomm\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
+            var check = '<code-xml xmlns=\'http://ai-and-it\.de/xml/code-xml/\' xmlns:ca=\'http://ai-and-it\.de/xml/code-xml/attributes/\' ca:version=\'1\.0\'>\n'
 +' <root type=\"ROOT\">\n'
 +'  <op type=\"1100\">\n'
 +'   <op type=\"1101\"><ca:text>1</ca:text></op>\n'

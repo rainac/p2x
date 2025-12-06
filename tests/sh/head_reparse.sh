@@ -19,9 +19,9 @@ checkExpFile() {
         reprxsl=reproduce.xsl
         opts=""
     fi
-    p2x $PSXFLAGS $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
+    $P2X $PSXFLAGS $opts -p ../../examples/configs/default ../../examples/in/$i > $tmpdir/res.xml
     xsltproc ../../src/xsl/$reprxsl $tmpdir/res.xml > $tmpdir/res.txt
-    p2x $PSXFLAGS $opts -p ../../examples/configs/default $tmpdir/res.txt > $tmpdir/res2.xml
+    $P2X $PSXFLAGS $opts -p ../../examples/configs/default $tmpdir/res.txt > $tmpdir/res2.xml
     diff $tmpdir/res.xml $tmpdir/res2.xml > /dev/null
     assertEquals "Reparse test $i did not return same result" 0 $?
 }
