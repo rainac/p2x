@@ -1,15 +1,20 @@
-<?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="COMMA">
-   <id repr="int" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">int</ca:text></id>
-   <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">,</ca:text>
-   <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
-   <paren repr="open" type="IDENTIFIER">
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='COMMA'>
+   <id repr='int' type='IDENTIFIER'><ca:text>int</ca:text></id>
+   <ca:text>,</ca:text>
+   <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+   <paren repr='open' type='IDENTIFIER'>
     <null/>
-    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">open</ca:text>
-    <ca:ignore xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/" type="SPACE"><ca:text> </ca:text></ca:ignore>
-    <op type="NEWLINE">
-     <integer type="INTEGER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">3</ca:text></integer>
-     <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
+    <ca:text>open</ca:text>
+    <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+    <op type='NEWLINE'>
+     <integer type='INTEGER'><ca:text>3</ca:text></integer>
+     <ca:br/>
     </op>
    </paren>
   </op>
+ </root>
+</code-xml>

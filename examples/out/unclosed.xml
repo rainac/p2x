@@ -1,0 +1,38 @@
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='JUXTA'>
+   <op type='JUXTA'>
+    <op type='JUXTA'>
+     <op type='JUXTA'>
+      <op repr='f' type='IDENTIFIER'>
+       <id repr='int' type='IDENTIFIER'>
+        <ca:text>int</ca:text>
+        <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+       </id>
+       <ca:text>f</ca:text>
+       <paren type='L_PAREN'>
+        <null/>
+        <ca:text>(</ca:text>
+        <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+        <paren type='R_PAREN'>
+         <id repr='x' type='IDENTIFIER'>
+          <ca:text>x</ca:text>
+          <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+         </id>
+         <ca:text>)</ca:text>
+         <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+        </paren>
+       </paren>
+      </op>
+      <paren type='R_BRACE'><ca:text>}</ca:text></paren>
+     </op>
+     <paren type='R_BRACE'><ca:text>}</ca:text></paren>
+    </op>
+    <paren type='R_BRACE'><ca:text>}</ca:text></paren>
+   </op>
+   <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+  </op>
+ </root>
+</code-xml>

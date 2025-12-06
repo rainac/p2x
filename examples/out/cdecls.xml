@@ -1,0 +1,862 @@
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='NEWLINE'>
+   <op type='NEWLINE'>
+    <op type='NEWLINE'>
+     <op type='NEWLINE'>
+      <op type='NEWLINE'>
+       <op type='NEWLINE'>
+        <op type='NEWLINE'>
+         <op type='NEWLINE'>
+          <op type='NEWLINE'>
+           <op type='NEWLINE'>
+            <op type='NEWLINE'>
+             <op type='NEWLINE'>
+              <op type='NEWLINE'>
+               <op type='NEWLINE'>
+                <op type='NEWLINE'>
+                 <op type='NEWLINE'>
+                  <op type='NEWLINE'>
+                   <op type='NEWLINE'>
+                    <op type='NEWLINE'>
+                     <op type='NEWLINE'>
+                      <op type='NEWLINE'>
+                       <op type='NEWLINE'>
+                        <op type='NEWLINE'>
+                         <op type='NEWLINE'>
+                          <op type='NEWLINE'>
+                           <op type='NEWLINE'>
+                            <op type='NEWLINE'>
+                             <op type='SEMICOLON'>
+                              <op type='JUXTA'>
+                               <id repr='int' type='IDENTIFIER'>
+                                <ca:text>int</ca:text>
+                                <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                               </id>
+                               <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                              </op>
+                              <ca:text>;</ca:text>
+                             </op>
+                             <ca:br/>
+                             <op type='SEMICOLON'>
+                              <op type='JUXTA'>
+                               <id repr='double' type='IDENTIFIER'>
+                                <ca:text>double</ca:text>
+                                <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                               </id>
+                               <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                              </op>
+                              <ca:text>;</ca:text>
+                             </op>
+                            </op>
+                            <ca:br/>
+                            <op type='SEMICOLON'>
+                             <op type='MULT'>
+                              <id repr='int' type='IDENTIFIER'><ca:text>int</ca:text></id>
+                              <ca:text>*</ca:text>
+                              <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                              <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                             </op>
+                             <ca:text>;</ca:text>
+                            </op>
+                           </op>
+                           <ca:br/>
+                           <op type='SEMICOLON'>
+                            <op type='JUXTA'>
+                             <id repr='int' type='IDENTIFIER'>
+                              <ca:text>int</ca:text>
+                              <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                             </id>
+                             <paren type='L_PAREN'>
+                              <null/>
+                              <ca:text>(</ca:text>
+                              <paren type='R_PAREN'>
+                               <op type='MULT'>
+                                <null/>
+                                <ca:text>*</ca:text>
+                                <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                               </op>
+                               <ca:text>)</ca:text>
+                              </paren>
+                             </paren>
+                            </op>
+                            <ca:text>;</ca:text>
+                           </op>
+                          </op>
+                          <ca:br/>
+                          <op type='SEMICOLON'>
+                           <op type='MULT'>
+                            <op type='MULT'>
+                             <id repr='int' type='IDENTIFIER'><ca:text>int</ca:text></id>
+                             <ca:text>*</ca:text>
+                            </op>
+                            <ca:text>*</ca:text>
+                            <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                            <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                           </op>
+                           <ca:text>;</ca:text>
+                          </op>
+                         </op>
+                         <ca:br/>
+                         <op type='SEMICOLON'>
+                          <op type='JUXTA'>
+                           <op type='JUXTA'>
+                            <id repr='int' type='IDENTIFIER'>
+                             <ca:text>int</ca:text>
+                             <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                            </id>
+                            <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                           </op>
+                           <paren type='L_BRACKET'>
+                            <null/>
+                            <ca:text>[</ca:text>
+                            <paren type='R_BRACKET'>
+                             <integer type='INTEGER'><ca:text>3</ca:text></integer>
+                             <ca:text>]</ca:text>
+                            </paren>
+                           </paren>
+                          </op>
+                          <ca:text>;</ca:text>
+                         </op>
+                        </op>
+                        <ca:br/>
+                        <op type='SEMICOLON'>
+                         <op type='JUXTA'>
+                          <op type='MULT'>
+                           <id repr='int' type='IDENTIFIER'><ca:text>int</ca:text></id>
+                           <ca:text>*</ca:text>
+                           <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                           <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                          </op>
+                          <paren type='L_BRACKET'>
+                           <null/>
+                           <ca:text>[</ca:text>
+                           <paren type='R_BRACKET'>
+                            <integer type='INTEGER'><ca:text>3</ca:text></integer>
+                            <ca:text>]</ca:text>
+                           </paren>
+                          </paren>
+                         </op>
+                         <ca:text>;</ca:text>
+                        </op>
+                       </op>
+                       <ca:br/>
+                       <op type='SEMICOLON'>
+                        <op type='JUXTA'>
+                         <op type='JUXTA'>
+                          <op type='JUXTA'>
+                           <id repr='int' type='IDENTIFIER'>
+                            <ca:text>int</ca:text>
+                            <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                           </id>
+                           <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                          </op>
+                          <paren type='L_BRACKET'>
+                           <null/>
+                           <ca:text>[</ca:text>
+                           <paren type='R_BRACKET'>
+                            <integer type='INTEGER'><ca:text>3</ca:text></integer>
+                            <ca:text>]</ca:text>
+                           </paren>
+                          </paren>
+                         </op>
+                         <paren type='L_BRACKET'>
+                          <null/>
+                          <ca:text>[</ca:text>
+                          <paren type='R_BRACKET'>
+                           <integer type='INTEGER'><ca:text>4</ca:text></integer>
+                           <ca:text>]</ca:text>
+                          </paren>
+                         </paren>
+                        </op>
+                        <ca:text>;</ca:text>
+                       </op>
+                      </op>
+                      <ca:br/>
+                      <op type='SEMICOLON'>
+                       <op type='JUXTA'>
+                        <op type='JUXTA'>
+                         <op type='MULT'>
+                          <op type='MULT'>
+                           <id repr='int' type='IDENTIFIER'>
+                            <ca:text>int</ca:text>
+                            <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                           </id>
+                           <ca:text>*</ca:text>
+                          </op>
+                          <ca:text>*</ca:text>
+                          <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                         </op>
+                         <paren type='L_BRACKET'>
+                          <null/>
+                          <ca:text>[</ca:text>
+                          <paren type='R_BRACKET'>
+                           <integer type='INTEGER'><ca:text>3</ca:text></integer>
+                           <ca:text>]</ca:text>
+                          </paren>
+                         </paren>
+                        </op>
+                        <paren type='L_BRACKET'>
+                         <null/>
+                         <ca:text>[</ca:text>
+                         <paren type='R_BRACKET'>
+                          <integer type='INTEGER'><ca:text>4</ca:text></integer>
+                          <ca:text>]</ca:text>
+                         </paren>
+                        </paren>
+                       </op>
+                       <ca:text>;</ca:text>
+                      </op>
+                     </op>
+                     <ca:br/>
+                     <op type='SEMICOLON'>
+                      <op type='JUXTA'>
+                       <op type='MULT'>
+                        <id repr='int' type='IDENTIFIER'>
+                         <ca:text>int</ca:text>
+                         <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                        </id>
+                        <ca:text>*</ca:text>
+                        <paren type='L_PAREN'>
+                         <null/>
+                         <ca:text>(</ca:text>
+                         <paren type='R_PAREN'>
+                          <op type='JUXTA'>
+                           <op type='MULT'>
+                            <null/>
+                            <ca:text>*</ca:text>
+                            <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                           </op>
+                           <paren type='L_BRACKET'>
+                            <null/>
+                            <ca:text>[</ca:text>
+                            <paren type='R_BRACKET'>
+                             <integer type='INTEGER'><ca:text>3</ca:text></integer>
+                             <ca:text>]</ca:text>
+                            </paren>
+                           </paren>
+                          </op>
+                          <ca:text>)</ca:text>
+                         </paren>
+                        </paren>
+                       </op>
+                       <paren type='L_BRACKET'>
+                        <null/>
+                        <ca:text>[</ca:text>
+                        <paren type='R_BRACKET'>
+                         <integer type='INTEGER'><ca:text>4</ca:text></integer>
+                         <ca:text>]</ca:text>
+                        </paren>
+                       </paren>
+                      </op>
+                      <ca:text>;</ca:text>
+                     </op>
+                    </op>
+                    <ca:br/>
+                    <op type='SEMICOLON'>
+                     <op type='MULT'>
+                      <id repr='int' type='IDENTIFIER'>
+                       <ca:text>int</ca:text>
+                       <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                      </id>
+                      <ca:text>*</ca:text>
+                      <paren type='L_PAREN'>
+                       <null/>
+                       <ca:text>(</ca:text>
+                       <paren type='R_PAREN'>
+                        <op type='JUXTA'>
+                         <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                         <paren type='L_BRACKET'>
+                          <null/>
+                          <ca:text>[</ca:text>
+                          <paren type='R_BRACKET'>
+                           <integer type='INTEGER'><ca:text>3</ca:text></integer>
+                           <ca:text>]</ca:text>
+                          </paren>
+                         </paren>
+                        </op>
+                        <ca:text>)</ca:text>
+                       </paren>
+                      </paren>
+                     </op>
+                     <ca:text>;</ca:text>
+                    </op>
+                   </op>
+                   <ca:br/>
+                   <op type='SEMICOLON'>
+                    <op type='JUXTA'>
+                     <op type='JUXTA'>
+                      <id repr='int' type='IDENTIFIER'>
+                       <ca:text>int</ca:text>
+                       <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                      </id>
+                      <paren type='L_PAREN'>
+                       <null/>
+                       <ca:text>(</ca:text>
+                       <paren type='R_PAREN'>
+                        <op type='MULT'>
+                         <null/>
+                         <ca:text>*</ca:text>
+                         <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                        </op>
+                        <ca:text>)</ca:text>
+                       </paren>
+                      </paren>
+                     </op>
+                     <paren type='L_BRACKET'>
+                      <null/>
+                      <ca:text>[</ca:text>
+                      <paren type='R_BRACKET'>
+                       <integer type='INTEGER'><ca:text>3</ca:text></integer>
+                       <ca:text>]</ca:text>
+                      </paren>
+                     </paren>
+                    </op>
+                    <ca:text>;</ca:text>
+                   </op>
+                  </op>
+                  <ca:br/>
+                  <op type='SEMICOLON'>
+                   <op type='JUXTA'>
+                    <op type='JUXTA'>
+                     <id repr='int' type='IDENTIFIER'>
+                      <ca:text>int</ca:text>
+                      <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                     </id>
+                     <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                    </op>
+                    <paren type='L_PAREN'>
+                     <null/>
+                     <ca:text>(</ca:text>
+                     <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+                    </paren>
+                   </op>
+                   <ca:text>;</ca:text>
+                  </op>
+                 </op>
+                 <ca:br/>
+                 <op type='SEMICOLON'>
+                  <op type='JUXTA'>
+                   <op type='MULT'>
+                    <id repr='int' type='IDENTIFIER'>
+                     <ca:text>int</ca:text>
+                     <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                    </id>
+                    <ca:text>*</ca:text>
+                    <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                   </op>
+                   <paren type='L_PAREN'>
+                    <null/>
+                    <ca:text>(</ca:text>
+                    <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+                   </paren>
+                  </op>
+                  <ca:text>;</ca:text>
+                 </op>
+                </op>
+                <ca:br/>
+                <op type='SEMICOLON'>
+                 <op type='JUXTA'>
+                  <op type='MULT'>
+                   <op type='MULT'>
+                    <id repr='int' type='IDENTIFIER'>
+                     <ca:text>int</ca:text>
+                     <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                    </id>
+                    <ca:text>*</ca:text>
+                   </op>
+                   <ca:text>*</ca:text>
+                   <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                  </op>
+                  <paren type='L_PAREN'>
+                   <null/>
+                   <ca:text>(</ca:text>
+                   <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+                  </paren>
+                 </op>
+                 <ca:text>;</ca:text>
+                </op>
+               </op>
+               <ca:br/>
+               <op type='SEMICOLON'>
+                <op repr='f' type='IDENTIFIER'>
+                 <id repr='int' type='IDENTIFIER'>
+                  <ca:text>int</ca:text>
+                  <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                 </id>
+                 <ca:text>f</ca:text>
+                 <paren type='L_PAREN'>
+                  <null/>
+                  <ca:text>(</ca:text>
+                  <paren type='R_PAREN'>
+                   <op type='COMMA'>
+                    <op type='JUXTA'>
+                     <id repr='char' type='IDENTIFIER'>
+                      <ca:text>char</ca:text>
+                      <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                     </id>
+                     <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                    </op>
+                    <ca:text>,</ca:text>
+                    <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                    <op type='MULT'>
+                     <id repr='double' type='IDENTIFIER'><ca:text>double</ca:text></id>
+                     <ca:text>*</ca:text>
+                     <id repr='y' type='IDENTIFIER'><ca:text>y</ca:text></id>
+                    </op>
+                   </op>
+                   <ca:text>)</ca:text>
+                  </paren>
+                 </paren>
+                </op>
+                <ca:text>;</ca:text>
+               </op>
+              </op>
+              <ca:br/>
+              <op type='SEMICOLON'>
+               <op type='JUXTA'>
+                <op type='MULT'>
+                 <id repr='int' type='IDENTIFIER'>
+                  <ca:text>int</ca:text>
+                  <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                 </id>
+                 <ca:text>*</ca:text>
+                 <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                </op>
+                <paren type='L_PAREN'>
+                 <null/>
+                 <ca:text>(</ca:text>
+                 <paren type='R_PAREN'>
+                  <op type='COMMA'>
+                   <op type='JUXTA'>
+                    <id repr='int' type='IDENTIFIER'>
+                     <ca:text>int</ca:text>
+                     <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                    </id>
+                    <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                   </op>
+                   <ca:text>,</ca:text>
+                   <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                   <op type='MULT'>
+                    <id repr='double' type='IDENTIFIER'><ca:text>double</ca:text></id>
+                    <ca:text>*</ca:text>
+                    <id repr='y' type='IDENTIFIER'><ca:text>y</ca:text></id>
+                   </op>
+                  </op>
+                  <ca:text>)</ca:text>
+                 </paren>
+                </paren>
+               </op>
+               <ca:text>;</ca:text>
+              </op>
+             </op>
+             <ca:br/>
+             <op type='SEMICOLON'>
+              <op type='JUXTA'>
+               <op type='JUXTA'>
+                <id repr='int' type='IDENTIFIER'>
+                 <ca:text>int</ca:text>
+                 <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                </id>
+                <paren type='L_PAREN'>
+                 <null/>
+                 <ca:text>(</ca:text>
+                 <paren type='R_PAREN'>
+                  <op type='MULT'>
+                   <null/>
+                   <ca:text>*</ca:text>
+                   <op repr='f' type='IDENTIFIER'><ca:text>f</ca:text></op>
+                  </op>
+                  <ca:text>)</ca:text>
+                 </paren>
+                </paren>
+               </op>
+               <paren type='L_PAREN'>
+                <null/>
+                <ca:text>(</ca:text>
+                <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+               </paren>
+              </op>
+              <ca:text>;</ca:text>
+             </op>
+            </op>
+            <ca:br/>
+            <op type='SEMICOLON'>
+             <op type='JUXTA'>
+              <op type='JUXTA'>
+               <id repr='int' type='IDENTIFIER'>
+                <ca:text>int</ca:text>
+                <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+               </id>
+               <paren type='L_PAREN'>
+                <null/>
+                <ca:text>(</ca:text>
+                <paren type='R_PAREN'>
+                 <op type='MULT'>
+                  <null/>
+                  <ca:text>*</ca:text>
+                  <op repr='f' type='IDENTIFIER'><ca:text>f</ca:text></op>
+                 </op>
+                 <ca:text>)</ca:text>
+                </paren>
+               </paren>
+              </op>
+              <paren type='L_PAREN'>
+               <null/>
+               <ca:text>(</ca:text>
+               <paren type='R_PAREN'>
+                <op type='COMMA'>
+                 <op type='JUXTA'>
+                  <id repr='int' type='IDENTIFIER'>
+                   <ca:text>int</ca:text>
+                   <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                  </id>
+                  <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                 </op>
+                 <ca:text>,</ca:text>
+                 <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                 <op type='JUXTA'>
+                  <id repr='double' type='IDENTIFIER'>
+                   <ca:text>double</ca:text>
+                   <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                  </id>
+                  <id repr='y' type='IDENTIFIER'><ca:text>y</ca:text></id>
+                 </op>
+                </op>
+                <ca:text>)</ca:text>
+               </paren>
+              </paren>
+             </op>
+             <ca:text>;</ca:text>
+            </op>
+           </op>
+           <ca:br/>
+           <op type='SEMICOLON'>
+            <op type='JUXTA'>
+             <op type='MULT'>
+              <op type='MULT'>
+               <id repr='int' type='IDENTIFIER'>
+                <ca:text>int</ca:text>
+                <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+               </id>
+               <ca:text>*</ca:text>
+              </op>
+              <ca:text>*</ca:text>
+              <paren type='L_PAREN'>
+               <null/>
+               <ca:text>(</ca:text>
+               <paren type='R_PAREN'>
+                <op type='MULT'>
+                 <null/>
+                 <ca:text>*</ca:text>
+                 <op repr='f' type='IDENTIFIER'><ca:text>f</ca:text></op>
+                </op>
+                <ca:text>)</ca:text>
+               </paren>
+              </paren>
+             </op>
+             <paren type='L_PAREN'>
+              <null/>
+              <ca:text>(</ca:text>
+              <paren type='R_PAREN'>
+               <op type='COMMA'>
+                <op type='JUXTA'>
+                 <id repr='int' type='IDENTIFIER'>
+                  <ca:text>int</ca:text>
+                  <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                 </id>
+                 <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+                </op>
+                <ca:text>,</ca:text>
+                <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                <op type='JUXTA'>
+                 <id repr='double' type='IDENTIFIER'>
+                  <ca:text>double</ca:text>
+                  <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+                 </id>
+                 <id repr='y' type='IDENTIFIER'><ca:text>y</ca:text></id>
+                </op>
+               </op>
+               <ca:text>)</ca:text>
+              </paren>
+             </paren>
+            </op>
+            <ca:text>;</ca:text>
+           </op>
+          </op>
+          <ca:br/>
+          <op type='SEMICOLON'>
+           <op type='JUXTA'>
+            <op type='MULT'>
+             <op type='MULT'>
+              <id repr='int' type='IDENTIFIER'>
+               <ca:text>int</ca:text>
+               <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+              </id>
+              <ca:text>*</ca:text>
+             </op>
+             <ca:text>*</ca:text>
+             <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+            </op>
+            <paren type='L_PAREN'>
+             <null/>
+             <ca:text>(</ca:text>
+             <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+            </paren>
+           </op>
+           <ca:text>;</ca:text>
+          </op>
+         </op>
+         <ca:br/>
+         <op type='SEMICOLON'>
+          <op type='JUXTA'>
+           <op type='MULT'>
+            <id repr='int' type='IDENTIFIER'>
+             <ca:text>int</ca:text>
+             <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+            </id>
+            <ca:text>*</ca:text>
+            <paren type='L_PAREN'>
+             <null/>
+             <ca:text>(</ca:text>
+             <paren type='R_PAREN'>
+              <op type='JUXTA'>
+               <op type='MULT'>
+                <op type='MULT'><ca:text>*</ca:text></op>
+                <ca:text>*</ca:text>
+                <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+               </op>
+               <paren type='L_BRACKET'>
+                <null/>
+                <ca:text>[</ca:text>
+                <paren type='R_BRACKET'>
+                 <integer type='INTEGER'><ca:text>2</ca:text></integer>
+                 <ca:text>]</ca:text>
+                </paren>
+               </paren>
+              </op>
+              <ca:text>)</ca:text>
+             </paren>
+            </paren>
+           </op>
+           <paren type='L_PAREN'>
+            <null/>
+            <ca:text>(</ca:text>
+            <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+           </paren>
+          </op>
+          <ca:text>;</ca:text>
+         </op>
+        </op>
+        <ca:br/>
+        <op type='SEMICOLON'>
+         <op type='JUXTA'>
+          <op type='MULT'>
+           <id repr='int' type='IDENTIFIER'>
+            <ca:text>int</ca:text>
+            <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+           </id>
+           <ca:text>*</ca:text>
+           <paren type='L_PAREN'>
+            <null/>
+            <ca:text>(</ca:text>
+            <paren type='R_PAREN'>
+             <op type='JUXTA'>
+              <op type='MULT'>
+               <op type='MULT'><ca:text>*</ca:text></op>
+               <ca:text>*</ca:text>
+               <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+              </op>
+              <paren type='L_BRACKET'>
+               <null/>
+               <ca:text>[</ca:text>
+               <paren type='R_BRACKET'>
+                <integer type='INTEGER'><ca:text>2</ca:text></integer>
+                <ca:text>]</ca:text>
+               </paren>
+              </paren>
+             </op>
+             <ca:text>)</ca:text>
+            </paren>
+           </paren>
+          </op>
+          <paren type='L_PAREN'>
+           <null/>
+           <ca:text>(</ca:text>
+           <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+          </paren>
+         </op>
+         <ca:text>;</ca:text>
+        </op>
+       </op>
+       <ca:br/>
+       <op type='SEMICOLON'>
+        <op type='JUXTA'>
+         <op type='MULT'>
+          <id repr='int' type='IDENTIFIER'>
+           <ca:text>int</ca:text>
+           <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+          </id>
+          <ca:text>*</ca:text>
+          <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+         </op>
+         <paren type='L_BRACKET'>
+          <null/>
+          <ca:text>[</ca:text>
+          <paren type='R_BRACKET'>
+           <integer type='INTEGER'><ca:text>3</ca:text></integer>
+           <ca:text>]</ca:text>
+          </paren>
+         </paren>
+        </op>
+        <ca:text>;</ca:text>
+       </op>
+      </op>
+      <ca:br/>
+      <op type='SEMICOLON'>
+       <op type='JUXTA'>
+        <op type='JUXTA'>
+         <id repr='int' type='IDENTIFIER'>
+          <ca:text>int</ca:text>
+          <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+         </id>
+         <paren type='L_PAREN'>
+          <null/>
+          <ca:text>(</ca:text>
+          <paren type='R_PAREN'>
+           <op type='MULT'>
+            <null/>
+            <ca:text>*</ca:text>
+            <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+           </op>
+           <ca:text>)</ca:text>
+          </paren>
+         </paren>
+        </op>
+        <paren type='L_BRACKET'>
+         <null/>
+         <ca:text>[</ca:text>
+         <paren type='R_BRACKET'>
+          <integer type='INTEGER'><ca:text>3</ca:text></integer>
+          <ca:text>]</ca:text>
+         </paren>
+        </paren>
+       </op>
+       <ca:text>;</ca:text>
+      </op>
+     </op>
+     <ca:br/>
+     <op type='SEMICOLON'>
+      <op type='JUXTA'>
+       <op type='JUXTA'>
+        <id repr='char' type='IDENTIFIER'>
+         <ca:text>char</ca:text>
+         <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+        </id>
+        <paren type='L_PAREN'>
+         <null/>
+         <ca:text>(</ca:text>
+         <paren type='R_PAREN'>
+          <op type='JUXTA'>
+           <op type='MULT'>
+            <null/>
+            <ca:text>*</ca:text>
+            <paren type='L_PAREN'>
+             <null/>
+             <ca:text>(</ca:text>
+             <paren type='R_PAREN'>
+              <op type='MULT'>
+               <null/>
+               <ca:text>*</ca:text>
+               <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+              </op>
+              <ca:text>)</ca:text>
+             </paren>
+            </paren>
+           </op>
+           <paren type='L_PAREN'>
+            <null/>
+            <ca:text>(</ca:text>
+            <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+           </paren>
+          </op>
+          <ca:text>)</ca:text>
+         </paren>
+        </paren>
+       </op>
+       <paren type='L_PAREN'>
+        <null/>
+        <ca:text>(</ca:text>
+        <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+       </paren>
+      </op>
+      <ca:text>;</ca:text>
+     </op>
+    </op>
+    <ca:br/>
+    <op type='SEMICOLON'>
+     <op type='JUXTA'>
+      <op type='JUXTA'>
+       <id repr='char' type='IDENTIFIER'>
+        <ca:text>char</ca:text>
+        <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+       </id>
+       <paren type='L_PAREN'>
+        <null/>
+        <ca:text>(</ca:text>
+        <paren type='R_PAREN'>
+         <op type='JUXTA'>
+          <op type='MULT'>
+           <null/>
+           <ca:text>*</ca:text>
+           <paren type='L_PAREN'>
+            <null/>
+            <ca:text>(</ca:text>
+            <paren type='R_PAREN'>
+             <op type='JUXTA'>
+              <op type='MULT'>
+               <null/>
+               <ca:text>*</ca:text>
+               <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+              </op>
+              <paren type='L_BRACKET'>
+               <null/>
+               <ca:text>[</ca:text>
+               <paren type='R_BRACKET'>
+                <integer type='INTEGER'><ca:text>3</ca:text></integer>
+                <ca:text>]</ca:text>
+               </paren>
+              </paren>
+             </op>
+             <ca:text>)</ca:text>
+            </paren>
+           </paren>
+          </op>
+          <paren type='L_PAREN'>
+           <null/>
+           <ca:text>(</ca:text>
+           <paren type='R_PAREN'><ca:text>)</ca:text></paren>
+          </paren>
+         </op>
+         <ca:text>)</ca:text>
+        </paren>
+       </paren>
+      </op>
+      <paren type='L_BRACKET'>
+       <null/>
+       <ca:text>[</ca:text>
+       <paren type='R_BRACKET'>
+        <integer type='INTEGER'><ca:text>5</ca:text></integer>
+        <ca:text>]</ca:text>
+       </paren>
+      </paren>
+     </op>
+     <ca:text>;</ca:text>
+    </op>
+   </op>
+   <ca:br/>
+  </op>
+ </root>
+</code-xml>

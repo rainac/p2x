@@ -1,0 +1,175 @@
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='NEWLINE'>
+   <op type='NEWLINE'>
+    <op type='NEWLINE'>
+     <op type='NEWLINE'>
+      <op type='NEWLINE'>
+       <op type='NEWLINE'>
+        <paren type='L_BRACKET'>
+         <null/>
+         <ca:text>[</ca:text>
+         <paren type='R_BRACKET'>
+          <op repr='a' type='IDENTIFIER'>
+           <null/>
+           <ca:text>a</ca:text>
+           <op repr='c' type='IDENTIFIER'>
+            <string type='STRING'>
+             <ca:text>' b'</ca:text>
+             <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+            </string>
+            <ca:text>c</ca:text>
+            <op type='APOS'><ca:text>'</ca:text></op>
+           </op>
+          </op>
+          <ca:text>]</ca:text>
+         </paren>
+        </paren>
+        <ca:br/>
+        <paren type='L_BRACKET'>
+         <null/>
+         <ca:text>[</ca:text>
+         <paren type='R_BRACKET'>
+          <op type='JUXTA'>
+           <op type='JUXTA'>
+            <string type='STRING'>
+             <ca:text>'sd'</ca:text>
+             <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+            </string>
+            <string type='STRING'>
+             <ca:text>'sd'</ca:text>
+             <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+            </string>
+           </op>
+           <string type='STRING'><ca:text>'sd'</ca:text></string>
+          </op>
+          <ca:text>]</ca:text>
+         </paren>
+        </paren>
+       </op>
+       <ca:br/>
+       <paren type='L_BRACKET'>
+        <null/>
+        <ca:text>[</ca:text>
+        <paren type='R_BRACKET'>
+         <op repr='a' type='IDENTIFIER'>
+          <null/>
+          <ca:text>a</ca:text>
+          <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+          <op repr='c' type='IDENTIFIER'>
+           <string type='STRING'>
+            <ca:text>' b'</ca:text>
+            <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+           </string>
+           <ca:text>c</ca:text>
+           <op type='APOS'><ca:text>'</ca:text></op>
+          </op>
+         </op>
+         <ca:text>]</ca:text>
+        </paren>
+       </paren>
+      </op>
+      <ca:br/>
+      <paren type='L_BRACKET'>
+       <null/>
+       <ca:text>[</ca:text>
+       <paren type='R_BRACKET'>
+        <op type='JUXTA'>
+         <op type='JUXTA'>
+          <op repr='a' type='IDENTIFIER'>
+           <null/>
+           <ca:text>a</ca:text>
+           <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+           <string type='STRING'>
+            <ca:text>' b '</ca:text>
+            <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+           </string>
+          </op>
+          <paren type='L_PAREN'>
+           <null/>
+           <ca:text>(</ca:text>
+           <paren type='R_PAREN'>
+            <paren type='L_BRACKET'>
+             <null/>
+             <ca:text>[</ca:text>
+             <paren type='R_BRACKET'>
+              <op repr='c' type='IDENTIFIER'><ca:text>c</ca:text></op>
+              <ca:text>]</ca:text>
+             </paren>
+            </paren>
+            <ca:text>)</ca:text>
+           </paren>
+          </paren>
+         </op>
+         <string type='STRING'><ca:text>' d'</ca:text></string>
+        </op>
+        <ca:text>]</ca:text>
+       </paren>
+      </paren>
+     </op>
+     <ca:br/>
+     <paren type='L_BRACKET'>
+      <null/>
+      <ca:text>[</ca:text>
+      <paren type='R_BRACKET'>
+       <op type='JUXTA'>
+        <op type='JUXTA'>
+         <op repr='a' type='IDENTIFIER'>
+          <null/>
+          <ca:text>a</ca:text>
+          <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+          <string type='STRING'><ca:text>' b '</ca:text></string>
+         </op>
+         <string type='STRING'><ca:text>' c '</ca:text></string>
+        </op>
+        <string type='STRING'><ca:text>' d '</ca:text></string>
+       </op>
+       <ca:text>]</ca:text>
+      </paren>
+     </paren>
+    </op>
+    <ca:br/>
+    <paren type='L_BRACKET'>
+     <null/>
+     <ca:text>[</ca:text>
+     <paren type='R_BRACKET'>
+      <op type='JUXTA'>
+       <op type='JUXTA'>
+        <op repr='a' type='IDENTIFIER'>
+         <null/>
+         <ca:text>a</ca:text>
+         <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+         <string type='STRING'>
+          <ca:text>' b '</ca:text>
+          <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+         </string>
+        </op>
+        <paren type='L_PAREN'>
+         <null/>
+         <ca:text>(</ca:text>
+         <paren type='R_PAREN'>
+          <paren type='L_BRACKET'>
+           <null/>
+           <ca:text>[</ca:text>
+           <paren type='R_BRACKET'>
+            <op repr='c' type='IDENTIFIER'><ca:text>c</ca:text></op>
+            <ca:text>]</ca:text>
+           </paren>
+          </paren>
+          <ca:text>)</ca:text>
+          <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+         </paren>
+        </paren>
+       </op>
+       <string type='STRING'><ca:text>' d'</ca:text></string>
+      </op>
+      <ca:text>]</ca:text>
+     </paren>
+    </paren>
+   </op>
+   <ca:br/>
+  </op>
+ </root>
+</code-xml>
