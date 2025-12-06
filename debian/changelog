@@ -1,3 +1,11 @@
+p2x (25.11-1) unstable; urgency=medium
+
+  * New version 25.11 with slightly modified version output
+  * When unary precedence of unary_binary is not given, defaukt to binary precedence, not 100
+  * Change Code-XML namespaces
+
+ -- Johannes Willkomm <johannes.willkomm@googlemail.com>  Sat, 06 Dec 2025 12:10:25 +0100
+
 p2x (0.7.2-1) unstable; urgency=medium
 
   * Example updated
