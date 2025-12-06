@@ -17,8 +17,8 @@ ca-version = element ca:version {
            attribute name   {text},
            attribute id     {text},
            attribute major  {text},
-           attribute minor  {text},
-           attribute patch  {text},
+           attribute minor  {text}?,
+           attribute patch  {text}?,
            text
 }
 

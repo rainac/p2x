@@ -58,4 +58,3 @@
   </xsl:template>
 
 </xsl:stylesheet>
-<!-- $Id: reproduce.xsl 75 2014-10-24 16:21:34Z johannes.willkomm@googlemail.com $ -->

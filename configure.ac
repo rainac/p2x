@@ -1,10 +1,10 @@
 # Process this file with autoconf to produce a configure script.
 #
 # This file is part of P2X.
-# Copyright © 2013-2024 Johannes Willkomm
+# Copyright © 2013-2025 Johannes Willkomm
 # See the file p2x.cc for copying conditions.
 #
-AC_INIT([p2x],[0.7.2],[johannes@johannes-willkomm.de],[p2x],[http://github.com/rainac/p2x])
+AC_INIT([p2x],[25.11],[jwillkomm@ai-and-it.de],[p2x],[http://github.com/rainac/p2x])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
@@ -72,6 +72,9 @@ AM_CONDITIONAL(acond_RE2C_AVAIL, [test "x$RE2C" != "x"])
 
 AC_CHECK_PROGS([EMACS], [emacs])
 AM_CONDITIONAL(acond_EMACS_AVAIL, [test "x$EMACS" != "x"])
+
+AC_CHECK_PROGS([TIDY], [tidy])
+AM_CONDITIONAL(acond_TIDY_AVAIL, [test "x$TIDY" != "x"])
 
 AC_ARG_ENABLE([static], [  --enable-static         Build statically linked executables.
   --disable-static        Build dynamically linked executables.], [

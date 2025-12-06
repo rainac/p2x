@@ -1,0 +1,30 @@
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='EQUAL'>
+   <integer type='INTEGER'>
+    <ca:text>1</ca:text>
+    <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+   </integer>
+   <ca:text>=</ca:text>
+   <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+   <op type='EQUAL'>
+    <null/>
+    <ca:text>=</ca:text>
+    <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+    <op type='EQUAL'>
+     <null/>
+     <ca:text>=</ca:text>
+     <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+     <op type='EQUAL'>
+      <null/>
+      <ca:text>=</ca:text>
+      <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+      <integer type='INTEGER'><ca:text>2</ca:text></integer>
+     </op>
+    </op>
+   </op>
+  </op>
+ </root>
+</code-xml>

@@ -1,0 +1,22 @@
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='NEWLINE'>
+   <op type='COMMA'>
+    <null/>
+    <ca:text>,</ca:text>
+    <op type='COMMA'>
+     <null/>
+     <ca:text>,</ca:text>
+     <op type='COMMA'>
+      <id repr='x' type='IDENTIFIER'><ca:text>x</ca:text></id>
+      <ca:text>,</ca:text>
+      <op type='COMMA'><ca:text>,</ca:text></op>
+     </op>
+    </op>
+   </op>
+   <ca:br/>
+  </op>
+ </root>
+</code-xml>

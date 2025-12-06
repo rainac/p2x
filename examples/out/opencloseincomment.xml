@@ -1,0 +1,52 @@
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <paren repr='begin' type='IDENTIFIER'>
+   <null/>
+   <ca:text>begin</ca:text>
+   <op type='NEWLINE'>
+    <op type='NEWLINE'>
+     <op type='NEWLINE'>
+      <null/>
+      <ca:br/>
+      <paren repr='begin' type='IDENTIFIER'>
+       <null/>
+       <ca:text>begin</ca:text>
+       <paren repr='endblock' type='IDENTIFIER'>
+        <op type='NEWLINE'>
+         <op type='NEWLINE'>
+          <null/>
+          <ca:br/>
+          <op type='PLUS'>
+           <id repr='x' type='IDENTIFIER'>
+            <ca:text>x</ca:text>
+            <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+           </id>
+           <ca:text>+</ca:text>
+           <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+           <integer type='INTEGER'><ca:text>1</ca:text></integer>
+          </op>
+         </op>
+         <ca:br/>
+        </op>
+        <ca:text>endblock</ca:text>
+       </paren>
+      </paren>
+     </op>
+     <ca:br/>
+     <op type='PLUS'>
+      <id repr='y' type='IDENTIFIER'><ca:text>y</ca:text></id>
+      <ca:text>+</ca:text>
+      <integer type='INTEGER'>
+       <ca:text>1</ca:text>
+       <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+       <ca:ignore type='DOUBLE_DIV'><ca:text>// endblock</ca:text></ca:ignore>
+      </integer>
+     </op>
+    </op>
+    <ca:br/>
+   </op>
+  </paren>
+ </root>
+</code-xml>

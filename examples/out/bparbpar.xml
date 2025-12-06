@@ -1,0 +1,39 @@
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <paren repr='bopen' type='IDENTIFIER'>
+   <paren repr='bopen' type='IDENTIFIER'>
+    <id repr='A' type='IDENTIFIER'>
+     <ca:text>A</ca:text>
+     <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+    </id>
+    <ca:text>bopen</ca:text>
+    <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+    <paren repr='bclose' type='IDENTIFIER'>
+     <integer type='INTEGER'>
+      <ca:text>1</ca:text>
+      <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+     </integer>
+     <ca:text>bclose</ca:text>
+     <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+     <id repr='B' type='IDENTIFIER'>
+      <ca:text>B</ca:text>
+      <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+     </id>
+    </paren>
+   </paren>
+   <ca:text>bopen</ca:text>
+   <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+   <paren repr='bclose' type='IDENTIFIER'>
+    <integer type='INTEGER'>
+     <ca:text>2</ca:text>
+     <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+    </integer>
+    <ca:text>bclose</ca:text>
+    <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+    <id repr='C' type='IDENTIFIER'><ca:text>C</ca:text></id>
+   </paren>
+  </paren>
+ </root>
+</code-xml>

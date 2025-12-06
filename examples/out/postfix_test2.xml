@@ -1,22 +1,27 @@
-<?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="PLUS">
-   <op type="PLUS">
-    <op type="MULT">
-     <op repr="a" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">a</ca:text></op>
-     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
-     <op repr="b" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">b</ca:text></op>
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='PLUS'>
+   <op type='PLUS'>
+    <op type='MULT'>
+     <op repr='a' type='IDENTIFIER'><ca:text>a</ca:text></op>
+     <ca:text>*</ca:text>
+     <op repr='b' type='IDENTIFIER'><ca:text>b</ca:text></op>
     </op>
-    <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
-    <op type="MULT">
-     <op repr="c" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">c</ca:text></op>
-     <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">*</ca:text>
-     <op repr="d" type="IDENTIFIER">
+    <ca:text>+</ca:text>
+    <op type='MULT'>
+     <op repr='c' type='IDENTIFIER'><ca:text>c</ca:text></op>
+     <ca:text>*</ca:text>
+     <op repr='d' type='IDENTIFIER'>
       <null/>
-      <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">d</ca:text>
-      <string type="STRING"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">''</ca:text></string>
+      <ca:text>d</ca:text>
+      <string type='STRING'><ca:text>''</ca:text></string>
      </op>
     </op>
    </op>
-   <ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">+</ca:text>
-   <op repr="e" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">e</ca:text></op>
+   <ca:text>+</ca:text>
+   <op repr='e' type='IDENTIFIER'><ca:text>e</ca:text></op>
   </op>
+ </root>
+</code-xml>

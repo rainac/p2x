@@ -1,0 +1,65 @@
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='NEWLINE'>
+   <op type='NEWLINE'>
+    <op type='NEWLINE'>
+     <op type='NEWLINE'>
+      <op type='NEWLINE'>
+       <op type='FULL_STOP'>
+        <float type='FLOAT'>
+         <ca:text>12.</ca:text>
+         <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+        </float>
+        <ca:text>.</ca:text>
+        <op type='MULT'>
+         <null/>
+         <ca:text>*</ca:text>
+         <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+         <float type='FLOAT'><ca:text>13.4</ca:text></float>
+        </op>
+       </op>
+       <ca:br/>
+       <op type='MULT'>
+        <float type='FLOAT'><ca:text>12.</ca:text></float>
+        <ca:text>*</ca:text>
+        <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+        <float type='FLOAT'><ca:text>13.4</ca:text></float>
+       </op>
+      </op>
+      <ca:br/>
+      <op type='JUXTA'>
+       <op type='JUXTA'>
+        <op type='JUXTA'>
+         <float type='FLOAT'><ca:text>12.</ca:text></float>
+         <op type='BACKSLASH'>
+          <ca:text>\</ca:text>
+          <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+         </op>
+        </op>
+        <float type='FLOAT'><ca:text>13.4</ca:text></float>
+       </op>
+       <id repr='I' type='IDENTIFIER'><ca:text>I</ca:text></id>
+      </op>
+     </op>
+     <ca:br/>
+     <op type='DIV'>
+      <float type='FLOAT'><ca:text>12.</ca:text></float>
+      <ca:text>/</ca:text>
+      <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+      <float type='FLOAT'><ca:text>13.4</ca:text></float>
+     </op>
+    </op>
+    <ca:br/>
+    <op type='POW'>
+     <float type='FLOAT'><ca:text>12.</ca:text></float>
+     <ca:text>^</ca:text>
+     <ca:ignore type='SPACE'><ca:text> </ca:text></ca:ignore>
+     <float type='FLOAT'><ca:text>13.4</ca:text></float>
+    </op>
+   </op>
+   <ca:br/>
+  </op>
+ </root>
+</code-xml>

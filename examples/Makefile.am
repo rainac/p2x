@@ -23,7 +23,7 @@ exampleoutput = $(addsuffix .xml, $(addprefix out/, $(basename $(notdir $(exampl
 p2xflags = 
 
 out/%.xml: in/%.exp
-	$(top_srcdir)/src/p2x $(p2xflags) -p $(top_srcdir)/examples/configs/default < $< | xsltproc $(top_srcdir)/src/xsl/but-root.xsl - > $@
+	$(top_srcdir)/src/p2x $(p2xflags) -p $(top_srcdir)/examples/configs/default -o $@ $<
 
 out/letter.xml: p2xflags = -e latin1
 out/german.xml: p2xflags = -e latin1

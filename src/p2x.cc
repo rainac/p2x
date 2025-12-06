@@ -32,7 +32,7 @@ Sie sollten eine Kopie der GNU Lesser General Public License zusammen
 mit diesem Programm erhalten haben. Wenn nicht, siehe
 <http://www.gnu.org/licenses/>.
 
-Copyright (C) 2011-2024 Johannes Willkomm
+Copyright (C) 2011-2025 Johannes Willkomm
 
 */
 
@@ -2207,7 +2207,7 @@ struct TreeXMLWriter {
 };
 
 static std::string getCopyright() {
-  return "Copyright (C) 2011-2024 Johannes Willkomm <johannes@johannes-willkomm.de>";
+  return "Copyright (C) 2011-2025 Johannes Willkomm <jwillkomm@ai-and-it.de>";
 }
 
 char const *vcs_version = VCS_REVISION;
@@ -2229,12 +2229,21 @@ void writeVersionInfoXML(TreeXMLWriter::Options const &opts, std::string const &
   if ((pos = vs.find(".")) != std::string::npos) {
     minor = vs.substr(0, pos);
     vs.erase(0, pos + 1);
+    patch = vs;
+  } else {
+    minor = vs;
   }
-  patch = vs;
   out << "<" << opts.prefix_ca << ":version"
       << " name='P2X'"
       << " id='" << std::string(vcs_version).substr(0,8) << "'"
-      << " major='" << major << "' minor='" << minor << "' patch='" << patch << "'>";
+      << " major='" << major << "'";
+  if (!minor.empty()) {
+    out << " minor='" << minor << "'";
+  }
+  if (!patch.empty()) {
+    out << " patch='" << patch << "'";
+  }
+  out << ">";
   writeVersionInfoXMLComment(opts, indent, out);
   out << "</" << opts.prefix_ca << ":version>";
 }
@@ -2515,10 +2524,15 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
           ParserAssoc assoc = mode == MODE_BINARY or mode == MODE_UNARY_BINARY ? ASSOC_LEFT : ASSOC_NONE;
           OutputMode outputMode = OUTPUT_MODE_NESTED;
           int precedence = 100;
-          int unary_precedence = 100;
+          int unary_precedence = -1;
           bool ignoreIfStray = false;
 
           parseOperOptions(itemList, assoc, outputMode, ignoreIfStray, precedence, unary_precedence);
+
+          if (mode == MODE_UNARY_BINARY and unary_precedence == -1) {
+            // when a second precedence value is not provided, use first one for both
+            unary_precedence = precedence;
+          }
 
           Log(LS::DEBUG|LS::CONFIG, "config: options:  " << assoc << ", " << outputMode << ", " << precedence
               << ", " << unary_precedence << "\n")
@@ -2869,7 +2883,7 @@ int main(int argc, char *argv[]) {
     // options.commentVersion = args.comment_version_flag;
   // }
   options.caVersion = true;
-  options.commentVersion = true;
+  options.commentVersion = !options.caVersion;
   options.bom = args.write_bom_flag;
 
   std::ostream *_out = &std::cout;

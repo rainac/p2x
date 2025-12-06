@@ -1,18 +1,23 @@
-<?xml version="1.0"?>
-<op xmlns="http://johannes-willkomm.de/xml/code-xml/" type="NEWLINE">
-   <op type="NEWLINE">
-    <op type="NEWLINE">
-     <op type="NEWLINE">
-      <id repr="&#x2260;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">≠</ca:text></id>
-      <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-      <id repr="&#x20AC;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">€</ca:text></id>
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='NEWLINE'>
+   <op type='NEWLINE'>
+    <op type='NEWLINE'>
+     <op type='NEWLINE'>
+      <id repr='≠' type='IDENTIFIER'><ca:text>≠</ca:text></id>
+      <ca:br/>
+      <id repr='€' type='IDENTIFIER'><ca:text>€</ca:text></id>
      </op>
-     <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-     <id repr="&#xE4;&#xF6;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">äö</ca:text></id>
+     <ca:br/>
+     <id repr='äö' type='IDENTIFIER'><ca:text>äö</ca:text></id>
     </op>
-    <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-    <id repr="&#x2227;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">∧</ca:text></id>
+    <ca:br/>
+    <id repr='∧' type='IDENTIFIER'><ca:text>∧</ca:text></id>
    </op>
-   <ca:br xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/"/>
-   <id repr="&#x2228;" type="IDENTIFIER"><ca:text xmlns:ca="http://johannes-willkomm.de/xml/code-xml/attributes/">∨</ca:text></id>
+   <ca:br/>
+   <id repr='∨' type='IDENTIFIER'><ca:text>∨</ca:text></id>
   </op>
+ </root>
+</code-xml>

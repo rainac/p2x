@@ -1,0 +1,13 @@
+<code-xml xmlns='http://ai-and-it.de/xml/code-xml/' xmlns:ca='http://ai-and-it.de/xml/code-xml/attributes/' ca:version='1.0'>
+ <ca:version name='P2X' id='5b0f4d3e' major='25' minor='11'><!-- P2X version 25.11 (5b0f4d3e) --></ca:version>
+ <root type='ROOT'>
+  <null/>
+  <op type='JUXTA'>
+   <op type='JUXTA'>
+    <id repr='agg' type='IDENTIFIER'><ca:text>agg</ca:text></id>
+    <op type='ILLEGAL_CHAR'><ca:text></ca:text></op>
+   </op>
+   <id repr='tdd' type='IDENTIFIER'><ca:text>tdd</ca:text></id>
+  </op>
+ </root>
+</code-xml>
