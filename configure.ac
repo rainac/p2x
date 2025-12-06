@@ -73,6 +73,9 @@ AM_CONDITIONAL(acond_RE2C_AVAIL, [test "x$RE2C" != "x"])
 AC_CHECK_PROGS([EMACS], [emacs])
 AM_CONDITIONAL(acond_EMACS_AVAIL, [test "x$EMACS" != "x"])
 
+AC_CHECK_PROGS([TIDY], [tidy])
+AM_CONDITIONAL(acond_TIDY_AVAIL, [test "x$TIDY" != "x"])
+
 AC_ARG_ENABLE([static], [  --enable-static         Build statically linked executables.
   --disable-static        Build dynamically linked executables.], [
       static_build=$enableval

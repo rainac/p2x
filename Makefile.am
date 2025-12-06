@@ -12,7 +12,10 @@ if acond_NPM_AVAIL
 SUBDIRS += src-js
 endif
 
-generated_files = README.txt README.html README.pdf
+generated_files = README.txt README.pdf
+if acond_TIDY_AVAIL
+generated_files += README.html
+endif
 
 project_files= AUTHORS COPYING ChangeLog version.txt	\
  $(generated_files)
@@ -32,11 +35,13 @@ README.pdf: README.org
 	emacs -q --batch --file $< -f org-latex-export-to-pdf
 	rm -f README.tex
 
+if acond_TIDY_AVAIL
 README.html: README.org src/xsl/remove-js.xsl
 	emacs -q --batch --file $< -f org-html-export-to-html
 	mv $@ $@.tmp
 	tidy -xml $@.tmp | xsltproc -o $@ src/xsl/remove-js.xsl -
 	rm $@.tmp
+endif
 
 README.txt: README.org
 	emacs -q --batch --file $< -f org-ascii-export-to-ascii
