@@ -2524,10 +2524,15 @@ bool parseConfig(Lexer &lexer, std::string const &fname, Token const *t, TokenIn
           ParserAssoc assoc = mode == MODE_BINARY or mode == MODE_UNARY_BINARY ? ASSOC_LEFT : ASSOC_NONE;
           OutputMode outputMode = OUTPUT_MODE_NESTED;
           int precedence = 100;
-          int unary_precedence = 100;
+          int unary_precedence = -1;
           bool ignoreIfStray = false;
 
           parseOperOptions(itemList, assoc, outputMode, ignoreIfStray, precedence, unary_precedence);
+
+          if (mode == MODE_UNARY_BINARY and unary_precedence == -1) {
+            // when a second precedence value is not provided, use first one for both
+            unary_precedence = precedence;
+          }
 
           Log(LS::DEBUG|LS::CONFIG, "config: options:  " << assoc << ", " << outputMode << ", " << precedence
               << ", " << unary_precedence << "\n")
