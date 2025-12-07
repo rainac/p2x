@@ -1,2 +1,3 @@
 0012-Octave-does-not-exit-cleanly-in-cowbuild.patch
 0004-Need-to-try-npm-command-twice.patch
+0003-Fix-unit-tests.patch

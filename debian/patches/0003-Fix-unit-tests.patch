@@ -1,0 +1,48 @@
+From: Johannes Willkomm <johannes@johannes-willkomm.de>
+Date: Sun, 7 Dec 2025 09:39:58 +0100
+Subject: Fix unit tests
+
+---
+ tests/run-unit-test | 9 ++++++---
+ tests/sh/setup.sh   | 2 +-
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/tests/run-unit-test b/tests/run-unit-test
+index d455ef0..3a4acd3 100644
+--- a/tests/run-unit-test
++++ b/tests/run-unit-test
+@@ -4,15 +4,18 @@ set -e -x
+ 
+ debname=p2x
+ 
+-P2X_HOME=${P2X_HOME:-/usr}
++export P2X_HOME=${P2X_HOME:-/usr}
++export P2X=${P2X_HOME}/bin/p2x
++export top_srcdir=${P2X_HOME}/share/doc/p2x
+ 
+ if [ "$AUTOPKGTEST_TMP" = "" ] ; then
+     AUTOPKGTEST_TMP=`mktemp -d /tmp/${debname}-test.XXXXXX`
+     trap "rm -rf $AUTOPKGTEST_TMP" 0 INT QUIT ABRT PIPE TERM
+ fi
+ cd $AUTOPKGTEST_TMP
+-cp -a $P2X_HOME/share/doc/$debname/tests/* $AUTOPKGTEST_TMP
+-gunzip -r *
++cp -a $P2X_HOME/share/doc/$debname/. $AUTOPKGTEST_TMP
++cd tests
++gunzip -r *.gz
+ for testfile in *.sh; do
+     if head -n 6 $testfile | grep setup.sh > /dev/null 2>&1; then
+         echo "BEGIN TEST $testfile"
+diff --git a/tests/sh/setup.sh b/tests/sh/setup.sh
+index 024026d..01b20ca 100644
+--- a/tests/sh/setup.sh
++++ b/tests/sh/setup.sh
+@@ -8,7 +8,7 @@ export LANG=C # for grep used in shunit2 when running with zsh, depends on engli
+ 
+ export P2XFLAGS="$P2XFLAGS --output-mode=x"
+ 
+-top_srcdir=../..
++top_srcdir=${top_srcdir:-../..}
+ 
+ P2X=${P2X:-$top_srcdir/src/p2x}
+ P2XJS=${P2XJS:-$top_srcdir/src-js/p2xjs}
