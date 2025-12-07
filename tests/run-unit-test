@@ -4,15 +4,18 @@ set -e -x
 
 debname=p2x
 
-P2X_HOME=${P2X_HOME:-/usr}
+export P2X_HOME=${P2X_HOME:-/usr}
+export P2X=${P2X_HOME}/bin/p2x
+export top_srcdir=${P2X_HOME}/share/doc/p2x
 
 if [ "$AUTOPKGTEST_TMP" = "" ] ; then
     AUTOPKGTEST_TMP=`mktemp -d /tmp/${debname}-test.XXXXXX`
     trap "rm -rf $AUTOPKGTEST_TMP" 0 INT QUIT ABRT PIPE TERM
 fi
 cd $AUTOPKGTEST_TMP
-cp -a $P2X_HOME/share/doc/$debname/tests/* $AUTOPKGTEST_TMP
-gunzip -r *
+cp -a $P2X_HOME/share/doc/$debname/. $AUTOPKGTEST_TMP
+cd tests
+gunzip -r *.gz
 for testfile in *.sh; do
     if head -n 6 $testfile | grep setup.sh > /dev/null 2>&1; then
         echo "BEGIN TEST $testfile"

@@ -8,7 +8,7 @@ export LANG=C # for grep used in shunit2 when running with zsh, depends on engli
 
 export P2XFLAGS="$P2XFLAGS --output-mode=x"
 
-top_srcdir=../..
+top_srcdir=${top_srcdir:-../..}
 
 P2X=${P2X:-$top_srcdir/src/p2x}
 P2XJS=${P2XJS:-$top_srcdir/src-js/p2xjs}
